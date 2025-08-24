@@ -5,14 +5,10 @@ import Cookies from 'js-cookie';
 import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import AddPartyModal from './AddPartyModal';
-import AddItemModal from './AddItemModal';
 import { FaArrowRight } from "react-icons/fa6";
 import { Drawer } from 'rsuite';
-import { PartyComponent } from '../pages/party/AddParty';
-import { AddItemComponent } from '../pages/AdminUser/UserAdd';
-import { CategoryComponent } from '../pages/Item/CategoryAdd';
 import { toggle } from '../store/partyModalSlice';
-import { set } from 'rsuite/esm/internals/utils/date';
+import { AddDisctrictComponent } from '../pages/Locations/district/AddDistrict';
 
 
 
@@ -27,7 +23,7 @@ const MySelect2 = ({ model, onType, value }) => {
   const getPartyModalState = useSelector((store) => store.partyModalSlice.show);
   const [partyDrawer, setPartyDrawer] = useState(false);
   const [itemDrawer, setItemDrawer] = useState(false);
-  const [categoryDrawer, setCategoryDrawer] = useState(false);
+  const [districtDrawer, setDistrictDrawer] = useState(false);
   const debounceTime = useRef(null);
   const [loading, setLoading] = useState(false);
   const [keyCount, setKeyCount] = useState(0);
@@ -138,7 +134,7 @@ const MySelect2 = ({ model, onType, value }) => {
     if (save) {
       model === "party" ?
         setPartyDrawer(false) : model === "item" ?
-          setItemDrawer(false) : setCategoryDrawer(false);
+          setItemDrawer(false) : setDistrictDrawer(false);
     }
   }
 
@@ -194,7 +190,8 @@ const MySelect2 = ({ model, onType, value }) => {
             </Drawer.Actions>
           </Drawer.Header>
           <Drawer.Body>
-            <PartyComponent save={closeDrawer} />
+
+
           </Drawer.Body>
         </Drawer>
 
@@ -210,23 +207,23 @@ const MySelect2 = ({ model, onType, value }) => {
             </Drawer.Actions>
           </Drawer.Header>
           <Drawer.Body>
-            <AddItemComponent save={closeDrawer} />
+
           </Drawer.Body>
         </Drawer>
 
-        {/* Category Drawer */}
+        {/* District Drawer */}
         <Drawer
-          onClose={() => setCategoryDrawer(false)}
-          open={categoryDrawer}
+          onClose={() => setDistrictDrawer(false)}
+          open={districtDrawer}
           size={"sm"}
         >
           <Drawer.Header>
             <Drawer.Actions>
-              <p className='text-lg font-bold'>Add Category</p>
+              <p className='text-lg font-bold'>Add District</p>
             </Drawer.Actions>
           </Drawer.Header>
           <Drawer.Body>
-            <CategoryComponent save={closeDrawer} />
+            <AddDisctrictComponent/>
           </Drawer.Body>
         </Drawer>
 
@@ -286,8 +283,8 @@ const MySelect2 = ({ model, onType, value }) => {
               else if (model === "item") {
                 setItemDrawer(true)
               }
-              else if (model === "category") {
-                setCategoryDrawer(true)
+              else if (model === "district") {
+                setDistrictDrawer(true)
               }
               else if (model === "partycategory") {
                 dispatch(toggle(true))

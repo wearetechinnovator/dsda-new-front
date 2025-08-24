@@ -2,12 +2,24 @@ import React, { Suspense, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { ProtectRoute, UnProtectRoute } from "./components/ProtectRoute";
 import ProtectCP from "./components/ProtectCP";
+
 import Hotelmaster from "./pages/HotelMaster/Hotelmaster";
 import AddHotel from "./pages/HotelMaster/AddHotel";
+import AddDistrict from "./pages/Locations/district/AddDistrict";
+import District from "./pages/Locations/district/District";
+import AddBlock from "./pages/Locations/block/AddBlock";
+import Block from "./pages/Locations/block/Block";
+import AddPoliceStation from "./pages/Locations/policeStation/AddPoliceStation";
+import PoliceStation from "./pages/Locations/policeStation/PoliceStation";
+import AddZone from "./pages/Locations/zone/AddZone";
+import Zone from "./pages/Locations/zone/Zone";
+import AddSector from "./pages/Locations/sector/AddSector";
+import Sector from "./pages/Locations/sector/Sector";
+import AddPayment from "./pages/payment/AddPayment";
+import Payment from "./pages/payment/Payment";
+
 const Login = React.lazy(() => import("./pages/Auth/Login"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
-const AddQutation = React.lazy(() => import("./pages/quotation/AddQuotation"));
-const Quotation = React.lazy(() => import("./pages/quotation/Quotation"));
 const Profile = React.lazy(() => import("./pages/Auth/Profile"));
 const Signup = React.lazy(() => import("./pages/Auth/Signup"));
 const Setting = React.lazy(() => import("./pages/Setting"));
@@ -62,11 +74,6 @@ const App = () => {
         {/* Print part */}
         <Route path="/admin/bill/details/:bill/:id" element={<Invoice />} />
 
-        {/* Quotatin route */}
-        <Route path="/admin/quotation-estimate" element={<Quotation />} />
-        <Route path="/admin/quotation-estimate/add/:id?" element={<AddQutation />} />
-        <Route path="/admin/quotation-estimate/edit/:id" element={<AddQutation mode={"edit"} />} />
-
 
         <Route path="/admin/profile" element={<Profile />} />
 
@@ -78,6 +85,31 @@ const App = () => {
         <Route path="/admin/hotel/add" element={<AddHotel />} />
         <Route path="/admin/hotel/edit/:id" element={< AddHotel mode="edit" />} />
         <Route path="/admin/hotel" element={< Hotelmaster />} />
+
+        <Route path="/admin/district/add" element={<AddDistrict />} />
+        <Route path="/admin/district/edit/:id" element={< AddDistrict mode="edit" />} />
+        <Route path="/admin/district" element={< District />} />
+
+        <Route path="/admin/block/add" element={<AddBlock />} />
+        <Route path="/admin/block/edit/:id" element={< AddBlock mode="edit" />} />
+        <Route path="/admin/block" element={< Block />} />
+
+        <Route path="/admin/police-station/add" element={<AddPoliceStation />} />
+        <Route path="/admin/police-station/edit/:id" element={< AddPoliceStation mode="edit" />} />
+        <Route path="/admin/police-station" element={< PoliceStation />} />
+
+        <Route path="/admin/zone/add" element={<AddZone />} />
+        <Route path="/admin/zone/edit/:id" element={< AddZone mode="edit" />} />
+        <Route path="/admin/zone" element={< Zone />} />
+
+        <Route path="/admin/sector/add" element={<AddSector />} />
+        <Route path="/admin/sector/edit/:id" element={< AddSector mode="edit" />} />
+        <Route path="/admin/sector" element={< Sector />} />
+
+
+        <Route path="/admin/amenities/add" element={<AddPayment />} />
+        <Route path="/admin/amenities/edit/:id" element={< AddPayment mode="edit" />} />
+        <Route path="/admin/amenities" element={< Payment />} />
 
 
         <Route path="*" element={< NotFound />} />

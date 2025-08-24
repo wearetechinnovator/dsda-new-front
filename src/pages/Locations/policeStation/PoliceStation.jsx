@@ -1,21 +1,20 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import Nav from '../../components/Nav';
-import SideNav from '../../components/SideNav';
+import Nav from '../../../components/Nav';
+import SideNav from '../../../components/SideNav';
 import { useNavigate } from 'react-router-dom';
-import useExportTable from '../../hooks/useExportTable';
-import useMyToaster from '../../hooks/useMyToaster';
+import useExportTable from '../../../hooks/useExportTable';
+import useMyToaster from '../../../hooks/useMyToaster';
 import Cookies from 'js-cookie';
-import downloadPdf from '../../helper/downloadPdf';
-import DataShimmer from '../../components/DataShimmer';
+import downloadPdf from '../../../helper/downloadPdf';
+import DataShimmer from '../../../components/DataShimmer';
 import { Tooltip } from 'react-tooltip';
-import AddNew from '../../components/AddNew';
 import { Popover, Whisper } from 'rsuite';
-import { Icons } from '../../helper/icons';
-import Pagination from '../../components/Pagination';
+import { Icons } from '../../../helper/icons';
+import Pagination from '../../../components/Pagination';
 
 
-document.title = "Admin User"
-const UserList = ({ mode }) => {
+document.title = "District"
+const PoliceStation = ({ mode }) => {
   const toast = useMyToaster();
   const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
   const [activePage, setActivePage] = useState(1);
@@ -124,7 +123,7 @@ const UserList = ({ mode }) => {
 
   return (
     <>
-      <Nav title={"User Table"} />
+      <Nav title={"Police Station Table"} />
       <main id='main'>
         <SideNav />
         <Tooltip id='itemTooltip' />
@@ -156,7 +155,7 @@ const UserList = ({ mode }) => {
                   Delete
                 </button>
                 <button
-                  onClick={() => navigate("/admin/admin/add")}
+                  onClick={() => navigate("/admin/police-station/add")}
                   className='bg-[#003E32] text-white '>
                   <Icons.ADD className='text-xl text-white' />
                   Add New
@@ -204,7 +203,7 @@ const UserList = ({ mode }) => {
                         <input type='checkbox' onChange={selectAll} checked={itemData.length > 0 && selected.length === itemData.length} />
                       </th>
                       <td className='py-2 px-4 border-b '>Name</td>
-                      <th className='py-2 px-4 border-b '>Role</th>
+                      <th className='py-2 px-4 border-b '>District</th>
                       <th className='py-2 px-4 border-b '>Status</th>
                       <th className='py-2 px-4 border-b w-[100px]'>Action</th>
                     </tr>
@@ -286,4 +285,4 @@ const UserList = ({ mode }) => {
   )
 }
 
-export default UserList;
+export default PoliceStation;

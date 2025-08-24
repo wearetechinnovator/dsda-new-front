@@ -433,7 +433,8 @@ select {
 }
 
 .add_new_compnent button {
-  @apply px-3 py-1 rounded flex items-center gap-2 text-[13px];
+  @apply px-3 py-1 rounded flex items-center gap-2 text-[13px] border;
+  box-shadow: 0px 0px 5px lightgrey;
 }
 
 .admin__area span {
@@ -540,6 +541,12 @@ select {
 
 .list__table tbody {
   border: 1px solid #b4d7d0;
+}
+
+.list__table tr, .list__table td, .list__table th{
+  border: 1px solid white;
+  text-align: center;
+  padding:10px;
 }
 
 .list__table__head {
@@ -809,10 +816,18 @@ input[type="checkbox"]:checked::before {
 
 
 .form__btn__grp{
-  @apply flex justify-center mt-3 gap-2;
+  @apply flex justify-center mt-3 gap-4;
 }
 .form__btn__grp button{
-  @apply flex rounded-sm text-white items-center p-2 gap-2;
+  @apply flex rounded-lg text-white items-center p-2 gap-2 border border-2;
+  box-shadow: 0px 0px 7px rgb(113, 113, 113);
+}
+.form__btn__grp button:active{
+   box-shadow: 0px 0px 5px rgb(113, 113, 113);
+}
+
+.form__btn__grp.filter{
+  @apply justify-end
 }
 
 .save__btn {

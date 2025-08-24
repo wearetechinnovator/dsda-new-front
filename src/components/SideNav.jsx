@@ -248,7 +248,7 @@ const SideNav = () => {
               <span>Manage Single Hotel</span>
             </li>
           </Link>
-          <Link to={"/admin/item"} data-tooltip-id="sideBarItemToolTip">
+          <Link to={"/admin/amenities"} data-tooltip-id="sideBarItemToolTip">
             <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
               <span className='mr-3'><PiComputerTowerThin /></span>
               <span>Payment Managment</span>
