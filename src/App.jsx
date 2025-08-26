@@ -17,6 +17,8 @@ import AddSector from "./pages/Locations/sector/AddSector";
 import Sector from "./pages/Locations/sector/Sector";
 import AddPayment from "./pages/payment/AddPayment";
 import Payment from "./pages/payment/Payment";
+import AddNotice from "./pages/notice/AddNotice";
+import Notice from "./pages/notice/Notice";
 
 const Login = React.lazy(() => import("./pages/Auth/Login"));
 const Dashboard = React.lazy(() => import("./pages/Dashboard"));
@@ -110,6 +112,10 @@ const App = () => {
         <Route path="/admin/amenities/add" element={<AddPayment />} />
         <Route path="/admin/amenities/edit/:id" element={< AddPayment mode="edit" />} />
         <Route path="/admin/amenities" element={< Payment />} />
+
+        <Route path="/admin/notice/add" element={<AddNotice />} />
+        <Route path="/admin/notice/edit/:id" element={< AddNotice mode="edit" />} />
+        <Route path="/admin/notice" element={< Notice />} />
 
 
         <Route path="*" element={< NotFound />} />
