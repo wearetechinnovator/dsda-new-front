@@ -71,51 +71,74 @@ const App = () => {
         <Route path="/admin/otp" element={<UnProtectRoute login={true}>< Otp /></UnProtectRoute>} />
         <Route path="/admin/change-password" element={<ProtectCP>< ChangePassword /></ProtectCP>} />
         <Route path="/admin/site" element={<Setting />} />
-        <Route path="admin/dashboard" element={<Dashboard />} />
+        <Route path="/admin/dashboard" element={<ProtectRoute><Dashboard /></ProtectRoute>} />
 
         {/* Print part */}
         <Route path="/admin/bill/details/:bill/:id" element={<Invoice />} />
 
+        {/* Admin */}
+        <Route path="/admin/user" element={<ProtectRoute />}>
+          <Route index element={< UserList />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="add" element={<UserAdd />} />
+          <Route path="edit/:id" element={< UserAdd mode="edit" />} />
+          <Route path="details/:id" element={<ItemDetails />} />
+        </Route>
 
-        <Route path="/admin/profile" element={<Profile />} />
+        <Route path="/admin/hotel" element={<ProtectRoute />}>
+          <Route index element={<Hotelmaster />} />
+          <Route path="add" element={<AddHotel />} />
+          <Route path="edit/:id" element={<AddHotel mode="edit" />} />
+        </Route>
 
-        <Route path="/admin/admin/add" element={<UserAdd />} />
-        <Route path="/admin/admin/edit/:id" element={< UserAdd mode="edit" />} />
-        <Route path="/admin/admin" element={< UserList />} />
-        <Route path="/admin/admin/details/:id" element={<ItemDetails />} />
+        {/* District */}
+        <Route path="/admin/district" element={<ProtectRoute />}>
+          <Route index element={< District />} />
+          <Route path="add" element={<AddDistrict />} />
+          <Route path="edit/:id" element={< AddDistrict mode="edit" />} />
+        </Route>
 
-        <Route path="/admin/hotel/add" element={<AddHotel />} />
-        <Route path="/admin/hotel/edit/:id" element={< AddHotel mode="edit" />} />
-        <Route path="/admin/hotel" element={< Hotelmaster />} />
+        {/* Block */}
+        <Route path="/admin/block" element={<ProtectRoute />}>
+          <Route index element={< Block />} />
+          <Route path="add" element={<AddBlock />} />
+          <Route path="edit/:id" element={< AddBlock mode="edit" />} />
+        </Route>
 
-        <Route path="/admin/district/add" element={<AddDistrict />} />
-        <Route path="/admin/district/edit/:id" element={< AddDistrict mode="edit" />} />
-        <Route path="/admin/district" element={< District />} />
+        {/* Police Station */}
+        <Route path="/admin/police-station" element={<ProtectRoute />}>
+          <Route index element={<PoliceStation />} />
+          <Route path="add" element={<AddPoliceStation />} />
+          <Route path="edit/:id" element={<AddPoliceStation mode="edit" />} />
+        </Route>
 
-        <Route path="/admin/block/add" element={<AddBlock />} />
-        <Route path="/admin/block/edit/:id" element={< AddBlock mode="edit" />} />
-        <Route path="/admin/block" element={< Block />} />
+        {/* Zone */}
+        <Route path="/admin/zone" element={<ProtectRoute />}>
+          <Route index element={<Zone />} />
+          <Route path="add" element={<AddZone />} />
+          <Route path="edit/:id" element={<AddZone mode="edit" />} />
+        </Route>
 
-        <Route path="/admin/police-station/add" element={<AddPoliceStation />} />
-        <Route path="/admin/police-station/edit/:id" element={< AddPoliceStation mode="edit" />} />
-        <Route path="/admin/police-station" element={< PoliceStation />} />
+        {/* Sector */}
+        <Route path="/admin/sector" element={<ProtectRoute />}>
+          <Route index element={<Sector />} />
+          <Route path="add" element={<AddSector />} />
+          <Route path="edit/:id" element={<AddSector mode="edit" />} />
+        </Route>
 
-        <Route path="/admin/zone/add" element={<AddZone />} />
-        <Route path="/admin/zone/edit/:id" element={< AddZone mode="edit" />} />
-        <Route path="/admin/zone" element={< Zone />} />
+        {/* Amenities */}
+        <Route path="/admin/amenities" element={<ProtectRoute />}>
+          <Route index element={<Payment />} />
+          <Route path="add" element={<AddPayment />} />
+          <Route path="edit/:id" element={<AddPayment mode="edit" />} />
+        </Route>
 
-        <Route path="/admin/sector/add" element={<AddSector />} />
-        <Route path="/admin/sector/edit/:id" element={< AddSector mode="edit" />} />
-        <Route path="/admin/sector" element={< Sector />} />
-
-
-        <Route path="/admin/amenities/add" element={<AddPayment />} />
-        <Route path="/admin/amenities/edit/:id" element={< AddPayment mode="edit" />} />
-        <Route path="/admin/amenities" element={< Payment />} />
-
-        <Route path="/admin/notice/add" element={<AddNotice />} />
-        <Route path="/admin/notice/edit/:id" element={< AddNotice mode="edit" />} />
-        <Route path="/admin/notice" element={< Notice />} />
+        {/* Notice */}
+        <Route path="/admin/notice" element={<ProtectRoute />}>
+          <Route index element={<Notice />} />
+          <Route path="add" element={<AddNotice />} />
+          <Route path="edit/:id" element={<AddNotice mode="edit" />} />
+        </Route>
 
 
         <Route path="*" element={< NotFound />} />

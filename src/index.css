@@ -142,7 +142,7 @@ h6 {
 .side__nav__links li {
   padding: 8px;
   font-size: 11px;
-  padding-left: 15px;
+  padding-left: 12px;
   transition: 0.5s all;
   border-radius: 0px;
 }
@@ -168,6 +168,21 @@ h6 {
   color: rgb(218, 208, 208)
 }
 
+.sidebar__sub__menu{
+  @apply w-full ml-5;
+  overflow-y: hidden;
+  /* transition: 1s all linear; */
+  height: 0px;
+}
+.open__sidebar__sub__menu{
+  height: 100%;
+  /* transition: 1s all; */
+}
+
+.side__nav__links li:hover .sidebar__sub__menu li a{
+  
+  color: #003628 !important;
+}
 
 /* Breacrumb */
 .rs-breadcrumb-item a {
@@ -203,7 +218,7 @@ textarea {
 } */
 
 select {
-  @apply w-full p-[3px] border border-gray-200 rounded outline-none;
+  @apply w-full p-[2px] border border-gray-200 rounded outline-none hover:border-[#003E32];
 }
 
 
@@ -294,7 +309,7 @@ select {
 
 
 .file__uploader__div {
-  @apply w-full border rounded hover:border-blue-500;
+  @apply w-full border rounded hover:border-[#003E32];
   @apply flex justify-between items-center gap-1 p-1;
 
 }
@@ -816,10 +831,10 @@ input[type="checkbox"]:checked::before {
 
 
 .form__btn__grp{
-  @apply flex justify-center mt-3 gap-4;
+  @apply flex justify-center mt-8 mb-4 gap-4;
 }
 .form__btn__grp button{
-  @apply flex rounded-lg text-white items-center p-2 gap-2 border border-2;
+  @apply flex rounded text-white items-center px-2 py-1 gap-2 border border-2;
   box-shadow: 0px 0px 7px rgb(113, 113, 113);
 }
 .form__btn__grp button:active{

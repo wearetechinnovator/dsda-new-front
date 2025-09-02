@@ -92,7 +92,7 @@ const AddNotice = ({ mode }) => {
 
     return (
         <>
-            <Nav title={mode ? "Update New Hotel" : "Add New Hotel"} />
+            <Nav title={mode ? "Update Notice" : "Add New Notice"} />
             <main id='main'>
                 <SideNav />
                 <div className='content__body'>
@@ -110,7 +110,7 @@ const AddNotice = ({ mode }) => {
                                 <div className='flex flex-col md:flex-row md:gap-2'>
                                     <div className='w-full'>
                                         <p>Date</p>
-                                        <input type='text' onChange={(e) => setForm({ ...form, date: e.target.value })} value={form.date} />
+                                        <input type='date' onChange={(e) => setForm({ ...form, date: e.target.value })} value={form.date} />
                                     </div>
                                     <div className='w-full'>
                                         <p>Status</p>

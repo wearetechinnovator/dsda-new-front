@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Logo from '../assets/images/logo.png'
-import { TbMenuDeep } from "react-icons/tb";
 import { FaUser } from "react-icons/fa";
 import { CiSettings } from "react-icons/ci";
 import { FiUser } from "react-icons/fi";
 import { IoIosLogOut } from "react-icons/io";
 import { Avatar, Popover, Whisper } from 'rsuite';
 import { Link, useNavigate } from 'react-router-dom';
-import CompanyList from './CompanyList';
 import { useDispatch, useSelector } from 'react-redux';
-import { toggleModal } from '../store/copanyListSlice';
-import useGetUserData from "../hooks/useGetUserData";
-import { HiOutlineSwitchHorizontal } from "react-icons/hi";
-import { CiCalculator1 } from "react-icons/ci";
 import Calculator from './Calculator';
-import { calcToggle } from '../store/calculatorSlice';
 import Cookies from 'js-cookie';
 import { Icons } from '../helper/icons'
 
@@ -67,7 +60,7 @@ const Nav = ({ title }) => {
       <nav className='w-full text-white h-[50px] bg-white shadow-lg flex justify-between'>
         <div className="logo__area w-[175px]  h-[100%] bg-[#003628] px-3 flex justify-between items-center">
           <img src={Logo} alt="" width={120} className='shadow-lg' id='NavLogo' />
-          <TbMenuDeep className='text-white text-xl cursor-pointer' onClick={toggleSideBar} />
+          {/* <TbMenuDeep className='text-white text-xl cursor-pointer' onClick={toggleSideBar} /> */}
         </div>
         <div className='flex items-center justify-between w-[calc(100%-175px)]'>
           <h6 className='text-black ml-5'>{title}</h6>
@@ -107,10 +100,6 @@ const Nav = ({ title }) => {
               <Link className='menu-link ' to="/admin/profile">
                 <FiUser size={"16px"} />
                 <span>Profile</span>
-              </Link>
-              <Link className='menu-link' onClick={() => dispatch(calcToggle(1))}>
-                <CiCalculator1 size={"16px"} />
-                <span>Calculator</span>
               </Link>
               <Link className='menu-link' onClick={logout}>
                 <IoIosLogOut size={"16px"} />

@@ -27,7 +27,7 @@ const Dashboard = () => {
       <main id='main'>
         <SideNav />
         <div className='content__body'>
-
+          hello world
         </div>
       </main>
     </>

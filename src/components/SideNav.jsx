@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { HiOutlineHome } from "react-icons/hi2";
 import { PiComputerTowerThin } from "react-icons/pi";
 import { IoSettingsOutline } from "react-icons/io5";
 import { TbUsersGroup } from "react-icons/tb";
-import { MdKeyboardArrowDown } from "react-icons/md";
 import { Link } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
-import { Popover, Whisper } from 'rsuite';
 import { useSelector } from 'react-redux';
 import { FaEarthAmericas } from 'react-icons/fa6';
 import { Icons } from '../helper/icons';
@@ -206,36 +204,38 @@ const SideNav = () => {
               </Link>
             ))}
           </ul>
-          {/* <Link to={"/admin/party"} data-tooltip-id="sideBarItemToolTip">
-            <li className={`flex items-center ${activePath.search("/admin/party") >= 0 ? 'active__link' : ''}`}>
-              <span className='mr-3'><PiComputerTowerThin /></span>
-              <span>Party</span>
-            </li>
-          </Link>
-          <Link to={"/admin/item"} data-tooltip-id="sideBarItemToolTip">
-            <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
-              <span className='mr-3'><PiComputerTowerThin /></span>
-              <span>Item</span>
-            </li>
-          </Link> */}
         </div>
         <div className="side__nav__link__group">
           <h3 className='text-[16px] my-5'>Master</h3>
-          <Link to={"/admin/admin"} data-tooltip-id="sideBarItemToolTip">
-            <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
-              <span className='mr-3'><PiComputerTowerThin /></span>
+          <Link to={"/admin/user"} data-tooltip-id="sideBarItemToolTip">
+            <li className={`flex items-center ${activePath.search("/admin/user") >= 0 ? 'active__link' : ''}`}>
+              <span className='mr-3'><Icons.USER size={"13px"} /></span>
               <span>Admin User</span>
             </li>
           </Link>
-          <Link to={"/admin/item"} data-tooltip-id="sideBarItemToolTip">
-            <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
-              <span className='mr-3'><PiComputerTowerThin /></span>
+
+          <li className={`flex flex-col w-full items-center 
+            ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
+            <div className='flex cursor-pointer w-full relative' onClick={() => {
+              document.querySelector(".sidebar__sub__menu").classList.toggle('open__sidebar__sub__menu');
+            }}>
+              <span className='mr-3'><Icons.LOCATION /></span>
               <span>Location Master</span>
-            </li>
-          </Link>
+              <span className='absolute right-0'><Icons.DROPDOWN /></span>
+            </div>
+
+            <ul className='sidebar__sub__menu'>
+              <li><Link to="/admin/district">District</Link></li>
+              <li><Link to="/admin/block">Block</Link></li>
+              <li><Link to="/admin/police-station">Police Station</Link></li>
+              <li><Link to="/admin/zone">Zone</Link></li>
+              <li><Link to="/admin/sector">Sector</Link></li>
+            </ul>
+          </li>
+
           <Link to={"/admin/hotel"} data-tooltip-id="sideBarItemToolTip">
-            <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
-              <span className='mr-3'><PiComputerTowerThin /></span>
+            <li className={`flex items-center ${activePath.search("/admin/hotel") >= 0 ? 'active__link' : ''}`}>
+              <span className='mr-3'><Icons.HOTEL /></span>
               <span>Hotel Master</span>
             </li>
           </Link>
@@ -244,19 +244,19 @@ const SideNav = () => {
           <h3 className='text-[16px] my-5'>Management</h3>
           <Link to={"/admin/item"} data-tooltip-id="sideBarItemToolTip">
             <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
-              <span className='mr-3'><PiComputerTowerThin /></span>
+              <span className='mr-3'><Icons.HOTEL /></span>
               <span>Manage Single Hotel</span>
             </li>
           </Link>
           <Link to={"/admin/amenities"} data-tooltip-id="sideBarItemToolTip">
-            <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
-              <span className='mr-3'><PiComputerTowerThin /></span>
+            <li className={`flex items-center ${activePath.search("/admin/amenities") >= 0 ? 'active__link' : ''}`}>
+              <span className='mr-3'><Icons.RUPES /></span>
               <span>Payment Managment</span>
             </li>
           </Link>
-          <Link to={"/admin/item"} data-tooltip-id="sideBarItemToolTip">
-            <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
-              <span className='mr-3'><PiComputerTowerThin /></span>
+          <Link to={"/admin/notice"} data-tooltip-id="sideBarItemToolTip">
+            <li className={`flex items-center ${activePath.search("/admin/notice") >= 0 ? 'active__link' : ''}`}>
+              <span className='mr-3'><Icons.BELL /></span>
               <span>Notice</span>
             </li>
           </Link>
@@ -265,16 +265,14 @@ const SideNav = () => {
           <h3 className='text-[16px] my-5'>MIS</h3>
           <Link to={"/admin/item"} data-tooltip-id="sideBarItemToolTip">
             <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
-              <span className='mr-3'><PiComputerTowerThin /></span>
+              <span className='mr-3'><Icons.HOTEL /></span>
               <span>Hotel List</span>
             </li>
           </Link>
-          <Link to={"/admin/item"} data-tooltip-id="sideBarItemToolTip">
             <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
-              <span className='mr-3'><PiComputerTowerThin /></span>
+              <span className='mr-3'><Icons.BED /></span>
               <span>Bed Availability</span>
             </li>
-          </Link>
           <Link to={"/admin/item"} data-tooltip-id="sideBarItemToolTip">
             <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
               <span className='mr-3'><Icons.USERS /></span>
@@ -287,84 +285,6 @@ const SideNav = () => {
               <span>Amenities Charges</span>
             </li>
           </Link>
-        </div>
-
-        <div className="side__nav__link__group">
-          <h3 className='text-[16px] my-5'>Setup</h3>
-          <ul>
-            <Link to={"/admin/site"} data-tooltip-id="sideBarItemToolTip">
-              <li className={`flex items-center ${activePath.search("/admin/site") >= 0 ? 'active__link' : ''}`}>
-                <span className='mr-3'><IoSettingsOutline /></span>
-                <span>Site/Business Settings</span>
-              </li>
-            </Link>
-            <Whisper enterable trigger={'hover'} speaker={
-              openSubmenus.includes('unit') ?
-                <Popover className='p-0 w-[100px]'>
-                  <ul>
-                    <Link data-tooltip-id="sideBarItemToolTip">
-                      <li className='flex items-center'>
-                        <span className='mr-2 text-[15px]'><PiComputerTowerThin /></span>
-                        <Link to={"/admin/role"} className='focus-within:no-underline text-blue-900 text-[13px]'>
-                          Role
-                        </Link>
-                      </li>
-                    </Link>
-                    <Link data-tooltip-id="sideBarItemToolTip">
-                      <li className='flex items-center'>
-                        <span className='mr-2 text-[15px]'><PiComputerTowerThin /></span>
-                        <Link to={"/admin/user"} className='focus-within:no-underline text-blue-900 text-[13px]'>
-                          User
-                        </Link>
-                      </li>
-                    </Link>
-                  </ul>
-                </Popover> : <div></div>
-            }>
-            <li onClick={() => toggleSubmenu('unit')} className='cursor-pointer'>
-                <div className='flex items-center justify-between'>
-                  <span> <TbUsersGroup /></span>
-                  <span>User Management</span>
-                  <span className={`transform transition-transform ${openSubmenus.includes('unit') ? 'rotate-180' : ''}`}>
-                    <MdKeyboardArrowDown />
-                  </span>
-                </div>
-                <ul className={`ml-2 ${openSubmenus.includes('unit') ? 'block' : 'hidden'} transform transition-transform sub-menu`} >
-                  <Link data-tooltip-id="sideBarItemToolTip">
-                    <li className='flex items-center'>
-                      <span className='mr-3'><PiComputerTowerThin /></span>
-                      <span>Role</span>
-                    </li>
-                  </Link>
-                  <Link data-tooltip-id="sideBarItemToolTip">
-                    <li className='flex items-center'>
-                      <span className='mr-3'><PiComputerTowerThin /></span>
-                      <span>User</span>
-                    </li>
-                  </Link>
-                </ul>
-              </li>
-            </Whisper>
-            <Link to={"/admin/unit"} data-tooltip-id="sideBarItemToolTip">
-              <li className={`flex items-center ${activePath.search("/admin/unit") >= 0 ? 'active__link' : ''}`}>
-                <span className='mr-3'><PiComputerTowerThin /></span>
-                <span>Unit</span>
-              </li>
-            </Link>
-            <Link to={"/admin/tax"} data-tooltip-id="sideBarItemToolTip">
-              <li className={`flex items-center ${activePath.search("/admin/tax") >= 0 ? 'active__link' : ''}`}>
-                <span className='mr-3'><PiComputerTowerThin /></span>
-                <span>Tax</span>
-              </li>
-            </Link>
-            <Link to={"/admin/item-category"} data-tooltip-id="sideBarItemToolTip">
-              <li className={`flex items-center ${activePath.search("/admin/item-category") >= 0 ? 'active__link' : ''}`}>
-                <span className='mr-3'><PiComputerTowerThin /></span>
-                <span>Category</span>
-              </li>
-            </Link>
-
-          </ul>
         </div>
       </div>
       <Tooltip id='sideBarItemToolTip' />

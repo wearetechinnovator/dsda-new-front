@@ -1,31 +1,22 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Nav from '../../components/Nav';
 import SideNav from '../../components/SideNav'
-import { FaRegCheckCircle } from "react-icons/fa";
-import { LuFileX2, LuRefreshCcw } from "react-icons/lu";
-import { CgPlayListAdd } from "react-icons/cg";
+import { LuFileX2 } from "react-icons/lu";
 import useMyToaster from '../../hooks/useMyToaster';
-import { SelectPicker } from 'rsuite';
 import Cookies from 'js-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
-import useApi from '../../hooks/useApi';
-import { RiDeleteBin6Line } from 'react-icons/ri';
-import MySelect2 from '../../components/MySelect2';
 import { Icons } from '../../helper/icons';
 import { MdUploadFile } from 'react-icons/md';
 
 
 
-const UserAdd = ({ mode, save }) => {
+const UserAdd = ({ mode }) => {
   const toast = useMyToaster();
-  const [form, setForm] = useState({
-    title: '', type: '', salePrice: '', category: '', details: '', hsn: '', tax: ''
+  const [data, setData] = useState({
+    name: '', email: '', contact: '', role: '',
+    profile: '', password: '', designation: ''
   })
   const { id } = useParams();
-  const unitRowSet = {
-    unit: "", conversion: '', opening: '', alert: ''
-  }
-  const [unitRow, setUnitRow] = useState([unitRowSet]);
   const navigate = useNavigate();
 
 
@@ -45,11 +36,6 @@ const UserAdd = ({ mode, save }) => {
         })
         const res = await req.json();
         const data = res.data;
-        setForm({
-          title: data.title, type: data.type, salePrice: data.salePrice,
-          category: data.category?._id, details: data.details, hsn: data.category?.hsn, tax: data.category?.tax
-        });
-        setUnitRow([...data.unit]);
       }
 
       get();
@@ -58,18 +44,20 @@ const UserAdd = ({ mode, save }) => {
 
 
   const savebutton = async (e) => {
-    if (form.title === "") {
-      return toast("Item name can't be blank", "error")
-    }
-    else if (form.salePrice === "") {
-      return toast("Price can't be blank", "error")
-    }
-    else if (form.category === "") {
-      return toast("Category can't be blank", "error")
+    const requiredKeys = [
+      'name', 'email', 'contact', 'role', 'password', 'designation',
+    ];
+
+    for (const key of requiredKeys) {
+      if (!data[key] || data[key].trim() === "") {
+        return toast(`${key.camelToWords()} can't be blank`, 'error');
+      }
     }
 
+
+
     try {
-      const url = process.env.REACT_APP_API_URL + "/item/add";
+      const url = process.env.REACT_APP_MASTER_API + "/admin/create-users";
       const token = Cookies.get("token");
       const req = await fetch(url, {
         method: "POST",
@@ -77,8 +65,8 @@ const UserAdd = ({ mode, save }) => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(
-          !mode ? { ...form, token, unit: unitRow }
-            : { ...form, token, unit: unitRow, update: true, id: id }
+          !mode ? { ...data, token }
+            : { ...data, token, update: true, id: id }
         )
       })
       const res = await req.json();
@@ -88,14 +76,7 @@ const UserAdd = ({ mode, save }) => {
 
       if (!mode) clearData();
 
-      toast(!mode ? "Item create success" : "Item update success", 'success');
-      // for close sidebar in MySelect2
-      if (save) {
-        save(true)
-        return
-      } else {
-        return navigate("/admin/item")
-      }
+      toast(!mode ? "User create success" : "User update success", 'success');
 
     } catch (error) {
       console.log(error);
@@ -105,10 +86,10 @@ const UserAdd = ({ mode, save }) => {
   }
 
   const clearData = () => {
-    setForm({
-      title: '', type: '', salePrice: '', category: '', details: '', hsn: ''
+    setData({
+      name: '', email: '', contact: '', role: '',
+      profile: '', password: '', designation: ''
     })
-    setUnitRow([unitRowSet]);
   }
   return (
     <>
@@ -121,57 +102,40 @@ const UserAdd = ({ mode, save }) => {
               <div className='w-full flex flex-col gap-3'>
                 <div>
                   <p>Name <span className='required__text'>*</span></p>
-                  <input type='text' onChange={(e) => setForm({ ...form, title: e.target.value })} value={form.title} />
+                  <input type='text' onChange={(e) => setData({ ...data, name: e.target.value })} value={data.name} />
                 </div>
                 <div >
                   <p>Email <span className='required__text'>*</span></p>
-                  <input type='text' onChange={(e) => setForm({ ...form, title: e.target.value })} value={form.title} />
+                  <input type='email' onChange={(e) => setData({ ...data, email: e.target.value })} value={data.email} />
                 </div>
                 <div >
-                  <p>Contact Number <span className='required__text'>*</span></p>
-                  <input type='text' onChange={(e) => setForm({ ...form, title: e.target.value })} value={form.title} />
-                </div>
-                <div>
-                  <p className='ml-1'>Role</p>
-                  <select onChange={(e) => setForm({ ...form, type: e.target.value })} value={form.type}>
-                    <option value={""}>--select--</option>
-                    <option value={"goods"}>Goods</option>
-                    <option value={"service"}>Service</option>
-                  </select>
-                </div>
-                <div >
-                  <p>Designation<span className='required__text'>*</span></p>
-                  <input type='text' onChange={(e) => setForm({ ...form, title: e.target.value })} value={form.title} />
-                </div>
-                <div >
-                  <p>Date of Birth<span className='required__text'>*</span></p>
-                  <input type='date' onChange={(e) => setForm({ ...form, title: e.target.value })} value={form.title} />
+                  <p>Password<span className='required__text'>*</span></p>
+                  <input type='password' onChange={(e) => setData({ ...data, password: e.target.value })} value={data.password} />
                 </div>
               </div>
-              <div className='w-full pt-1 flex flex-col gap-3'>
-                <div>
-                  <p className='ml-1'>Gender</p>
-                  <select onChange={(e) => setForm({ ...form, type: e.target.value })} value={form.type}>
-                    <option value={""}>--select--</option>
-                    <option value={"male"}>Goods</option>
-                    <option value={"female"}>Female</option>
-                    <option value={"others"}>Others</option>
-                  </select>
-                </div>
+
+              <div className='w-full flex flex-col gap-3'>
                 <div >
-                  <p>Unique ID Number<span className='required__text'>*</span></p>
-                  <input type='text' onChange={(e) => setForm({ ...form, title: e.target.value })} value={form.title} />
+                  <p>Contact Number <span className='required__text'>*</span></p>
+                  <input type='text' onChange={(e) => setData({ ...data, contact: e.target.value })} value={data.contact} />
                 </div>
-                <div>
-                  <p className='ml-1'>Unique ID Type <span className='required__text'>*</span></p>
-                  <MySelect2
-                    model={"category"}
-                    onType={(v) => {
-                      console.log(v)
-                      setForm({ ...form, category: v })
-                    }}
-                    value={form.category}
-                  />
+                <div className="flex flex-col md:flex-row gap-3 w-full items-center">
+                  <div className='w-full'>
+                    <p className='ml-1'>Role</p>
+                    <select onChange={(e) => setData({ ...data, role: e.target.value })} value={data.role}>
+                      <option value={""}>--select--</option>
+                      <option value="Administrator">Administrator</option>
+                      <option value="CEO">CEO</option>
+                      <option value="Editor">Editor</option>
+                      <option value="DM Office">DM Office</option>
+                      <option value="Police Station">Police Station</option>
+                      <option value="State">State</option>
+                    </select>
+                  </div>
+                  <div className='w-full'>
+                    <p>Designation<span className='required__text'>*</span></p>
+                    <input type='text' onChange={(e) => setData({ ...data, designation: e.target.value })} value={data.designation} />
+                  </div>
                 </div>
                 <div>
                   <p>Profile Picture</p>
@@ -188,32 +152,9 @@ const UserAdd = ({ mode, save }) => {
                     </div>
                   </div>
                 </div>
-                <div >
-                  <p>Password<span className='required__text'>*</span></p>
-                  <input type='text' onChange={(e) => setForm({ ...form, title: e.target.value })} value={form.title} />
-                </div>
-                <div>
-                  <p className='ml-1'>Status</p>
-                  <select onChange={(e) => setForm({ ...form, type: e.target.value })} value={form.type}>
-                    <option value={""}>--select--</option>
-                    <option value={"inactive"}>Inactive</option>
-                    <option value={"active"}>Active</option>
-                    <option value={"others"}>Others</option>
-                  </select>
-                </div>
               </div>
             </div>
 
-            <div className='w-full overflow-auto mt-2'>
-              <div>
-                <p>About</p>
-                <textarea name="" id="" rows={4}></textarea>
-              </div>
-              <div>
-                <p>Address</p>
-                <textarea name="" id="" rows={4}></textarea>
-              </div>
-            </div>
             <div className='form__btn__grp'>
               <button className='save__btn' onClick={savebutton}>
                 <Icons.CHECK />

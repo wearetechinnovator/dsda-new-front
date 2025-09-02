@@ -124,15 +124,13 @@ const Notice = ({ mode }) => {
 
     return (
         <>
-            <Nav title={"Hotel Table"} />
+            <Nav title={"Notice Table"} />
             <main id='main'>
                 <SideNav />
                 <Tooltip id='itemTooltip' />
                 <div className='content__body'>
                     <div
-                        className={`mb-5 w-full bg-white rounded p-4 shadow-sm add_new_compnent overflow-hidden
-            transition-all
-          `}>
+                        className={`mb-5 w-full bg-white rounded p-4 shadow-sm add_new_compnent overflow-hidden transition-all`}>
                         <div className='flex justify-between items-center'>
                             <div className='flex flex-col'>
                                 <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>

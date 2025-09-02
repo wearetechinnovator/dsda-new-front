@@ -11,8 +11,8 @@ import { MdOutlineArrowDropDown } from "react-icons/md";
 import { RiArrowDropUpFill } from "react-icons/ri";
 import { FaUsers } from "react-icons/fa6";
 import { MdOutlineTrendingUp } from "react-icons/md";
-import { IoMdTrendingDown } from "react-icons/io";
-import { MdOutlineCurrencyRupee } from "react-icons/md";
+import { IoMdTrendingDown, IoIosNotifications } from "react-icons/io";
+import { MdOutlineCurrencyRupee, MdLocationPin } from "react-icons/md";
 import { LuBookText } from "react-icons/lu";
 import { GrFormNext } from "react-icons/gr";
 import { GrFormPrevious } from "react-icons/gr";
@@ -23,8 +23,11 @@ import { HiOutlineRefresh } from "react-icons/hi";
 import { LuBriefcaseBusiness } from "react-icons/lu";
 import { TbFileInvoice } from "react-icons/tb";
 import { GoPencil } from "react-icons/go";
-import { FaRegFile } from "react-icons/fa";
-import { FaRegUser } from "react-icons/fa";
+import { FaRegFile, FaRegUser, FaRupeeSign, FaBed  } from "react-icons/fa";
+import { LuHotel } from "react-icons/lu";
+
+
+
 
 
 
@@ -59,5 +62,9 @@ export const Icons = {
   PENCIL: GoPencil,
   FILE: FaRegFile,
   USER: FaRegUser,
+  LOCATION: MdLocationPin,
+  BELL: IoIosNotifications,
+  BED: FaBed,
+  HOTEL: LuHotel
 };
 

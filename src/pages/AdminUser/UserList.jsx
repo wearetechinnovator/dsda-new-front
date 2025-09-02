@@ -156,7 +156,7 @@ const UserList = ({ mode }) => {
                   Delete
                 </button>
                 <button
-                  onClick={() => navigate("/admin/admin/add")}
+                  onClick={() => navigate("/admin/user/add")}
                   className='bg-[#003E32] text-white '>
                   <Icons.ADD className='text-xl text-white' />
                   Add New

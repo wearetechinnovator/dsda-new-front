@@ -11,7 +11,7 @@ import Loading from '../../components/Loading'
 
 
 const Login = () => {
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [loginData, setLoginData] = useState({ email: '', pass: '' });
   const shakeIt = useLoginShake();
   const navigate = useNavigate();
   const toast = useMyToaster();
@@ -31,7 +31,7 @@ const Login = () => {
 
     try {
       setLoading(true)
-      const url = process.env.REACT_APP_API_URL + "/user/login";
+      const url = process.env.REACT_APP_MASTER_API + "/admin/login";
       const req = await fetch(url, {
         method: "POST",
         headers: {
@@ -43,7 +43,7 @@ const Login = () => {
       const res = await req.json();
 
       setLoading(false);
-      if (req.status !== 200 || !res.login) {
+      if (req.status !== 200 || res.err) {
         return toast(res.err, "error")
       }
 
@@ -71,8 +71,8 @@ const Login = () => {
             className='input_style' placeholder='Enter email'
           />
           <input type="password" name="pass"
-            value={loginData.password}
-            onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+            value={loginData.pass}
+            onChange={(e) => setLoginData({ ...loginData, pass: e.target.value })}
             className='input_style' placeholder='Enter password'
           />
           <button
