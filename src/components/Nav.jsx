@@ -65,7 +65,7 @@ const Nav = ({ title }) => {
         <div className='flex items-center justify-between w-[calc(100%-175px)]'>
           <h6 className='text-black ml-5'>{title}</h6>
           <div className="admin__area px-4 py-2 flex items-center cursor-pointer gap-3">
-            <Whisper
+            {/* <Whisper
               trigger={'click'}
               placement='bottomEnd'
               speaker={<Popover>
@@ -90,7 +90,7 @@ const Nav = ({ title }) => {
                 Create
                 <Icons.DROPDOWN />
               </button>
-            </Whisper>
+            </Whisper> */}
 
             <Whisper className='flex items-center' trigger={'click'} placement='bottomEnd' speaker={<Popover full>
               <Link className='menu-link' to={"/admin/site"}>

@@ -4,7 +4,6 @@ import useMyToaster from '../hooks/useMyToaster';
 import Cookies from 'js-cookie';
 import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
-import AddPartyModal from './AddPartyModal';
 import { FaArrowRight } from "react-icons/fa6";
 import { Drawer } from 'rsuite';
 import { toggle } from '../store/partyModalSlice';
@@ -20,32 +19,16 @@ const MySelect2 = ({ model, onType, value }) => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [searchList, setSearchList] = useState([]);
-  const getPartyModalState = useSelector((store) => store.partyModalSlice.show);
-  const [partyDrawer, setPartyDrawer] = useState(false);
-  const [itemDrawer, setItemDrawer] = useState(false);
   const [districtDrawer, setDistrictDrawer] = useState(false);
   const debounceTime = useRef(null);
   const [loading, setLoading] = useState(false);
   const [keyCount, setKeyCount] = useState(0);
 
 
-  // Style
-  const style = {
-    backgroundColor: "gray",
-    padding: "3px"
-  }
-
-
-
   useEffect(() => {
     if (selectedData) {
       setSelectedValue(selectedData.title || selectedData.name);
-      if (model === "item") {
-        onType(selectedData.title);
-      }
-      else {
-        onType(selectedData._id);
-      }
+      onType(selectedData._id);
     }
 
   }, [selectedData])
@@ -54,10 +37,10 @@ const MySelect2 = ({ model, onType, value }) => {
 
   // if alredy value define
   useEffect(() => {
-    if (value && model !== "item") {
+    if (value) {
       const get = async () => {
         try {
-          const url = process.env.REACT_APP_API_URL + `/${model}/get`;
+          const url = process.env.REACT_APP_MASTER_API + `/${model}/get`;
           const req = await fetch(url, {
             method: "POST",
             headers: {
@@ -78,10 +61,6 @@ const MySelect2 = ({ model, onType, value }) => {
       get()
     }
 
-    if (model === "item") {
-      setSearchText(value);
-      setSelectedValue(value);
-    }
   }, [value])
 
 
@@ -89,34 +68,26 @@ const MySelect2 = ({ model, onType, value }) => {
 
   // Search data
   const searchData = (v) => {
-    // Check debounce time
     if (debounceTime.current) {
       clearTimeout(debounceTime.current);
     }
-
     setLoading(true)
     debounceTime.current = setTimeout(async () => {
 
-      // Search code here;
       try {
-        const url = process.env.REACT_APP_API_URL + `/${model}/get`;
+        const url = process.env.REACT_APP_MASTER_API + `/${model}/get`;
         const req = await fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": 'application/json'
           },
-          body: JSON.stringify({ token: Cookies.get("token"), search: true, searchText: v })
+          body: JSON.stringify({ token: Cookies.get("token"), search: v })
         })
         const res = await req.json();
         setLoading(false);
 
         if (req.status === 200) {
-          if (model === "partycategory") {
-            res.length > 0 ? setSearchList([...res]) : setSearchList(["No result found"]);
-            return;
-          }
-
-          res.data.length > 0 ? setSearchList([...res.data]) : setSearchList(["No result found"]);
+          res.length > 0 ? setSearchList([...res]) : setSearchList(["No result found"]);
         }
         else {
           setSearchList([])
@@ -126,15 +97,13 @@ const MySelect2 = ({ model, onType, value }) => {
         console.log('Someting went wrong', er);
       }
 
-    }, 100);
+    }, 200);
   };
 
 
   const closeDrawer = (save) => {
     if (save) {
-      model === "party" ?
-        setPartyDrawer(false) : model === "item" ?
-          setItemDrawer(false) : setDistrictDrawer(false);
+      setDistrictDrawer(false);
     }
   }
 
@@ -177,41 +146,6 @@ const MySelect2 = ({ model, onType, value }) => {
   return (
     <>
       <div className='relative'>
-
-        {/* Party drawer */}
-        <Drawer
-          onClose={() => setPartyDrawer(false)}
-          open={partyDrawer}
-          size={"md"}
-        >
-          <Drawer.Header>
-            <Drawer.Actions>
-              <p className='text-lg font-bold'>Add Party</p>
-            </Drawer.Actions>
-          </Drawer.Header>
-          <Drawer.Body>
-
-
-          </Drawer.Body>
-        </Drawer>
-
-        {/* Item Drawer */}
-        <Drawer
-          onClose={() => setItemDrawer(false)}
-          open={itemDrawer}
-          size={"md"}
-        >
-          <Drawer.Header>
-            <Drawer.Actions>
-              <p className='text-lg font-bold'>Add Item</p>
-            </Drawer.Actions>
-          </Drawer.Header>
-          <Drawer.Body>
-
-          </Drawer.Body>
-        </Drawer>
-
-        {/* District Drawer */}
         <Drawer
           onClose={() => setDistrictDrawer(false)}
           open={districtDrawer}
@@ -223,11 +157,9 @@ const MySelect2 = ({ model, onType, value }) => {
             </Drawer.Actions>
           </Drawer.Header>
           <Drawer.Body>
-            <AddDisctrictComponent/>
+            <AddDisctrictComponent />
           </Drawer.Body>
         </Drawer>
-
-        <AddPartyModal open={getPartyModalState} />
 
         <input type="text"
           className='w-full border rounded-[3px]'
@@ -277,21 +209,12 @@ const MySelect2 = ({ model, onType, value }) => {
           </ul>
           <button
             onMouseDown={() => {
-              if (model === "party") {
-                setPartyDrawer(true);
-              }
-              else if (model === "item") {
-                setItemDrawer(true)
-              }
-              else if (model === "district") {
+              if (model === "district") {
                 setDistrictDrawer(true)
-              }
-              else if (model === "partycategory") {
-                dispatch(toggle(true))
               }
             }}
             className='select__add__button z-50'>
-            <IoAddCircleSharp className='text-lg' />
+            <IoAddCircleSharp />
             Add New
             <FaArrowRight className='text-[15px]' />
           </button>

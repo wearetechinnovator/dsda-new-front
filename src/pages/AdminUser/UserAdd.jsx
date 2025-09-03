@@ -9,14 +9,13 @@ import { Icons } from '../../helper/icons';
 import { MdUploadFile } from 'react-icons/md';
 
 
-
 const UserAdd = ({ mode }) => {
   const toast = useMyToaster();
+  const { id } = useParams();
   const [data, setData] = useState({
     name: '', email: '', contact: '', role: '',
     profile: '', password: '', designation: ''
   })
-  const { id } = useParams();
   const navigate = useNavigate();
 
 
@@ -24,7 +23,7 @@ const UserAdd = ({ mode }) => {
   useEffect(() => {
     if (mode) {
       const get = async () => {
-        const url = process.env.REACT_APP_API_URL + "/item/get";
+        const url = process.env.REACT_APP_MASTER_API + "/admin/get-users";
         const cookie = Cookies.get("token");
 
         const req = await fetch(url, {
@@ -32,10 +31,10 @@ const UserAdd = ({ mode }) => {
           headers: {
             "Content-Type": 'application/json'
           },
-          body: JSON.stringify({ token: cookie, id: id })
+          body: JSON.stringify({ token: cookie, userId: id })
         })
         const res = await req.json();
-        const data = res.data;
+        setData({ ...res })
       }
 
       get();
@@ -43,10 +42,11 @@ const UserAdd = ({ mode }) => {
   }, [mode])
 
 
-  const savebutton = async (e) => {
+  const saveData = async (e) => {
     const requiredKeys = [
-      'name', 'email', 'contact', 'role', 'password', 'designation',
+      'name', 'email', 'contact', 'role', 'designation',
     ];
+    if (!mode) requiredKeys.push('password');
 
     for (const key of requiredKeys) {
       if (!data[key] || data[key].trim() === "") {
@@ -54,10 +54,8 @@ const UserAdd = ({ mode }) => {
       }
     }
 
-
-
     try {
-      const url = process.env.REACT_APP_MASTER_API + "/admin/create-users";
+      let url = mode ? process.env.REACT_APP_MASTER_API + "/admin/update-users" : process.env.REACT_APP_MASTER_API + "/admin/create-users";
       const token = Cookies.get("token");
       const req = await fetch(url, {
         method: "POST",
@@ -65,8 +63,7 @@ const UserAdd = ({ mode }) => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(
-          !mode ? { ...data, token }
-            : { ...data, token, update: true, id: id }
+          !mode ? { ...data, token } : { ...data, token, userId: id }
         )
       })
       const res = await req.json();
@@ -156,7 +153,7 @@ const UserAdd = ({ mode }) => {
             </div>
 
             <div className='form__btn__grp'>
-              <button className='save__btn' onClick={savebutton}>
+              <button className='save__btn' onClick={saveData}>
                 <Icons.CHECK />
                 {mode ? "Update" : "Save"}
               </button>

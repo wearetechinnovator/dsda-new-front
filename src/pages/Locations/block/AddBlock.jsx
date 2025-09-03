@@ -30,18 +30,17 @@ const AddBlock = ({ mode, save }) => {
 
 const BlockComponent = ({ mode, save }) => {
     const toast = useMyToaster();
-    const [form, setForm] = useState({
-        name: '', status: 'active', details: ''
+    const [data, setData] = useState({
+        name: '', status: '1', details: ''
     })
     const { id } = useParams();
     const navigate = useNavigate();
 
 
-
     useEffect(() => {
         if (mode) {
             const get = async () => {
-                const url = process.env.REACT_APP_API_URL + "/item/get";
+                const url = process.env.REACT_APP_MASTER_API + "/block/get";
                 const cookie = Cookies.get("token");
 
                 const req = await fetch(url, {
@@ -53,10 +52,7 @@ const BlockComponent = ({ mode, save }) => {
                 })
                 const res = await req.json();
                 const data = res.data;
-                setForm({
-                    title: data.title, type: data.type, salePrice: data.salePrice,
-                    category: data.category?._id, details: data.details, hsn: data.category?.hsn, tax: data.category?.tax
-                });
+                setData({ ...res });
             }
 
             get();
@@ -64,22 +60,20 @@ const BlockComponent = ({ mode, save }) => {
     }, [mode])
 
 
-    const savebutton = async (e) => {
-        if (form.name.trim() === "" || !form.name) {
+    const saveData = async (e) => {
+        if (data.name.trim() === "" || !data.name) {
             return toast("Name can't be blank", "error")
         }
 
         try {
-            const url = process.env.REACT_APP_API_URL + "";
+            const url = mode ? process.env.REACT_APP_MASTER_API + "/block/update" : process.env.REACT_APP_MASTER_API + "/block/create";
             const token = Cookies.get("token");
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(
-                    !mode ? { ...form, token }
-                        : { ...form, token, update: true, id: id }
+                body: JSON.stringify( !mode ? { ...data, token }: { ...data, token, id: id }
                 )
             })
             const res = await req.json();
@@ -96,7 +90,7 @@ const BlockComponent = ({ mode, save }) => {
                 save(true)
                 return
             } else {
-                return navigate("/admin/item")
+                // return navigate("/admin/block")
             }
 
         } catch (error) {
@@ -107,26 +101,27 @@ const BlockComponent = ({ mode, save }) => {
     }
 
     const clearData = () => {
-        setForm({
-            name: '', status: 'active', details: ''
+        setData({
+            name: '', status: '1', details: ''
         })
     }
+
     return <div className='content__body'>
         <div className='content__body__main bg-white'>
             <div className='flex justify-between  gap-5 flex-col lg:flex-row'>
                 <div className='w-full flex flex-col gap-3'>
                     <div>
                         <p>Name <span className='required__text'>*</span></p>
-                        <input type='text' onChange={(e) => setForm({ ...form, name: e.target.value })} value={form.name} />
+                        <input type='text' onChange={(e) => setData({ ...data, name: e.target.value })} value={data.name} />
                     </div>
                 </div>
 
                 <div className='w-full flex flex-col gap-3'>
                     <div>
                         <p className='ml-1'>Status</p>
-                        <select onChange={(e) => setForm({ ...form, status: e.target.value })} value={form.status}>
-                            <option value={"active"}>Active</option>
-                            <option value={"inactive"}>Inactive</option>
+                        <select onChange={(e) => setData({ ...data, status: e.target.value })} value={data.status}>
+                            <option value={"1"}>Active</option>
+                            <option value={"0"}>Inactive</option>
                         </select>
                     </div>
                 </div>
@@ -135,11 +130,11 @@ const BlockComponent = ({ mode, save }) => {
             <div className='w-full overflow-auto mt-2'>
                 <div>
                     <p>Details</p>
-                    <textarea name="" id="" rows={4} onChange={(e) => setForm({ ...form, details: e.target.value })} value={form.details}></textarea>
+                    <textarea name="" id="" rows={4} onChange={(e) => setData({ ...data, details: e.target.value })} value={data.details}></textarea>
                 </div>
             </div>
             <div className='form__btn__grp'>
-                <button className='save__btn' onClick={savebutton}>
+                <button className='save__btn' onClick={saveData}>
                     <Icons.CHECK />
                     {mode ? "Update" : "Save"}
                 </button>

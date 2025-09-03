@@ -448,7 +448,7 @@ select {
 }
 
 .add_new_compnent button {
-  @apply px-3 py-1 rounded flex items-center gap-2 text-[13px] border;
+  @apply px-3 py-1 rounded flex items-center gap-1 text-[13px] border;
   box-shadow: 0px 0px 5px lightgrey;
 }
 
@@ -458,7 +458,7 @@ select {
 }
 
 .select__add__button {
-  @apply w-full bg-[#003E32] rounded text-white flex items-center gap-1 justify-center;
+  @apply w-full bg-[#003E32] rounded text-white flex items-center gap-1 justify-center text-xs;
   padding: 7px;
 }
 
@@ -561,7 +561,12 @@ select {
 .list__table tr, .list__table td, .list__table th{
   border: 1px solid white;
   text-align: center;
-  padding:10px;
+  padding:2px;
+  font-size: 13px;
+}
+.list__table td:nth-child(2){
+  text-align: left;
+  padding-left: 30px;
 }
 
 .list__table__head {
