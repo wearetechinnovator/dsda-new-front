@@ -24,7 +24,27 @@ const useApi = () => {
   }
 
 
-  return { deleteData };
+  const restoreData = async (ids, model) => {
+    console.log(ids);
+    const url = process.env.REACT_APP_MASTER_API + `/${model}/restore`;
+    const req = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": 'application/json'
+      },
+      body: JSON.stringify({ ids: ids })
+    });
+
+    const res = await req.json();
+    if (req.status !== 200) {
+      return toast(res.err, 'error')
+    }
+    window.location.reload();
+    return toast("Record restore successfully", 'success');
+  }
+
+
+  return { deleteData, restoreData };
 }
 
 export default useApi;

@@ -6,23 +6,40 @@ import { IoIosSearch } from "react-icons/io";
 import { useDispatch, useSelector } from 'react-redux';
 import { FaArrowRight } from "react-icons/fa6";
 import { Drawer } from 'rsuite';
-import { toggle } from '../store/partyModalSlice';
 import { AddDisctrictComponent } from '../pages/Locations/district/AddDistrict';
+import { ZoneComponent } from '../pages/Locations/zone/AddZone';
+import { PoliceStationComponent } from '../pages/Locations/policeStation/AddPoliceStation';
+import { SectorComponent } from '../pages/Locations/sector/AddSector';
+import { BlockComponent } from '../pages/Locations/block/AddBlock';
 
 
 
 const MySelect2 = ({ model, onType, value }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const toast = useMyToaster();
   const [selectedValue, setSelectedValue] = useState('');
   const [selectedData, setSelectedData] = useState()
   const [showDropDown, setShowDropDown] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [searchList, setSearchList] = useState([]);
-  const [districtDrawer, setDistrictDrawer] = useState(false);
+  const [drawer, setDrawer] = useState(false);
   const debounceTime = useRef(null);
   const [loading, setLoading] = useState(false);
   const [keyCount, setKeyCount] = useState(0);
+  const pageTitle = {
+    zone: "Add Zone",
+    district: 'Add District',
+    'police-station': 'Add Police Station',
+    sector: 'Add Sector',
+    block: 'Add Block'
+  }
+  const pageComponent = {
+    zone: <ZoneComponent/>,
+    district: <AddDisctrictComponent/>,
+    'police-station': <PoliceStationComponent/>,
+    sector: <SectorComponent/>,
+    block: <BlockComponent/>
+  }
 
 
   useEffect(() => {
@@ -32,7 +49,6 @@ const MySelect2 = ({ model, onType, value }) => {
     }
 
   }, [selectedData])
-
 
 
   // if alredy value define
@@ -103,7 +119,7 @@ const MySelect2 = ({ model, onType, value }) => {
 
   const closeDrawer = (save) => {
     if (save) {
-      setDistrictDrawer(false);
+      setDrawer(false);
     }
   }
 
@@ -147,17 +163,17 @@ const MySelect2 = ({ model, onType, value }) => {
     <>
       <div className='relative'>
         <Drawer
-          onClose={() => setDistrictDrawer(false)}
-          open={districtDrawer}
+          onClose={() => setDrawer(false)}
+          open={drawer}
           size={"sm"}
         >
           <Drawer.Header>
             <Drawer.Actions>
-              <p className='text-lg font-bold'>Add District</p>
+              <p className='text-lg font-bold'>{pageTitle[model]}</p>
             </Drawer.Actions>
           </Drawer.Header>
           <Drawer.Body>
-            <AddDisctrictComponent />
+            {pageComponent[model]}
           </Drawer.Body>
         </Drawer>
 
@@ -209,9 +225,7 @@ const MySelect2 = ({ model, onType, value }) => {
           </ul>
           <button
             onMouseDown={() => {
-              if (model === "district") {
-                setDistrictDrawer(true)
-              }
+                setDrawer(true)
             }}
             className='select__add__button z-50'>
             <IoAddCircleSharp />

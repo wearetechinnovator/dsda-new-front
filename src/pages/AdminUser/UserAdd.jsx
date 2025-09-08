@@ -7,16 +7,18 @@ import Cookies from 'js-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Icons } from '../../helper/icons';
 import { MdUploadFile } from 'react-icons/md';
+import checkfile from '../../helper/checkfile';
 
 
 const UserAdd = ({ mode }) => {
+  const navigate = useNavigate();
   const toast = useMyToaster();
   const { id } = useParams();
+  const [fileName, setFileName] = useState('');
   const [data, setData] = useState({
     name: '', email: '', contact: '', role: '',
     profile: '', password: '', designation: ''
   })
-  const navigate = useNavigate();
 
 
 
@@ -34,13 +36,28 @@ const UserAdd = ({ mode }) => {
           body: JSON.stringify({ token: cookie, userId: id })
         })
         const res = await req.json();
-        setData({ ...res })
+        setData({ ...res, profile: res.profile_picture })
+        if(res.profile_picture){
+          setFileName(Date.now)
+        }
       }
 
       get();
     }
   }, [mode])
 
+  const handleFile = async (e) => {
+    let validfile = await checkfile(e.target.files[0]);
+
+    if (typeof (validfile) !== 'boolean') return toast(validfile, "error");
+
+    setFileName(e.target.files[0].name)
+    const reader = new FileReader();
+    reader.readAsDataURL(e.target.files[0]);
+    reader.onload = () => {
+      setData({ ...data, profile: reader.result });
+    }
+  }
 
   const saveData = async (e) => {
     const requiredKeys = [
@@ -53,6 +70,7 @@ const UserAdd = ({ mode }) => {
         return toast(`${key.camelToWords()} can't be blank`, 'error');
       }
     }
+
 
     try {
       let url = mode ? process.env.REACT_APP_MASTER_API + "/admin/update-users" : process.env.REACT_APP_MASTER_API + "/admin/create-users";
@@ -87,6 +105,7 @@ const UserAdd = ({ mode }) => {
       name: '', email: '', contact: '', role: '',
       profile: '', password: '', designation: ''
     })
+    setFileName("");
   }
   return (
     <>
@@ -137,14 +156,17 @@ const UserAdd = ({ mode }) => {
                 <div>
                   <p>Profile Picture</p>
                   <div className='file__uploader__div'>
-                    <span className='file__name'>{"name"}</span>
+                    <span className='file__name'>{fileName}</span>
                     <div className='flex gap-2'>
-                      <input type="file" id="siteLogo" className='hidden' />
+                      <input type="file" id="siteLogo" className='hidden' onChange={handleFile} />
                       <label htmlFor="siteLogo" className='file__upload' title='Upload'>
                         <MdUploadFile />
                       </label>
                       {
-                        <LuFileX2 className='remove__upload ' title='Remove upload' />
+                        fileName && <LuFileX2 className='remove__upload ' title='Remove upload' onClick={() => {
+                          setFileName("");
+                          setData({ ...data, profile: "" })
+                        }} />
                       }
                     </div>
                   </div>

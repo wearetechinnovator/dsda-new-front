@@ -147,4 +147,7 @@ const ZoneComponent = ({ mode, save }) => {
     </div>
 }
 
+export {
+    ZoneComponent
+}
 export default AddZone;

@@ -35,7 +35,8 @@ const PoliceStation = ({ mode }) => {
 	}, [data]);
 	const [loading, setLoading] = useState(true);
 	const searchTable = useSearchTable();
-	const { deleteData } = useApi();
+	const { deleteData, restoreData } = useApi()
+	const [isTrash, setIsTrash] = useState(false);
 
 
 
@@ -45,10 +46,11 @@ const PoliceStation = ({ mode }) => {
 			try {
 				const data = {
 					token: Cookies.get("token"),
-					trash: tableStatusData === "trash" ? true : false,
-					all: tableStatusData === "all" ? true : false
+					trash: isTrash,
+					page: activePage,
+					limit: dataLimit
 				}
-				const url = process.env.REACT_APP_MASTER_API + `/police-station/get?page=${activePage}&limit=${dataLimit}`;
+				const url = process.env.REACT_APP_MASTER_API + `/police-station/get`;
 				const req = await fetch(url, {
 					method: "POST",
 					headers: {
@@ -66,7 +68,7 @@ const PoliceStation = ({ mode }) => {
 			}
 		}
 		get();
-	}, [tableStatusData, dataLimit, activePage])
+	}, [isTrash, dataLimit, activePage])
 
 
 	const selectAll = (e) => {
@@ -132,12 +134,20 @@ const PoliceStation = ({ mode }) => {
 										className='p-[6px]'
 									/>
 								</div>
-								<button
-									onClick={() => deleteData(selected, "district")}
+								{!isTrash && <button
+									onClick={() => deleteData(selected, "police-station", true)}
 									className={`${selected.length > 0 ? 'bg-red-400 text-white' : 'bg-gray-100'}`}>
 									<Icons.DELETE className='text-lg' />
 									Trash
-								</button>
+								</button>}
+								{
+									isTrash && <button
+										onClick={() => restoreData(selected, "police-station")}
+										className={`${selected.length > 0 ? 'bg-[#003E32] text-white' : 'bg-gray-100'}`}>
+										<Icons.RESTORE className='text-lg' />
+										Restore
+									</button>
+								}
 								<button
 									onClick={() => deleteData(selected, 'police-station')}
 									className={`${selected.length > 0 ? 'bg-red-400 text-white' : 'bg-gray-100'} border`}>
@@ -145,9 +155,16 @@ const PoliceStation = ({ mode }) => {
 									Delete
 								</button>
 								<button
-									onClick={() => { }}
+									onClick={() => {
+										setIsTrash(pv => {
+											return !pv;
+										})
+									}}
 									className={'bg-[#003E32] text-white'}>
-									<Icons.FOLDER className='text-lg' />
+									{
+										isTrash ? <Icons.FOLDER_OPEN className='text-lg' />
+											: <Icons.FOLDER className='text-lg' />
+									}
 									View Trash
 								</button>
 								<button

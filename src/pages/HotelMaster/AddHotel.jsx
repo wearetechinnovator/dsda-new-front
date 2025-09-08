@@ -190,7 +190,7 @@ const AddHotel = ({ mode }) => {
                 </div>
               </div>
 
-              <div className='w-full pt-1 flex flex-col gap-3'>
+              <div className='w-full flex flex-col gap-3'>
                 <div>
                   <p>Reception Phone</p>
                   <input type='text'

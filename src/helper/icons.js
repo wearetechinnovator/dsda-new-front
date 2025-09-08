@@ -23,8 +23,10 @@ import { HiOutlineRefresh } from "react-icons/hi";
 import { LuBriefcaseBusiness } from "react-icons/lu";
 import { TbFileInvoice } from "react-icons/tb";
 import { GoPencil } from "react-icons/go";
-import { FaRegFile, FaRegUser, FaBed, FaRegFolderOpen} from "react-icons/fa";
+import { FaRegFile, FaRegUser, FaBed, FaRegFolderOpen, FaRegFolder  } from "react-icons/fa";
 import { LuHotel } from "react-icons/lu";
+import { LiaTrashRestoreAltSolid } from "react-icons/lia";
+
 
 
 
@@ -66,6 +68,8 @@ export const Icons = {
   BELL: IoIosNotifications,
   BED: FaBed,
   HOTEL: LuHotel,
-  FOLDER: FaRegFolderOpen,
+  FOLDER: FaRegFolder,
+  FOLDER_OPEN: FaRegFolderOpen,
+  RESTORE: LiaTrashRestoreAltSolid,
 };
 
