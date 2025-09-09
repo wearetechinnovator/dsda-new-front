@@ -12,6 +12,8 @@ import AddNew from '../../components/AddNew';
 import { Popover, Whisper } from 'rsuite';
 import { Icons } from '../../helper/icons';
 import Pagination from '../../components/Pagination';
+import useSearchTable from '../../hooks/useSearchTable';
+import useApi from '../../hooks/useApi';
 
 
 document.title = "Admin User"
@@ -24,28 +26,32 @@ const Hotelmaster = ({ mode }) => {
     const [selected, setSelected] = useState([]);
     const navigate = useNavigate();
     const [tableStatusData, setTableStatusData] = useState('active');
-    const [itemData, setItemData] = useState([]);
+    const [data, setData] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return itemData && itemData.map(({ title, category }, _) => ({
-            Title: title,
-            HSN: category?.hsn
+        return data && data.map(({ name, status }, _) => ({
+            Name: name,
+            Status: status
         }));
-    }, [itemData]);
+    }, [data]);
     const [loading, setLoading] = useState(true);
+    const searchTable = useSearchTable();
+    const { deleteData, restoreData } = useApi()
+    const [isTrash, setIsTrash] = useState(false);
 
 
 
     // Get data;
     useEffect(() => {
-        const getCategory = async () => {
+        const get = async () => {
             try {
                 const data = {
                     token: Cookies.get("token"),
-                    trash: tableStatusData === "trash" ? true : false,
-                    all: tableStatusData === "all" ? true : false
+                    trash: isTrash,
+                    page: activePage,
+                    limit: dataLimit
                 }
-                const url = process.env.REACT_APP_API_URL + `/item/get?page=${activePage}&limit=${dataLimit}`;
+                const url = process.env.REACT_APP_MASTER_API + `/databasehere/get`;
                 const req = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -54,41 +60,21 @@ const Hotelmaster = ({ mode }) => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
-                setTotalData(res.totalData)
-                setItemData([...res.data])
+                setTotalData(res.total)
+                setData([...res.data])
                 setLoading(false);
 
             } catch (error) {
                 console.log(error)
             }
         }
-        getCategory();
-    }, [tableStatusData, dataLimit, activePage])
+        get();
+    }, [isTrash, dataLimit, activePage])
 
-
-    const searchTable = (e) => {
-        const value = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('.list__table tbody tr');
-
-        rows.forEach(row => {
-            const cols = row.querySelectorAll('td');
-            let found = false;
-            cols.forEach((col, index) => {
-                if (index !== 0 && col.innerHTML.toLowerCase().includes(value)) {
-                    found = true;
-                }
-            });
-            if (found) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-        });
-    }
 
     const selectAll = (e) => {
         if (e.target.checked) {
-            setSelected(itemData.map((item, _) => item._id));
+            setSelected(data.map((item, _) => item._id));
         } else {
             setSelected([]);
         }
@@ -107,19 +93,20 @@ const Hotelmaster = ({ mode }) => {
 
     const exportTable = async (whichType) => {
         if (whichType === "copy") {
-            copyTable("itemTable"); // Pass tableid
+            copyTable("table"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'item-list.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'block-list.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Item List"); // Pass table ref and title
+            printTable(tableRef, "Block List"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Item List', exportData);
+            let document = exportPdf('Block List', exportData);
             downloadPdf(document)
         }
     }
+
 
 
     return (
@@ -150,10 +137,38 @@ const Hotelmaster = ({ mode }) => {
                                         className='p-[6px]'
                                     />
                                 </div>
+                                {!isTrash && <button
+                                    onClick={() => deleteData(selected, "block", true)}
+                                    className={`${selected.length > 0 ? 'bg-red-400 text-white' : 'bg-gray-100'}`}>
+                                    <Icons.DELETE className='text-lg' />
+                                    Trash
+                                </button>}
+                                {
+                                    isTrash && <button
+                                        onClick={() => restoreData(selected, "block")}
+                                        className={`${selected.length > 0 ? 'bg-[#003E32] text-white' : 'bg-gray-100'}`}>
+                                        <Icons.RESTORE className='text-lg' />
+                                        Restore
+                                    </button>
+                                }
                                 <button
+                                    onClick={() => deleteData(selected, "block")}
                                     className={`${selected.length > 0 ? 'bg-red-400 text-white' : 'bg-gray-100'} border`}>
                                     <Icons.DELETE className='text-lg' />
                                     Delete
+                                </button>
+                                <button
+                                    onClick={() => {
+                                        setIsTrash(pv => {
+                                            return !pv;
+                                        })
+                                    }}
+                                    className={'bg-[#003E32] text-white'}>
+                                    {
+                                        isTrash ? <Icons.FOLDER_OPEN className='text-lg' />
+                                            : <Icons.FOLDER className='text-lg' />
+                                    }
+                                    View Trash
                                 </button>
                                 <button
                                     onClick={() => navigate("/admin/hotel/add")}
@@ -161,6 +176,7 @@ const Hotelmaster = ({ mode }) => {
                                     <Icons.ADD className='text-xl text-white' />
                                     Add New
                                 </button>
+                                {/* menu... */}
                                 <div className='flex justify-end'>
                                     <Whisper placement='leftStart' enterable
                                         speaker={<Popover full>
@@ -201,7 +217,7 @@ const Hotelmaster = ({ mode }) => {
                                     <thead className='bg-gray-100 list__table__head'>
                                         <tr>
                                             <th className='py-2 px-4 border-b w-[50px]'>
-                                                <input type='checkbox' onChange={selectAll} checked={itemData.length > 0 && selected.length === itemData.length} />
+                                                <input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
                                             </th>
                                             <td className='py-2 px-4 border-b '>Name</td>
                                             <th className='py-2 px-4 border-b '>Zone</th>
@@ -216,31 +232,19 @@ const Hotelmaster = ({ mode }) => {
                                     </thead>
                                     <tbody>
                                         {
-                                            itemData.map((data, i) => {
-                                                return <tr key={i} onClick={() => navigate("/admin/item/details/" + data._id)} className='cursor-pointer hover:bg-gray-100'>
+                                            data.map((d, i) => {
+                                                return <tr key={i} onClick={() => navigate("/admin/item/details/" + d._id)} className='cursor-pointer hover:bg-gray-100'>
                                                     <td className='py-2 px-4 border-b max-w-[10px]'>
-                                                        <input type='checkbox' checked={selected.includes(data._id)} onChange={() => handleCheckboxChange(data._id)} />
+                                                        <input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
                                                     </td>
-                                                    <td className='px-4 border-b'>
-                                                        {data.title}
-                                                        {
-                                                            data.category &&
-                                                            <p className="text-[10px] bg-gray-100 rounded w-fit px-[2px] border mb-[2p]">{data.category?.title}</p>
-                                                        }
-                                                    </td>
-                                                    <td className='px-4 border-b' align='center'>{data.category?.hsn}</td>
-                                                    <td className='px-4 border-b' align='center'>{data.salePrice || 0.00}</td>
-                                                    <td className='px-4 border-b' align='center'>
-                                                        <div className='flex items-center justify-center gap-2'>
-                                                            {
-                                                                data.stock.map((stock, _) => {
-                                                                    return stock.stock !== "" ? <p key={_}>
-                                                                        {stock.stock} <sub className='font-bold'>{stock.unit}</sub>
-                                                                    </p> : "";
-                                                                })
-                                                            }
-                                                        </div>
-                                                    </td>
+                                                    <td className='px-4 border-b'> </td>
+                                                    <td className='px-4 border-b' align='center'>{ }</td>
+                                                    <td className='px-4 border-b' align='center'>{ }</td>
+                                                    <td className='px-4 border-b' align='center'></td>
+                                                    <td className='px-4 border-b'> </td>
+                                                    <td className='px-4 border-b' align='center'>{ }</td>
+                                                    <td className='px-4 border-b' align='center'>{ }</td>
+                                                    <td className='px-4 border-b' align='center'></td>
 
                                                     <td className='px-4 text-center'>
                                                         <Whisper
@@ -272,7 +276,7 @@ const Hotelmaster = ({ mode }) => {
                                     </tbody>
                                 </table>
                                 <div className='paginate__parent'>
-                                    <p>Showing {itemData.length} of {totalData} entries</p>
+                                    <p>Showing {data.length} of {totalData} entries</p>
                                     <Pagination
                                         activePage={activePage}
                                         totalData={totalData}

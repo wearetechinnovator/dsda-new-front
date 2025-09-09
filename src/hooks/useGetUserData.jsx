@@ -9,31 +9,25 @@ import useMyToaster from './useMyToaster'
 const useGetUserData = () => {
   const dispatch = useDispatch();
   const nagivate = useNavigate();
-  
   const toast = useMyToaster();
 
   const getProfile = async () => {
-    const url = process.env.REACT_APP_API_URL + "/user/get-user";
+    const url = process.env.REACT_APP_MASTER_API + "/admin/get-users";
     const cookie = Cookies.get("token");
+    const userId = Cookies.get("userId");
 
     const req = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": 'application/json'
       },
-      body: JSON.stringify({ token: cookie })
+      body: JSON.stringify({ token: cookie, userId: userId })
     })
     const res = await req.json();
     dispatch(add(res))
-    
-    
-    // if(res.companies.length < 1){
-    //   nagivate("/admin/company");
-    // }
-
   }
 
-  return getProfile;
+  return {getProfile};
 
 }
 

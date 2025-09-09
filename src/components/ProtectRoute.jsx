@@ -62,12 +62,6 @@ const UnProtectRoute = ({ children }) => {
   const token = Cookies.get("token");
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (token) {
-  //     navigate("/admin/dashboard")
-  //   }
-  // }, [token])
-
 
   useEffect(() => {
 

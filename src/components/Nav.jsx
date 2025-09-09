@@ -7,29 +7,20 @@ import { IoIosLogOut } from "react-icons/io";
 import { Avatar, Popover, Whisper } from 'rsuite';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import Calculator from './Calculator';
 import Cookies from 'js-cookie';
 import { Icons } from '../helper/icons'
+import useGetUserData from '../hooks/useGetUserData';
 
 
 
 const Nav = ({ title }) => {
   const [sideBar, setSideBar] = useState(true);
-  const dispatch = useDispatch();
-  // const getUserData = useGetUserData(); // Get user info api call
+  const { getProfile } = useGetUserData(); // Get user info api call
   const userDetails = useSelector((store) => store.userDetail); //get use details from store
-  const navigate = useNavigate();
 
-
-  // useEffect(() => {
-  //   getUserData();
-
-  // }, [])
-
-
-  const toggleSideBar = () => {
-    convertToSmall();
-  }
+  useEffect(() => {
+    getProfile();
+  }, [])
 
   const convertToSmall = () => {
     setSideBar((prev) => {
@@ -79,7 +70,7 @@ const Nav = ({ title }) => {
                 <span>Logout</span>
               </Link>
             </Popover>}>
-              <Avatar circle children={<FaUser />} size='sm' src={userDetails.profile} className='border' />
+              <Avatar circle children={<FaUser />} size='sm' src={userDetails.profile_picture} className='border' />
               <div className='ml-2 text-gray-800 text-[13px] flex items-center gap-1'>
                 {userDetails.name}
                 <Icons.DROPDOWN />
@@ -88,8 +79,6 @@ const Nav = ({ title }) => {
           </div>
         </div>
       </nav>
-      {/* Company list modal */}
-      <Calculator />
     </>
   )
 }

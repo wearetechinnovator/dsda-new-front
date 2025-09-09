@@ -9,7 +9,7 @@ import { FiMoreHorizontal } from 'react-icons/fi';
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { RiArrowDropUpFill } from "react-icons/ri";
-import { FaUsers } from "react-icons/fa6";
+import { FaUsers, FaCheck } from "react-icons/fa6";
 import { MdOutlineTrendingUp } from "react-icons/md";
 import { IoMdTrendingDown, IoIosNotifications } from "react-icons/io";
 import { MdOutlineCurrencyRupee, MdLocationPin } from "react-icons/md";
@@ -26,6 +26,7 @@ import { GoPencil } from "react-icons/go";
 import { FaRegFile, FaRegUser, FaBed, FaRegFolderOpen, FaRegFolder  } from "react-icons/fa";
 import { LuHotel } from "react-icons/lu";
 import { LiaTrashRestoreAltSolid } from "react-icons/lia";
+
 
 
 
@@ -71,5 +72,6 @@ export const Icons = {
   FOLDER: FaRegFolder,
   FOLDER_OPEN: FaRegFolderOpen,
   RESTORE: LiaTrashRestoreAltSolid,
+  CHECK2: FaCheck
 };
 

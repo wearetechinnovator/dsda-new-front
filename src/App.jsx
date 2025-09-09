@@ -70,11 +70,15 @@ const App = () => {
         <Route path="/admin/forget" element={<UnProtectRoute login={true}>< Forgot /></UnProtectRoute>} />
         <Route path="/admin/otp" element={<UnProtectRoute login={true}>< Otp /></UnProtectRoute>} />
         <Route path="/admin/change-password" element={<ProtectCP>< ChangePassword /></ProtectCP>} />
-        <Route path="/admin/site" element={<Setting />} />
-        <Route path="/admin/dashboard" element={<ProtectRoute><Dashboard /></ProtectRoute>} />
 
         {/* Print part */}
         <Route path="/admin/bill/details/:bill/:id" element={<Invoice />} />
+
+        <Route path="/admin" element={<ProtectRoute />}>
+          <Route path="site" element={<Setting />} />
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="profile" element={<Profile />} />
+        </Route>
 
         {/* Admin */}
         <Route path="/admin/user" element={<ProtectRoute />}>

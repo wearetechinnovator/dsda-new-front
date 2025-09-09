@@ -20,7 +20,7 @@ const AddHotel = ({ mode }) => {
   const toast = useMyToaster();
   const { id } = useParams();
   const navigate = useNavigate();
-  const [form, setForm] = useState({
+  const [data, setData] = useState({
     zone: '', sector: '', block: '', district: '', policeStation: "", name: '', address: "", email: '',
     username: '', password: '', receptionPhone: '', proprietorName: "", proprietorPhone: "", managerName: '',
     managerPhone: '', alternateManagerPhone: '', restaurantAvailable: '', conferanceHallAvailable: '',
@@ -32,7 +32,7 @@ const AddHotel = ({ mode }) => {
   useEffect(() => {
     if (mode) {
       const get = async () => {
-        const url = process.env.REACT_APP_API_URL + "/item/get";
+        const url = process.env.REACT_APP_MASTER_API + "/item/get";
         const cookie = Cookies.get("token");
 
         const req = await fetch(url, {
@@ -59,14 +59,14 @@ const AddHotel = ({ mode }) => {
     ];
 
     for (const key of requiredKeys) {
-      if (!form[key] || form[key].trim() === "") {
+      if (!data[key] || data[key].trim() === "") {
         return toast(`${key.camelToWords()} can't be blank`, 'error');
       }
     }
 
 
     try {
-      const url = process.env.REACT_APP_API_URL + "";
+      const url = process.env.REACT_APP_MASTER_API + "";
       const token = Cookies.get("token");
       const req = await fetch(url, {
         method: "POST",
@@ -74,8 +74,8 @@ const AddHotel = ({ mode }) => {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(
-          !mode ? { ...form, token }
-            : { ...form, token, update: true, id: id }
+          !mode ? { ...data, token }
+            : { ...data, token, update: true, id: id }
         )
       })
       const res = await req.json();
@@ -96,7 +96,7 @@ const AddHotel = ({ mode }) => {
   }
 
   const clearData = () => {
-    setForm({
+    setData({
       zone: '', sector: '', block: '', district: '', policeStation: "", name: '', address: "", email: '',
       username: '', password: '', receptionPhone: '', proprietorName: "", proprietorPhone: "", managerName: '',
       managerPhone: '', alternateManagerPhone: '', restaurantAvailable: '', conferanceHallAvailable: '',
@@ -111,7 +111,7 @@ const AddHotel = ({ mode }) => {
       <main id='main'>
         <SideNav />
         <div className='content__body'>
-          <div className='content__body__main bg-white'>
+          <div className='content__body__main'>
             <div className='flex justify-between  gap-5 flex-col lg:flex-row'>
               <div className='w-full flex flex-col gap-3'>
                 <div>
@@ -119,9 +119,9 @@ const AddHotel = ({ mode }) => {
                   <MySelect2
                     model={"zone"}
                     onType={(v) => {
-                      setForm({ ...form, zone: v })
+                      setData({ ...data, zone: v })
                     }}
-                    value={form.zone}
+                    value={data.zone}
                   />
                 </div>
                 <div>
@@ -130,9 +130,9 @@ const AddHotel = ({ mode }) => {
                     model={"sector"}
                     onType={(v) => {
                       console.log(v)
-                      setForm({ ...form, sector: v })
+                      setData({ ...data, sector: v })
                     }}
-                    value={form.sector}
+                    value={data.sector}
                   />
                 </div>
                 <div>
@@ -141,9 +141,9 @@ const AddHotel = ({ mode }) => {
                     model={"block"}
                     onType={(v) => {
                       console.log(v)
-                      setForm({ ...form, block: v })
+                      setData({ ...data, block: v })
                     }}
-                    value={form.block}
+                    value={data.block}
                   />
                 </div>
                 <div>
@@ -152,9 +152,9 @@ const AddHotel = ({ mode }) => {
                     model={"district"}
                     onType={(v) => {
                       console.log(v)
-                      setForm({ ...form, district: v })
+                      setData({ ...data, district: v })
                     }}
-                    value={form.district}
+                    value={data.district}
                   />
                 </div>
                 <div>
@@ -163,30 +163,30 @@ const AddHotel = ({ mode }) => {
                     model={"police-station"}
                     onType={(v) => {
                       console.log(v)
-                      setForm({ ...form, policeStation: v })
+                      setData({ ...data, policeStation: v })
                     }}
-                    value={form.policeStation}
+                    value={data.policeStation}
                   />
                 </div>
                 <div>
                   <p>Name<span className='required__text'>*</span></p>
-                  <input type='text' onChange={(e) => setForm({ ...form, name: e.target.value })} value={form.name} />
+                  <input type='text' onChange={(e) => setData({ ...data, name: e.target.value })} value={data.name} />
                 </div>
                 <div>
                   <p>Address</p>
-                  <input type='text' onChange={(e) => setForm({ ...form, address: e.target.value })} value={form.address} />
+                  <input type='text' onChange={(e) => setData({ ...data, address: e.target.value })} value={data.address} />
                 </div>
                 <div>
                   <p>Email</p>
-                  <input type='email' onChange={(e) => setForm({ ...form, email: e.target.value })} value={form.email} />
+                  <input type='email' onChange={(e) => setData({ ...data, email: e.target.value })} value={data.email} />
                 </div>
                 <div>
                   <p>Username<span className='required__text'>*</span></p>
-                  <input type='text' onChange={(e) => setForm({ ...form, username: e.target.value })} value={form.username} />
+                  <input type='text' onChange={(e) => setData({ ...data, username: e.target.value })} value={data.username} />
                 </div>
                 <div>
                   <p>Password<span className='required__text'>*</span></p>
-                  <input type='password' onChange={(e) => setForm({ ...form, password: e.target.value })} value={form.title} />
+                  <input type='password' onChange={(e) => setData({ ...data, password: e.target.value })} value={data.title} />
                 </div>
               </div>
 
@@ -194,43 +194,43 @@ const AddHotel = ({ mode }) => {
                 <div>
                   <p>Reception Phone</p>
                   <input type='text'
-                    onChange={(e) => setForm({ ...form, receptionPhone: e.target.value })}
-                    value={form.receptionPhone} />
+                    onChange={(e) => setData({ ...data, receptionPhone: e.target.value })}
+                    value={data.receptionPhone} />
                 </div>
                 <div>
                   <p>Proprietor Name</p>
                   <input type='text'
-                    onChange={(e) => setForm({ ...form, proprietorName: e.target.value })}
-                    value={form.proprietorName} />
+                    onChange={(e) => setData({ ...data, proprietorName: e.target.value })}
+                    value={data.proprietorName} />
                 </div>
                 <div>
                   <p>Proprietor Phone</p>
                   <input type='text'
-                    onChange={(e) => setForm({ ...form, proprietorPhone: e.target.value })}
-                    value={form.proprietorPhone} />
+                    onChange={(e) => setData({ ...data, proprietorPhone: e.target.value })}
+                    value={data.proprietorPhone} />
                 </div>
                 <div>
                   <p>Manager Name</p>
                   <input type='text'
-                    onChange={(e) => setForm({ ...form, managerName: e.target.value })}
-                    value={form.managerName} />
+                    onChange={(e) => setData({ ...data, managerName: e.target.value })}
+                    value={data.managerName} />
                 </div>
                 <div>
                   <p>Manager Phone <span className='required__text'>*</span></p>
                   <input type='text'
-                    onChange={(e) => setForm({ ...form, managerPhone: e.target.value })}
-                    value={form.managerPhone} />
+                    onChange={(e) => setData({ ...data, managerPhone: e.target.value })}
+                    value={data.managerPhone} />
                 </div>
                 <div>
                   <p>Alternate Manager Phone</p>
                   <input type='text'
-                    onChange={(e) => setForm({ ...form, alternateManagerPhone: e.target.value })}
-                    value={form.alternateManagerPhone} />
+                    onChange={(e) => setData({ ...data, alternateManagerPhone: e.target.value })}
+                    value={data.alternateManagerPhone} />
                 </div>
                 <div>
                   <p>Restaurant Available?</p>
-                  <select onChange={(e) => setForm({ ...form, restaurantAvailable: e.target.value })}
-                    value={form.restaurantAvailable}>
+                  <select onChange={(e) => setData({ ...data, restaurantAvailable: e.target.value })}
+                    value={data.restaurantAvailable}>
                     <option value="">--Select--</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
@@ -238,8 +238,8 @@ const AddHotel = ({ mode }) => {
                 </div>
                 <div>
                   <p>Conference Hall Available?</p>
-                  <select onChange={(e) => setForm({ ...form, conferanceHallAvailable: e.target.value })}
-                    value={form.conferanceHallAvailable}>
+                  <select onChange={(e) => setData({ ...data, conferanceHallAvailable: e.target.value })}
+                    value={data.conferanceHallAvailable}>
                     <option value="">--Select--</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
@@ -247,8 +247,8 @@ const AddHotel = ({ mode }) => {
                 </div>
                 <div>
                   <p>Status</p>
-                  <select onChange={(e) => setForm({ ...form, status: e.target.value })}
-                    value={form.status}>
+                  <select onChange={(e) => setData({ ...data, status: e.target.value })}
+                    value={data.status}>
                     <option value="">--Select--</option>
                     <option value="inactive">Inactive</option>
                     <option value="active">Active</option>
@@ -260,12 +260,12 @@ const AddHotel = ({ mode }) => {
             <div className='w-full overflow-auto mt-2'>
               <div>
                 <p>About</p>
-                <textarea name="" id="" rows={4} onChange={(e) => setForm({ ...form, about: e.target.value })}
-                  value={form.about}></textarea>
+                <textarea name="" id="" rows={4} onChange={(e) => setData({ ...data, about: e.target.value })}
+                  value={data.about}></textarea>
               </div>
             </div>
 
-            {/* ::::::::::::::::::::::::::::::::: HOTEL AND ROOM FORM ::::::::::::::::::::::::::: */}
+            {/* ::::::::::::::::::::::::::::::::: HOTEL AND ROOM data ::::::::::::::::::::::::::: */}
 
             <div className='my-8'>
               <h6 className='my-4'>Room & Bed Capacity*</h6>

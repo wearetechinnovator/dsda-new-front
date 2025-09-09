@@ -168,19 +168,20 @@ h6 {
   color: rgb(218, 208, 208)
 }
 
-.sidebar__sub__menu{
+.sidebar__sub__menu {
   @apply w-full ml-5;
   overflow-y: hidden;
   /* transition: 1s all linear; */
   height: 0px;
 }
-.open__sidebar__sub__menu{
+
+.open__sidebar__sub__menu {
   height: 100%;
   /* transition: 1s all; */
 }
 
-.side__nav__links li:hover .sidebar__sub__menu li a{
-  
+.side__nav__links li:hover .sidebar__sub__menu li a {
+
   color: #003628 !important;
 }
 
@@ -558,13 +559,16 @@ select {
   border: 1px solid #b4d7d0;
 }
 
-.list__table tr, .list__table td, .list__table th{
+.list__table tr,
+.list__table td,
+.list__table th {
   border: 1px solid white;
   text-align: center;
-  padding:2px;
+  padding: 2px;
   font-size: 13px;
 }
-.list__table td:nth-child(2){
+
+.list__table td:nth-child(2) {
   text-align: left;
   padding-left: 30px;
 }
@@ -835,18 +839,20 @@ input[type="checkbox"]:checked::before {
 }
 
 
-.form__btn__grp{
+.form__btn__grp {
   @apply flex justify-center mt-8 mb-4 gap-4;
 }
-.form__btn__grp button{
+
+.form__btn__grp button {
   @apply flex rounded text-white items-center px-2 py-1 gap-2 border border-2;
   box-shadow: 0px 0px 7px rgb(113, 113, 113);
 }
-.form__btn__grp button:active{
-   box-shadow: 0px 0px 5px rgb(113, 113, 113);
+
+.form__btn__grp button:active {
+  box-shadow: 0px 0px 5px rgb(113, 113, 113);
 }
 
-.form__btn__grp.filter{
+.form__btn__grp.filter {
   @apply justify-end
 }
 
@@ -856,4 +862,31 @@ input[type="checkbox"]:checked::before {
 
 .reset__btn {
   @apply bg-blue-500;
+}
+
+.profile__table div {
+  @apply flex items-center hover:bg-gray-100 px-3 py-1 rounded;
+}
+
+.profile__table div:nth-child(odd) {
+  @apply bg-gray-50
+}
+
+.profile__table div p {
+  width: 25%;
+}
+
+.profile__table div input,
+.profile__table div textarea {
+  @apply border-0 bg-transparent;
+}
+
+.profile__table__active div input,
+.profile__table__active div textarea {
+  @apply border bg-white;
+}
+
+.profile__hr {
+  margin-bottom: 7px;
+  margin-top: 9px;
 }
