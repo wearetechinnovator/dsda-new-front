@@ -16,7 +16,7 @@ import useApi from '../../../hooks/useApi';
 
 
 document.title = "Zone"
-const Zone = ({ mode }) => {
+const Zone = () => {
 	const toast = useMyToaster();
 	const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
 	const [activePage, setActivePage] = useState(1);
@@ -24,13 +24,11 @@ const Zone = ({ mode }) => {
 	const [totalData, setTotalData] = useState()
 	const [selected, setSelected] = useState([]);
 	const navigate = useNavigate();
-	const [tableStatusData, setTableStatusData] = useState('active');
 	const [data, setData] = useState([]);
 	const tableRef = useRef(null);
 	const exportData = useMemo(() => {
-		return data && data.map(({ name, status }, _) => ({
-			Name: name,
-			Status: status
+		return data && data.map(({ name }, _) => ({
+			Name: name
 		}));
 	}, [data]);
 	const [loading, setLoading] = useState(true);
@@ -116,8 +114,8 @@ const Zone = ({ mode }) => {
 				<div className='content__body'>
 					<div
 						className={`mb-5 w-full bg-white rounded p-4 shadow-sm add_new_compnent overflow-hidden
-            transition-all
-          `}>
+							transition-all
+						`}>
 						<div className='flex justify-between items-center'>
 							<div className='flex flex-col'>
 								<select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
@@ -207,7 +205,7 @@ const Zone = ({ mode }) => {
 						</div>
 					</div>
 					{
-						<div className='content__body__main'>
+						!loading ? <div className='content__body__main'>
 							{/* Table start */}
 							<div className='overflow-x-auto list__table'>
 								<table className='min-w-full bg-white' id='table' ref={tableRef}>
@@ -217,7 +215,6 @@ const Zone = ({ mode }) => {
 												<input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
 											</th>
 											<td className='py-2 px-4 border-b '>Name</td>
-											<th className='py-2 px-4 border-b '>Status</th>
 											<th className='py-2 px-4 border-b w-[100px]'>Action</th>
 										</tr>
 									</thead>
@@ -229,8 +226,6 @@ const Zone = ({ mode }) => {
 														<input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
 													</td>
 													<td className='px-4 border-b'>{d.name}</td>
-													<td className='px-4 border-b'>{d.status}</td>
-
 													<td className='px-4 text-center'>
 														<Whisper
 															placement='leftStart'
@@ -291,8 +286,7 @@ const Zone = ({ mode }) => {
 								</div>
 							</div>
 						</div>
-						// : <AddNew title={"Item"} link={"/admin/item/add"} />
-						// : <DataShimmer />
+							: <DataShimmer />
 					}
 				</div>
 			</main>

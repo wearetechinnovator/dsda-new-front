@@ -26,6 +26,10 @@ const AddHotel = ({ mode }) => {
     managerPhone: '', alternateManagerPhone: '', restaurantAvailable: '', conferanceHallAvailable: '',
     status: '', about: ''
   })
+  const [bedCapacity, setBedCapacity] = useState({
+    oneBed: '', twoBed: '', threeBed: '', fourBed: '', fiveBed: '', sixBed: '',
+    sevenBed: '', eightBed: '', nineBed: '', tenBed: '', totalBed: '', totalRoom: ''
+  });
 
 
 
@@ -95,6 +99,53 @@ const AddHotel = ({ mode }) => {
 
   }
 
+
+  const handleBedCapacityChange = (e, key) => {
+    const value = e.target.value;
+    setBedCapacity((prev) => {
+      const updated = {
+        ...prev,
+        [key]: value,
+      };
+
+      let totalRoom = 0;
+      let totalBed = 0;
+
+      Object.keys(updated).forEach((b) => {
+        if (b !== "totalRoom" && b !== "totalBed") {
+          const roomCount = Number(updated[b] || 0);
+
+          totalRoom += roomCount;
+
+          const multiplier = parseInt(b) || Number(b.replace("Bed", "")) || 1;
+          const mapping = {
+            oneBed: 1,
+            twoBed: 2,
+            threeBed: 3,
+            fourBed: 4,
+            fiveBed: 5,
+            sixBed: 6,
+            sevenBed: 7,
+            eightBed: 8,
+            nineBed: 9,
+            tenBed: 10,
+          };
+
+          totalBed += roomCount * (mapping[b] || multiplier);
+        }
+      });
+
+      return {
+        ...updated,
+        totalRoom,
+        totalBed,
+      };
+    });
+  };
+
+
+
+
   const clearData = () => {
     setData({
       zone: '', sector: '', block: '', district: '', policeStation: "", name: '', address: "", email: '',
@@ -102,8 +153,12 @@ const AddHotel = ({ mode }) => {
       managerPhone: '', alternateManagerPhone: '', restaurantAvailable: '', conferanceHallAvailable: '',
       status: '', about: ''
     });
-  }
 
+    setBedCapacity({
+      oneBed: '', twoBed: '', threeBed: '', fourBed: '', fiveBed: '', sixBed: '',
+      sevenBed: '', eightBed: '', nineBed: '', tenBed: '', totalBed: '', totalRoom: ''
+    })
+  }
 
   return (
     <>
@@ -119,6 +174,7 @@ const AddHotel = ({ mode }) => {
                   <MySelect2
                     model={"zone"}
                     onType={(v) => {
+                      console.log(v)
                       setData({ ...data, zone: v })
                     }}
                     value={data.zone}
@@ -270,107 +326,129 @@ const AddHotel = ({ mode }) => {
             <div className='my-8'>
               <h6 className='my-4'>Room & Bed Capacity*</h6>
               <div class="overflow-x-auto">
-                <table class="min-w-full border border-gray-200 text-center">
+                <table class="min-w-full border border-gray-200 text-left">
                   <thead class="bg-gray-100">
                     <tr>
-                      <th class="px-4 py-2 border">One Bedroom</th>
-                      <th class="px-4 border">Two Bedroom</th>
-                      <th class="px-4 border">Three Bedroom</th>
-                      <th class="px-4 border">Four Bedroom</th>
-                      <th class="px-4 border">Five Bedroom</th>
-                      <th class="px-4 border">Six Bedroom</th>
-                      <th class="px-4 border">Seven Bedroom</th>
-                      <th class="px-4 border">Eight Bedroom</th>
-                      <th class="px-4 border">Nine Bedroom</th>
-                      <th class="px-4 border">Ten Bedroom</th>
-                      <th class="px-4 border font-bold">Total Beds</th>
-                      <th class="px-4 border font-bold">Total Rooms</th>
+                      <th class="px-2 py-2 border">One Bedroom</th>
+                      <th class="px-2 border">Two Bedroom</th>
+                      <th class="px-2 border">Three Bedroom</th>
+                      <th class="px-2 border">Four Bedroom</th>
+                      <th class="px-2 border">Five Bedroom</th>
+                      <th class="px-2 border">Six Bedroom</th>
+                      <th class="px-2 border">Seven Bedroom</th>
+                      <th class="px-2 border">Eight Bedroom</th>
+                      <th class="px-2 border">Nine Bedroom</th>
+                      <th class="px-2 border">Ten Bedroom</th>
+                      <th class="px-2 border font-bold">Total Beds</th>
+                      <th class="px-2 border font-bold">Total Rooms</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      {/* <!-- One Bedroom --> */}
-                      <td class="px-4 py-2 border">
-                        <div class="flex flex-col items-center">
-                          <input
-                            type="text"
-                            placeholder="One Bed"
-                            class="w-20 p-2 border rounded text-xs"
-                          />
-                        </div>
-                      </td>
-
-                      {/* <!-- Two Bedroom --> */}
-                      <td class="px-4 py-2 border">
+                      <td className="px-2 py-2 border">
                         <input
-                          type="text"
-                          placeholder="Two Bed"
-                          class="w-20 p-2 border rounded text-xs"
+                          type="number"
+                          placeholder="One Bed"
+                          value={bedCapacity.oneBed}
+                          onChange={(e) => handleBedCapacityChange(e, "oneBed")}
+                          className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
 
-                      {/* <!-- Other Bedrooms --> */}
-                      <td class="px-4 py-2 border">
+                      <td className="px-2 py-2 border">
+                        <input
+                          type="number"
+                          placeholder="Two Bed"
+                          value={bedCapacity.twoBed}
+                          onChange={(e) => handleBedCapacityChange(e, "twoBed")}
+                          className="w-20 p-2 border rounded text-xs"
+                        />
+                      </td>
+
+                      <td className="px-2 py-2 border">
                         <input
                           type="number"
                           placeholder="Three Bed"
-                          class="w-20 p-2 border rounded text-xs"
+                          value={bedCapacity.threeBed}
+                          onChange={(e) => handleBedCapacityChange(e, "threeBed")}
+                          className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
-                      <td class="px-4 py-2 border">
+
+                      <td className="px-2 py-2 border">
                         <input
                           type="number"
                           placeholder="Four Bed"
-                          class="w-20 p-2 border rounded text-xs"
+                          value={bedCapacity.fourBed}
+                          onChange={(e) => handleBedCapacityChange(e, "fourBed")}
+                          className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
-                      <td class="px-4 py-2 border">
+
+                      <td className="px-2 py-2 border">
                         <input
                           type="number"
                           placeholder="Five Bed"
-                          class="w-20 p-2 border rounded text-xs"
+                          value={bedCapacity.fiveBed}
+                          onChange={(e) => handleBedCapacityChange(e, "fiveBed")}
+                          className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
-                      <td class="px-4 py-2 border">
+
+                      <td className="px-2 py-2 border">
                         <input
                           type="number"
                           placeholder="Six Bed"
-                          class="w-20 p-2 border rounded text-xs"
+                          value={bedCapacity.sixBed}
+                          onChange={(e) => handleBedCapacityChange(e, "sixBed")}
+                          className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
-                      <td class="px-4 py-2 border">
+
+                      <td className="px-2 py-2 border">
                         <input
                           type="number"
                           placeholder="Seven Bed"
-                          class="w-20 p-2 border rounded text-xs"
+                          value={bedCapacity.sevenBed}
+                          onChange={(e) => handleBedCapacityChange(e, "sevenBed")}
+                          className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
-                      <td class="px-4 py-2 border">
+
+                      <td className="px-2 py-2 border">
                         <input
                           type="number"
                           placeholder="Eight Bed"
-                          class="w-20 p-2 border rounded text-xs"
+                          value={bedCapacity.eightBed}
+                          onChange={(e) => handleBedCapacityChange(e, "eightBed")}
+                          className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
-                      <td class="px-4 py-2 border">
+
+                      <td className="px-2 py-2 border">
                         <input
                           type="number"
                           placeholder="Nine Bed"
-                          class="w-20 p-2 border rounded text-xs"
+                          value={bedCapacity.nineBed}
+                          onChange={(e) => handleBedCapacityChange(e, "nineBed")}
+                          className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
-                      <td class="px-4 py-2 border">
+
+                      <td className="px-2 py-2 border">
                         <input
                           type="number"
                           placeholder="Ten Bed"
-                          class="w-20 p-2 border rounded text-xs"
+                          value={bedCapacity.tenBed}
+                          onChange={(e) => handleBedCapacityChange(e, "tenBed")}
+                          className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
 
 
                       {/* <!-- Totals --> */}
-                      <td class="px-4 py-2 border bg-gray-50 font-semibold">42</td>
-                      <td class="px-4 py-2 border bg-gray-50 font-semibold">6</td>
+                      <td class="px-4 py-2 border bg-gray-50 font-semibold">{bedCapacity.totalBed}</td>
+                      <td class="px-4 py-2 border bg-gray-50 font-semibold">{bedCapacity.totalRoom}</td>
                     </tr>
                   </tbody>
                 </table>

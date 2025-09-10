@@ -2,14 +2,14 @@ import { add } from "../store/userDetailSlice";
 import { useDispatch } from "react-redux";
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
-import useMyToaster from './useMyToaster'
+import useMyToaster from './useMyToaster';
+import { addSetting } from "../store/settingSlice";
 
 
-// run instend when login success;
+
+// Run when navbar load;
 const useGetUserData = () => {
   const dispatch = useDispatch();
-  const nagivate = useNavigate();
-  const toast = useMyToaster();
 
   const getProfile = async () => {
     const url = process.env.REACT_APP_MASTER_API + "/admin/get-users";
@@ -27,7 +27,23 @@ const useGetUserData = () => {
     dispatch(add(res))
   }
 
-  return {getProfile};
+
+  const getSetting = async () => {
+    const url = process.env.REACT_APP_MASTER_API + "/site-setting/get";
+    const cookie = Cookies.get("token");
+
+    const req = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": 'application/json'
+      },
+      body: JSON.stringify({ token: cookie })
+    })
+    const res = await req.json();
+    dispatch(addSetting(res))
+  }
+
+  return { getProfile, getSetting };
 
 }
 

@@ -31,10 +31,9 @@ const AddBlock = ({ mode, save }) => {
 const BlockComponent = ({ mode, save }) => {
     const toast = useMyToaster();
     const [data, setData] = useState({
-        name: '', status: '1', details: ''
+        name: '', details: ''
     })
     const { id } = useParams();
-    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -66,14 +65,16 @@ const BlockComponent = ({ mode, save }) => {
         }
 
         try {
-            const url = mode ? process.env.REACT_APP_MASTER_API + "/block/update" : process.env.REACT_APP_MASTER_API + "/block/create";
+            const url = mode ?
+                process.env.REACT_APP_MASTER_API + "/block/update" :
+                process.env.REACT_APP_MASTER_API + "/block/create";
             const token = Cookies.get("token");
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify( !mode ? { ...data, token }: { ...data, token, id: id }
+                body: JSON.stringify(!mode ? { ...data, token } : { ...data, token, id: id }
                 )
             })
             const res = await req.json();
@@ -102,7 +103,7 @@ const BlockComponent = ({ mode, save }) => {
 
     const clearData = () => {
         setData({
-            name: '', status: '1', details: ''
+            name: '', details: ''
         })
     }
 
@@ -113,16 +114,6 @@ const BlockComponent = ({ mode, save }) => {
                     <div>
                         <p>Name <span className='required__text'>*</span></p>
                         <input type='text' onChange={(e) => setData({ ...data, name: e.target.value })} value={data.name} />
-                    </div>
-                </div>
-
-                <div className='w-full flex flex-col gap-3'>
-                    <div>
-                        <p className='ml-1'>Status</p>
-                        <select onChange={(e) => setData({ ...data, status: e.target.value })} value={data.status}>
-                            <option value={"1"}>Active</option>
-                            <option value={"0"}>Inactive</option>
-                        </select>
                     </div>
                 </div>
             </div>

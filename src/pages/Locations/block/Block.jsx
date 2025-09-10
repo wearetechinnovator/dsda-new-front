@@ -24,13 +24,11 @@ const Block = ({ mode }) => {
 	const [totalData, setTotalData] = useState()
 	const [selected, setSelected] = useState([]);
 	const navigate = useNavigate();
-	const [tableStatusData, setTableStatusData] = useState('active');
 	const [data, setData] = useState([]);
 	const tableRef = useRef(null);
 	const exportData = useMemo(() => {
-		return data && data.map(({ name, status }, _) => ({
+		return data && data.map(({ name }, _) => ({
 			Name: name,
-			Status: status
 		}));
 	}, [data]);
 	const [loading, setLoading] = useState(true);
@@ -216,7 +214,6 @@ const Block = ({ mode }) => {
 												<input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
 											</th>
 											<td className='py-2 px-4 border-b '>Name</td>
-											<th className='py-2 px-4 border-b '>Status</th>
 											<th className='py-2 px-4 border-b w-[100px]'>Action</th>
 										</tr>
 									</thead>
@@ -228,8 +225,6 @@ const Block = ({ mode }) => {
 														<input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
 													</td>
 													<td className='px-4 border-b'>{d.name}</td>
-													<td className='px-4 border-b'>{d.status}</td>
-
 													<td className='px-4 text-center'>
 														<Whisper
 															placement='leftStart'
@@ -283,9 +278,9 @@ const Block = ({ mode }) => {
 									<p>Showing {data.length} of {totalData} entries</p>
 									<Pagination
 										activePage={activePage}
+										setActivePage={setActivePage}
 										totalData={totalData}
 										dataLimit={dataLimit}
-										setActivePage={setActivePage}
 									/>
 								</div>
 							</div>

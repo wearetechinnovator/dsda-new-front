@@ -31,7 +31,7 @@ const AddPoliceStation = ({ mode, save }) => {
 const PoliceStationComponent = ({ mode, save }) => {
     const toast = useMyToaster();
     const [data, setData] = useState({
-        name: '', status: '1', details: '', district: ''
+        name: '', details: '', district: ''
     })
     const { id } = useParams();
     const navigate = useNavigate();
@@ -103,7 +103,7 @@ const PoliceStationComponent = ({ mode, save }) => {
 
     const clearData = () => {
         setData({
-            name: '', status: '1', details: '', district: ''
+            name: '', details: '', district: ''
         })
     }
     return < div className='content__body' >
@@ -127,13 +127,6 @@ const PoliceStationComponent = ({ mode, save }) => {
                                 }}
                                 value={data.district}
                             />
-                        </div>
-                        <div className='w-full'>
-                            <p className='ml-1'>Status</p>
-                            <select onChange={(e) => setData({ ...data, status: e.target.value })} value={data.status}>
-                                <option value={"1"}>Active</option>
-                                <option value={"0"}>Inactive</option>
-                            </select>
                         </div>
                     </div>
                 </div>

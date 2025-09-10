@@ -16,7 +16,7 @@ import useApi from '../../../hooks/useApi';
 
 
 document.title = "Police Station";
-const PoliceStation = ({ mode }) => {
+const PoliceStation = () => {
 	const toast = useMyToaster();
 	const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
 	const [activePage, setActivePage] = useState(1);
@@ -24,13 +24,12 @@ const PoliceStation = ({ mode }) => {
 	const [totalData, setTotalData] = useState()
 	const [selected, setSelected] = useState([]);
 	const navigate = useNavigate();
-	const [tableStatusData, setTableStatusData] = useState('active');
 	const [data, setData] = useState([]);
 	const tableRef = useRef(null);
 	const exportData = useMemo(() => {
-		return data && data.map(({ name, status }, _) => ({
+		return data && data.map(({ name, district }, _) => ({
 			Name: name,
-			Status: status
+			District: district.name
 		}));
 	}, [data]);
 	const [loading, setLoading] = useState(true);
@@ -215,7 +214,6 @@ const PoliceStation = ({ mode }) => {
 											</th>
 											<td className='py-2 px-4 border-b '>Name</td>
 											<th className='py-2 px-4 border-b '>District</th>
-											<th className='py-2 px-4 border-b '>Status</th>
 											<th className='py-2 px-4 border-b w-[100px]'>Action</th>
 										</tr>
 									</thead>
@@ -228,7 +226,6 @@ const PoliceStation = ({ mode }) => {
 													</td>
 													<td className='px-4 border-b'>{d.name}</td>
 													<td className='px-4 border-b'>{d.district?.name}</td>
-													<td className='px-4 border-b'>{d.status}</td>
 
 													<td className='px-4 text-center'>
 														<Whisper

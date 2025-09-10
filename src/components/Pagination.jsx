@@ -9,10 +9,9 @@ const Pagination = ({ activePage, totalData, dataLimit, setActivePage }) => {
 
       {/*Back button */}
       {
-        activePage > 1 ?
-          <div onClick={() => setActivePage(activePage - 1)} className='paginate__button__back'>
-            <Icons.PREV_PAGE_ARROW />
-          </div> : null
+        activePage > 1 && <div onClick={() => setActivePage(activePage - 1)} className='paginate__button__back'>
+          <Icons.PREV_PAGE_ARROW />
+        </div>
       }
 
       {/*Paginate count*/}
@@ -30,10 +29,9 @@ const Pagination = ({ activePage, totalData, dataLimit, setActivePage }) => {
 
       {/* Next button */}
       {
-        (totalData / dataLimit) > activePage ?
-          <div onClick={() => setActivePage(activePage + 1)} className='paginate__button__next'>
-            <Icons.NEXT_PAGE_ARROW />
-          </div> : null
+        (totalData / dataLimit) > activePage && <div onClick={() => setActivePage(activePage + 1)} className='paginate__button__next'>
+          <Icons.NEXT_PAGE_ARROW />
+        </div>
       }
     </div>
   )

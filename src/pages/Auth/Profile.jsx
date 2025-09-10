@@ -17,10 +17,14 @@ const Profile = () => {
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.userDetail);
   const [editMode, setEditMode] = useState(false);
+  const [editPass, setEditPass] = useState(false);
   const [data, setData] = useState({
     name: '', designation: '', role: '',
     email: "", contact: '', profile: ''
   });
+  const [passData, setPassData] = useState({
+    currentPass: '', newPass: '', confirmPass: ''
+  })
   const url = process.env.REACT_APP_MASTER_API + "/admin/update-users";
   const cookie = Cookies.get("token");
   const userId = Cookies.get("userId");
@@ -105,7 +109,7 @@ const Profile = () => {
                 }
               </div>
             </div>
-            <hr className='profile__hr'/>
+            <hr className='profile__hr' />
             <div className='w-full flex justify-center mb-2'>
               <div className='relative border rounded-full w-[70px] h-[70px] grid place-items-center'>
                 <input type="file" className='hidden' id='fileUpload' onChange={(e) => handleFile(e)} />
@@ -165,6 +169,55 @@ const Profile = () => {
                   type="tel"
                   value={data.contact}
                   onChange={editMode ? (e) => setData({ ...data, contact: e.target.value }) : null}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* ========================== CHANGE PASSWORD ====================== */}
+          {/* ================================================================== */}
+          <div className='content__body__main mt-5'>
+            <div className='w-full flex gap-3 items-center'>
+              <p className='text-lg font-bold text-blue-500'>Change Password</p>
+              <div className='w-[25px] h-[25px] border bg-gray-50 cursor-pointer text-blue-500 rounded-full grid place-items-center' onClick={() => {
+                setEditMode(!editPass)
+                // if (editPass) updateProfile();
+              }}>
+                {
+                  editPass ? <Icons.CHECK2 className='active:scale-50 transition-all' title='Save' />
+                    : <Icons.EDIT className='active:scale-50 transition-all' title='Edit' />
+                }
+              </div>
+            </div>
+            <hr className='profile__hr' />
+            <div
+              className={`profile__table space-y-2 ${editPass ? "profile__table__active" : ""}`}>
+              <div>
+                <p className="font-medium">Current Password</p>
+                <input
+                  type="password"
+                  value={data.name}
+                  onChange={
+                    editPass ? (e) => setData({ ...data, name: e.target.value }) : null
+                  }
+                />
+              </div>
+
+              <div>
+                <p className="font-medium">New Password</p>
+                <input
+                  type="password"
+                  value={data.designation}
+                  onChange={editPass ? (e) => setData({ ...data, designation: e.target.value }) : null}
+                />
+              </div>
+
+              <div>
+                <p className="font-medium">Confirm Password</p>
+                <input
+                  type="password"
+                  value={data.role}
+                  onChange={editPass ? (e) => setData({ ...data, role: e.target.value }) : null}
                 />
               </div>
             </div>

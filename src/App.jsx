@@ -78,6 +78,7 @@ const App = () => {
           <Route path="site" element={<Setting />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="site-setting" element={<Setting />} />
         </Route>
 
         {/* Admin */}

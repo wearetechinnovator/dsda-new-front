@@ -208,10 +208,11 @@ h6 {
 
 input,
 textarea {
-  @apply w-full p-1 border border-gray-200 outline-none hover:border-[#003E32];
+  @apply w-full p-1 border border-gray-200 outline-none hover:border-[#003E32] focus:shadow focus:shadow-xl focus:shadow-purple-700;
   @apply focus:border-[#003E32];
   line-height: 16px !important;
   border-radius: 3px;
+
 }
 
 /* input[type="checkbox"] {
