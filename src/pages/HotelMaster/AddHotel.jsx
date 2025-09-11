@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import Nav from '../../components/Nav';
 import SideNav from '../../components/SideNav'
-import { FaRegCheckCircle } from "react-icons/fa";
 import { LuFileX2, LuRefreshCcw } from "react-icons/lu";
-import { CgPlayListAdd } from "react-icons/cg";
 import useMyToaster from '../../hooks/useMyToaster';
 import { SelectPicker } from 'rsuite';
 import Cookies from 'js-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
-import useApi from '../../hooks/useApi';
-import { RiDeleteBin6Line } from 'react-icons/ri';
 import MySelect2 from '../../components/MySelect2';
 import { Icons } from '../../helper/icons';
 import { MdUploadFile } from 'react-icons/md';
+import base64Data from '../../helper/getBase64';
 
 
 
@@ -20,16 +17,35 @@ const AddHotel = ({ mode }) => {
   const toast = useMyToaster();
   const { id } = useParams();
   const navigate = useNavigate();
+  const [hotelCategories, setHotelCategories] = useState([]);
   const [data, setData] = useState({
-    zone: '', sector: '', block: '', district: '', policeStation: "", name: '', address: "", email: '',
+    zone: '', sector: '', block: '', category: '', district: '', policeStation: "", name: '', address: "",
+    email: '', establishment: '', miniumRate: '', maximumRate: '', website: '', gmbUrl: '', distanceFromRoad: '',
+    distanceFromSeaBeach: '', ac: '', swimingPool: '', parkingAvailable: '',
     username: '', password: '', receptionPhone: '', proprietorName: "", proprietorPhone: "", managerName: '',
     managerPhone: '', alternateManagerPhone: '', restaurantAvailable: '', conferanceHallAvailable: '',
-    status: '', about: ''
+    status: '',
   })
   const [bedCapacity, setBedCapacity] = useState({
     oneBed: '', twoBed: '', threeBed: '', fourBed: '', fiveBed: '', sixBed: '',
     sevenBed: '', eightBed: '', nineBed: '', tenBed: '', totalBed: '', totalRoom: ''
   });
+
+  //  Gallery images;
+  const photoGalleryDataSet = { image: '', fileName: '', caption: '' }
+  const [photoGallery, setPhotoGallery] = useState([photoGalleryDataSet])
+
+  // Document data
+  const [documentDataSet, setDocumentDataSet] = useState({
+    documentType: [], selectedDocument: '', fileName: '', file: ''
+  })
+  const [documentData, setDocumentData] = useState([documentDataSet]);
+
+  // Room Type
+  const [roomTypeSet, setRoomTypeSet] = useState({
+    roomType: [], numberOfRoom: "", price: '', breakFast: ''
+  })
+  const [roomTypeData, setRoomType] = useState([roomTypeSet]);
 
 
 
@@ -54,6 +70,37 @@ const AddHotel = ({ mode }) => {
       get();
     }
   }, [mode])
+
+
+  // get types
+  useEffect(() => {
+    const get = async (which) => {
+      const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/${which}`)
+      const res = await req.json();
+
+      if (which === "document") {
+        setDocumentDataSet({
+          ...documentDataSet, documentType: [...res]
+        })
+      } else if (which === "hotel-category") {
+        setHotelCategories([...res])
+      }
+      else if (which === "room") {
+        console.log(res)
+        setRoomTypeSet({ ...roomTypeSet, roomType: [...res] })
+      }
+
+    }
+
+    get("hotel-category");
+    get("document");
+    get("room");
+  }, [])
+  useEffect(() => {
+    setDocumentData([documentDataSet]);
+    setRoomType([roomTypeSet])
+  }, [documentDataSet.documentType, roomTypeSet.roomType])
+
 
 
   const saveData = async (e) => {
@@ -90,7 +137,6 @@ const AddHotel = ({ mode }) => {
       if (!mode) clearData();
 
       toast(!mode ? "Item create success" : "Item update success", 'success');
-
 
     } catch (error) {
       console.log(error);
@@ -146,6 +192,7 @@ const AddHotel = ({ mode }) => {
 
 
 
+
   const clearData = () => {
     setData({
       zone: '', sector: '', block: '', district: '', policeStation: "", name: '', address: "", email: '',
@@ -179,6 +226,18 @@ const AddHotel = ({ mode }) => {
                     }}
                     value={data.zone}
                   />
+                </div>
+                <div>
+                  <p>Category</p>
+                  <select onChange={(e) => setData({ ...data, category: e.target.value })}
+                    value={data.category}>
+                    <option value="">--Select--</option>
+                    {
+                      hotelCategories.map((hc, _) => {
+                        return <option key={_} value={hc.hotel_category_name}>{hc.hotel_category_name}</option>
+                      })
+                    }
+                  </select>
                 </div>
                 <div>
                   <p className='ml-1'>Sector<span className='required__text'>*</span></p>
@@ -229,24 +288,65 @@ const AddHotel = ({ mode }) => {
                   <input type='text' onChange={(e) => setData({ ...data, name: e.target.value })} value={data.name} />
                 </div>
                 <div>
+                  <p>Year of Establishment<span className='required__text'>*</span></p>
+                  <input type='text' onChange={(e) => setData({ ...data, establishment: e.target.value })}
+                    value={data.establishment} />
+                </div>
+                <div>
                   <p>Address</p>
                   <input type='text' onChange={(e) => setData({ ...data, address: e.target.value })} value={data.address} />
                 </div>
                 <div>
                   <p>Email</p>
-                  <input type='email' onChange={(e) => setData({ ...data, email: e.target.value })} value={data.email} />
+                  <input type='email' onChange={(e) => setData({ ...data, email: e.target.value })}
+                    value={data.email} />
                 </div>
                 <div>
                   <p>Username<span className='required__text'>*</span></p>
-                  <input type='text' onChange={(e) => setData({ ...data, username: e.target.value })} value={data.username} />
+                  <input type='text' onChange={(e) => setData({ ...data, username: e.target.value })}
+                    value={data.username} />
                 </div>
                 <div>
                   <p>Password<span className='required__text'>*</span></p>
-                  <input type='password' onChange={(e) => setData({ ...data, password: e.target.value })} value={data.title} />
+                  <input type='password' onChange={(e) => setData({ ...data, password: e.target.value })}
+                    value={data.password} />
+                </div>
+                <div>
+                  <p>Minimum Rate</p>
+                  <input type='text' defaultValue={0}
+                    onChange={(e) => setData({ ...data, miniumRate: e.target.value })} value={data.miniumRate} />
+                </div>
+                <div>
+                  <p>Maximum Rate</p>
+                  <input type='text' defaultValue={0}
+                    onChange={(e) => setData({ ...data, maximumRate: e.target.value })} value={data.maximumRate} />
+                </div>
+                <div>
+                  <p>Website</p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, website: e.target.value })} value={data.website} />
                 </div>
               </div>
 
               <div className='w-full flex flex-col gap-3'>
+                <div>
+                  <p>GMB URL (Google My Business URL or Google Map URL)</p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, gmbUrl: e.target.value })}
+                    value={data.gmbUrl} />
+                </div>
+                <div>
+                  <p>Distance From Main Road (In Meters)</p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, distanceFromRoad: e.target.value })}
+                    value={data.distanceFromRoad} />
+                </div>
+                <div>
+                  <p>Distance From Sea Beach (In Meters)</p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, distanceFromSeaBeach: e.target.value })}
+                    value={data.distanceFromSeaBeach} />
+                </div>
                 <div>
                   <p>Reception Phone</p>
                   <input type='text'
@@ -293,9 +393,36 @@ const AddHotel = ({ mode }) => {
                   </select>
                 </div>
                 <div>
+                  <p>AC ?</p>
+                  <select onChange={(e) => setData({ ...data, restaurantAvailable: e.target.value })}
+                    value={data.restaurantAvailable}>
+                    <option value="">--Select--</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+                <div>
+                  <p>Swimimg Pool ?</p>
+                  <select onChange={(e) => setData({ ...data, swimingPool: e.target.value })}
+                    value={data.swimingPool}>
+                    <option value="">--Select--</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+                <div>
                   <p>Conference Hall Available?</p>
                   <select onChange={(e) => setData({ ...data, conferanceHallAvailable: e.target.value })}
                     value={data.conferanceHallAvailable}>
+                    <option value="">--Select--</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                </div>
+                <div>
+                  <p>Parking Available ?</p>
+                  <select onChange={(e) => setData({ ...data, parkingAvailable: e.target.value })}
+                    value={data.parkingAvailable}>
                     <option value="">--Select--</option>
                     <option value="yes">Yes</option>
                     <option value="no">No</option>
@@ -313,21 +440,20 @@ const AddHotel = ({ mode }) => {
               </div>
             </div>
 
-            <div className='w-full overflow-auto mt-2'>
+            {/* <div className='w-full overflow-auto mt-2'>
               <div>
                 <p>About</p>
                 <textarea name="" id="" rows={4} onChange={(e) => setData({ ...data, about: e.target.value })}
                   value={data.about}></textarea>
               </div>
-            </div>
+            </div> */}
 
             {/* ::::::::::::::::::::::::::::::::: HOTEL AND ROOM data ::::::::::::::::::::::::::: */}
-
             <div className='my-8'>
               <h6 className='my-4'>Room & Bed Capacity*</h6>
               <div class="overflow-x-auto">
                 <table class="min-w-full border border-gray-200 text-left">
-                  <thead class="bg-gray-100">
+                  <thead class="bg-gray-100 text-xs">
                     <tr>
                       <th class="px-2 py-2 border">One Bedroom</th>
                       <th class="px-2 border">Two Bedroom</th>
@@ -455,6 +581,322 @@ const AddHotel = ({ mode }) => {
               </div>
             </div>
 
+
+            {/* ::::::::::::::::::::::::::::::::: Photo Gallery ::::::::::::::::::::::::::: */}
+            <div className="mb-8 overflow-x-auto">
+              <h6 className='my-4'>Photo Gallery*</h6>
+              <table className="min-w-full border border-gray-200 rounded-lg shadow-sm">
+                <thead className="bg-gray-100 text-xs">
+                  <tr>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[*]">Image</th>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[30%]">Caption</th>
+                    <th className="px-4 py-2 font-medium text-gray-600 w-[10px] text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {photoGallery.map((p, index) => {
+                    return (
+                      <tr key={index} className="border-t">
+                        <td className="px-4 py-2">
+                          <div className="file__uploader__div">
+                            <span className="file__name">{photoGallery[index].fileName}</span>
+                            <div className="flex gap-2">
+                              <input
+                                type="file"
+                                id={`siteLogo-${index}`}
+                                className="hidden"
+                                onChange={async (e) => {
+                                  const file = e.target.files[0];
+                                  if (!file) return;
+                                  const fileData = await base64Data(file);
+
+                                  setPhotoGallery((prev) =>
+                                    prev.map((item, i) =>
+                                      i === index ? { ...item, image: fileData, fileName: file.name } : item
+                                    )
+                                  );
+                                }}
+                              />
+                              <label htmlFor={`siteLogo-${index}`} className="file__upload" title="Upload" >
+                                <MdUploadFile />
+                              </label>
+                              <LuFileX2
+                                className="remove__upload"
+                                title="Remove upload"
+                                onClick={() => {
+                                  setPhotoGallery((prev) =>
+                                    prev.map((item, i) =>
+                                      i === index ? { ...item, image: "", fileName: '' } : item
+                                    )
+                                  );
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-2">
+                          <input
+                            type="text"
+                            value={photoGallery[index].caption}
+                            onChange={(e) => {
+                              let temp = [...photoGallery];
+                              temp[index].caption = e.target.value;
+                              setPhotoGallery(temp);
+                            }}
+                          />
+                        </td>
+                        <td className="px-4 py-2">
+                          <button
+                            className='close__icon'
+                            onClick={() => {
+                              setPhotoGallery((pv) => pv.filter((_, i) => i !== index));
+                            }}
+                          >
+                            <Icons.DELETE />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+                <tfoot className="bg-gray-50">
+                  <tr>
+                    <td colSpan="3" className="px-4 py-2 text-center text-sm text-gray-500">
+                      <button
+                        className="w-full bg-[#003628] text-white rounded-sm flex items-center gap-1 justify-center outline-none py-2"
+                        onClick={() => {
+                          setPhotoGallery((pv) => [...pv, photoGalleryDataSet]);
+                        }}
+                      >
+                        <Icons.ADD className="text-white" /> Add More
+                      </button>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            {/* ::::::::::::::::::::::::::::::::::::: Documents :::::::::::::::::::::::::::::: */}
+            <div className="mb-8 overflow-x-auto">
+              <h6 className='my-4'>Documents*</h6>
+              <table className="min-w-full border border-gray-200 rounded-lg shadow-sm">
+                <thead className="bg-gray-100 text-xs">
+                  <tr>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[30%]">
+                      Document Type
+                    </th>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[*]">
+                      File
+                    </th>
+                    <th align='center' className="px-4 py-2 font-medium text-gray-600 w-[10px]">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {documentData.map((p, index) => {
+                    return (
+                      <tr key={index} className="border-t">
+                        <td>
+                          <select value={documentData[index].selectedDocument}
+                            onChange={(e) => {
+                              setDocumentData((prev) =>
+                                prev.map((item, i) =>
+                                  i === index ? { ...item, selectedDocument: e.target.value } : item
+                                )
+                              );
+                            }} >
+                            {
+                              p.documentType.map((t, _) => {
+                                return <option key={_} value={t.document_type_name}>{t.document_type_name}</option>
+                              })
+                            }
+                          </select>
+                        </td>
+                        <td className="px-4 py-2">
+                          <div className="file__uploader__div">
+                            <span className="file__name">{documentData[index].fileName}</span>
+                            <div className="flex gap-2">
+                              {/* unique ID for each row */}
+                              <input
+                                type="file"
+                                id={`document-${index}`}
+                                className="hidden"
+                                onChange={(e) => {
+                                  const file = e.target.files[0];
+                                  if (!file) return;
+                                  const fileData = base64Data(file);
+                                  setDocumentData((prev) =>
+                                    prev.map((item, i) =>
+                                      i === index ? { ...item, fileName: file.name, file: fileData } : item
+                                    )
+                                  );
+                                }}
+                              />
+                              <label htmlFor={`document-${index}`} className="file__upload" title="Upload">
+                                <MdUploadFile />
+                              </label>
+                              <LuFileX2
+                                className="remove__upload"
+                                title="Remove upload"
+                                onClick={() => {
+                                  setDocumentData((prev) =>
+                                    prev.map((item, i) =>
+                                      i === index ? { ...item, fileName: "" } : item
+                                    )
+                                  );
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-2">
+                          <button
+                            className='close__icon'
+                            onClick={() => {
+                              setDocumentData((pv) => pv.filter((_, i) => i !== index));
+                            }}
+                          >
+                            <Icons.DELETE />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+                <tfoot className="bg-gray-50">
+                  <tr>
+                    <td colSpan="3" className="px-4 py-2 text-center text-sm text-gray-500">
+                      <button
+                        className="w-full bg-[#003628] text-white rounded-sm flex items-center gap-1 justify-center outline-none py-2"
+                        onClick={() => {
+                          setDocumentData((pv) => [...pv, documentDataSet]);
+                        }}
+                      >
+                        <Icons.ADD className="text-white" /> Add More
+                      </button>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            {/* ::::::::::::::::::::::::::::::::::::: Room Type :::::::::::::::::::::::::::::: */}
+            <div className="mb-8 overflow-x-auto">
+              <h6 className='my-4'>Room Type*</h6>
+              <table className="min-w-full border border-gray-200 rounded-lg shadow-sm">
+                <thead className="bg-gray-100 text-xs">
+                  <tr>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[*]">
+                      Room Type
+                    </th>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[5%]">
+                      Number of Room
+                    </th>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[10%]">
+                      Price
+                    </th>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[10%]">
+                      Breakfast
+                    </th>
+                    <th align='center' className="px-4 py-2 font-medium text-gray-600 w-[10px]">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {roomTypeData.map((row, index) => (
+                    <tr key={index} className="border-t">
+                      <td>
+                        <select
+                          value={row.roomType || ""}
+                          onChange={(e) => {
+                            setRoomType(prev =>
+                              prev.map((item, i) =>
+                                i === index ? { ...item, roomType: e.target.value } : item
+                              )
+                            );
+                          }}
+                        >
+                          <option value="">--Select Room Type--</option>
+                          {row.roomType?.map((t, idx) => (
+                            <option key={idx} value={t.name}>{t.name}</option>
+                          ))}
+                        </select>
+                      </td>
+
+                      <td className="px-4 py-2">
+                        <input
+                          type="number"
+                          value={row.numberOfRoom || ""}
+                          onChange={(e) => {
+                            setRoomType(prev =>
+                              prev.map((item, i) =>
+                                i === index ? { ...item, numberOfRoom: e.target.value } : item
+                              )
+                            );
+                          }}
+                        />
+                      </td>
+
+                      <td className="px-4 py-2">
+                        <input
+                          type="text"
+                          value={row.price || ""}
+                          onChange={(e) => {
+                            setRoomType(prev =>
+                              prev.map((item, i) =>
+                                i === index ? { ...item, price: e.target.value } : item
+                              )
+                            );
+                          }}
+                        />
+                      </td>
+
+                      <td className="px-4 py-2">
+                        <select
+                          value={row.breakFast || ""}
+                          onChange={(e) => {
+                            setRoomType(prev =>
+                              prev.map((item, i) =>
+                                i === index ? { ...item, breakFast: e.target.value } : item
+                              )
+                            );
+                          }}
+                        >
+                          <option value="">--Select--</option>
+                          <option value="yes">Yes</option>
+                          <option value="no">No</option>
+                        </select>
+                      </td>
+
+                      <td className="px-4 py-2">
+                        <button
+                          type="button"
+                          className="close__icon"
+                          onClick={() => {
+                            setRoomType(prev => prev.filter((_, i) => i !== index));
+                          }}
+                        >
+                          <Icons.DELETE />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+
+                </tbody>
+                <tfoot className="bg-gray-50">
+                  <tr>
+                    <td colSpan="5" className="px-4 py-2 text-center text-sm text-gray-500">
+                      <button
+                        className="w-full bg-[#003628] text-white rounded-sm flex items-center gap-1 justify-center outline-none py-2"
+                        onClick={() => {
+                          setRoomType((pv) => [...pv, roomTypeSet]);
+                        }}
+                      >
+                        <Icons.ADD className="text-white" /> Add More
+                      </button>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
 
             <div className='form__btn__grp pb-4'>
               <button className='save__btn' onClick={saveData}>

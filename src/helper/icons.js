@@ -26,6 +26,8 @@ import { GoPencil } from "react-icons/go";
 import { FaRegFile, FaRegUser, FaBed, FaRegFolderOpen, FaRegFolder  } from "react-icons/fa";
 import { LuHotel } from "react-icons/lu";
 import { LiaTrashRestoreAltSolid } from "react-icons/lia";
+import { IoClose } from "react-icons/io5";
+
 
 
 
@@ -72,6 +74,7 @@ export const Icons = {
   FOLDER: FaRegFolder,
   FOLDER_OPEN: FaRegFolderOpen,
   RESTORE: LiaTrashRestoreAltSolid,
-  CHECK2: FaCheck
+  CHECK2: FaCheck,
+  CLOSE: IoClose
 };
 
