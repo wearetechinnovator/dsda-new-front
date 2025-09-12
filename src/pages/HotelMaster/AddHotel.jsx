@@ -43,7 +43,7 @@ const AddHotel = ({ mode }) => {
 
   // Room Type
   const [roomTypeSet, setRoomTypeSet] = useState({
-    roomType: [], numberOfRoom: "", price: '', breakFast: ''
+    roomType: [], selectedRoomType: '',  numberOfRoom: "", price: '', breakFast: ''
   })
   const [roomTypeData, setRoomType] = useState([roomTypeSet]);
 
@@ -115,18 +115,18 @@ const AddHotel = ({ mode }) => {
       }
     }
 
+    const allData = { ...data, ...bedCapacity, photoGallery, documentData, roomTypeData };
+
 
     try {
-      const url = process.env.REACT_APP_MASTER_API + "";
+      const url = process.env.REACT_APP_MASTER_API + "/hotel/create";
       const token = Cookies.get("token");
       const req = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(
-          !mode ? { ...data, token }
-            : { ...data, token, update: true, id: id }
+        body: JSON.stringify(!mode ? { ...allData, token } : { ...allData, token, id: id }
         )
       })
       const res = await req.json();
@@ -136,7 +136,7 @@ const AddHotel = ({ mode }) => {
 
       if (!mode) clearData();
 
-      toast(!mode ? "Item create success" : "Item update success", 'success');
+      toast(!mode ? "Hotel create success" : "Hotel update success", 'success');
 
     } catch (error) {
       console.log(error);
@@ -234,7 +234,7 @@ const AddHotel = ({ mode }) => {
                     <option value="">--Select--</option>
                     {
                       hotelCategories.map((hc, _) => {
-                        return <option key={_} value={hc.hotel_category_name}>{hc.hotel_category_name}</option>
+                        return <option key={_} value={hc._id}>{hc.hotel_category_name}</option>
                       })
                     }
                   </select>
@@ -388,17 +388,17 @@ const AddHotel = ({ mode }) => {
                   <select onChange={(e) => setData({ ...data, restaurantAvailable: e.target.value })}
                     value={data.restaurantAvailable}>
                     <option value="">--Select--</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                   </select>
                 </div>
                 <div>
                   <p>AC ?</p>
-                  <select onChange={(e) => setData({ ...data, restaurantAvailable: e.target.value })}
-                    value={data.restaurantAvailable}>
+                  <select onChange={(e) => setData({ ...data, ac: e.target.value })}
+                    value={data.ac}>
                     <option value="">--Select--</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                   </select>
                 </div>
                 <div>
@@ -406,8 +406,8 @@ const AddHotel = ({ mode }) => {
                   <select onChange={(e) => setData({ ...data, swimingPool: e.target.value })}
                     value={data.swimingPool}>
                     <option value="">--Select--</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                   </select>
                 </div>
                 <div>
@@ -415,8 +415,8 @@ const AddHotel = ({ mode }) => {
                   <select onChange={(e) => setData({ ...data, conferanceHallAvailable: e.target.value })}
                     value={data.conferanceHallAvailable}>
                     <option value="">--Select--</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                   </select>
                 </div>
                 <div>
@@ -424,8 +424,8 @@ const AddHotel = ({ mode }) => {
                   <select onChange={(e) => setData({ ...data, parkingAvailable: e.target.value })}
                     value={data.parkingAvailable}>
                     <option value="">--Select--</option>
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
                   </select>
                 </div>
                 <div>
@@ -433,8 +433,8 @@ const AddHotel = ({ mode }) => {
                   <select onChange={(e) => setData({ ...data, status: e.target.value })}
                     value={data.status}>
                     <option value="">--Select--</option>
-                    <option value="inactive">Inactive</option>
-                    <option value="active">Active</option>
+                    <option value="0">Inactive</option>
+                    <option value="1">Active</option>
                   </select>
                 </div>
               </div>
@@ -706,7 +706,7 @@ const AddHotel = ({ mode }) => {
                             }} >
                             {
                               p.documentType.map((t, _) => {
-                                return <option key={_} value={t.document_type_name}>{t.document_type_name}</option>
+                                return <option key={_} value={t._id}>{t.document_type_name}</option>
                               })
                             }
                           </select>
@@ -805,18 +805,18 @@ const AddHotel = ({ mode }) => {
                     <tr key={index} className="border-t">
                       <td>
                         <select
-                          value={row.roomType || ""}
+                          value={row.selectedRoomType}
                           onChange={(e) => {
                             setRoomType(prev =>
                               prev.map((item, i) =>
-                                i === index ? { ...item, roomType: e.target.value } : item
+                                i === index ? { ...item, selectedRoomType: e.target.value } : item
                               )
                             );
+                            
                           }}
                         >
-                          <option value="">--Select Room Type--</option>
                           {row.roomType?.map((t, idx) => (
-                            <option key={idx} value={t.name}>{t.name}</option>
+                            <option key={idx} value={t._id}>{t.name}</option>
                           ))}
                         </select>
                       </td>
