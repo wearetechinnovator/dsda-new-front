@@ -1,38 +1,47 @@
 import React, { Suspense, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
-import { ProtectRoute, UnProtectRoute } from "./components/ProtectRoute";
-import ProtectCP from "./components/ProtectCP";
+import { ProtectRoute, UnProtectRoute } from "./components/Admin/ProtectRoute";
+import { ProtectHotelRoute, UnProtectHotelRoute } from "./components/Hotel/ProtectRoute";
+import ProtectCP from "./components/Admin/ProtectCP";
 
-import Hotelmaster from "./pages/HotelMaster/Hotelmaster";
-import AddHotel from "./pages/HotelMaster/AddHotel";
-import AddDistrict from "./pages/Locations/district/AddDistrict";
-import District from "./pages/Locations/district/District";
-import AddBlock from "./pages/Locations/block/AddBlock";
-import Block from "./pages/Locations/block/Block";
-import AddPoliceStation from "./pages/Locations/policeStation/AddPoliceStation";
-import PoliceStation from "./pages/Locations/policeStation/PoliceStation";
-import AddZone from "./pages/Locations/zone/AddZone";
-import Zone from "./pages/Locations/zone/Zone";
-import AddSector from "./pages/Locations/sector/AddSector";
-import Sector from "./pages/Locations/sector/Sector";
-import AddPayment from "./pages/payment/AddPayment";
-import Payment from "./pages/payment/Payment";
-import AddNotice from "./pages/notice/AddNotice";
-import Notice from "./pages/notice/Notice";
+// Admin Dashboard;
+const Hotelmaster = React.lazy(() => import("./pages/Admin/HotelMaster/Hotelmaster"));
+const AddHotel = React.lazy(() => import("./pages/Admin/HotelMaster/AddHotel"));
+const AddDistrict = React.lazy(() => import("./pages/Admin/Locations/district/AddDistrict"));
+const District = React.lazy(() => import("./pages/Admin/Locations/district/District"));
+const AddBlock = React.lazy(() => import("./pages/Admin/Locations/block/AddBlock"));
+const Block = React.lazy(() => import("./pages/Admin/Locations/block/Block"));
+const AddPoliceStation = React.lazy(() => import("./pages/Admin/Locations/policeStation/AddPoliceStation"));
+const PoliceStation = React.lazy(() => import("./pages/Admin/Locations/policeStation/PoliceStation"));
+const AddZone = React.lazy(() => import("./pages/Admin/Locations/zone/AddZone"));
+const Zone = React.lazy(() => import("./pages/Admin/Locations/zone/Zone"));
+const AddSector = React.lazy(() => import("./pages/Admin/Locations/sector/AddSector"));
+const Sector = React.lazy(() => import("./pages/Admin/Locations/sector/Sector"));
+const AddPayment = React.lazy(() => import("./pages/Admin/payment/AddPayment"));
+const Notice = React.lazy(() => import("./pages/Admin/notice/Notice"));
+const AddNotice = React.lazy(() => import("./pages/Admin/notice/AddNotice"));
+const Payment = React.lazy(() => import("./pages/Admin/payment/Payment"));
+const Login = React.lazy(() => import("./pages/Admin/Auth/Login"));
+const Dashboard = React.lazy(() => import("./pages/Admin/Dashboard"));
+const Profile = React.lazy(() => import("./pages/Admin/Auth/Profile"));
+const Signup = React.lazy(() => import("./pages/Admin/Auth/Signup"));
+const Setting = React.lazy(() => import("./pages/Admin/Setting"));
+const UserAdd = React.lazy(() => import("./pages/Admin/AdminUser/UserAdd"));
+const UserList = React.lazy(() => import("./pages/Admin/AdminUser/UserList"));
+const Forgot = React.lazy(() => import("./pages/Admin/Auth/Forgot"));
+const Otp = React.lazy(() => import("./pages/Admin/Auth/Otp"));
+const ChangePassword = React.lazy(() => import("./pages/Admin/Auth/ChangePassword"));
+const NotFound = React.lazy(() => import("./pages/Admin/NotFound"));
+const Invoice = React.lazy(() => import("./pages/Admin/details/Invoice"));
+const ItemDetails = React.lazy(() => import("./pages/Admin/AdminUser/Details"));
 
-const Login = React.lazy(() => import("./pages/Auth/Login"));
-const Dashboard = React.lazy(() => import("./pages/Dashboard"));
-const Profile = React.lazy(() => import("./pages/Auth/Profile"));
-const Signup = React.lazy(() => import("./pages/Auth/Signup"));
-const Setting = React.lazy(() => import("./pages/Setting"));
-const UserAdd = React.lazy(() => import("./pages/AdminUser/UserAdd"));
-const UserList = React.lazy(() => import("./pages/AdminUser/UserList"));
-const Forgot = React.lazy(() => import("./pages/Auth/Forgot"));
-const Otp = React.lazy(() => import("./pages/Auth/Otp"));
-const ChangePassword = React.lazy(() => import("./pages/Auth/ChangePassword"));
-const NotFound = React.lazy(() => import("./pages/NotFound"));
-const Invoice = React.lazy(() => import("./pages/details/Invoice"));
-const ItemDetails = React.lazy(() => import("./pages/AdminUser/Details"));
+
+// Hotel Dashboard
+const HotelDashboard = React.lazy(() => import("./pages/Hotel/Dashboard"));
+const HotelLogin = React.lazy(() => import("./pages/Hotel/Auth/Login"));
+const HotelForgot = React.lazy(() => import("./pages/Hotel/Auth/Forgot"));
+const HotelOtp = React.lazy(() => import("./pages/Hotel/Auth/Otp"));
+const HotelChangePassword = React.lazy(() => import("./pages/Hotel/Auth/ChangePassword"));
 
 
 
@@ -54,6 +63,8 @@ const App = () => {
   }, [navigate]);
 
 
+
+
   return (
 
     <Suspense fallback={<div className="grid place-items-center w-full min-h-[100vh]">
@@ -64,85 +75,79 @@ const App = () => {
       </div>
     </div>}>
       <Routes>
-        <Route path="/admin" element={<UnProtectRoute login={true}><Login /></UnProtectRoute>} />
+        {/* ======================================== Admin Routes ==================================== */}
+        {/* ========================================================================================== */}
         <Route path="/" element={<UnProtectRoute login={true}><Login /></UnProtectRoute>} />
+        <Route path="/admin" element={<UnProtectRoute login={true}><Login /></UnProtectRoute>} />
         <Route path="/admin/signup" element={<UnProtectRoute login={true}><Signup /></UnProtectRoute>} />
-        <Route path="/admin/forget" element={<UnProtectRoute login={true}>< Forgot /></UnProtectRoute>} />
-        <Route path="/admin/otp" element={<UnProtectRoute login={true}>< Otp /></UnProtectRoute>} />
-        <Route path="/admin/change-password" element={<ProtectCP>< ChangePassword /></ProtectCP>} />
-
-        {/* Print part */}
-        <Route path="/admin/bill/details/:bill/:id" element={<Invoice />} />
-
+        <Route path="/admin/forget" element={<UnProtectRoute login={true}><Forgot /></UnProtectRoute>} />
+        <Route path="/admin/otp" element={<UnProtectRoute login={true}><Otp /></UnProtectRoute>} />
+        <Route path="/admin/change-password" element={<ProtectCP><ChangePassword /></ProtectCP>} />
         <Route path="/admin" element={<ProtectRoute />}>
           <Route path="site" element={<Setting />} />
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="profile" element={<Profile />} />
           <Route path="site-setting" element={<Setting />} />
+
+          {/* Admin */}
+          <Route path="user" element={< UserList />} />
+          <Route path="user/profile" element={<Profile />} />
+          <Route path="user/add" element={<UserAdd />} />
+          <Route path="user/edit/:id" element={< UserAdd mode="edit" />} />
+          <Route path="user/details/:id" element={<ItemDetails />} />
+
+          {/* Hotel Routes */}
+          <Route path="hotel" element={<Hotelmaster />} />
+          <Route path="hotel/add" element={<AddHotel />} />
+          <Route path="hotel/edit/:id" element={<AddHotel mode="edit" />} />
+
+          {/* District */}
+          <Route path="district" element={< District />} />
+          <Route path="district/add" element={<AddDistrict />} />
+          <Route path="district/edit/:id" element={< AddDistrict mode="edit" />} />
+
+          {/* Block */}
+          <Route path="block" element={< Block />} />
+          <Route path="block/add" element={<AddBlock />} />
+          <Route path="block/edit/:id" element={< AddBlock mode="edit" />} />
+
+          {/* Police Station */}
+          <Route path="police-station" element={<PoliceStation />} />
+          <Route path="police-station/add" element={<AddPoliceStation />} />
+          <Route path="police-station/edit/:id" element={<AddPoliceStation mode="edit" />} />
+
+          {/* Zone */}
+          <Route path="zone" element={<Zone />} />
+          <Route path="zone/add" element={<AddZone />} />
+          <Route path="zone/edit/:id" element={<AddZone mode="edit" />} />
+
+          {/* Sector */}
+          <Route path="sector" element={<Sector />} />
+          <Route path="sector/add" element={<AddSector />} />
+          <Route path="sector/edit/:id" element={<AddSector mode="edit" />} />
+
+          {/* Amenities */}
+          <Route path="amenities" element={<Payment />} />
+          <Route path="amenities/add" element={<AddPayment />} />
+          <Route path="amenities/edit/:id" element={<AddPayment mode="edit" />} />
+
+          {/* Notice */}
+          <Route path="notice" element={<Notice />} />
+          <Route path="notice/add" element={<AddNotice />} />
+          <Route path="notice/edit/:id" element={<AddNotice mode="edit" />} />
         </Route>
 
-        {/* Admin */}
-        <Route path="/admin/user" element={<ProtectRoute />}>
-          <Route index element={< UserList />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="add" element={<UserAdd />} />
-          <Route path="edit/:id" element={< UserAdd mode="edit" />} />
-          <Route path="details/:id" element={<ItemDetails />} />
-        </Route>
 
-        <Route path="/admin/hotel" element={<ProtectRoute />}>
-          <Route index element={<Hotelmaster />} />
+        {/* ======================================== Hotel Routes ==================================== */}
+        {/* ========================================================================================== */}
+        <Route path="/hotel" element={<UnProtectHotelRoute login={true}><HotelLogin /></UnProtectHotelRoute>} />
+        <Route path="/hotel/forgot" element={<UnProtectHotelRoute login={true}><HotelForgot /></UnProtectHotelRoute>} />
+        <Route path="/hotel/otp" element={<UnProtectHotelRoute login={true}><HotelOtp /></UnProtectHotelRoute>} />
+        <Route path="/hotel/change-password" element={<ProtectCP><HotelChangePassword /></ProtectCP>} />
+        <Route path="/hotel" element={<ProtectHotelRoute />}>
+          <Route path="dashboard" element={<HotelDashboard />} />
           <Route path="add" element={<AddHotel />} />
           <Route path="edit/:id" element={<AddHotel mode="edit" />} />
-        </Route>
-
-        {/* District */}
-        <Route path="/admin/district" element={<ProtectRoute />}>
-          <Route index element={< District />} />
-          <Route path="add" element={<AddDistrict />} />
-          <Route path="edit/:id" element={< AddDistrict mode="edit" />} />
-        </Route>
-
-        {/* Block */}
-        <Route path="/admin/block" element={<ProtectRoute />}>
-          <Route index element={< Block />} />
-          <Route path="add" element={<AddBlock />} />
-          <Route path="edit/:id" element={< AddBlock mode="edit" />} />
-        </Route>
-
-        {/* Police Station */}
-        <Route path="/admin/police-station" element={<ProtectRoute />}>
-          <Route index element={<PoliceStation />} />
-          <Route path="add" element={<AddPoliceStation />} />
-          <Route path="edit/:id" element={<AddPoliceStation mode="edit" />} />
-        </Route>
-
-        {/* Zone */}
-        <Route path="/admin/zone" element={<ProtectRoute />}>
-          <Route index element={<Zone />} />
-          <Route path="add" element={<AddZone />} />
-          <Route path="edit/:id" element={<AddZone mode="edit" />} />
-        </Route>
-
-        {/* Sector */}
-        <Route path="/admin/sector" element={<ProtectRoute />}>
-          <Route index element={<Sector />} />
-          <Route path="add" element={<AddSector />} />
-          <Route path="edit/:id" element={<AddSector mode="edit" />} />
-        </Route>
-
-        {/* Amenities */}
-        <Route path="/admin/amenities" element={<ProtectRoute />}>
-          <Route index element={<Payment />} />
-          <Route path="add" element={<AddPayment />} />
-          <Route path="edit/:id" element={<AddPayment mode="edit" />} />
-        </Route>
-
-        {/* Notice */}
-        <Route path="/admin/notice" element={<ProtectRoute />}>
-          <Route index element={<Notice />} />
-          <Route path="add" element={<AddNotice />} />
-          <Route path="edit/:id" element={<AddNotice mode="edit" />} />
         </Route>
 
 

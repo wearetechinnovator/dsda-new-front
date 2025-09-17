@@ -24,7 +24,7 @@ const checkfile = (file, type = ["jpg", "png", 'jpeg'], size = 3) => {
             }
 
         } else {
-            resolve("Invaid filetype");
+            resolve("Only " + type.join(", ") + " files are allowed");
         }
 
     })
