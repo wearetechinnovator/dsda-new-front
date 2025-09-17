@@ -42,7 +42,13 @@ const HotelLogin = React.lazy(() => import("./pages/Hotel/Auth/Login"));
 const HotelForgot = React.lazy(() => import("./pages/Hotel/Auth/Forgot"));
 const HotelOtp = React.lazy(() => import("./pages/Hotel/Auth/Otp"));
 const HotelChangePassword = React.lazy(() => import("./pages/Hotel/Auth/ChangePassword"));
-
+const HotelProfile = React.lazy(() => import("./pages/Hotel/Auth/Profile"));
+const CheckIn = React.lazy(() => import("./pages/Hotel/CheckIn"));
+const CheckOut = React.lazy(() => import("./pages/Hotel/CheckOut"));
+const TouristData = React.lazy(() => import("./pages/Hotel/TouristData"));
+// const Amenities = React.lazy(() => import("./pages/Hotel/Amenities"));
+// const Payments = React.lazy(() => import("./pages/Hotel/Payments"));
+// const OtherPayments = React.lazy(() => import("./pages/Hotel/OtherPayments"));
 
 
 const App = () => {
@@ -77,7 +83,6 @@ const App = () => {
       <Routes>
         {/* ======================================== Admin Routes ==================================== */}
         {/* ========================================================================================== */}
-        <Route path="/" element={<UnProtectRoute login={true}><Login /></UnProtectRoute>} />
         <Route path="/admin" element={<UnProtectRoute login={true}><Login /></UnProtectRoute>} />
         <Route path="/admin/signup" element={<UnProtectRoute login={true}><Signup /></UnProtectRoute>} />
         <Route path="/admin/forget" element={<UnProtectRoute login={true}><Forgot /></UnProtectRoute>} />
@@ -140,14 +145,20 @@ const App = () => {
 
         {/* ======================================== Hotel Routes ==================================== */}
         {/* ========================================================================================== */}
+        <Route path="/" element={<UnProtectHotelRoute login={true}><HotelLogin /></UnProtectHotelRoute>} />
         <Route path="/hotel" element={<UnProtectHotelRoute login={true}><HotelLogin /></UnProtectHotelRoute>} />
         <Route path="/hotel/forgot" element={<UnProtectHotelRoute login={true}><HotelForgot /></UnProtectHotelRoute>} />
         <Route path="/hotel/otp" element={<UnProtectHotelRoute login={true}><HotelOtp /></UnProtectHotelRoute>} />
         <Route path="/hotel/change-password" element={<ProtectCP><HotelChangePassword /></ProtectCP>} />
         <Route path="/hotel" element={<ProtectHotelRoute />}>
           <Route path="dashboard" element={<HotelDashboard />} />
-          <Route path="add" element={<AddHotel />} />
-          <Route path="edit/:id" element={<AddHotel mode="edit" />} />
+          <Route path="profile" element={<HotelProfile />} />
+          <Route path="check-in" element={<CheckIn />} />
+          <Route path="check-out" element={<CheckOut />} />
+          <Route path="tourist-data" element={<TouristData />} />
+          <Route path="amenities" element={<HotelProfile />} />
+          <Route path="payments" element={<HotelProfile />} />
+          <Route path="other-payments" element={<HotelProfile />} />
         </Route>
 
 

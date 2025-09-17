@@ -15,8 +15,7 @@ import useSearchTable from '../../../../hooks/useSearchTable';
 import useApi from '../../../../hooks/useApi';
 
 
-document.title = "District"
-const Block = ({ mode }) => {
+const Block = () => {
 	const toast = useMyToaster();
 	const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
 	const [activePage, setActivePage] = useState(1);

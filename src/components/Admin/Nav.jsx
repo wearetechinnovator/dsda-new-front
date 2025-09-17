@@ -12,7 +12,6 @@ import useGetUserData from '../../hooks/useGetUserData';
 
 
 const Nav = ({ title }) => {
-  const [sideBar, setSideBar] = useState(true);
   const { getProfile, getSetting } = useGetUserData(); // Get user info api call
   const userDetails = useSelector((store) => store.userDetail); //get use details from store
   const settingDetails = useSelector((store) => store.settingSlice); //get use details from store
@@ -28,26 +27,11 @@ const Nav = ({ title }) => {
     }
   }, [settingDetails]);
 
-  const convertToSmall = () => {
-    setSideBar((prev) => {
-      const sideBar = document.querySelector("#sideBar");
-      prev ? localStorage.setItem("sideBarOpenStatus", false) : localStorage.setItem("sideBarOpenStatus", true);
 
-      sideBar.style.minWidth = prev ? "50px" : "175px";
-      sideBar.querySelectorAll("li").forEach(e => e.style.borderRadius = prev ? "0px" : "20px");
-      sideBar.querySelectorAll("li span:nth-child(2), li span:nth-child(3), h3").forEach(e => e.style.display = prev ? "none" : "");
-      sideBar.querySelectorAll("li .sub-menu").forEach(e => e.style.display = prev ? "none" : "");
-      sideBar.querySelectorAll("ul a, ul li").forEach(item => {
-        item.setAttribute("data-tooltip-content", prev ? item.querySelector("span:nth-child(2)").innerText : "");
-      });
-      sideBar.querySelectorAll("li svg").forEach(e => e.style.fontSize = prev ? "18px" : "14px")
-
-      return !prev;
-    })
-  }
 
   const logout = () => {
     Cookies.remove("token");
+    Cookies.remove("userId");
     document.location.href = "/admin";
   }
 

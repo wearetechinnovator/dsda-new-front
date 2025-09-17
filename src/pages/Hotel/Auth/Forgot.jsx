@@ -46,7 +46,7 @@ const Forget = () => {
       }
 
       Cookies.set("user-token", res.token, { secure: true });
-      navigate("/admin/otp", {state:{email: loginData.email}});
+      navigate("/hotel/otp", {state:{email: loginData.email}});
 
     } catch (error) {
       console.log(error)
@@ -76,7 +76,7 @@ const Forget = () => {
           <div className="text-center my-2">
             <button
               type="button"
-              onClick={() => navigate('/admin')}
+              onClick={() => navigate('/hotel')}
               className="text-blue-500 font-bold">Back To Login</button>
           </div>
         </form>

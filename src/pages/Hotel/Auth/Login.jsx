@@ -11,7 +11,7 @@ import Loading from '../../../components/Admin/Loading'
 
 
 const Login = () => {
-  const [loginData, setLoginData] = useState({ email: '', pass: '' });
+  const [loginData, setLoginData] = useState({ username: '', password: '' });
   const shakeIt = useLoginShake();
   const navigate = useNavigate();
   const toast = useMyToaster();
@@ -39,7 +39,6 @@ const Login = () => {
         },
         body: JSON.stringify(loginData)
       });
-
       const res = await req.json();
 
       setLoading(false);
@@ -47,9 +46,8 @@ const Login = () => {
         return toast(res.err, "error")
       }
 
-      console.log(res);
-
       Cookies.set("hotel-token", res.token, { secure: true });
+      Cookies.set("hotelId", res.hotel._id, { secure: true });
       navigate("/hotel/dashboard")
 
     } catch (error) {
@@ -67,14 +65,14 @@ const Login = () => {
       <div className="login__box flex flex-col" id="loginBox">
         <h1 className='text-center text-[25px] mb-8 mt-4'>Sign In</h1>
         <form onSubmit={formAction}>
-          <input type="emial" name="email"
-            value={loginData.email}
-            onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
-            className='input_style' placeholder='Enter email'
+          <input type="text" name="username"
+            value={loginData.username}
+            onChange={(e) => setLoginData({ ...loginData, username: e.target.value })}
+            className='input_style' placeholder='Enter username'
           />
-          <input type="password" name="pass"
-            value={loginData.pass}
-            onChange={(e) => setLoginData({ ...loginData, pass: e.target.value })}
+          <input type="password" name="password"
+            value={loginData.password}
+            onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
             className='input_style' placeholder='Enter password'
           />
           <button
@@ -85,13 +83,8 @@ const Login = () => {
           </button>
         </form>
         <div className='flex justify-center text-[12px]'>
-          You have no account?
-          <Link to={'/admin/signup'} className="ml-1">
-            SignUp
-          </Link>
-        </div>
-        <div className='flex justify-center mt-2 text-[12px]'>
-          <Link to={'/admin/forget'}>Forgot password</Link>
+          Lost your password? &nbsp;
+          <Link to={'/hotel/forgot'}>Reset here</Link>
         </div>
       </div>
     </main>

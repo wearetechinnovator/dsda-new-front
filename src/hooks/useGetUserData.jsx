@@ -1,8 +1,6 @@
 import { add } from "../store/userDetailSlice";
 import { useDispatch } from "react-redux";
 import Cookies from 'js-cookie';
-import { useNavigate } from "react-router-dom";
-import useMyToaster from './useMyToaster';
 import { addSetting } from "../store/settingSlice";
 
 

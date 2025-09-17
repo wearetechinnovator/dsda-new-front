@@ -1,94 +1,250 @@
-import { useEffect, useState } from 'react';
-import Nav from '../../../components/Admin/Nav';
-import SideNav from '../../../components/Admin/SideNav';
-import { Icons } from '../../../helper/icons';
-import Cookies from 'js-cookie';
-import { useSelector } from 'react-redux';
-import { add } from '../../../store/userDetailSlice';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react'
+import Nav from '../../../components/Hotel/Nav';
+import SideNav from '../../../components/Hotel/HotelSideNav'
+import { LuFileX2 } from "react-icons/lu";
 import useMyToaster from '../../../hooks/useMyToaster';
-import { Avatar } from 'rsuite';
-import { FaUser } from 'react-icons/fa';
-import checkfile from '../../../helper/checkfile';
+import { SelectPicker, Toggle } from 'rsuite';
+import Cookies from 'js-cookie';
+import { useNavigate, useParams } from 'react-router-dom';
+import MySelect2 from '../../../components/Admin/MySelect2';
+import { Icons } from '../../../helper/icons';
+import { MdUploadFile } from 'react-icons/md';
+import base64Data from '../../../helper/getBase64';
+import { useDispatch, useSelector } from 'react-redux';
+import { addHotelDetails } from '../../../store/hotelSlice';
 
 
-const Profile = () => {
+
+const Profile = ({ mode }) => {
   const toast = useMyToaster();
   const dispatch = useDispatch();
-  const userData = useSelector((state) => state.userDetail);
-  const [editMode, setEditMode] = useState(false);
-  const [editPass, setEditPass] = useState(false);
+  const hotelData = useSelector(state => state.hotelDetails);
+  const [hotelCategories, setHotelCategories] = useState([]);
+  const [documentType, setDocumentType] = useState([])
+  const [roomType, setRoomType] = useState([]);
   const [data, setData] = useState({
-    name: '', designation: '', role: '',
-    email: "", contact: '', profile: ''
-  });
-  const [passData, setPassData] = useState({
-    currentPass: '', newPass: '', confirmPass: ''
+    zone: '', sector: '', block: '', category: '', district: '', policeStation: "", name: '',
+    address: "", email: '', establishment: '', miniumRate: '', maximumRate: '', website: '', gmbUrl: '', distanceFromRoad: '', distanceFromSeaBeach: '', ac: '0', swimmingPool: '0', parkingAvailable: '0',
+    username: '', password: '', receptionPhone: '', proprietorName: "", proprietorPhone: "",
+    managerName: '', managerPhone: '', alternateManagerPhone: '', restaurantAvailable: '0', conferanceHallAvailable: '0', status: '1',
   })
-  const url = process.env.REACT_APP_MASTER_API + "/admin/update-users";
-  const cookie = Cookies.get("token");
-  const userId = Cookies.get("userId");
+  const [bedCapacity, setBedCapacity] = useState({
+    oneBed: '', twoBed: '', threeBed: '', fourBed: '', fiveBed: '', sixBed: '',
+    sevenBed: '', eightBed: '', nineBed: '', tenBed: '', totalBed: '', totalRoom: ''
+  });
+
+  //  Gallery images;
+  const photoGalleryDataSet = { image: '', fileName: '', caption: '' }
+  const [photoGallery, setPhotoGallery] = useState([photoGalleryDataSet])
+
+  // Document data
+  const [documentDataSet, setDocumentDataSet] = useState({
+    selectedDocument: '', fileName: '', file: ''
+  })
+  const [documentData, setDocumentData] = useState([documentDataSet]);
+
+  // Room Type
+  const [roomTypeSet, setRoomTypeSet] = useState({
+    selectedRoomType: '', numberOfRoom: "", price: '', breakFast: ''
+  })
+  const [roomTypeData, setRoomTypeData] = useState([roomTypeSet]);
 
 
 
   useEffect(() => {
-    setData({
-      name: userData.name, designation: userData.designation,
-      role: userData.role, email: userData.email, contact: userData.contact,
-      profile: userData.profile_picture
-    });
+    if (hotelData && hotelData.hotel_gallery_image && hotelData.hotel_room_type && hotelData.hotel_document) {
+      setPhotoGallery(hotelData.hotel_gallery_image);
+      setRoomTypeData(hotelData.hotel_room_type);
+      setDocumentData(hotelData.hotel_document);
 
-  }, [userData])
+      setData({
+        zone: hotelData.hotel_zone_id?._id || "",
+        sector: hotelData.hotel_sector_id?._id || "",
+        block: hotelData.hotel_block_id || "",
+        category: hotelData.hotel_category?._id || "",
+        district: hotelData.hotel_district_id?._id || "",
+        policeStation: hotelData.hotel_police_station_id?._id || "",
+
+        name: hotelData.hotel_name || "",
+        address: hotelData.hotel_address || "",
+        email: hotelData.hotel_email || "",
+        establishment: hotelData.hotel_year_of_establishment || "",
+        miniumRate: hotelData.hotel_minimum_rate || "",
+        maximumRate: hotelData.hotel_maximum_rate || "",
+        website: hotelData.hotel_website || "",
+        gmbUrl: hotelData.hotel_gmb || "",
+        distanceFromRoad: hotelData.hotel_distance_from_main_road || "",
+        distanceFromSeaBeach: hotelData.hotel_distance_from_sea_beach || "",
+
+        ac: hotelData.hotel_has_ac || "0",
+        swimmingPool: hotelData.hotel_has_swimming_pool || "0",
+        parkingAvailable: hotelData.hotel_has_parking || "0",
+
+        username: hotelData.hotel_username || "",
+        // password: hotelData.hotel_password || "",
+        receptionPhone: hotelData.hotel_reception_phone || "",
+        proprietorName: hotelData.hotel_proprietor_name || "",
+        proprietorPhone: hotelData.hotel_proprietor_phone || "",
+        managerName: hotelData.hotel_manager_name || "",
+        managerPhone: hotelData.hotel_manager_phone || "",
+        alternateManagerPhone: hotelData.hotel_manager_phone_alternative || "",
+
+        restaurantAvailable: hotelData.hotel_has_restaurant || "0",
+        conferanceHallAvailable: hotelData.hotel_has_conference_hall || "0",
+        status: hotelData.hotel_status || "1",
+      });
+
+      setBedCapacity({
+        oneBed: hotelData.hotel_1_bed_room || "",
+        twoBed: hotelData.hotel_2_bed_room || "",
+        threeBed: hotelData.hotel_3_bed_room || "",
+        fourBed: hotelData.hotel_4_bed_room || "",
+        fiveBed: hotelData.hotel_5_bed_room || "",
+        sixBed: hotelData.hotel_6_bed_room || "",
+        sevenBed: hotelData.hotel_7_bed_room || "",
+        eightBed: hotelData.hotel_8_bed_room || "",
+        nineBed: hotelData.hotel_9_bed_room || "",
+        tenBed: hotelData.hotel_10_bed_room || "",
+        totalBed: hotelData.hotel_total_bed || "",
+        totalRoom: hotelData.hotel_total_room || "",
+      })
+
+    }
+  }, [hotelData]);
 
 
-  const updateProfile = async () => {
-    const req = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": 'application/json'
-      },
-      body: JSON.stringify({ ...data, userId })
-    })
-    if (req.status !== 200) {
-      return toast("Profile not update", "error");
+  // get types
+  useEffect(() => {
+    const get = async (which) => {
+      const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/${which}`)
+      const res = await req.json();
+
+      if (which === "document") {
+        setDocumentType([...res]);
+
+      } else if (which === "hotel-category") {
+        setHotelCategories([...res]);
+
+      } else if (which === "room") {
+        setRoomType([...res]);
+      }
     }
 
-    dispatch(add({ ...userData, ...data }));
-    return toast("Profile update successfully", "success");
-  }
+    get("hotel-category");
+    get("document");
+    get("room");
+  }, [])
+  useEffect(() => {
+    setDocumentData([documentDataSet]);
+    setRoomTypeData([roomTypeSet])
+  }, [documentDataSet.documentType, roomTypeSet.roomType])
 
 
-  const handleFile = async (e) => {
-    let validfile = await checkfile(e.target.files[0]);
 
-    if (typeof (validfile) !== 'boolean') return toast(validfile, "error");
+  const saveData = async (e) => {
+    const requiredKeys = [
+      'zone', 'sector', 'block', 'district', 'policeStation',
+      'name', 'address', 'username', 'password', 'managerPhone'
+    ];
 
-    const reader = new FileReader();
-    reader.readAsDataURL(e.target.files[0]);
+    for (const key of requiredKeys) {
+      if (!data[key] || data[key].trim() === "") {
+        return toast(`${key.camelToWords()} can't be blank`, 'error');
+      }
+    }
 
-    reader.onload = async () => {
-      let updateData = { ...data, profile: reader.result };
-      setData(updateData);
+    const allData = { ...data, ...bedCapacity, photoGallery, documentData, roomTypeData };
 
+    try {
+      const url = process.env.REACT_APP_MASTER_API + "/hotel/update";
+      const token = Cookies.get("token");
+      const hotelId = Cookies.get("hotelId");
       const req = await fetch(url, {
         method: "POST",
         headers: {
-          "Content-Type": 'application/json'
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({ ...updateData, userId })
+        body: JSON.stringify({ ...allData, token, id: hotelId } )
       })
       const res = await req.json();
-      if (req.status !== 200) {
-        return toast("Profile not change", "error");
+      if (req.status !== 200 || res.err) {
+        return toast(res.err, 'error');
       }
 
-      dispatch(add({ ...userData, ...updateData, profile_picture: reader.result }));
-      return toast("Profile picture update successfully", "success");
+
+      toast("Hotel update success", 'success');
+      dispatch(addHotelDetails({ ...allData }));
+      return;
+    } catch (error) {
+      console.log(error);
+      return toast("Something went wrong", "error")
     }
 
   }
 
 
+  const handleBedCapacityChange = (e, key) => {
+    const value = e.target.value;
+    setBedCapacity((prev) => {
+      const updated = {
+        ...prev,
+        [key]: value,
+      };
+
+      let totalRoom = 0;
+      let totalBed = 0;
+
+      Object.keys(updated).forEach((b) => {
+        if (b !== "totalRoom" && b !== "totalBed") {
+          const roomCount = Number(updated[b] || 0);
+
+          totalRoom += roomCount;
+
+          const multiplier = parseInt(b) || Number(b.replace("Bed", "")) || 1;
+          const mapping = {
+            oneBed: 1,
+            twoBed: 2,
+            threeBed: 3,
+            fourBed: 4,
+            fiveBed: 5,
+            sixBed: 6,
+            sevenBed: 7,
+            eightBed: 8,
+            nineBed: 9,
+            tenBed: 10,
+          };
+
+          totalBed += roomCount * (mapping[b] || multiplier);
+        }
+      });
+
+      return {
+        ...updated,
+        totalRoom,
+        totalBed,
+      };
+    });
+  };
+
+
+
+  const clearData = () => {
+    setData({
+      zone: '', sector: '', block: '', category: '', district: '', policeStation: "", name: '',
+      address: "", email: '', establishment: '', miniumRate: '', maximumRate: '', website: '', gmbUrl: '', distanceFromRoad: '', distanceFromSeaBeach: '', ac: '0', swimmingPool: '0',
+      parkingAvailable: '0', username: '', password: '', receptionPhone: '', proprietorName: "", proprietorPhone: "", managerName: '', managerPhone: '', alternateManagerPhone: '', restaurantAvailable: '0', conferanceHallAvailable: '0', status: '1',
+    });
+
+    setBedCapacity({
+      oneBed: '', twoBed: '', threeBed: '', fourBed: '', fiveBed: '', sixBed: '',
+      sevenBed: '', eightBed: '', nineBed: '', tenBed: '', totalBed: '', totalRoom: ''
+    })
+
+    setPhotoGallery([photoGalleryDataSet]);
+    setDocumentData([documentDataSet]);
+    setRoomTypeData([roomTypeSet]);
+
+  }
 
   return (
     <>
@@ -97,129 +253,720 @@ const Profile = () => {
         <SideNav />
         <div className='content__body'>
           <div className='content__body__main'>
-            <div className='w-full flex gap-3 items-center'>
-              <p className='text-lg font-bold text-blue-500'>Personal Info</p>
-              <div className='w-[25px] h-[25px] border bg-gray-50 cursor-pointer text-blue-500 rounded-full grid place-items-center' onClick={() => {
-                setEditMode(!editMode)
-                if (editMode) updateProfile();
-              }}>
-                {
-                  editMode ? <Icons.CHECK2 className='active:scale-50 transition-all' title='Save' />
-                    : <Icons.EDIT className='active:scale-50 transition-all' title='Edit' />
-                }
-              </div>
-            </div>
-            <hr className='profile__hr' />
-            <div className='w-full flex justify-center mb-2'>
-              <div className='relative border rounded-full w-[70px] h-[70px] grid place-items-center'>
-                <input type="file" className='hidden' id='fileUpload' onChange={(e) => handleFile(e)} />
-                <Avatar circle children={<FaUser />}
-                  size='lg' src={data.profile}
-                  className='border' />
-                <label className='absolute bottom-[-3px] cursor-pointer p-1 text-md right-0 bg-white text-black shadow-lg rounded-full border' htmlFor='fileUpload'>
-                  <Icons.PENCIL
-                    className='active:scale-50 transition-all'
+            <div className='flex justify-between  gap-5 flex-col lg:flex-row'>
+              <div className='w-full flex flex-col gap-3'>
+                <div>
+                  <p className='ml-1'>Zone<span className='required__text'>*</span></p>
+                  <MySelect2
+                    model={"zone"}
+                    onType={(v) => {
+                      console.log(v)
+                      setData({ ...data, zone: v })
+                    }}
+                    value={data.zone}
                   />
-                </label>
+                </div>
+                <div>
+                  <p>Category</p>
+                  <SelectPicker
+                    data={hotelCategories?.map(hc => ({ label: hc.hotel_category_name, value: hc._id })) || []}
+                    style={{ width: '100%' }}
+                    onChange={(v) => setData({ ...data, category: v })}
+                    value={data.category}
+                    placeholder="Select"
+                    searchable={true}
+                    cleanable={true}
+                  />
+                </div>
+                <div>
+                  <p className='ml-1'>Sector<span className='required__text'>*</span></p>
+                  <MySelect2
+                    model={"sector"}
+                    onType={(v) => {
+                      console.log(v)
+                      setData({ ...data, sector: v })
+                    }}
+                    value={data.sector}
+                  />
+                </div>
+                <div>
+                  <p className='ml-1'>Block<span className='required__text'>*</span></p>
+                  <MySelect2
+                    model={"block"}
+                    onType={(v) => {
+                      console.log(v)
+                      setData({ ...data, block: v })
+                    }}
+                    value={data.block}
+                  />
+                </div>
+                <div>
+                  <p className='ml-1'>District<span className='required__text'>*</span></p>
+                  <MySelect2
+                    model={"district"}
+                    onType={(v) => {
+                      console.log(v)
+                      setData({ ...data, district: v })
+                    }}
+                    value={data.district}
+                  />
+                </div>
+                <div>
+                  <p className='ml-1'>Police Station<span className='required__text'>*</span></p>
+                  <MySelect2
+                    model={"police-station"}
+                    onType={(v) => {
+                      console.log(v)
+                      setData({ ...data, policeStation: v })
+                    }}
+                    value={data.policeStation}
+                  />
+                </div>
+                <div>
+                  <p>Name<span className='required__text'>*</span></p>
+                  <input type='text' onChange={(e) => setData({ ...data, name: e.target.value })} value={data.name} />
+                </div>
+                <div>
+                  <p>Year of Establishment<span className='required__text'>*</span></p>
+                  <input type='text' onChange={(e) => setData({ ...data, establishment: e.target.value })}
+                    value={data.establishment} />
+                </div>
+                <div>
+                  <p>Address</p>
+                  <input type='text' onChange={(e) => setData({ ...data, address: e.target.value })} value={data.address} />
+                </div>
+                <div>
+                  <p>Email</p>
+                  <input type='email' onChange={(e) => setData({ ...data, email: e.target.value })}
+                    value={data.email} />
+                </div>
+                <div>
+                  <p>Username<span className='required__text'>*</span></p>
+                  <input type='text' onChange={(e) => setData({ ...data, username: e.target.value })}
+                    value={data.username} />
+                </div>
+                <div>
+                  <p>Password<span className='required__text'>*</span></p>
+                  <input type='password' onChange={(e) => setData({ ...data, password: e.target.value })}
+                    value={data.password} />
+                </div>
+              </div>
+
+              <div className='w-full flex flex-col gap-3'>
+                <div>
+                  <p>GMB URL (Google My Business URL or Google Map URL)</p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, gmbUrl: e.target.value })}
+                    value={data.gmbUrl} />
+                </div>
+                <div>
+                  <p>Distance From Main Road (In Meters)</p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, distanceFromRoad: e.target.value })}
+                    value={data.distanceFromRoad} />
+                </div>
+                <div>
+                  <p>Distance From Sea Beach (In Meters)</p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, distanceFromSeaBeach: e.target.value })}
+                    value={data.distanceFromSeaBeach} />
+                </div>
+                <div>
+                  <p>Reception Phone</p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, receptionPhone: e.target.value })}
+                    value={data.receptionPhone} />
+                </div>
+                <div>
+                  <p>Proprietor Name</p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, proprietorName: e.target.value })}
+                    value={data.proprietorName} />
+                </div>
+                <div>
+                  <p>Proprietor Phone</p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, proprietorPhone: e.target.value })}
+                    value={data.proprietorPhone} />
+                </div>
+                <div>
+                  <p>Manager Name</p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, managerName: e.target.value })}
+                    value={data.managerName} />
+                </div>
+                <div>
+                  <p>Manager Phone <span className='required__text'>*</span></p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, managerPhone: e.target.value })}
+                    value={data.managerPhone} />
+                </div>
+                <div>
+                  <p>Alternate Manager Phone</p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, alternateManagerPhone: e.target.value })}
+                    value={data.alternateManagerPhone} />
+                </div>
+
+                <div>
+                  <p>Minimum Rate</p>
+                  <input type='text' defaultValue={0}
+                    onChange={(e) => setData({ ...data, miniumRate: e.target.value })} value={data.miniumRate} />
+                </div>
+                <div>
+                  <p>Maximum Rate</p>
+                  <input type='text' defaultValue={0}
+                    onChange={(e) => setData({ ...data, maximumRate: e.target.value })} value={data.maximumRate} />
+                </div>
+                <div>
+                  <p>Website</p>
+                  <input type='text'
+                    onChange={(e) => setData({ ...data, website: e.target.value })} value={data.website} />
+                </div>
               </div>
             </div>
-            <div
-              className={`profile__table space-y-2 ${editMode ? "profile__table__active" : ""}`}>
-              <div>
-                <p className="font-medium">Name</p>
-                <input
-                  type="text"
-                  value={data.name}
-                  onChange={
-                    editMode ? (e) => setData({ ...data, name: e.target.value }) : null
-                  }
-                />
-              </div>
 
-              <div>
-                <p className="font-medium">Designation</p>
-                <input
-                  type="text"
-                  value={data.designation}
-                  onChange={editMode ? (e) => setData({ ...data, designation: e.target.value }) : null}
-                />
-              </div>
+            <div className='my-8'>
+              <div class="overflow-x-auto">
+                <table class="min-w-full border border-gray-200 text-left">
+                  <thead class="bg-gray-100 text-xs">
+                    <tr>
+                      <th class="px-2 py-2 border">Restaurant Available?</th>
+                      <th class="px-2 border">AC Available?</th>
+                      <th class="px-2 border">Swimming Pool?</th>
+                      <th class="px-2 border">Conference Hall Available?</th>
+                      <th class="px-2 border">Parking Available?</th>
+                      <th class="px-2 border">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="px-2 py-2 border">
+                        <Toggle
+                          checked={data.restaurantAvailable === "1"}
+                          onChange={(value) => setData({ ...data, restaurantAvailable: value ? "1" : "0" })}
+                          checkedChildren="Yes"
+                          unCheckedChildren="No"
+                        />
+                      </td>
 
-              <div>
-                <p className="font-medium">Role</p>
-                <input
-                  type="text"
-                  value={data.role}
-                  onChange={editMode ? (e) => setData({ ...data, role: e.target.value }) : null}
-                />
-              </div>
+                      <td className="px-2 py-2 border">
+                        <Toggle
+                          checked={data.ac === "1"}
+                          onChange={(value) => setData({ ...data, ac: value ? "1" : "0" })}
+                          checkedChildren="Yes"
+                          unCheckedChildren="No"
+                        />
+                      </td>
 
-              <div>
-                <p className="font-medium">Email</p>
-                <input
-                  type="email"
-                  value={data.email}
-                  onChange={editMode ? (e) => setData({ ...data, email: e.target.value }) : null}
-                />
-              </div>
+                      <td className="px-2 py-2 border">
+                        <Toggle
+                          checked={data.swimmingPool === "1"}
+                          onChange={(value) => setData({ ...data, swimmingPool: value ? "1" : "0" })}
+                          checkedChildren="Yes"
+                          unCheckedChildren="No"
+                        />
+                      </td>
 
-              <div>
-                <p className="font-medium">Contact Number</p>
-                <input
-                  type="tel"
-                  value={data.contact}
-                  onChange={editMode ? (e) => setData({ ...data, contact: e.target.value }) : null}
-                />
+                      <td className="px-2 py-2 border">
+                        <Toggle
+                          checked={data.conferanceHallAvailable === "1"}
+                          onChange={(value) => setData({ ...data, conferanceHallAvailable: value ? "1" : "0" })}
+                          checkedChildren="Yes"
+                          unCheckedChildren="No"
+                        />
+                      </td>
+
+                      <td className="px-2 py-2 border">
+                        <Toggle
+                          size={"md"}
+                          checked={data.parkingAvailable === "1"}
+                          onChange={(value) => setData({ ...data, parkingAvailable: value ? "1" : "0" })}
+                          checkedChildren="Yes"
+                          unCheckedChildren="No"
+                        />
+                      </td>
+
+                      <td className="px-2 py-2 border">
+                        <Toggle
+                          checked={data.status === "1"}
+                          onChange={(value) => setData({ ...data, status: value ? "1" : "0" })}
+                          checkedChildren="Operative"
+                          unCheckedChildren="Inoperative"
+                        />
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-          </div>
 
-          {/* ========================== CHANGE PASSWORD ====================== */}
-          {/* ================================================================== */}
-          <div className='content__body__main mt-5'>
-            <div className='w-full flex gap-3 items-center'>
-              <p className='text-lg font-bold text-blue-500'>Change Password</p>
-              <div className='w-[25px] h-[25px] border bg-gray-50 cursor-pointer text-blue-500 rounded-full grid place-items-center' onClick={() => {
-                setEditMode(!editPass)
-                // if (editPass) updateProfile();
-              }}>
-                {
-                  editPass ? <Icons.CHECK2 className='active:scale-50 transition-all' title='Save' />
-                    : <Icons.EDIT className='active:scale-50 transition-all' title='Edit' />
-                }
+            {/* ::::::::::::::::::::::::::::::::: HOTEL AND ROOM data ::::::::::::::::::::::::::: */}
+            <div className='my-8'>
+              <h6 className='my-4'>Room & Bed Capacity*</h6>
+              <div class="overflow-x-auto">
+                <table class="min-w-full border border-gray-200 text-left">
+                  <thead class="bg-gray-100 text-xs">
+                    <tr>
+                      <th class="px-2 py-2 border">One Bedroom</th>
+                      <th class="px-2 border">Two Bedroom</th>
+                      <th class="px-2 border">Three Bedroom</th>
+                      <th class="px-2 border">Four Bedroom</th>
+                      <th class="px-2 border">Five Bedroom</th>
+                      <th class="px-2 border">Six Bedroom</th>
+                      <th class="px-2 border">Seven Bedroom</th>
+                      <th class="px-2 border">Eight Bedroom</th>
+                      <th class="px-2 border">Nine Bedroom</th>
+                      <th class="px-2 border">Ten Bedroom</th>
+                      <th class="px-2 border font-bold">Total Beds</th>
+                      <th class="px-2 border font-bold">Total Rooms</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td className="px-2 py-2 border">
+                        <input
+                          type="number"
+                          placeholder="One Bed"
+                          value={bedCapacity.oneBed}
+                          onChange={(e) => handleBedCapacityChange(e, "oneBed")}
+                          className="w-20 p-2 border rounded text-xs"
+                        />
+                      </td>
+
+                      <td className="px-2 py-2 border">
+                        <input
+                          type="number"
+                          placeholder="Two Bed"
+                          value={bedCapacity.twoBed}
+                          onChange={(e) => handleBedCapacityChange(e, "twoBed")}
+                          className="w-20 p-2 border rounded text-xs"
+                        />
+                      </td>
+
+                      <td className="px-2 py-2 border">
+                        <input
+                          type="number"
+                          placeholder="Three Bed"
+                          value={bedCapacity.threeBed}
+                          onChange={(e) => handleBedCapacityChange(e, "threeBed")}
+                          className="w-20 p-2 border rounded text-xs"
+                        />
+                      </td>
+
+                      <td className="px-2 py-2 border">
+                        <input
+                          type="number"
+                          placeholder="Four Bed"
+                          value={bedCapacity.fourBed}
+                          onChange={(e) => handleBedCapacityChange(e, "fourBed")}
+                          className="w-20 p-2 border rounded text-xs"
+                        />
+                      </td>
+
+                      <td className="px-2 py-2 border">
+                        <input
+                          type="number"
+                          placeholder="Five Bed"
+                          value={bedCapacity.fiveBed}
+                          onChange={(e) => handleBedCapacityChange(e, "fiveBed")}
+                          className="w-20 p-2 border rounded text-xs"
+                        />
+                      </td>
+
+                      <td className="px-2 py-2 border">
+                        <input
+                          type="number"
+                          placeholder="Six Bed"
+                          value={bedCapacity.sixBed}
+                          onChange={(e) => handleBedCapacityChange(e, "sixBed")}
+                          className="w-20 p-2 border rounded text-xs"
+                        />
+                      </td>
+
+                      <td className="px-2 py-2 border">
+                        <input
+                          type="number"
+                          placeholder="Seven Bed"
+                          value={bedCapacity.sevenBed}
+                          onChange={(e) => handleBedCapacityChange(e, "sevenBed")}
+                          className="w-20 p-2 border rounded text-xs"
+                        />
+                      </td>
+
+                      <td className="px-2 py-2 border">
+                        <input
+                          type="number"
+                          placeholder="Eight Bed"
+                          value={bedCapacity.eightBed}
+                          onChange={(e) => handleBedCapacityChange(e, "eightBed")}
+                          className="w-20 p-2 border rounded text-xs"
+                        />
+                      </td>
+
+                      <td className="px-2 py-2 border">
+                        <input
+                          type="number"
+                          placeholder="Nine Bed"
+                          value={bedCapacity.nineBed}
+                          onChange={(e) => handleBedCapacityChange(e, "nineBed")}
+                          className="w-20 p-2 border rounded text-xs"
+                        />
+                      </td>
+
+                      <td className="px-2 py-2 border">
+                        <input
+                          type="number"
+                          placeholder="Ten Bed"
+                          value={bedCapacity.tenBed}
+                          onChange={(e) => handleBedCapacityChange(e, "tenBed")}
+                          className="w-20 p-2 border rounded text-xs"
+                        />
+                      </td>
+
+
+                      {/* <!-- Totals --> */}
+                      <td class="px-4 py-2 border bg-gray-50 font-semibold">{bedCapacity.totalBed}</td>
+                      <td class="px-4 py-2 border bg-gray-50 font-semibold">{bedCapacity.totalRoom}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-            <hr className='profile__hr' />
-            <div
-              className={`profile__table space-y-2 ${editPass ? "profile__table__active" : ""}`}>
-              <div>
-                <p className="font-medium">Current Password</p>
-                <input
-                  type="password"
-                  value={data.name}
-                  onChange={
-                    editPass ? (e) => setData({ ...data, name: e.target.value }) : null
-                  }
-                />
-              </div>
 
-              <div>
-                <p className="font-medium">New Password</p>
-                <input
-                  type="password"
-                  value={data.designation}
-                  onChange={editPass ? (e) => setData({ ...data, designation: e.target.value }) : null}
-                />
-              </div>
 
-              <div>
-                <p className="font-medium">Confirm Password</p>
-                <input
-                  type="password"
-                  value={data.role}
-                  onChange={editPass ? (e) => setData({ ...data, role: e.target.value }) : null}
-                />
-              </div>
+            {/* ::::::::::::::::::::::::::::::::: Photo Gallery ::::::::::::::::::::::::::: */}
+            <div className="mb-8 overflow-x-auto">
+              <h6 className='my-4'>Photo Gallery*</h6>
+              <table className="min-w-full border border-gray-200 rounded-lg shadow-sm">
+                <thead className="bg-gray-100 text-xs">
+                  <tr>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[*]">Image</th>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[30%]">Caption</th>
+                    <th className="px-4 py-2 font-medium text-gray-600 w-[10px] text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {photoGallery.map((p, index) => {
+                    return (
+                      <tr key={index} className="border-t">
+                        <td className="px-4 py-2">
+                          <div className="file__uploader__div">
+                            <span className="file__name">{photoGallery[index].fileName}</span>
+                            <div className="flex gap-2">
+                              <input
+                                type="file"
+                                id={`siteLogo-${index}`}
+                                className="hidden"
+                                onChange={async (e) => {
+                                  const file = e.target.files[0];
+                                  if (!file) return;
+                                  const fileData = await base64Data(file);
+
+                                  setPhotoGallery((prev) =>
+                                    prev.map((item, i) =>
+                                      i === index ? { ...item, image: fileData, fileName: file.name } : item
+                                    )
+                                  );
+                                }}
+                              />
+                              <label htmlFor={`siteLogo-${index}`} className="file__upload" title="Upload" >
+                                <MdUploadFile />
+                              </label>
+                              <LuFileX2
+                                className="remove__upload"
+                                title="Remove upload"
+                                onClick={() => {
+                                  setPhotoGallery((prev) =>
+                                    prev.map((item, i) =>
+                                      i === index ? { ...item, image: "", fileName: '' } : item
+                                    )
+                                  );
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-2">
+                          <input
+                            type="text"
+                            value={photoGallery[index].caption}
+                            onChange={(e) => {
+                              let temp = [...photoGallery];
+                              temp[index].caption = e.target.value;
+                              setPhotoGallery(temp);
+                            }}
+                          />
+                        </td>
+                        <td className="px-4 py-2">
+                          <button
+                            className='close__icon'
+                            onClick={() => {
+                              setPhotoGallery((pv) => pv.filter((_, i) => i !== index));
+                            }}
+                          >
+                            <Icons.DELETE />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+                <tfoot className="bg-gray-50">
+                  <tr>
+                    <td colSpan="3" className="px-4 py-2 text-center text-sm text-gray-500">
+                      <button
+                        className="w-full bg-[#003628] text-white rounded-sm flex items-center gap-1 justify-center outline-none py-2"
+                        onClick={() => {
+                          setPhotoGallery((pv) => [...pv, photoGalleryDataSet]);
+                        }}
+                      >
+                        <Icons.ADD className="text-white" /> Add More
+                      </button>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            {/* ::::::::::::::::::::::::::::::::::::: Documents :::::::::::::::::::::::::::::: */}
+            <div className="mb-8 overflow-x-auto">
+              <h6 className='my-4'>Documents*</h6>
+              <table className="min-w-full border border-gray-200 rounded-lg shadow-sm">
+                <thead className="bg-gray-100 text-xs">
+                  <tr>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[30%]">
+                      Document Type
+                    </th>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[*]">
+                      File
+                    </th>
+                    <th align='center' className="px-4 py-2 font-medium text-gray-600 w-[10px]">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {documentData.map((p, index) => {
+                    return (
+                      <tr key={index} className="border-t">
+                        <td>
+                          <SelectPicker
+                            data={documentType?.map(t => ({ label: t.document_type_name, value: t._id })) || []}
+                            style={{ width: '100%' }}
+                            onChange={(v) => {
+                              setDocumentData((prev) =>
+                                prev.map((item, i) =>
+                                  i === index ? { ...item, selectedDocument: v } : item
+
+                                )
+                              );
+                            }}
+                            value={documentData[index].selectedDocument}
+                            placeholder="Select"
+                            searchable={true}
+                            cleanable={true}
+                            placement='autoVertical'
+                            className='mx-3'
+                          />
+                        </td>
+                        <td className="px-4 py-2">
+                          <div className="file__uploader__div">
+                            <span className="file__name">{documentData[index].fileName}</span>
+                            <div className="flex gap-2">
+                              {/* unique ID for each row */}
+                              <input
+                                type="file"
+                                id={`document-${index}`}
+                                className="hidden"
+                                onChange={async (e) => {
+                                  const file = e.target.files[0];
+                                  if (!file) return;
+                                  const fileData = await base64Data(file);
+                                  setDocumentData((prev) =>
+                                    prev.map((item, i) =>
+                                      i === index ? { ...item, fileName: file.name, file: fileData } : item
+                                    )
+                                  );
+                                }}
+                              />
+                              <label htmlFor={`document-${index}`} className="file__upload" title="Upload">
+                                <MdUploadFile />
+                              </label>
+                              <LuFileX2
+                                className="remove__upload"
+                                title="Remove upload"
+                                onClick={() => {
+                                  setDocumentData((prev) =>
+                                    prev.map((item, i) =>
+                                      i === index ? { ...item, fileName: "" } : item
+                                    )
+                                  );
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-4 py-2">
+                          <button
+                            className='close__icon'
+                            onClick={() => {
+                              setDocumentData((pv) => pv.filter((_, i) => i !== index));
+                            }}
+                          >
+                            <Icons.DELETE />
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+                <tfoot className="bg-gray-50">
+                  <tr>
+                    <td colSpan="3" className="px-4 py-2 text-center text-sm text-gray-500">
+                      <button
+                        className="w-full bg-[#003628] text-white rounded-sm flex items-center gap-1 justify-center outline-none py-2"
+                        onClick={() => {
+                          setDocumentData((pv) => [...pv, documentDataSet]);
+                        }}
+                      >
+                        <Icons.ADD className="text-white" /> Add More
+                      </button>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            {/* ::::::::::::::::::::::::::::::::::::: Room Type :::::::::::::::::::::::::::::: */}
+            <div className="mb-8 overflow-x-auto">
+              <h6 className='my-4'>Room Type*</h6>
+              <table className="min-w-full border border-gray-200 rounded-lg shadow-sm">
+                <thead className="bg-gray-100 text-xs">
+                  <tr>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[*]">
+                      Room Type
+                    </th>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[20%]">
+                      Number of Room
+                    </th>
+                    <th className="px-4 py-2 text-left font-medium text-gray-600 w-[20%]">
+                      Price
+                    </th>
+                    <th className="px-4 py-2 text-center font-medium text-gray-600 w-[10%]" align='center'>
+                      Breakfast
+                    </th>
+                    <th align='center' className="px-4 py-2 text-center font-medium text-gray-600 w-[5%]">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {roomTypeData.map((row, index) => (
+                    <tr key={index} className="border-t">
+                      <td>
+                        <SelectPicker
+                          data={roomType?.map(t => ({ label: t.name, value: t._id })) || []}
+                          style={{ width: '100%' }}
+                          onChange={(v) => {
+                            if (roomTypeData.some((item, i) => item.selectedRoomType === v && i !== index)) {
+                              toast("This room type already added!", "error");
+                              return;
+                            }
+
+                            setRoomTypeData(prev =>
+                              prev.map((item, i) =>
+                                i === index ? { ...item, selectedRoomType: v } : item
+                              )
+                            );
+                          }}
+                          value={row.selectedRoomType}
+                          placeholder="Select"
+                          searchable={true}
+                          cleanable={true}
+                          placement='autoVertical'
+                          className='ml-3'
+                        />
+                      </td>
+                      <td className="px-4 py-2">
+                        <input
+                          type="number"
+                          value={row.numberOfRoom || ""}
+                          onChange={(e) => {
+                            setRoomTypeData(prev =>
+                              prev.map((item, i) =>
+                                i === index ? { ...item, numberOfRoom: e.target.value } : item
+                              )
+                            );
+                          }}
+                        />
+                      </td>
+                      <td className="px-4 py-2">
+                        <input
+                          type="text"
+                          value={row.price || ""}
+                          onChange={(e) => {
+                            setRoomTypeData(prev =>
+                              prev.map((item, i) =>
+                                i === index ? { ...item, price: e.target.value } : item
+                              )
+                            );
+                          }}
+                        />
+                      </td>
+                      <td className="px-4 py-2">
+                        <Toggle
+                          checked={row.breakFast === "1"}
+                          onChange={(value) => {
+                            setRoomTypeData(prev =>
+                              prev.map((item, i) =>
+                                i === index ? { ...item, breakFast: value ? "1" : "0" } : item
+                              )
+                            );
+                          }}
+                          checkedChildren="Yes"
+                          unCheckedChildren="No"
+                        />
+                      </td>
+
+                      <td className="px-4 py-2">
+                        <button
+                          type="button"
+                          className="close__icon"
+                          onClick={() => {
+                            setRoomTypeData(prev => prev.filter((_, i) => i !== index));
+                          }}
+                        >
+                          <Icons.DELETE />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+
+                </tbody>
+                <tfoot className="bg-gray-50">
+                  <tr>
+                    <td colSpan="5" className="px-4 py-2 text-center text-sm text-gray-500">
+                      <button
+                        className="w-full bg-[#003628] text-white rounded-sm flex items-center gap-1 justify-center outline-none py-2"
+                        onClick={() => {
+                          setRoomTypeData((pv) => [...pv, roomTypeSet]);
+                        }}
+                      >
+                        <Icons.ADD className="text-white" /> Add More
+                      </button>
+                    </td>
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <div className='form__btn__grp pb-2'>
+              <button className='save__btn' onClick={saveData}>
+                <Icons.CHECK /> Update
+              </button>
+              <button className='reset__btn' onClick={clearData}>
+                <Icons.RESET />
+                Reset
+              </button>
             </div>
           </div>
         </div>
@@ -229,3 +976,4 @@ const Profile = () => {
 }
 
 export default Profile;
+

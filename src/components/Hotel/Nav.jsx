@@ -6,20 +6,21 @@ import { Avatar, Popover, Whisper } from 'rsuite';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
-import { Icons } from '../../helper/icons'
+import { Icons } from '../../helper/icons';
+import useGetHotelData from '../../hooks/useGetHotelData';
 import useGetUserData from '../../hooks/useGetUserData';
 
 
 const Nav = ({ title }) => {
-  const [sideBar, setSideBar] = useState(true);
-  const { getProfile, getSetting } = useGetUserData(); // Get user info api call
-  const userDetails = useSelector((store) => store.userDetail); //get use details from store
-  const settingDetails = useSelector((store) => store.settingSlice); //get use details from store
+  const { getHotelData } = useGetHotelData();
+  const { getSetting } = useGetUserData(); // Get user info api call
+  const hotelDetails = useSelector((store) => store.hotelDetails);
+  const settingDetails = useSelector((store) => store.settingSlice)
 
   useEffect(() => {
-    getProfile();
+    getHotelData();
     getSetting();
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (settingDetails?.title) {
@@ -27,27 +28,11 @@ const Nav = ({ title }) => {
     }
   }, [settingDetails]);
 
-  const convertToSmall = () => {
-    setSideBar((prev) => {
-      const sideBar = document.querySelector("#sideBar");
-      prev ? localStorage.setItem("sideBarOpenStatus", false) : localStorage.setItem("sideBarOpenStatus", true);
-
-      sideBar.style.minWidth = prev ? "50px" : "175px";
-      sideBar.querySelectorAll("li").forEach(e => e.style.borderRadius = prev ? "0px" : "20px");
-      sideBar.querySelectorAll("li span:nth-child(2), li span:nth-child(3), h3").forEach(e => e.style.display = prev ? "none" : "");
-      sideBar.querySelectorAll("li .sub-menu").forEach(e => e.style.display = prev ? "none" : "");
-      sideBar.querySelectorAll("ul a, ul li").forEach(item => {
-        item.setAttribute("data-tooltip-content", prev ? item.querySelector("span:nth-child(2)").innerText : "");
-      });
-      sideBar.querySelectorAll("li svg").forEach(e => e.style.fontSize = prev ? "18px" : "14px")
-
-      return !prev;
-    })
-  }
 
   const logout = () => {
     Cookies.remove("hotel-token");
-    document.location.href = "/hotel/login";
+    Cookies.remove("hotelId");
+    document.location.href = "/";
   }
 
 
@@ -61,6 +46,13 @@ const Nav = ({ title }) => {
         <div className='flex items-center justify-between w-[calc(100%-175px)]'>
           <h6 className='text-black ml-5'>{title}</h6>
           <div className="admin__area px-4 py-2 flex items-center cursor-pointer gap-3">
+            <div className='ml-2 text-gray-800 text-[13px] flex items-center gap-1' onClick={() => {
+              window.location.href = 'tel:7501295001';
+            }}>
+              <Icons.CALL />
+              <span>Helpline: </span>
+              <span>7501295001</span>
+            </div>
             <Whisper className='flex items-center' trigger={'click'} placement='bottomEnd' speaker={
               <Popover full className='w-[150px]'>
                 <Link className='menu-link' to="/hotel/profile">
@@ -72,9 +64,12 @@ const Nav = ({ title }) => {
                   <span>Logout</span>
                 </Link>
               </Popover>}>
-              <Avatar circle children={<FaUser />} size='sm' src={userDetails.profile_picture} className='border' />
+              <Avatar circle
+                children={<FaUser />} size='sm'
+                className='border'
+              />
               <div className='ml-2 text-gray-800 text-[13px] flex items-center gap-1'>
-                {userDetails.name}
+                {hotelDetails?.hotel_name}
                 <Icons.DROPDOWN />
               </div>
             </Whisper>
