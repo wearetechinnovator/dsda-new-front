@@ -5,7 +5,7 @@ import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSearchTable from '../../hooks/useSearchTable';
 import useApi from '../../hooks/useApi';
-import { Popover, Whisper } from 'rsuite';
+import { Popover, SelectPicker, Whisper } from 'rsuite';
 import downloadPdf from '../../helper/downloadPdf';
 import useExportTable from '../../hooks/useExportTable';
 import useMyToaster from '../../hooks/useMyToaster';
@@ -14,7 +14,6 @@ import Pagination from '../../components/Admin/Pagination';
 
 
 const Amenities = () => {
-    const [searchBy, setSearchBy] = useState("room");
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
     const [activePage, setActivePage] = useState(1);
@@ -32,43 +31,40 @@ const Amenities = () => {
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
     const { deleteData, restoreData } = useApi()
-
-
-
+    const months = [
+        { label: 'January', value: 'january' },
+        { label: 'February', value: 'february' },
+        { label: 'March', value: 'march' },
+        { label: 'April', value: 'april' },
+        { label: 'May', value: 'may' },
+        { label: 'June', value: 'june' },
+        { label: 'July', value: 'july' },
+        { label: 'August', value: 'august' },
+        { label: 'September', value: 'september' },
+        { label: 'October', value: 'october' },
+        { label: 'November', value: 'november' },
+        { label: 'December', value: 'december' }
+    ];
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: currentYear - 2000 + 1 }, (_, i) => {
+        const year = 2000 + i;
+        return { label: year.toString(), value: year.toString() };
+    });
 
 
     // Table functionality ---------
-    const selectAll = (e) => {
-        if (e.target.checked) {
-            setSelected(data.map((item, _) => item._id));
-        } else {
-            setSelected([]);
-        }
-    };
-
-    const handleCheckboxChange = (id) => {
-        setSelected((prevSelected) => {
-            if (prevSelected.includes(id)) {
-                return prevSelected.filter((previd, _) => previd !== id);
-            } else {
-                return [...prevSelected, id];
-            }
-        });
-    };
-
-
     const exportTable = async (whichType) => {
         if (whichType === "copy") {
             copyTable("table"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'block-list.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'tourist-data.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Block List"); // Pass table ref and title
+            printTable(tableRef, "Tourist Data"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Block List', exportData);
+            let document = exportPdf('Tourist Data', exportData);
             downloadPdf(document)
         }
     }
@@ -80,7 +76,76 @@ const Amenities = () => {
             <main id='main'>
                 <SideNav />
                 <div className='content__body'>
-                    
+                    <div className='w-full flex flex-col md:flex-row gap-4'>
+                        <div className='content__body__main w-full'>
+                            <div className='w-full  flex justify-between items-center border-b pb-1'>
+                                <p className='font-semibold text-lg'>Filter Guest Entry</p>
+                                <Icons.SEARCH />
+                            </div>
+                            <div className='w-full flex flex-col md:flex-row justify-between gap-4 items-center mt-4'>
+                                <div className='w-full mt-3'>
+                                    <p>Select Month *</p>
+                                    <SelectPicker
+                                        className='w-full'
+                                        data={months}
+                                    />
+                                </div>
+                                <div className='w-full mt-3'>
+                                    <p>Select Year*</p>
+                                    <SelectPicker
+                                        className='w-full'
+                                        data={years}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className='form__btn__grp'>
+                                <button className='reset__btn'>
+                                    <Icons.RESET />
+                                    Reset
+                                </button>
+                                <button className='save__btn'>
+                                    <Icons.SEARCH /> Search
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className='content__body__main w-full'>
+                            <div className='w-full  flex justify-between items-center border-b pb-1'>
+                                <p className='font-semibold text-lg'>Aminity Charges</p>
+                                <Icons.RUPES />
+                            </div>
+                            <div className='w-full grid grid-cols-2 md:grid-cols-4 gap-4 mt-4'>
+                                <div className='hotel__amemities__card'>
+                                    <p className='text-2xl'>0</p>
+                                    <p>Today Charges</p>
+                                </div>
+                                <div className='hotel__amemities__card'>
+                                    <p className='text-2xl'>0</p>
+                                    <p>Today Charges</p>
+                                </div>
+                                <div className='hotel__amemities__card'>
+                                    <p className='text-2xl'>0</p>
+                                    <p>Today Charges</p>
+                                </div>
+                                <div className='hotel__amemities__card'>
+                                    <p className='text-2xl'>0</p>
+                                    <p>Today Charges</p>
+                                </div>
+                            </div>
+
+                            <div className='form__btn__grp'>
+                                <button className='reset__btn'>
+                                    <Icons.RUPES />
+                                    Previous Payments
+                                </button>
+                                <button className='reset__btn'>
+                                    <Icons.RUPES /> Pay Now
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     {/* ================================== Table start here ============================== */}
                     {/* ================================================================================== */}
 
@@ -133,81 +198,44 @@ const Amenities = () => {
                             </div>
                         </div>
                     </div>
-                    
+
                     {/* Table Content */}
                     <div className='content__body__main'>
-                        {/* Table start */}
                         <div className='overflow-x-auto list__table'>
                             <table className='min-w-full bg-white' id='table' ref={tableRef}>
                                 <thead className='bg-gray-100 list__table__head'>
                                     <tr>
-                                        <th className='py-2 px-4 border-b w-[50px]'>
-                                            <input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
-                                        </th>
                                         <td className='py-2 '>SL No.</td>
-                                        <td className='py-2 '>Head Guest Details</td>
-                                        <td className='py-2 '>Check In Date & Time</td>
-                                        <td className='py-2 '>ID Card</td>
-                                        <td className='py-2 '>Mobile</td>
-                                        <td className='py-2 '>Room No.</td>
-                                        <td className='py-2 '>Payment</td>
+                                        <td className='py-2 '>Date</td>
+                                        <td className='py-2 '>Total Guest(s) Enrolled</td>
+                                        <td className='py-2 '>Total Amenities Charge Payable (Rs)</td>
+                                        <td className='py-2 '>Remark</td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         data.map((d, i) => {
                                             return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                <td className='py-2 px-4 border-b max-w-[10px]'>
-                                                    <input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
-                                                </td>
                                                 <td className='px-4 border-b'>{d.name}</td>
                                                 <td className='px-4 text-center'>
-                                                    <Whisper
-                                                        placement='leftStart'
-                                                        trigger={"click"}
-                                                        onClick={(e) => e.stopPropagation()}
-                                                        speaker={<Popover full>
-                                                            <div
-                                                                className='table__list__action__icon'
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation()
-                                                                    navigate("/admin/block/edit/" + d._id)
-                                                                }}
-                                                            >
-                                                                <Icons.EDIT className='text-[16px]' />
-                                                                Edit
-                                                            </div>
-                                                            <div
-                                                                className='table__list__action__icon'
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation()
-                                                                    deleteData(d._id, "block");
-                                                                }}
-                                                            >
-                                                                <Icons.DELETE className='text-[16px]' />
-                                                                Delete
-                                                            </div>
-                                                            <div
-                                                                className='table__list__action__icon'
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation()
-                                                                    deleteData(d._id, "block", true);
-                                                                }}
-                                                            >
-                                                                <Icons.DELETE className='text-[16px]' />
-                                                                Trash
-                                                            </div>
-                                                        </Popover>}
-                                                    >
-                                                        <div className='table__list__action' >
-                                                            <Icons.HORIZONTAL_MORE />
-                                                        </div>
-                                                    </Whisper>
+                                                    <button className='rounded px-3 py-1 bg-blue-300 text-white'>
+                                                        Booking
+                                                    </button>
                                                 </td>
-
                                             </tr>
                                         })
                                     }
+                                    <tr className='cursor-pointer hover:bg-gray-100'>
+                                        <td className='px-4 border-b'>test</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td className='px-4 text-center'>
+                                            <button className='rounded px-3 py-1 bg-blue-300 text-white'>
+                                                Booking
+                                            </button>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
                             <div className='paginate__parent'>

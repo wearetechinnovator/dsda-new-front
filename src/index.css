@@ -1,12 +1,12 @@
 /* @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 * {
   box-sizing: border-box;
-  /* font-family: "Poppins", sans-serif; */
-  font-family: "Trebuchet MS", Helvetica, sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 400;
   font-style: normal;
 }
@@ -96,6 +96,13 @@ h6 {
   transition: 0.3s all;
   overflow-y: auto;
   border-right: 1px solid #003628;
+  background-color: #084A0C;
+}
+
+.menu__title{
+  @apply text-[13px] my-5 bg-white;
+  background-color: white !important;
+  text-transform: uppercase;
 }
 
 .side__nav::-webkit-scrollbar {
@@ -119,37 +126,40 @@ h6 {
 .side__nav__links a {
   color: white;
   text-decoration: none;
-
+  display: block;
 }
 
 .side__nav__links a:hover,
 .side__nav__links:focus {
   text-decoration: none;
-  /* color: white; */
   color: #003628;
-  font-weight: 600;
 }
 
 .side__nav .active__link {
-  background-color: white;
-  color: #003628;
+  background-color: #003254;
+  color: white;
   font-weight: 600;
 }
 
 .side__nav .active__link svg {
-  color: #003628;
+  color: white;
 }
 
 .side__nav__links li {
   padding: 8px;
-  font-size: 11px;
-  padding-left: 12px;
+  font-size: 12px;
+  padding-left: 8px;
   transition: 0.5s all;
   border-radius: 0px;
+  border-bottom: 1px solid #ffffff2e;
 }
 
-.side__nav__links li:hover {
+.side__nav__links li:hover:not(.sidebar__sub__menu li) {
   background-color: white;
+  color: #003628;
+}
+
+.side__nav__links li:hover .sidebar__sub__menu li::before {
   color: #003628;
 }
 
@@ -170,19 +180,35 @@ h6 {
 }
 
 .sidebar__sub__menu {
-  @apply w-full ml-5;
+  @apply w-full;
   overflow-y: hidden;
-  /* transition: 1s all linear; */
   height: 0px;
 }
 
 .open__sidebar__sub__menu {
   height: 100%;
-  /* transition: 1s all; */
+  margin-top: 10px;
 }
-
+.sidebar__sub__menu li {
+  padding-top: 3px;
+  font-size: 11px;
+  border: none;
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 5px;
+  padding-bottom: 0;
+  padding-right: 0;
+}
+.sidebar__sub__menu li::before{
+    content: "\f054";
+    position: absolute;
+    left: 7px;
+    top: 6px;
+    color: #ffffff;
+    font-family: 'Fontawesome';
+    font-size: 8px;
+}
 .side__nav__links li:hover .sidebar__sub__menu li a {
-
   color: #003628 !important;
 }
 
@@ -221,7 +247,7 @@ textarea {
 } */
 
 select {
-  @apply w-full p-[2px] border border-gray-200 rounded outline-none hover:border-[#003E32];
+  @apply w-full p-1 border border-gray-200 rounded outline-none hover:border-[#003E32];
 }
 
 
@@ -572,7 +598,7 @@ select {
 
 .list__table td:nth-child(2) {
   text-align: left;
-  padding-left: 30px;
+  /* padding-left: 30px; */
 }
 
 .list__table__head {
@@ -583,6 +609,10 @@ select {
 }
 
 .list__table tbody tr:hover {
+  background-color: #e4f8f49e;
+}
+
+.list__table tbody tr:nth-child(odd) {
   background-color: #e4f8f49e;
 }
 
@@ -847,7 +877,7 @@ input[type="checkbox"]:checked::before {
 
 .form__btn__grp button {
   @apply flex rounded text-white items-center px-2 py-1 gap-2 border-2;
-  box-shadow: 0px 0px 7px rgb(113, 113, 113);
+  /* box-shadow: 0px 0px 7px rgb(113, 113, 113); */
 }
 
 .form__btn__grp button:active {
@@ -899,4 +929,33 @@ input[type="checkbox"]:checked::before {
   color: white;
   background-color: tomato;
   font-size: 20px;
+}
+
+.upload__label {
+  @apply text-white cursor-pointer rounded-sm p-1.5 text-xs bg-blue-600;
+}
+
+.hotel__amemities__card {
+  @apply rounded-xl p-2 h-[70px] flex flex-col justify-end text-right text-white text-sm;
+  box-shadow: 3px 3px 7px rgb(185, 184, 184);
+}
+
+.hotel__amemities__card div p:first-child {
+  font-size: 20px;
+}
+
+.hotel__amemities__card:nth-child(1) {
+  background: linear-gradient(180deg, rgba(238, 188, 67, 1) 0%, rgba(130, 92, 2, 1) 100%);
+}
+
+.hotel__amemities__card:nth-child(2) {
+  background: linear-gradient(180deg, rgba(238, 188, 67, 1) 0%, rgba(130, 92, 2, 1) 100%);
+}
+
+.hotel__amemities__card:nth-child(3) {
+  background: linear-gradient(180deg, rgba(3, 179, 20, 1) 0%, rgba(0, 52, 56, 1) 100%);
+}
+
+.hotel__amemities__card:nth-child(4) {
+  background: linear-gradient(180deg, rgba(3, 179, 20, 1) 0%, rgba(0, 52, 56, 1) 100%);
 }

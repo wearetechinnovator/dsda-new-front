@@ -41,6 +41,26 @@ const Profile = () => {
   }, [userData])
 
 
+  const updatePass = async () => {
+    if (passData.newPass !== passData.confirmPass) {
+      return toast("New password and confirm password not match", "error");
+    }
+
+    const req = await fetch(process.env.REACT_APP_MASTER_API + "/admin/change-password", {
+      method: "POST",
+      headers: {
+        "Content-Type": 'application/json',
+      },
+      body: JSON.stringify({ ...passData, userId, token: cookie })
+    })
+    const res = await req.json();
+    if (req.status !== 200) {
+      return toast(res.err, "error");
+    }
+
+    toast("Password change successfully", "success");
+  }
+
   const updateProfile = async () => {
     const req = await fetch(url, {
       method: "POST",
@@ -174,13 +194,13 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* ========================== CHANGE PASSWORD ====================== */}
-          {/* ================================================================== */}
+          {/* ================================= CHANGE PASSWORD ============================ */}
+          {/* ============================================================================== */}
           <div className='content__body__main mt-5'>
             <div className='w-full flex gap-3 items-center'>
               <p className='text-lg font-bold text-blue-500'>Change Password</p>
               <div className='w-[25px] h-[25px] border bg-gray-50 cursor-pointer text-blue-500 rounded-full grid place-items-center' onClick={() => {
-                setEditMode(!editPass)
+                setEditPass(!editPass)
                 // if (editPass) updateProfile();
               }}>
                 {
@@ -196,9 +216,9 @@ const Profile = () => {
                 <p className="font-medium">Current Password</p>
                 <input
                   type="password"
-                  value={data.name}
+                  value={passData.currentPass}
                   onChange={
-                    editPass ? (e) => setData({ ...data, name: e.target.value }) : null
+                    editPass ? (e) => setPassData({ ...passData, currentPass: e.target.value }) : null
                   }
                 />
               </div>
@@ -207,8 +227,8 @@ const Profile = () => {
                 <p className="font-medium">New Password</p>
                 <input
                   type="password"
-                  value={data.designation}
-                  onChange={editPass ? (e) => setData({ ...data, designation: e.target.value }) : null}
+                  value={passData.newPass}
+                  onChange={editPass ? (e) => setPassData({ ...passData, newPass: e.target.value }) : null}
                 />
               </div>
 
@@ -216,8 +236,8 @@ const Profile = () => {
                 <p className="font-medium">Confirm Password</p>
                 <input
                   type="password"
-                  value={data.role}
-                  onChange={editPass ? (e) => setData({ ...data, role: e.target.value }) : null}
+                  value={passData.confirmPass}
+                  onChange={editPass ? (e) => setPassData({ ...passData, confirmPass: e.target.value }) : null}
                 />
               </div>
             </div>

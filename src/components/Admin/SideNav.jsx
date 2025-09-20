@@ -9,12 +9,9 @@ import { Icons } from '../../helper/icons';
 
 const SideNav = () => {
   const activePath = window.location.pathname;
- 
-
-
 
   return (
-    <aside className='side__nav  min-w-[175px] h-[calc(100vh-50px)] bg-[#003e32] text-white' id='sideBar'>
+    <aside className='side__nav  min-w-[183px] h-[calc(100vh-50px)] text-white' id='sideBar'>
       <div className="side__nav__logo flex justify-center items-center">
       </div>
       <div className="side__nav__links pb-3">
@@ -29,7 +26,7 @@ const SideNav = () => {
           </ul>
         </div>
         <div className="side__nav__link__group">
-          <h3 className='text-[16px] my-5'>Master</h3>
+          <h3 className='menu__title'>Master</h3>
           <Link to={"/admin/user"} data-tooltip-id="sideBarItemToolTip">
             <li className={`flex items-center ${activePath.search("/admin/user") >= 0 ? 'active__link' : ''}`}>
               <span className='mr-3'><Icons.USER size={"13px"} /></span>
@@ -64,7 +61,7 @@ const SideNav = () => {
           </Link>
         </div>
         <div className="side__nav__link__group">
-          <h3 className='text-[16px] my-5'>Management</h3>
+          <h3 className='menu__title'>Management</h3>
           <Link to={"/admin/item"} data-tooltip-id="sideBarItemToolTip">
             <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
               <span className='mr-3'><Icons.HOTEL /></span>
@@ -85,7 +82,7 @@ const SideNav = () => {
           </Link>
         </div>
         <div className="side__nav__link__group">
-          <h3 className='text-[16px] my-5'>MIS</h3>
+          <h3 className='menu__title'>MIS</h3>
           <Link to={"/admin/item"} data-tooltip-id="sideBarItemToolTip">
             <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
               <span className='mr-3'><Icons.HOTEL /></span>

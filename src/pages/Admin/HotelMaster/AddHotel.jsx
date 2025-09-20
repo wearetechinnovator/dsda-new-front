@@ -30,7 +30,7 @@ const AddHotel = ({ mode }) => {
     sevenBed: '', eightBed: '', nineBed: '', tenBed: '', totalBed: '', totalRoom: ''
   });
 
-  //  Gallery images;
+  // Gallery images;
   const photoGalleryDataSet = { image: '', fileName: '', caption: '' }
   const [photoGallery, setPhotoGallery] = useState([photoGalleryDataSet])
 
@@ -49,25 +49,79 @@ const AddHotel = ({ mode }) => {
 
 
   useEffect(() => {
-    if (mode) {
-      const get = async () => {
-        const url = process.env.REACT_APP_MASTER_API + "/item/get";
-        const cookie = Cookies.get("token");
+    const hotelDataFetch = async () => {
+      const url = process.env.REACT_APP_MASTER_API + "/hotel/get";
+      const token = Cookies.get("token");
+      const req = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": 'application/json'
+        },
+        body: JSON.stringify({ token, id })
+      })
+      const hotelData = await req.json();
 
-        const req = await fetch(url, {
-          method: "POST",
-          headers: {
-            "Content-Type": 'application/json'
-          },
-          body: JSON.stringify({ token: cookie, id: id })
+      if (hotelData && hotelData.hotel_gallery_image && hotelData.hotel_room_type && hotelData.hotel_document) {
+        setPhotoGallery(hotelData.hotel_gallery_image);
+        setRoomTypeData(hotelData.hotel_room_type);
+        setDocumentData(hotelData.hotel_document);
+
+        setData({
+          zone: hotelData.hotel_zone_id?._id || "",
+          sector: hotelData.hotel_sector_id?._id || "",
+          block: hotelData.hotel_block_id || "",
+          category: hotelData.hotel_category?._id || "",
+          district: hotelData.hotel_district_id?._id || "",
+          policeStation: hotelData.hotel_police_station_id?._id || "",
+
+          name: hotelData.hotel_name || "",
+          address: hotelData.hotel_address || "",
+          email: hotelData.hotel_email || "",
+          establishment: hotelData.hotel_year_of_establishment || "",
+          miniumRate: hotelData.hotel_minimum_rate || "",
+          maximumRate: hotelData.hotel_maximum_rate || "",
+          website: hotelData.hotel_website || "",
+          gmbUrl: hotelData.hotel_gmb || "",
+          distanceFromRoad: hotelData.hotel_distance_from_main_road || "",
+          distanceFromSeaBeach: hotelData.hotel_distance_from_sea_beach || "",
+
+          ac: hotelData.hotel_has_ac || "0",
+          swimmingPool: hotelData.hotel_has_swimming_pool || "0",
+          parkingAvailable: hotelData.hotel_has_parking || "0",
+
+          username: hotelData.hotel_username || "",
+          password: hotelData.hotel_password || "",
+          receptionPhone: hotelData.hotel_reception_phone || "",
+          proprietorName: hotelData.hotel_proprietor_name || "",
+          proprietorPhone: hotelData.hotel_proprietor_phone || "",
+          managerName: hotelData.hotel_manager_name || "",
+          managerPhone: hotelData.hotel_manager_phone || "",
+          alternateManagerPhone: hotelData.hotel_manager_phone_alternative || "",
+
+          restaurantAvailable: hotelData.hotel_has_restaurant || "0",
+          conferanceHallAvailable: hotelData.hotel_has_conference_hall || "0",
+          status: hotelData.hotel_status || "1",
+        });
+
+        setBedCapacity({
+          oneBed: hotelData.hotel_1_bed_room || "",
+          twoBed: hotelData.hotel_2_bed_room || "",
+          threeBed: hotelData.hotel_3_bed_room || "",
+          fourBed: hotelData.hotel_4_bed_room || "",
+          fiveBed: hotelData.hotel_5_bed_room || "",
+          sixBed: hotelData.hotel_6_bed_room || "",
+          sevenBed: hotelData.hotel_7_bed_room || "",
+          eightBed: hotelData.hotel_8_bed_room || "",
+          nineBed: hotelData.hotel_9_bed_room || "",
+          tenBed: hotelData.hotel_10_bed_room || "",
+          totalBed: hotelData.hotel_total_bed || "",
+          totalRoom: hotelData.hotel_total_room || "",
         })
-        const res = await req.json();
-        const data = res.data;
 
       }
-
-      get();
     }
+
+    hotelDataFetch();
   }, [mode])
 
 
@@ -114,15 +168,14 @@ const AddHotel = ({ mode }) => {
     const allData = { ...data, ...bedCapacity, photoGallery, documentData, roomTypeData };
 
     try {
-      const url = process.env.REACT_APP_MASTER_API + "/hotel/create";
+      const url = !mode ? process.env.REACT_APP_MASTER_API + "/hotel/create" : process.env.REACT_APP_MASTER_API + "/hotel/update";
       const token = Cookies.get("token");
       const req = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(!mode ? { ...allData, token } : { ...allData, token, id: id }
-        )
+        body: JSON.stringify(!mode ? { ...allData, token } : { ...allData, token, id })
       })
       const res = await req.json();
       if (req.status !== 200 || res.err) {
@@ -835,7 +888,7 @@ const AddHotel = ({ mode }) => {
                           data={roomType?.map(t => ({ label: t.name, value: t._id })) || []}
                           style={{ width: '100%' }}
                           onChange={(v) => {
-                            if(roomTypeData.some((item, i) => item.selectedRoomType === v && i !== index)){
+                            if (roomTypeData.some((item, i) => item.selectedRoomType === v && i !== index)) {
                               toast("This room type already added!", "error");
                               return;
                             }

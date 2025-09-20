@@ -32,7 +32,7 @@ const Forgot = React.lazy(() => import("./pages/Admin/Auth/Forgot"));
 const Otp = React.lazy(() => import("./pages/Admin/Auth/Otp"));
 const ChangePassword = React.lazy(() => import("./pages/Admin/Auth/ChangePassword"));
 const NotFound = React.lazy(() => import("./pages/Admin/NotFound"));
-const Invoice = React.lazy(() => import("./pages/Admin/details/Invoice"));
+// const Invoice = React.lazy(() => import("./pages/Admin/details/Invoice"));
 const ItemDetails = React.lazy(() => import("./pages/Admin/AdminUser/Details"));
 
 
@@ -44,16 +44,18 @@ const HotelOtp = React.lazy(() => import("./pages/Hotel/Auth/Otp"));
 const HotelChangePassword = React.lazy(() => import("./pages/Hotel/Auth/ChangePassword"));
 const HotelProfile = React.lazy(() => import("./pages/Hotel/Auth/Profile"));
 const CheckIn = React.lazy(() => import("./pages/Hotel/CheckIn"));
+const CheckInOTP = React.lazy(() => import("./pages/Hotel/CheckInOTP"));
 const CheckOut = React.lazy(() => import("./pages/Hotel/CheckOut"));
 const TouristData = React.lazy(() => import("./pages/Hotel/TouristData"));
-// const Amenities = React.lazy(() => import("./pages/Hotel/Amenities"));
-// const Payments = React.lazy(() => import("./pages/Hotel/Payments"));
-// const OtherPayments = React.lazy(() => import("./pages/Hotel/OtherPayments"));
+const GuestEntry = React.lazy(() => import("./pages/Hotel/GuestEntry"));
+const Amenities = React.lazy(() => import("./pages/Hotel/Amenities"));
+const Payments = React.lazy(() => import("./pages/Hotel/Payments"));
+const OtherPayments = React.lazy(() => import("./pages/Hotel/OtherPayments"));
 
 
 const App = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  // const location = useLocation();
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -154,11 +156,13 @@ const App = () => {
           <Route path="dashboard" element={<HotelDashboard />} />
           <Route path="profile" element={<HotelProfile />} />
           <Route path="check-in" element={<CheckIn />} />
+          <Route path="check-in-otp" element={<CheckInOTP />} />
+          <Route path="check-in/guest-entry" element={<GuestEntry />} />
           <Route path="check-out" element={<CheckOut />} />
           <Route path="tourist-data" element={<TouristData />} />
-          <Route path="amenities" element={<HotelProfile />} />
-          <Route path="payments" element={<HotelProfile />} />
-          <Route path="other-payments" element={<HotelProfile />} />
+          <Route path="amenities" element={<Amenities />} />
+          <Route path="payments" element={<Payments />} />
+          <Route path="other-payments" element={<OtherPayments />} />
         </Route>
 
 

@@ -3,11 +3,13 @@ import SideNav from '../../components/Hotel/HotelSideNav'
 import { Icons } from '../../helper/icons';
 import { useState } from 'react';
 import useMyToaster from '../../hooks/useMyToaster';
+import { useNavigate } from 'react-router-dom';
 
 
 
 
 const CheckIn = () => {
+    const navigate = useNavigate();
     const toast = useMyToaster();
     const [data, setData] = useState({ guestMobile: '', numberOfGuests: '', verificationBy: 'manager' });
 
@@ -15,22 +17,23 @@ const CheckIn = () => {
     // Handle Check In..............
     const handleCheckIn = () => {
         if ([data.guestMobile, data.numberOfGuests, data.verificationBy].some(field => field === '')) {
-           return toast("All fields are required", "error");
+            return toast("All fields are required", "error");
         }
 
-        try {
-
-            
-        } catch (error) {
-            console.log(error);
-            toast("Something went wrong", "error");
+        if (data.verificationBy === 'otp') {
+            navigate('/hotel/check-in-otp', {
+                state: data
+            });
+        } else {
+            navigate('/hotel/check-in/guest-entry', {
+                state: data
+            });
         }
     }
 
     // Reset Form Data...............
-    const clearData = () => {
-        setData({ guestMobile: '', numberOfGuests: '', verificationBy: 'manager' });
-    }
+    const clearData = () => setData({ guestMobile: '', numberOfGuests: '', verificationBy: 'manager' });
+
 
     return (
         <>
