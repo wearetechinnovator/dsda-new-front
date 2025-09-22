@@ -94,7 +94,7 @@ const Login = () => {
           </Link>
         </div>
         <div className='flex justify-center mt-2 text-[12px]'>
-          <Link to={'/admin/forget'}>Forgot password</Link>
+          <Link to={'/admin/forgot-password'}>Forgot password</Link>
         </div>
       </div>
     </main>

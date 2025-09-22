@@ -1,5 +1,5 @@
 import "../../../assets/css/login.css"
-import Logo from '../../../assets/images/logo.png';
+import Logo from '../../../assets/images/b_logo.png';
 import { useState } from "react";
 import useLoginShake from "../../../hooks/useLoginShake";
 import { useNavigate } from 'react-router-dom';
@@ -10,7 +10,7 @@ import Loading from "../../../components/Admin/Loading";
 
 
 
-const Forget = () => {
+const Forgot = () => {
   const [loginData, setLoginData] = useState({ email: ''});
   const shakeIt = useLoginShake();
   const navigate = useNavigate();
@@ -58,8 +58,12 @@ const Forget = () => {
 
   return (
     <main className='login__main'>
-      <img src={Logo} alt="Logo.png" className='mb-5' />
-      <div className="login__box flex flex-col" id="loginBox">
+       <video id="video-background" autoPlay loop muted className="absolute w-full h-full object-cover z-0">
+        <source src="/welcome.mp4" type="video/mp4"/>
+          Your browser does not support the video tag.
+      </video>
+      <img src={Logo} alt="Logo.png" className='mb-5 z-10 b__logo' />
+      <div className="login__box flex flex-col z-10" id="loginBox">
         <p className="text-2xl font-bold">Forgot Your Password</p>
         <p className="mb-10">
           Please enter the email address you'd like your password<br />
@@ -85,4 +89,4 @@ const Forget = () => {
   )
 }
 
-export default Forget;
+export default Forgot;

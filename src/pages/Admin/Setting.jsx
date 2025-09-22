@@ -138,7 +138,7 @@ const Setting = () => {
               <div>
                 <p className="font-medium">Email</p>
                 <input
-                  type="text"
+                  type="email"
                   value={data.email}
                   onChange={editMode ? (e) => setData({ ...data, email: e.target.value }) : null}
                 />
@@ -157,7 +157,7 @@ const Setting = () => {
               <div>
                 <p className="font-medium">Address</p>
                 <input
-                  type="email"
+                  type="text"
                   value={data.address}
                   onChange={editMode ? (e) => setData({ ...data, address: e.target.value }) : null}
                 />

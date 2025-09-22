@@ -51,14 +51,18 @@ const Profile = () => {
       headers: {
         "Content-Type": 'application/json',
       },
-      body: JSON.stringify({ ...passData, userId, token: cookie })
+      body: JSON.stringify({
+        currentPassword: passData.currentPass,
+        newPassword: passData.newPass, userId, token: cookie
+      })
     })
     const res = await req.json();
     if (req.status !== 200) {
       return toast(res.err, "error");
     }
 
-    toast("Password change successfully", "success");
+    setPassData({ currentPass: '', newPass: '', confirmPass: '' });
+    return toast("Password change successfully", "success");
   }
 
   const updateProfile = async () => {
@@ -201,7 +205,7 @@ const Profile = () => {
               <p className='text-lg font-bold text-blue-500'>Change Password</p>
               <div className='w-[25px] h-[25px] border bg-gray-50 cursor-pointer text-blue-500 rounded-full grid place-items-center' onClick={() => {
                 setEditPass(!editPass)
-                // if (editPass) updateProfile();
+                if (editPass) updatePass();
               }}>
                 {
                   editPass ? <Icons.CHECK2 className='active:scale-50 transition-all' title='Save' />
@@ -220,6 +224,7 @@ const Profile = () => {
                   onChange={
                     editPass ? (e) => setPassData({ ...passData, currentPass: e.target.value }) : null
                   }
+                  autoComplete='off'
                 />
               </div>
 
@@ -229,6 +234,7 @@ const Profile = () => {
                   type="password"
                   value={passData.newPass}
                   onChange={editPass ? (e) => setPassData({ ...passData, newPass: e.target.value }) : null}
+                  autoComplete='off'
                 />
               </div>
 
@@ -238,10 +244,12 @@ const Profile = () => {
                   type="password"
                   value={passData.confirmPass}
                   onChange={editPass ? (e) => setPassData({ ...passData, confirmPass: e.target.value }) : null}
+                  autoComplete='off'
                 />
               </div>
             </div>
           </div>
+
         </div>
       </main>
     </>

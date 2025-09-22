@@ -28,6 +28,7 @@ import { LuHotel } from "react-icons/lu";
 import { LiaTrashRestoreAltSolid } from "react-icons/lia";
 import { IoClose } from "react-icons/io5";
 import { MdCall } from "react-icons/md";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 
 
@@ -41,6 +42,7 @@ export const Icons = {
   RESET: HiOutlineRefresh,
   SEARCH: LuSearch,
   ADD: IoIosAdd,
+  BACK: IoMdArrowRoundBack,
   EDIT: FaRegEdit,
   MORE: IoMdMore,
   HORIZONTAL_MORE: FiMoreHorizontal,

@@ -45,11 +45,11 @@ const SideNav = () => {
             </div>
 
             <ul className='sidebar__sub__menu'>
-              <li><Link to="/admin/district">District</Link></li>
-              <li><Link to="/admin/block">Block</Link></li>
-              <li><Link to="/admin/police-station">Police Station</Link></li>
-              <li><Link to="/admin/zone">Zone</Link></li>
-              <li><Link to="/admin/sector">Sector</Link></li>
+              <li className={`${activePath.search("/admin/district") >= 0 ? 'active__link' : ''}`}><Link to="/admin/district">District</Link></li>
+              <li className={`${activePath.search("/admin/block") >= 0 ? 'active__link' : ''}`}><Link to="/admin/block">Block</Link></li>
+              <li className={`${activePath.search("/admin/police-station") >= 0 ? 'active__link' : ''}`}><Link to="/admin/police-station">Police Station</Link></li>
+              <li className={`${activePath.search("/admin/zone") >= 0 ? 'active__link' : ''}`}><Link to="/admin/zone">Zone</Link></li>
+              <li className={`${activePath.search("/admin/sector") >= 0 ? 'active__link' : ''}`}><Link to="/admin/sector">Sector</Link></li>
             </ul>
           </li>
 

@@ -173,7 +173,7 @@ const Hotelmaster = ({ mode }) => {
                                 <button
                                     onClick={() => navigate("/admin/hotel/add")}
                                     className='bg-[#003E32] text-white '>
-                                    <Icons.ADD className='text-xl text-white' />
+                                    <Icons.ADD className='text-lg text-white' />
                                     Add New
                                 </button>
                                 {/* menu... */}
