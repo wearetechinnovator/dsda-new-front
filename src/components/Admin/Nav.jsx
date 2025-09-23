@@ -79,7 +79,6 @@ const Nav = ({ title }) => {
       <nav className='w-full h-[50px] bg-white shadow-lg flex justify-between'>
         <div className="logo__area w-[183px]  h-[100%] bg-[#084A0C] px-3 flex justify-between items-center">
           <img src={settingDetails.logo} alt="" width={120} className='shadow-lg' id='NavLogo' />
-          {/* <TbMenuDeep className='text-white text-xl cursor-pointer' onClick={toggleSideBar} /> */}
         </div>
         <div className='flex items-center justify-between w-[calc(100%-183px)]'>
           <h6 className='text-black ml-5'>{title}</h6>

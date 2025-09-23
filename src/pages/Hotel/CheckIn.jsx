@@ -19,6 +19,12 @@ const CheckIn = () => {
         if ([data.guestMobile, data.numberOfGuests, data.verificationBy].some(field => field === '')) {
             return toast("All fields are required", "error");
         }
+        // Validate Mobile Number............
+        if (isNaN(data.guestMobile) || data.guestMobile.length !== 10) {
+            return toast("Invalid Mobile Number", "error");
+        }
+
+
 
         if (data.verificationBy === 'otp') {
             navigate('/hotel/check-in-otp', {
@@ -26,7 +32,7 @@ const CheckIn = () => {
             });
         } else {
             navigate('/hotel/check-in/guest-entry', {
-                state: data
+                state: data,
             });
         }
     }

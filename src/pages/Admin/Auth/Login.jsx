@@ -57,7 +57,6 @@ const Login = () => {
       return toast("Something went wrong", "error")
     }
 
-
   }
 
   return (

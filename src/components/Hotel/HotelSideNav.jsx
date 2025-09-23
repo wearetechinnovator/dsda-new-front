@@ -1,8 +1,6 @@
-import { useState } from 'react'
 import { HiOutlineHome } from "react-icons/hi2";
 import { Link } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip';
-import { FaEarthAmericas } from 'react-icons/fa6';
 import { Icons } from '../../helper/icons';
 
 
@@ -11,7 +9,7 @@ const SideNav = () => {
   const activePath = window.location.pathname;
 
   return (
-    <aside className='side__nav  min-w-[175px] h-[calc(100vh-50px)] bg-[#003e32] text-white' id='sideBar'>
+    <aside className='side__nav relative min-w-[175px] h-[calc(100vh-50px)] bg-[#003e32] text-white' id='sideBar'>
       <div className="side__nav__logo flex justify-center items-center">
       </div>
       <div className="side__nav__links pb-3">
@@ -66,6 +64,20 @@ const SideNav = () => {
         </div>
       </div>
       <Tooltip id='sideBarItemToolTip' />
+
+      {/* :::::::::::::::::::::::: Contact Information ::::::::::::::::::: */}
+      {/* :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */}
+
+      <div className='text-[12px] w-full p-2 flex items-center gap-1 text-white cursor-pointer absolute left-0 bottom-0 border-t border-[#ffffff25]'
+        onClick={() => {
+          window.location.href = 'tel:7501295001';
+        }}>
+        <Icons.CALL
+          className='bg-[#003254] w-[25px] h-[25px] rounded-full p-1'
+        />
+        <span>Helpline: </span>
+        <span>7501295001</span>
+      </div>
     </aside>
   );
 }

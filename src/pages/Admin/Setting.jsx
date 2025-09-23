@@ -22,7 +22,8 @@ const Setting = () => {
   const [editMode, setEditMode] = useState(false);
   const [data, setData] = useState({
     title: '', email: '', contact_number: '',
-    address: "", charges_per_tourist: '', id_card_list: '', logo: ''
+    address: "", charges_per_tourist: '', id_card_list: '', logo: '',
+    age_for_charges: 5, day_for_checkin_checkout: 2, payment_start_date: 5
   });
   const url = userData.err ?
     process.env.REACT_APP_MASTER_API + "/site-setting/create" :
@@ -36,6 +37,8 @@ const Setting = () => {
       title: userData.title, email: userData.email, id_card_list: userData.id_card_list,
       address: userData.address, charges_per_tourist: userData.charges_per_tourist,
       contact_number: userData.contact_number, logo: userData.logo,
+      age_for_charges: userData.age_for_charges, day_for_checkin_checkout: userData.day_for_checkin_checkout,
+      payment_start_date: userData.payment_start_date
     });
 
   }, [userData])
@@ -169,6 +172,30 @@ const Setting = () => {
                   type="tel"
                   value={data.charges_per_tourist}
                   onChange={editMode ? (e) => setData({ ...data, charges_per_tourist: e.target.value }) : null}
+                />
+              </div>
+              <div>
+                <p className="font-medium">Minimus Age for Charge</p>
+                <input
+                  type="tel"
+                  value={data.age_for_charges}
+                  onChange={editMode ? (e) => setData({ ...data, age_for_charges: e.target.value }) : null}
+                />
+              </div>
+              <div>
+                <p className="font-medium">Previous Checkin Checkout Date</p>
+                <input
+                  type="tel"
+                  value={data.day_for_checkin_checkout}
+                  onChange={editMode ? (e) => setData({ ...data, day_for_checkin_checkout: e.target.value }) : null}
+                />
+              </div>
+              <div>
+                <p className="font-medium">Payment Day Start</p>
+                <input
+                  type="tel"
+                  value={data.payment_start_date}
+                  onChange={editMode ? (e) => setData({ ...data, payment_start_date: e.target.value }) : null}
                 />
               </div>
             </div>

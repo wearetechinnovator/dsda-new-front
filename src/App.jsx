@@ -34,6 +34,7 @@ const ChangePassword = React.lazy(() => import("./pages/Admin/Auth/ChangePasswor
 const NotFound = React.lazy(() => import("./pages/Admin/NotFound"));
 // const Invoice = React.lazy(() => import("./pages/Admin/details/Invoice"));
 const ItemDetails = React.lazy(() => import("./pages/Admin/AdminUser/Details"));
+const ManageHotel = React.lazy(() => import("./pages/Admin/ManageHotel"));
 
 
 // Hotel Dashboard
@@ -95,6 +96,7 @@ const App = () => {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="profile" element={<Profile />} />
           <Route path="site-setting" element={<Setting />} />
+          <Route path="manage-hotel" element={<ManageHotel />} />
 
           {/* Admin */}
           <Route path="user" element={< UserList />} />

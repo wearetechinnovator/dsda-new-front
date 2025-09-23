@@ -34,9 +34,9 @@ const SideNav = () => {
             </li>
           </Link>
 
-          <li className={`flex flex-col w-full items-center 
+          <li className={`drp__dwn__menu flex flex-col w-full items-center 
             ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
-            <div className='flex cursor-pointer w-full relative' onClick={() => {
+            <div className=' flex cursor-pointer w-full relative' onClick={() => {
               document.querySelector(".sidebar__sub__menu").classList.toggle('open__sidebar__sub__menu');
             }}>
               <span className='mr-3'><Icons.LOCATION /></span>
@@ -62,8 +62,8 @@ const SideNav = () => {
         </div>
         <div className="side__nav__link__group">
           <h3 className='menu__title'>Management</h3>
-          <Link to={"/admin/item"} data-tooltip-id="sideBarItemToolTip">
-            <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
+          <Link to={"/admin/manage-hotel"} data-tooltip-id="sideBarItemToolTip">
+            <li className={`flex items-center ${activePath.search("/admin/manage-hotel") >= 0 ? 'active__link' : ''}`}>
               <span className='mr-3'><Icons.HOTEL /></span>
               <span>Manage Single Hotel</span>
             </li>
@@ -90,7 +90,7 @@ const SideNav = () => {
             </li>
           </Link>
 
-          <li className={`flex flex-col w-full items-center  ${activePath.search("/admin/bed") >= 0 ? 'active__link' : ''}`}>
+          <li className={`drp__dwn__menu flex flex-col w-full items-center  ${activePath.search("/admin/bed") >= 0 ? 'active__link' : ''}`}>
             <div className='flex cursor-pointer w-full relative'
               onClick={() => {
                 document.querySelector(".sidebar__sub__menu__bed")
@@ -109,7 +109,7 @@ const SideNav = () => {
             </ul>
           </li>
 
-          <li className={`flex flex-col w-full items-center 
+          <li className={`drp__dwn__menu flex flex-col w-full items-center 
             ${activePath.search("/admin/tourist") >= 0 ? 'active__link' : ''}`}>
             <div className='flex cursor-pointer w-full relative'
               onClick={() => {
@@ -129,7 +129,7 @@ const SideNav = () => {
             </ul>
           </li>
 
-          <li className={`flex flex-col w-full items-center 
+          <li className={`drp__dwn__menu flex flex-col w-full items-center 
             ${activePath.search("/admin/amenities-charges") >= 0 ? 'active__link' : ''}`}>
 
             <div className='flex cursor-pointer w-full relative'

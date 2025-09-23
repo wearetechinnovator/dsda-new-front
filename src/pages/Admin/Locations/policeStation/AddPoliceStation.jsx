@@ -1,22 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Nav from '../../../../components/Admin/Nav';
-import SideNav from '../../../../components/Admin/SideNav'
-import { FaRegCheckCircle } from "react-icons/fa";
-import { LuFileX2, LuRefreshCcw } from "react-icons/lu";
-import { CgPlayListAdd } from "react-icons/cg";
+import SideNav from '../../../../components/Admin/SideNav';
 import useMyToaster from '../../../../hooks/useMyToaster';
-import { SelectPicker } from 'rsuite';
 import Cookies from 'js-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
-import { RiDeleteBin6Line } from 'react-icons/ri';
 import MySelect2 from '../../../../components/Admin/MySelect2';
 import { Icons } from '../../../../helper/icons';
-import { MdUploadFile } from 'react-icons/md';
 
 
 
 const AddPoliceStation = ({ mode, save }) => {
-
     return (
         <>
             <Nav title={mode ? "Update Police Station " : "Add New Police Station"} />
