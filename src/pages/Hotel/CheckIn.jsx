@@ -59,6 +59,8 @@ const CheckIn = () => {
                                     placeholder='Enter Guest Mobile No.'
                                     value={data.guestMobile}
                                     onChange={(e) => setData({ ...data, guestMobile: e.target.value })}
+                                    maxLength={10}
+                                    minLength={10}
                                 />
                             </div>
                             <div>

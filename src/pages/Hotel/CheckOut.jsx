@@ -32,6 +32,9 @@ const CheckOut = () => {
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
     const { deleteData, restoreData } = useApi()
+    const [quickSearchFields, setQuickSearchFields] = useState({
+        roomNo: '', mobileNo: '', fromDate: '', toDate: ''
+    })
 
 
 

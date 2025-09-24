@@ -4,9 +4,12 @@ import { Icons } from '../../helper/icons';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import base64Data from '../../helper/getBase64';
+import useMyToaster from '../../hooks/useMyToaster';
+import Cookies from 'js-cookie';
 
 
 const GuestEntry = () => {
+    const toast = useMyToaster();
     const location = useLocation()
     const [state, setState] = useState([]);
     const [country, setCountry] = useState([]);
@@ -49,6 +52,48 @@ const GuestEntry = () => {
         get("state");
     }, [])
 
+
+    const handleSubmit = async () => {
+        if ([checkInDetails.mobileNumbe, checkInDetails.NumberOfGuest, checkInDetails.checkInDate, checkInDetails.checkInTime].some(field => field === '')) {
+            return toast("All fields are required", "error");
+        }
+
+        for (let i = 0; i < guestList.length; i++) {
+            const guest = guestList[i];
+            if ([guest.guestName, guest.gender, guest.age, guest.nationality, guest.address, guest.idType, guest.idNumber, guest.idProof, guest.mobileNumber, guest.roomNumber].some(field => !field || field === '')) {
+                return toast("All fields are required", "error");
+            }
+        }
+
+        try {
+            const Url = process.env.REACT_APP_BOOKING_API + "/check-in/add-booking";
+            const hotelId = Cookies.get('hotelId');
+            const token = Cookies.get('hotel-token');
+
+            const req = await fetch(Url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ checkInDetails, guestList, hotelId, token }),
+            })
+            const res = await req.json();
+            if (res.success) {
+                toast(res.msg, "success");
+            } else {
+                toast(res.err, "error");
+            }
+
+        } catch (error) {
+            console.log(error);
+            toast("Something went wrong", "error");
+        }
+
+    }
+
+    const clearData = () => {
+
+    }
 
     return (
         <>
@@ -185,10 +230,10 @@ const GuestEntry = () => {
                                                                         }}>
                                                                         <option value="">--Select State --</option>
                                                                         {
-                                                                        state.map((s, _)=>{
-                                                                            return <option value={s._id}>{s.state_name}</option>
-                                                                        })
-                                                                    }
+                                                                            state.map((s, _) => {
+                                                                                return <option value={s._id}>{s.state_name}</option>
+                                                                            })
+                                                                        }
                                                                     </select>
                                                                     <select value={gl.city}
                                                                         onChange={(e) => {
@@ -211,7 +256,7 @@ const GuestEntry = () => {
                                                                     }}>
                                                                     <option value="">--Select Country --</option>
                                                                     {
-                                                                        country.map((c, _)=>{
+                                                                        country.map((c, _) => {
                                                                             return <option value={c._id}>{c.country_name}</option>
                                                                         })
                                                                     }
@@ -278,10 +323,10 @@ const GuestEntry = () => {
                                                 <td valign='top'>
                                                     <input type="text"
                                                         placeholder='Enter Guest Mobile Number'
-                                                        value={gl.mobileNumbe}
+                                                        value={gl.mobileNumber}
                                                         onChange={(e) => {
                                                             const updatedList = [...guestList];
-                                                            updatedList[index].mobileNumbe = e.target.value;
+                                                            updatedList[index].mobileNumber = e.target.value;
                                                             setGuestList(updatedList);
                                                         }}
                                                     />
@@ -338,10 +383,10 @@ const GuestEntry = () => {
                         </div>
                         {/* ============================== TABLE END HERE ====================== */}
                         <div className='form__btn__grp mt-5'>
-                            <button className='save__btn'>
+                            <button className='save__btn' onClick={handleSubmit}>
                                 <Icons.CHECK /> Submit
                             </button>
-                            <button className='reset__btn'>
+                            <button className='reset__btn' onClick={clearData}>
                                 <Icons.RESET />
                                 Reset
                             </button>
