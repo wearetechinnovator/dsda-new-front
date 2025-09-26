@@ -24,7 +24,7 @@ const UserAdd = ({ mode }) => {
   useEffect(() => {
     if (mode) {
       const get = async () => {
-        const url = process.env.REACT_APP_API_URL + "/item/get";
+        const url = process.env.REACT_APP_MASTER_API + "/item/get";
         const cookie = Cookies.get("token");
 
         const req = await fetch(url, {
