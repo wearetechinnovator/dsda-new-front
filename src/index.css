@@ -4,6 +4,11 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --first__color: #78efff;
+  --second__color: #024f83;
+}
+
 * {
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
@@ -39,7 +44,7 @@
   height: calc(100vh - 50px);
   display: flex;
   justify-content: space-between;
-  
+
 }
 
 .content__body {
@@ -56,15 +61,10 @@
   padding: 10px;
   border-radius: 5px;
   box-shadow: 0px 0px 5px lightgrey;
-  /* border:1px solid #E5E7EB; */
+  border:1px solid var(--first__color);
   font-size: 13px !important;
   background-color: white;
 }
-
-/* .content__body__main:hover{
-  box-shadow: 0px 0px 5px lightgrey;
-  border: none;
-} */
 
 h1,
 h2,
@@ -75,16 +75,25 @@ h6 {
   line-height: 0% !important;
 }
 
-.nav__logo {
-  /* box-shadow: 4px 3px #888888; */
+nav{
+  @apply w-full h-[50px] border-b bg-white shadow-lg flex justify-between;
 }
 
-.navbar__tools{
+.nav__profile__area{
+  background-color: var(--second__color) !important;
+  color: white !important;
+  height: 100%;
+  padding:0px 10px;
+  display: flex;
+  align-items: center;
+}
+.navbar__tools {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-.navbar__tools button{
+
+.navbar__tools button {
   @apply w-[30px] h-[30px] rounded-full grid place-items-center cursor-pointer bg-[#045f9c] text-white p-1;
 }
 
@@ -103,6 +112,7 @@ h6 {
 /* Sidenav */
 .logo__area {
   transition: 0.3s all;
+  @apply  w-[175px] h-[100%] bg-[#084A0C] px-3 flex justify-between items-center;
 }
 
 .side__nav {
@@ -112,7 +122,7 @@ h6 {
   background-color: #084A0C;
 }
 
-.menu__title{
+.menu__title {
   @apply text-[13px] my-5 bg-white;
   background-color: white !important;
   text-transform: uppercase;
@@ -202,9 +212,11 @@ h6 {
   height: 100%;
   margin-top: 10px;
 }
-.open__sidebar__sub__menu__click{
+
+.open__sidebar__sub__menu__click {
   height: 100%;
 }
+
 .sidebar__sub__menu li {
   padding-top: 3px;
   font-size: 11px;
@@ -215,15 +227,17 @@ h6 {
   padding-bottom: 0;
   padding-right: 0;
 }
-.sidebar__sub__menu li::before{
-    content: "\f054";
-    position: absolute;
-    left: 7px;
-    top: 6px;
-    color: #ffffff;
-    font-family: 'Fontawesome';
-    font-size: 8px;
+
+.sidebar__sub__menu li::before {
+  content: "\f054";
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  color: #ffffff;
+  font-family: 'Fontawesome';
+  font-size: 8px;
 }
+
 .side__nav__links li:hover .sidebar__sub__menu li a {
   color: #003628 !important;
 }
@@ -251,11 +265,12 @@ h6 {
 
 input,
 textarea {
-  @apply w-full p-1 border border-gray-200 outline-none hover:border-[#003E32] focus:shadow-xl focus:shadow-gray-300;
-  @apply focus:border-[#003E32];
+  @apply w-full p-1 border border-gray-200 outline-none focus:shadow-gray-300;
   line-height: 16px !important;
   border-radius: 4px;
-
+}
+input:focus, textarea:focus{
+  border:1px solid var(--first__color)
 }
 
 /* input[type="checkbox"] {
@@ -263,7 +278,10 @@ textarea {
 } */
 
 select {
-  @apply w-full p-1 border border-gray-200 rounded outline-none hover:border-[#003E32];
+  @apply w-full p-[0.1rem] border border-gray-200 rounded outline-none;
+}
+select:hover{
+  border: 1px solid var(--first__color);
 }
 
 
@@ -354,9 +372,10 @@ select {
 
 
 .file__uploader__div {
-  @apply w-full border rounded hover:border-[#003E32];
-  @apply flex justify-between items-center gap-1 p-1;
-
+  @apply w-full border rounded flex justify-between items-center gap-1 p-1;
+}
+.file__uploader__div:hover{
+  border: 1px solid var(--first__color)
 }
 
 .file__upload {
@@ -489,16 +508,18 @@ select {
 }
 
 .add_new_compnent {
-  @apply mb-5 w-full bg-white rounded p-2 shadow-sm overflow-hidden transition-all;
+  @apply mb-5 w-full bg-white p-2 pb-3 overflow-hidden transition-all border-b;
 }
 
 .add_new_compnent button {
   @apply px-3 py-1 rounded flex items-center gap-1 text-[13px] border;
 }
-.add_new_compnent input{
+
+.add_new_compnent input {
   padding: 5px !important;
 }
-.add_new_compnent select{
+
+.add_new_compnent select {
   padding: 1px !important;
 }
 
@@ -570,7 +591,7 @@ select {
 
 
 .paginate__parent {
-  @apply flex justify-between items-center mt-2;
+  @apply flex justify-between items-center mt-2 text-xs;
 }
 
 .paginate__button__back {
@@ -591,7 +612,8 @@ select {
 }
 
 .active__page {
-  @apply bg-blue-700 text-white;
+  background-color: var(--second__color);
+  color: white;
 }
 
 .paginate__button__next {
@@ -623,7 +645,8 @@ select {
 }
 
 .list__table__head {
-  background-color: #003E32;
+  /* background-color: #003E32; */
+  background-color: var(--second__color);
   color: white;
   font-weight: bold;
   border: 1px solid #003E32;
@@ -982,4 +1005,62 @@ input[type="checkbox"]:checked::before {
 
 .hotel__amemities__card:nth-child(4) {
   background: linear-gradient(180deg, rgba(3, 179, 20, 1) 0%, rgba(0, 52, 56, 1) 100%);
+}
+
+.total__data_cards {
+  @apply grid grid-cols-2 lg:grid-cols-5 gap-8;
+}
+.total__data_cards__bottom{
+  @apply grid grid-cols-2 lg:grid-cols-4 gap-8 mt-4;
+}
+
+.total__data_cards .total__card, .total__data_cards__bottom .total__card {
+  border-radius: 20px;
+  display: flex;
+  justify-content: end;
+  align-items: end;
+  height: 120px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  padding-right: 10px;
+  padding-bottom: 10px;
+  box-shadow: 0px 0px 10px rgb(79, 79, 80);
+  cursor: pointer;
+}
+.total__data_cards .total__card.center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card__icon {
+  position: absolute;
+  left: -25px;
+  bottom: -25px;
+  font-size: 150px;
+  color: rgba(255, 255, 255, 0.171);
+}
+
+.center__icon {
+  font-size: 60px;
+  color: rgb(238, 235, 235);
+}
+
+.total__card__data p:first-child {
+  @apply text-right text-3xl;
+}
+.blue__grad {
+  background: linear-gradient(to bottom, rgba(29, 29, 104, 0.774), rgb(25, 25, 90));
+  /* box-shadow: 0px 0px 10px blue; */
+}
+.green__grad {
+  background: linear-gradient(to bottom, rgb(0, 128, 0), rgb(3, 51, 3));
+  /* box-shadow: 0px 0px 10px blue; */
+}
+.red__grad{
+  background: linear-gradient(to bottom, rgb(231, 125, 125), rgb(189, 18, 18));
+}
+.yellow__grad{
+  background:linear-gradient(to bottom, rgb(247, 213, 20), rgb(97, 65, 7));
 }

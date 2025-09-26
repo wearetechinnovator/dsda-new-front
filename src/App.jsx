@@ -52,6 +52,7 @@ const GuestEntry = React.lazy(() => import("./pages/Hotel/GuestEntry"));
 const Amenities = React.lazy(() => import("./pages/Hotel/Amenities"));
 const Payments = React.lazy(() => import("./pages/Hotel/Payments"));
 const OtherPayments = React.lazy(() => import("./pages/Hotel/OtherPayments"));
+const Statistics = React.lazy(()=>import('./pages/Hotel/Statistics'));
 
 
 const App = () => {
@@ -156,6 +157,7 @@ const App = () => {
         <Route path="/hotel/change-password" element={<ProtectCP><HotelChangePassword /></ProtectCP>} />
         <Route path="/hotel" element={<ProtectHotelRoute />}>
           <Route path="dashboard" element={<HotelDashboard />} />
+          <Route path="statistics" element={<Statistics />} />
           <Route path="profile" element={<HotelProfile />} />
           <Route path="check-in" element={<CheckIn />} />
           <Route path="check-in-otp" element={<CheckInOTP />} />

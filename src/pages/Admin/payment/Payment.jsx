@@ -14,7 +14,6 @@ import Pagination from '../../../components/Admin/Pagination';
 import MySelect2 from '../../../components/Admin/MySelect2';
 
 
-document.title = "Admin User"
 const Payment = ({ mode }) => {
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();

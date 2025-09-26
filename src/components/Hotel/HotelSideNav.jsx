@@ -21,6 +21,12 @@ const SideNav = () => {
                 <span>Dashboard</span>
               </li>
             </Link>
+            <Link to="/hotel/statistics" data-tooltip-id="sideBarItemToolTip">
+              <li className={`flex items-center ${"/hotel/statistics" === activePath ? 'active__link' : ''}`} >
+                <span className='mr-3'><HiOutlineHome /></span>
+                <span>Statistics</span>
+              </li>
+            </Link>
           </ul>
         </div>
         <div className="side__nav__link__group">

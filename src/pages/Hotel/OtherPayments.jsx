@@ -87,61 +87,59 @@ const OtherPayments = () => {
                     {/* ================================== Table start here ============================== */}
                     {/* ================================================================================== */}
 
-                    {/* Option Bar */}
-                    <div className="content__body__main mt-5 mb-5 w-full bg-white rounded p-4 shadow-sm add_new_compnent overflow-hidden
-                         transition-all">
-                        <div className='flex justify-between items-center'>
-                            <div className='flex flex-col'>
-                                <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
-                                    <option value={10}>10</option>
-                                    <option value={25}>25</option>
-                                    <option value={50}>50</option>
-                                    <option value={100}>100</option>
-                                </select>
-                            </div>
-                            <div className='flex items-center gap-2'>
-                                <div className='flex w-full flex-col lg:w-[300px]'>
-                                    <input type='text'
-                                        placeholder='Search...'
-                                        onChange={searchTable}
-                                        className='p-[6px]'
-                                    />
+                    {/* Table Content */}
+                    <div className='content__body__main mt-4'>
+                        {/* Option Bar */}
+                        <div className="add_new_compnent">
+                            <div className='flex justify-between items-center'>
+                                <div className='flex flex-col'>
+                                    <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                        <option value={10}>10</option>
+                                        <option value={25}>25</option>
+                                        <option value={50}>50</option>
+                                        <option value={100}>100</option>
+                                    </select>
                                 </div>
-                                <div className='flex justify-end'>
-                                    <Whisper placement='leftStart' enterable
-                                        speaker={<Popover full>
-                                            <div className='download__menu' onClick={() => exportTable('print')} >
-                                                <Icons.PRINTER className='text-[16px]' />
-                                                Print Table
+                                <div className='flex items-center gap-2'>
+                                    <div className='flex w-full flex-col lg:w-[300px]'>
+                                        <input type='text'
+                                            placeholder='Search...'
+                                            onChange={searchTable}
+                                            className='p-[6px]'
+                                        />
+                                    </div>
+                                    <div className='flex justify-end'>
+                                        <Whisper placement='leftStart' enterable
+                                            speaker={<Popover full>
+                                                <div className='download__menu' onClick={() => exportTable('print')} >
+                                                    <Icons.PRINTER className='text-[16px]' />
+                                                    Print Table
+                                                </div>
+                                                <div className='download__menu' onClick={() => exportTable('copy')}>
+                                                    <Icons.COPY className='text-[16px]' />
+                                                    Copy Table
+                                                </div>
+                                                <div className='download__menu' onClick={() => exportTable('pdf')}>
+                                                    <Icons.PDF className="text-[16px]" />
+                                                    Download Pdf
+                                                </div>
+                                                <div className='download__menu' onClick={() => exportTable('excel')} >
+                                                    <Icons.EXCEL className='text-[16px]' />
+                                                    Download Excel
+                                                </div>
+                                            </Popover>}
+                                        >
+                                            <div className='record__download' >
+                                                <Icons.MORE />
                                             </div>
-                                            <div className='download__menu' onClick={() => exportTable('copy')}>
-                                                <Icons.COPY className='text-[16px]' />
-                                                Copy Table
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('pdf')}>
-                                                <Icons.PDF className="text-[16px]" />
-                                                Download Pdf
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('excel')} >
-                                                <Icons.EXCEL className='text-[16px]' />
-                                                Download Excel
-                                            </div>
-                                        </Popover>}
-                                    >
-                                        <div className='record__download' >
-                                            <Icons.MORE />
-                                        </div>
-                                    </Whisper>
+                                        </Whisper>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    {/* Table Content */}
-                    <div className='content__body__main'>
                         <div className='overflow-x-auto list__table'>
                             <table className='min-w-full bg-white' id='table' ref={tableRef}>
-                                <thead className='bg-gray-100 list__table__head'>
+                                <thead className='list__table__head'>
                                     <tr>
                                         <td className='py-2 '>SL No.</td>
                                         <td className='py-2 '>Hotel</td>

@@ -29,11 +29,8 @@ import { LiaTrashRestoreAltSolid } from "react-icons/lia";
 import { IoClose } from "react-icons/io5";
 import { MdCall } from "react-icons/md";
 import { IoMdArrowRoundBack } from "react-icons/io";
-
-
-
-
-
+import { FaList } from "react-icons/fa";
+import { RiMessage2Line } from "react-icons/ri";
 
 
 
@@ -80,5 +77,7 @@ export const Icons = {
   CHECK2: FaCheck,
   CLOSE: IoClose,
   CALL: MdCall,
+  LIST: FaList,
+  NOTICE: RiMessage2Line,
 };
 

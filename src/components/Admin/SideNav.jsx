@@ -11,7 +11,7 @@ const SideNav = () => {
   const activePath = window.location.pathname;
 
   return (
-    <aside className='side__nav  min-w-[183px] h-[calc(100vh-50px)] text-white' id='sideBar'>
+    <aside className='side__nav  min-w-[175px] h-[calc(100vh-50px)] text-white' id='sideBar'>
       <div className="side__nav__logo flex justify-center items-center">
       </div>
       <div className="side__nav__links pb-3">

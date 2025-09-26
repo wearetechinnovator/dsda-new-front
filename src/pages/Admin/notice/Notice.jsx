@@ -14,7 +14,6 @@ import { Icons } from '../../../helper/icons';
 import Pagination from '../../../components/Admin/Pagination';
 
 
-document.title = "Admin User"
 const Notice = ({ mode }) => {
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
@@ -129,70 +128,66 @@ const Notice = ({ mode }) => {
                 <SideNav />
                 <Tooltip id='itemTooltip' />
                 <div className='content__body'>
-                    <div
-                        className={`mb-5 w-full bg-white rounded p-4 shadow-sm add_new_compnent overflow-hidden transition-all`}>
-                        <div className='flex justify-between items-center'>
-                            <div className='flex flex-col'>
-                                <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
-                                    <option value={10}>10</option>
-                                    <option value={25}>25</option>
-                                    <option value={50}>50</option>
-                                    <option value={100}>100</option>
-                                </select>
-                            </div>
-                            <div className='flex items-center gap-2'>
-                                <div className='flex w-full flex-col lg:w-[300px]'>
-                                    <input type='text'
-                                        placeholder='Search...'
-                                        onChange={searchTable}
-                                        className='p-[6px]'
-                                    />
-                                </div>
-                                <button
-                                    className={`${selected.length > 0 ? 'bg-red-400 text-white' : 'bg-gray-100'} border`}>
-                                    <Icons.DELETE className='text-lg' />
-                                    Delete
-                                </button>
-                                <button
-                                    onClick={() => navigate("/admin/notice/add")}
-                                    className='bg-[#003E32] text-white '>
-                                    <Icons.ADD className='text-xl text-white' />
-                                    Add New
-                                </button>
-                                <div className='flex justify-end'>
-                                    <Whisper placement='leftStart' enterable
-                                        speaker={<Popover full>
-                                            <div className='download__menu' onClick={() => exportTable('print')} >
-                                                <Icons.PRINTER className='text-[16px]' />
-                                                Print Table
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('copy')}>
-                                                <Icons.COPY className='text-[16px]' />
-                                                Copy Table
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('pdf')}>
-                                                <Icons.PDF className="text-[16px]" />
-                                                Download Pdf
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('excel')} >
-                                                <Icons.EXCEL className='text-[16px]' />
-                                                Download Excel
-                                            </div>
-                                        </Popover>}
-                                    >
-                                        <div className='record__download' >
-                                            <Icons.MORE />
-                                        </div>
-                                    </Whisper>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id='itemFilter'>
-                        </div>
-                    </div>
                     {
                         <div className='content__body__main'>
+                            <div className={`add_new_compnent`}>
+                                <div className='flex justify-between items-center'>
+                                    <div className='flex flex-col'>
+                                        <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                            <option value={10}>10</option>
+                                            <option value={25}>25</option>
+                                            <option value={50}>50</option>
+                                            <option value={100}>100</option>
+                                        </select>
+                                    </div>
+                                    <div className='flex items-center gap-2'>
+                                        <div className='flex w-full flex-col lg:w-[300px]'>
+                                            <input type='text'
+                                                placeholder='Search...'
+                                                onChange={searchTable}
+                                                className='p-[6px]'
+                                            />
+                                        </div>
+                                        <button
+                                            className={`${selected.length > 0 ? 'bg-red-400 text-white' : 'bg-gray-100'} border`}>
+                                            <Icons.DELETE className='text-lg' />
+                                            Delete
+                                        </button>
+                                        <button
+                                            onClick={() => navigate("/admin/notice/add")}
+                                            className='bg-[#003E32] text-white '>
+                                            <Icons.ADD className='text-xl text-white' />
+                                            Add New
+                                        </button>
+                                        <div className='flex justify-end'>
+                                            <Whisper placement='leftStart' enterable
+                                                speaker={<Popover full>
+                                                    <div className='download__menu' onClick={() => exportTable('print')} >
+                                                        <Icons.PRINTER className='text-[16px]' />
+                                                        Print Table
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('copy')}>
+                                                        <Icons.COPY className='text-[16px]' />
+                                                        Copy Table
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('pdf')}>
+                                                        <Icons.PDF className="text-[16px]" />
+                                                        Download Pdf
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('excel')} >
+                                                        <Icons.EXCEL className='text-[16px]' />
+                                                        Download Excel
+                                                    </div>
+                                                </Popover>}
+                                            >
+                                                <div className='record__download' >
+                                                    <Icons.MORE />
+                                                </div>
+                                            </Whisper>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             {/* Table start */}
                             <div className='overflow-x-auto list__table'>
                                 <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>

@@ -1,5 +1,5 @@
 import Nav from '../../components/Hotel/Nav';
-import SideNav from '../../components/Hotel/HotelSideNav'
+import SideNav from '../../components/Hotel/HotelSideNav';
 import { Icons } from '../../helper/icons';
 import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +19,7 @@ const CheckOut = () => {
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
     const [activePage, setActivePage] = useState(1);
     const [dataLimit, setDataLimit] = useState(10);
-    const [totalData, setTotalData] = useState()
+    const [totalData, setTotalData] = useState();
     const [selected, setSelected] = useState([]);
     const navigate = useNavigate();
     const [data, setData] = useState([]);
@@ -35,8 +35,6 @@ const CheckOut = () => {
     const [quickSearchFields, setQuickSearchFields] = useState({
         roomNo: '', mobileNo: '', fromDate: '', toDate: ''
     })
-
-
 
 
 
@@ -136,58 +134,57 @@ const CheckOut = () => {
                     {/* ================================== Table start here ============================== */}
                     {/* ================================================================================== */}
 
-                    {/* Option Bar */}
-                    <div className="content__body__main mt-5 mb-5 w-full bg-white rounded p-4 shadow-sm add_new_compnent overflow-hidden
-           				 transition-all">
-                        <div className='flex justify-between items-center'>
-                            <div className='flex flex-col'>
-                                <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
-                                    <option value={10}>10</option>
-                                    <option value={25}>25</option>
-                                    <option value={50}>50</option>
-                                    <option value={100}>100</option>
-                                </select>
-                            </div>
-                            <div className='flex items-center gap-2'>
-                                <div className='flex w-full flex-col lg:w-[300px]'>
-                                    <input type='text'
-                                        placeholder='Search...'
-                                        onChange={searchTable}
-                                        className='p-[6px]'
-                                    />
+
+                    <div className='content__body__main mt-4'>
+                        {/* Option Bar */}
+                        <div className="add_new_compnent">
+                            <div className='flex justify-between items-center'>
+                                <div className='flex flex-col'>
+                                    <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                        <option value={10}>10</option>
+                                        <option value={25}>25</option>
+                                        <option value={50}>50</option>
+                                        <option value={100}>100</option>
+                                    </select>
                                 </div>
-                                <div className='flex justify-end'>
-                                    <Whisper placement='leftStart' enterable
-                                        speaker={<Popover full>
-                                            <div className='download__menu' onClick={() => exportTable('print')} >
-                                                <Icons.PRINTER className='text-[16px]' />
-                                                Print Table
+                                <div className='flex items-center gap-2'>
+                                    <div className='flex w-full flex-col lg:w-[300px]'>
+                                        <input type='text'
+                                            placeholder='Search...'
+                                            onChange={searchTable}
+                                            className='p-[6px]'
+                                        />
+                                    </div>
+                                    <div className='flex justify-end'>
+                                        <Whisper placement='leftStart' enterable
+                                            speaker={<Popover full>
+                                                <div className='download__menu' onClick={() => exportTable('print')} >
+                                                    <Icons.PRINTER className='text-[16px]' />
+                                                    Print Table
+                                                </div>
+                                                <div className='download__menu' onClick={() => exportTable('copy')}>
+                                                    <Icons.COPY className='text-[16px]' />
+                                                    Copy Table
+                                                </div>
+                                                <div className='download__menu' onClick={() => exportTable('pdf')}>
+                                                    <Icons.PDF className="text-[16px]" />
+                                                    Download Pdf
+                                                </div>
+                                                <div className='download__menu' onClick={() => exportTable('excel')} >
+                                                    <Icons.EXCEL className='text-[16px]' />
+                                                    Download Excel
+                                                </div>
+                                            </Popover>}
+                                        >
+                                            <div className='record__download' >
+                                                <Icons.MORE />
                                             </div>
-                                            <div className='download__menu' onClick={() => exportTable('copy')}>
-                                                <Icons.COPY className='text-[16px]' />
-                                                Copy Table
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('pdf')}>
-                                                <Icons.PDF className="text-[16px]" />
-                                                Download Pdf
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('excel')} >
-                                                <Icons.EXCEL className='text-[16px]' />
-                                                Download Excel
-                                            </div>
-                                        </Popover>}
-                                    >
-                                        <div className='record__download' >
-                                            <Icons.MORE />
-                                        </div>
-                                    </Whisper>
+                                        </Whisper>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    
-                    {/* Table Content */}
-                    <div className='content__body__main'>
+
                         {/* Table start */}
                         <div className='overflow-x-auto list__table'>
                             <table className='min-w-full bg-white' id='table' ref={tableRef}>
