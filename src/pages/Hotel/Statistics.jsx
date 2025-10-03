@@ -8,14 +8,16 @@ import { LuArrowRightFromLine } from "react-icons/lu";
 import { FaUsers } from "react-icons/fa6";
 import { FaRupeeSign } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMemo } from 'react';
 import useSearchTable from '../../hooks/useSearchTable';
 import useExportTable from '../../hooks/useExportTable';
 import downloadPdf from '../../helper/downloadPdf';
-import { Popover, Whisper } from 'rsuite';
+import { Modal, Popover, Whisper } from 'rsuite';
 import { Icons } from '../../helper/icons';
 import Pagination from '../../components/Admin/Pagination';
+import Cookies from 'js-cookie';
+import downloadBase64 from '../../helper/downloadBase64'
 
 
 
@@ -36,6 +38,10 @@ const Statistics = () => {
     }, [data]);
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
+    const [recentNotice, setRecentNotice] = useState([]);
+    const hotelId = Cookies.get('hotelId');
+    const token = Cookies.get('hotel-token');
+    const [modalData, setModalData] = useState({ isOpen: false })
 
 
 
@@ -56,23 +62,44 @@ const Statistics = () => {
     }
 
     const selectAll = (e) => {
-		if (e.target.checked) {
-			setSelected(data.map((item, _) => item._id));
-		} else {
-			setSelected([]);
-		}
-	};
+        if (e.target.checked) {
+            setSelected(data.map((item, _) => item._id));
+        } else {
+            setSelected([]);
+        }
+    };
 
-	const handleCheckboxChange = (id) => {
-		setSelected((prevSelected) => {
-			if (prevSelected.includes(id)) {
-				return prevSelected.filter((previd, _) => previd !== id);
-			} else {
-				return [...prevSelected, id];
-			}
-		});
-	};
+    const handleCheckboxChange = (id) => {
+        setSelected((prevSelected) => {
+            if (prevSelected.includes(id)) {
+                return prevSelected.filter((previd, _) => previd !== id);
+            } else {
+                return [...prevSelected, id];
+            }
+        });
+    };
 
+
+
+    useEffect(() => {
+        const get = async () => {
+            const url = process.env.REACT_APP_MASTER_API + "/notice/get-hotel-notice";
+            const cookie = Cookies.get("token");
+
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({ hotelId })
+            })
+            const res = await req.json();
+            setRecentNotice([...res]);
+            console.log(res);
+        }
+
+        get();
+    }, [])
 
 
     return (
@@ -175,8 +202,8 @@ const Statistics = () => {
 
                     <div className='content__body__main mt-6'>
                         <div className='w-full flex gap-3 items-center'>
-                            <Icons.LIST/>
-                            <p className='font-semibold text-lg'>Current Stay In Guest List</p>
+                            <Icons.LIST />
+                            <p className='font-semibold text-md uppercase'>Current Stay In Guest List</p>
                         </div>
                         <div className={`add_new_compnent`}>
                             <div className='flex justify-between items-center'>
@@ -282,8 +309,8 @@ const Statistics = () => {
 
                     <div className='content__body__main mt-6'>
                         <div className='w-full flex gap-3 items-center mb-3 pb-2 border-b'>
-                            <Icons.NOTICE className='text-xl'/>
-                            <p className='font-semibold text-lg'>Recent Notice</p>
+                            <Icons.NOTICE className='text-xl' />
+                            <p className='font-semibold text-md uppercase'>Recent Notice</p>
                         </div>
                         {/* Table start */}
                         <div className='overflow-x-auto list__table'>
@@ -294,24 +321,32 @@ const Statistics = () => {
                                         <th className='py-2 px-4 border-b w-[10%]'>Date</th>
                                         <th className='py-2 px-4 border-b w-[*]'>Title</th>
                                         <th className='py-2 px-4 border-b w-[10%]'>Status</th>
-                                        <th className='py-2 px-4 border-b w-[10%]'>Action</th>
+                                        <th className='py-2 px-4 border-b w-[12%]' align='center'>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
-                                        data.map((d, i) => {
+                                        recentNotice.map((d, i) => {
                                             return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                <td className='py-2 px-4 border-b max-w-[10px]'>
-                                                    <input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
+                                                <td className='py-2 px-4 border-b max-w-[10px]'>{i + 1}</td>
+                                                <td className='px-4 border-b' align='center'>{new Date(d?.notice_date).toLocaleDateString()}</td>
+                                                <td className='px-4 border-b' align='center'>{d.notice_title}</td>
+                                                <td className='px-4 border-b' align='center'>
+                                                    <span className='chip__green'>
+                                                        {d.notice_status === "1" ? "New" : "Expired"}
+                                                    </span>
                                                 </td>
-                                                <td className='px-4 border-b'>{d.hotel_name}</td>
-                                                <td className='px-4 border-b' align='center'>{d?.hotel_zone_id?.name}</td>
-                                                <td className='px-4 border-b' align='center'>{d?.hotel_sector_id?.name}</td>
-                                                <td className='px-4 border-b' align='center'>{d?.hotel_block_id?.name || "--"}</td>
-                                                <td className='px-4 border-b'>{d?.hotel_police_station_id?.name || "--"}</td>
-                                                <td className='px-4 border-b' align='center'>{d?.hotel_district_id?.name || "--"}</td>
-                                                <td className='px-4 border-b' align='center'>{d?.hotel_conference_hall === "1" ? "Yes" : "No"}</td>
-                                                <td className='px-4 border-b' align='center'>{d?.hotel_conference_hall === "1" ? "Active" : "Inactive"}</td>
+                                                <td className='px-4 border-b'>
+                                                    <button className='notice__view__btn' onClick={() => {
+                                                        setModalData({
+                                                            isOpen: true,
+                                                            ...d
+                                                        })
+                                                    }}>
+                                                        <Icons.EYE />
+                                                        View Details
+                                                    </button>
+                                                </td>
                                             </tr>
                                         })
                                     }
@@ -321,6 +356,28 @@ const Statistics = () => {
                     </div>
                 </div>
             </main>
+            <Modal open={modalData.isOpen} onClose={() => setModalData({
+                ...modalData,
+                isOpen: false,
+            })}>
+                <Modal.Header className='border-b pb-2'>
+                    <p className='font-semibold'>Notice Details</p>
+                </Modal.Header>
+                <Modal.Body>
+                    <p className='font-semibold mb-4'>{modalData.notice_title}</p>
+                    <p>{modalData.notice_details}</p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <div className='bg-red-400 float-start'>
+                        <button className='notice__view__btn' onClick={()=>{
+                            if(modalData.notice_file) downloadBase64(modalData.notice_file);
+                        }}>
+                            <Icons.DOWNLOAD />
+                            Download
+                        </button>
+                    </div>
+                </Modal.Footer>
+            </Modal>
         </>
     )
 }

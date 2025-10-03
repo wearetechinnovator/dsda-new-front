@@ -5,13 +5,11 @@ import { FaRegCheckCircle } from "react-icons/fa";
 import { LuFileX2, LuRefreshCcw } from "react-icons/lu";
 import { CgPlayListAdd } from "react-icons/cg";
 import useMyToaster from '../../../hooks/useMyToaster';
-import { SelectPicker } from 'rsuite';
+import { CheckPicker, SelectPicker } from 'rsuite';
 import Cookies from 'js-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
-import useApi from '../../../hooks/useApi';
-import { RiDeleteBin6Line } from 'react-icons/ri';
-import MySelect2 from '../../../components/Admin/MySelect2';
 import { Icons } from '../../../helper/icons';
+import checkfile from '../../../helper/checkfile';
 import { MdUploadFile } from 'react-icons/md';
 
 
@@ -20,14 +18,44 @@ const AddNotice = ({ mode }) => {
     const toast = useMyToaster();
     const { id } = useParams();
     const navigate = useNavigate();
-    const [form, setForm] = useState({
-        title: '', date: new Date().toLocaleDateString(), status: '', details: ''
+    const [fileName, setFileName] = useState('');
+    const [allHotels, setAllHotels] = useState([]);
+    const [data, setData] = useState({
+        title: '', date: "", status: '1', details: '',
+        file: '', hotel: ''
     })
+
+
+    // =========== [GET HOTELS] =========
+    useEffect(() => {
+        const get = async () => {
+            try {
+                const data = {
+                    token: Cookies.get("token")
+                }
+                const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
+                const req = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                const res = await req.json();
+                setAllHotels([...res.data])
+
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        get();
+    }, [])
+
 
     useEffect(() => {
         if (mode) {
             const get = async () => {
-                const url = process.env.REACT_APP_API_URL + "/item/get";
+                const url = process.env.REACT_APP_MASTER_API + "/notice/get";
                 const cookie = Cookies.get("token");
 
                 const req = await fetch(url, {
@@ -38,8 +66,15 @@ const AddNotice = ({ mode }) => {
                     body: JSON.stringify({ token: cookie, id: id })
                 })
                 const res = await req.json();
-                const data = res.data;
-
+                setData({
+                    hotel: res.notice_hotel,
+                    date: res.notice_date,
+                    details: res.notice_details,
+                    file: res.notice_file,
+                    status: res.notice_status,
+                    title: res.notice_title
+                });
+                setFileName(res.notice_file ? Date.now() : '');
             }
 
             get();
@@ -48,22 +83,23 @@ const AddNotice = ({ mode }) => {
 
 
     const saveData = async (e) => {
-        if (form.title === "") {
-            return toast(`title can't be blank`, 'error');
+        if (data.hotel === "") {
+            return toast(`hotel can't be blank`, 'error');
         }
 
 
         try {
-            const url = process.env.REACT_APP_API_URL + "";
+            const url = process.env.REACT_APP_MASTER_API + `/notice/${mode ? 'update' : 'create'}`;
             const token = Cookies.get("token");
+
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(
-                    !mode ? { ...form, token }
-                        : { ...form, token, update: true, id: id }
+                    !mode ? { ...data, token }
+                        : { ...data, token, id: id }
                 )
             })
             const res = await req.json();
@@ -72,8 +108,7 @@ const AddNotice = ({ mode }) => {
             }
 
             if (!mode) clearData();
-
-            toast(!mode ? "Item create success" : "Item update success", 'success');
+            toast(!mode ? "Notice create success" : "Notice update success", 'success');
 
 
         } catch (error) {
@@ -83,10 +118,25 @@ const AddNotice = ({ mode }) => {
 
     }
 
+    const handleFile = async (e) => {
+        let validfile = await checkfile(e.target.files[0], ['pdf']);
+
+        if (typeof (validfile) !== 'boolean') return toast(validfile, "error");
+
+        setFileName(e.target.files[0].name)
+        const reader = new FileReader();
+        reader.readAsDataURL(e.target.files[0]);
+        reader.onload = () => {
+            setData({ ...data, file: reader.result });
+        }
+    }
+
     const clearData = () => {
-        setForm({
-            title: '', date: '', status: '', details: ''
+        setData({
+            title: '', date: "", status: '', details: '',
+            file: '', hotel: ''
         });
+        setFileName("");
     }
 
 
@@ -97,43 +147,81 @@ const AddNotice = ({ mode }) => {
                 <SideNav />
                 <div className='content__body'>
                     <div className='content__body__main bg-white'>
-                        <div className='flex justify-between  gap-5 flex-col lg:flex-row'>
-                            <div className='w-full flex flex-col gap-3'>
+                        <div className='w-full flex justify-between  gap-5 flex-col lg:flex-row'>
+                            <div className='w-full'>
+                                <p>Select Hotel<span className='required__text'>*</span></p>
+                                <CheckPicker
+                                    data={[
+                                        ...allHotels.map((item) => ({
+                                            label: item.hotel_name,
+                                            value: item._id
+                                        }))
+                                    ]}
+                                    style={{ width: '100%' }}
+                                    onChange={(v) => setData({ ...data, hotel: v })}
+                                    onClean={() => setData({ ...data, hotel: '' })}
+                                    value={mode&&data.hotel}
+                                    placeholder="Select"
+                                    searchable={true}
+                                    cleanable={true}
+                                    placement='bottomEnd'
+                                />
+                            </div>
+                            <div className='w-full'>
+                                <p>Title<span className='required__text'>*</span></p>
+                                <input type='text' onChange={(e) => setData({ ...data, title: e.target.value })} value={data.title} />
+                            </div>
+                        </div>
+                        <div className='flex justify-between gap-5 flex-col lg:flex-row my-2'>
+                            <div className='w-full'>
                                 <div>
-                                    <p>Title<span className='required__text'>*</span></p>
-                                    <input type='text' onChange={(e) => setForm({ ...form, title: e.target.value })} value={form.title} />
+                                    <p>Choose File</p>
+                                    <div className='file__uploader__div'>
+                                        <span className='file__name'>{fileName}</span>
+                                        <div className='flex gap-2'>
+                                            <input type="file" id="siteLogo" className='hidden' onChange={handleFile} />
+                                            <label htmlFor="siteLogo" className='file__upload' title='Upload'>
+                                                <MdUploadFile />
+                                            </label>
+                                            {
+                                                fileName && <LuFileX2 className='remove__upload ' title='Remove upload' onClick={() => {
+                                                    setFileName("");
+                                                    setData({ ...data, file: "" })
+                                                }} />
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
-
                             </div>
 
-                            <div className='w-full pt-1 flex flex-col gap-3'>
+                            <div className='w-full flex flex-col gap-3'>
                                 <div className='flex flex-col md:flex-row md:gap-2'>
                                     <div className='w-full'>
                                         <p>Date</p>
-                                        <input type='date' onChange={(e) => setForm({ ...form, date: e.target.value })} value={form.date} />
+                                        <input type='date' onChange={(e) => setData({ ...data, date: e.target.value })} value={data.date} />
                                     </div>
                                     <div className='w-full'>
                                         <p>Status</p>
-                                        <select onChange={(e) => setForm({ ...form, status: e.target.value })}
-                                            value={form.status}>
+                                        <select onChange={(e) => setData({ ...data, status: e.target.value })}
+                                            value={data.status}>
                                             <option value="">--Select--</option>
-                                            <option value="expired">Expired</option>
-                                            <option value="new">New</option>
+                                            <option value="0">Expired</option>
+                                            <option value="1">New</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <div className='w-full overflow-auto mt-2'>
+                        <div className='w-full overflow-auto'>
                             <div>
                                 <p>Details</p>
-                                <textarea name="" id="" rows={4} onChange={(e) => setForm({ ...form, details: e.target.value })}
-                                    value={form.details}></textarea>
+                                <textarea name="" id="" rows={4} onChange={(e) => setData({ ...data, details: e.target.value })}
+                                    value={data.details}></textarea>
                             </div>
                         </div>
 
-                        <div className='form__btn__grp pb-4'>
+                        <div className='form__btn__grp'>
                             <button className='save__btn' onClick={saveData}>
                                 <Icons.CHECK />
                                 {mode ? "Update" : "Save"}

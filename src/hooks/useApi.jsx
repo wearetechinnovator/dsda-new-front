@@ -5,7 +5,6 @@ const useApi = () => {
   const toast = useMyToaster();
 
   const deleteData = async (ids, model, trash = false) => {
-    console.log(ids);
     const url = process.env.REACT_APP_MASTER_API + `/${model}/delete`;
     const req = await fetch(url, {
       method: "POST",
@@ -16,6 +15,7 @@ const useApi = () => {
     });
 
     const res = await req.json();
+    console.log(res)
     if (req.status !== 200) {
       return toast(res.err, 'error')
     }

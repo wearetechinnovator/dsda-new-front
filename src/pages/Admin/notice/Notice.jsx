@@ -12,6 +12,8 @@ import AddNew from '../../../components/Admin/AddNew';
 import { Popover, Whisper } from 'rsuite';
 import { Icons } from '../../../helper/icons';
 import Pagination from '../../../components/Admin/Pagination';
+import useSearchTable from '../../../hooks/useSearchTable';
+import useApi from '../../../hooks/useApi';
 
 
 const Notice = ({ mode }) => {
@@ -22,29 +24,31 @@ const Notice = ({ mode }) => {
     const [totalData, setTotalData] = useState()
     const [selected, setSelected] = useState([]);
     const navigate = useNavigate();
-    const [tableStatusData, setTableStatusData] = useState('active');
-    const [itemData, setItemData] = useState([]);
+    const [data, setData] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return itemData && itemData.map(({ title, category }, _) => ({
-            Title: title,
-            HSN: category?.hsn
+        return data && data.map(({ name }, _) => ({
+            Name: name
         }));
-    }, [itemData]);
+    }, [data]);
     const [loading, setLoading] = useState(true);
+    const searchTable = useSearchTable();
+    const { deleteData, restoreData } = useApi()
+    const [isTrash, setIsTrash] = useState(false);
 
 
 
     // Get data;
     useEffect(() => {
-        const getCategory = async () => {
+        const get = async () => {
             try {
                 const data = {
                     token: Cookies.get("token"),
-                    trash: tableStatusData === "trash" ? true : false,
-                    all: tableStatusData === "all" ? true : false
+                    trash: isTrash,
+                    page: activePage,
+                    limit: dataLimit
                 }
-                const url = process.env.REACT_APP_API_URL + `/item/get?page=${activePage}&limit=${dataLimit}`;
+                const url = process.env.REACT_APP_MASTER_API + `/notice/get`;
                 const req = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -53,41 +57,21 @@ const Notice = ({ mode }) => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
-                setTotalData(res.totalData)
-                setItemData([...res.data])
+                setTotalData(res.total)
+                setData([...res.data])
                 setLoading(false);
 
             } catch (error) {
                 console.log(error)
             }
         }
-        getCategory();
-    }, [tableStatusData, dataLimit, activePage])
+        get();
+    }, [isTrash, dataLimit, activePage])
 
-
-    const searchTable = (e) => {
-        const value = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('.list__table tbody tr');
-
-        rows.forEach(row => {
-            const cols = row.querySelectorAll('td');
-            let found = false;
-            cols.forEach((col, index) => {
-                if (index !== 0 && col.innerHTML.toLowerCase().includes(value)) {
-                    found = true;
-                }
-            });
-            if (found) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-        });
-    }
 
     const selectAll = (e) => {
         if (e.target.checked) {
-            setSelected(itemData.map((item, _) => item._id));
+            setSelected(data.map((item, _) => item._id));
         } else {
             setSelected([]);
         }
@@ -106,16 +90,16 @@ const Notice = ({ mode }) => {
 
     const exportTable = async (whichType) => {
         if (whichType === "copy") {
-            copyTable("itemTable"); // Pass tableid
+            copyTable("table"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'item-list.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'sector-list.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Item List"); // Pass table ref and title
+            printTable(tableRef, "Sector List"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Item List', exportData);
+            let document = exportPdf('Sector List', exportData);
             downloadPdf(document)
         }
     }
@@ -128,9 +112,9 @@ const Notice = ({ mode }) => {
                 <SideNav />
                 <Tooltip id='itemTooltip' />
                 <div className='content__body'>
-                    {
+                    {!loading ?
                         <div className='content__body__main'>
-                            <div className={`add_new_compnent`}>
+                            <div className={` add_new_compnent`}>
                                 <div className='flex justify-between items-center'>
                                     <div className='flex flex-col'>
                                         <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
@@ -148,15 +132,43 @@ const Notice = ({ mode }) => {
                                                 className='p-[6px]'
                                             />
                                         </div>
+                                        {!isTrash && <button
+                                            onClick={() => deleteData(selected, "notice", true)}
+                                            className={`${selected.length > 0 ? 'bg-red-400 text-white' : 'bg-gray-100'}`}>
+                                            <Icons.DELETE className='text-lg' />
+                                            Trash
+                                        </button>}
+                                        {
+                                            isTrash && <button
+                                                onClick={() => restoreData(selected, "notice")}
+                                                className={`${selected.length > 0 ? 'bg-[#003E32] text-white' : 'bg-gray-100'}`}>
+                                                <Icons.RESTORE className='text-lg' />
+                                                Restore
+                                            </button>
+                                        }
                                         <button
+                                            onClick={() => deleteData(selected, 'notice')}
                                             className={`${selected.length > 0 ? 'bg-red-400 text-white' : 'bg-gray-100'} border`}>
                                             <Icons.DELETE className='text-lg' />
                                             Delete
                                         </button>
                                         <button
+                                            onClick={() => {
+                                                setIsTrash(pv => {
+                                                    return !pv;
+                                                })
+                                            }}
+                                            className={'bg-[#003E32] text-white'}>
+                                            {
+                                                isTrash ? <Icons.FOLDER_OPEN className='text-lg' />
+                                                    : <Icons.FOLDER className='text-lg' />
+                                            }
+                                            View Trash
+                                        </button>
+                                        <button
                                             onClick={() => navigate("/admin/notice/add")}
                                             className='bg-[#003E32] text-white '>
-                                            <Icons.ADD className='text-xl text-white' />
+                                            <Icons.ADD className='text-lg text-white' />
                                             Add New
                                         </button>
                                         <div className='flex justify-end'>
@@ -194,8 +206,9 @@ const Notice = ({ mode }) => {
                                     <thead className='bg-gray-100 list__table__head'>
                                         <tr>
                                             <th className='py-2 px-4 border-b w-[50px]'>
-                                                <input type='checkbox' onChange={selectAll} checked={itemData.length > 0 && selected.length === itemData.length} />
+                                                <input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
                                             </th>
+                                            <td className='py-2 px-4 border-b'>date</td>
                                             <td className='py-2 px-4 border-b'>title</td>
                                             <th className='py-2 px-4 border-b'>Status</th>
                                             <th className='py-2 px-4 border-b'>Action</th>
@@ -203,32 +216,18 @@ const Notice = ({ mode }) => {
                                     </thead>
                                     <tbody>
                                         {
-                                            itemData.map((data, i) => {
-                                                return <tr key={i} onClick={() => navigate("/admin/item/details/" + data._id)} className='cursor-pointer hover:bg-gray-100'>
+                                            data.map((d, i) => {
+                                                return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
                                                     <td className='py-2 px-4 border-b max-w-[10px]'>
-                                                        <input type='checkbox' checked={selected.includes(data._id)} onChange={() => handleCheckboxChange(data._id)} />
+                                                        <input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
                                                     </td>
-                                                    <td className='px-4 border-b'>
-                                                        {data.title}
-                                                        {
-                                                            data.category &&
-                                                            <p className="text-[10px] bg-gray-100 rounded w-fit px-[2px] border mb-[2p]">{data.category?.title}</p>
-                                                        }
-                                                    </td>
-                                                    <td className='px-4 border-b' align='center'>{data.category?.hsn}</td>
-                                                    <td className='px-4 border-b' align='center'>{data.salePrice || 0.00}</td>
-                                                    <td className='px-4 border-b' align='center'>
-                                                        <div className='flex items-center justify-center gap-2'>
-                                                            {
-                                                                data.stock.map((stock, _) => {
-                                                                    return stock.stock !== "" ? <p key={_}>
-                                                                        {stock.stock} <sub className='font-bold'>{stock.unit}</sub>
-                                                                    </p> : "";
-                                                                })
-                                                            }
-                                                        </div>
-                                                    </td>
-
+                                                    <td className='px-4 border-b'>{new Date(d.notice_date).toLocaleDateString()}</td>
+                                                    <td className='px-4 border-b'>{d.notice_title}</td>
+                                                     <td className='px-4 border-b'>
+                                                        <span className='chip__green'>
+                                                            {d.notice_status === '1'? "New" : "Expired"}
+                                                        </span>
+                                                     </td>
                                                     <td className='px-4 text-center'>
                                                         <Whisper
                                                             placement='leftStart'
@@ -239,11 +238,31 @@ const Notice = ({ mode }) => {
                                                                     className='table__list__action__icon'
                                                                     onClick={(e) => {
                                                                         e.stopPropagation()
-                                                                        navigate("/admin/item/edit/" + data._id)
+                                                                        navigate("/admin/notice/edit/" + d._id)
                                                                     }}
                                                                 >
                                                                     <Icons.EDIT className='text-[16px]' />
                                                                     Edit
+                                                                </div>
+                                                                <div
+                                                                    className='table__list__action__icon'
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        deleteData(d._id, "notice");
+                                                                    }}
+                                                                >
+                                                                    <Icons.DELETE className='text-[16px]' />
+                                                                    Delete
+                                                                </div>
+                                                                <div
+                                                                    className='table__list__action__icon'
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        deleteData(d._id, "notice", true);
+                                                                    }}
+                                                                >
+                                                                    <Icons.DELETE className='text-[16px]' />
+                                                                    Trash
                                                                 </div>
                                                             </Popover>}
                                                         >
@@ -252,14 +271,13 @@ const Notice = ({ mode }) => {
                                                             </div>
                                                         </Whisper>
                                                     </td>
-
                                                 </tr>
                                             })
                                         }
                                     </tbody>
                                 </table>
                                 <div className='paginate__parent'>
-                                    <p>Showing {itemData.length} of {totalData} entries</p>
+                                    <p>Showing {data.length} of {totalData} entries</p>
                                     <Pagination
                                         activePage={activePage}
                                         totalData={totalData}
@@ -269,8 +287,7 @@ const Notice = ({ mode }) => {
                                 </div>
                             </div>
                         </div>
-                        // : <AddNew title={"Item"} link={"/admin/item/add"} />
-                        // : <DataShimmer />
+                        : <DataShimmer />
                     }
                 </div>
             </main>

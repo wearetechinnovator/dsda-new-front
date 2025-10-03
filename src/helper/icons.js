@@ -23,7 +23,7 @@ import { HiOutlineRefresh } from "react-icons/hi";
 import { LuBriefcaseBusiness } from "react-icons/lu";
 import { TbFileInvoice } from "react-icons/tb";
 import { GoPencil } from "react-icons/go";
-import { FaRegFile, FaRegUser, FaBed, FaRegFolderOpen, FaRegFolder  } from "react-icons/fa";
+import { FaRegFile, FaRegUser, FaBed, FaRegFolderOpen, FaRegFolder } from "react-icons/fa";
 import { LuHotel } from "react-icons/lu";
 import { LiaTrashRestoreAltSolid } from "react-icons/lia";
 import { IoClose } from "react-icons/io5";
@@ -31,6 +31,8 @@ import { MdCall } from "react-icons/md";
 import { IoMdArrowRoundBack } from "react-icons/io";
 import { FaList } from "react-icons/fa";
 import { RiMessage2Line } from "react-icons/ri";
+import { FaRegEye } from "react-icons/fa";
+import { MdFileDownload } from "react-icons/md";
 
 
 
@@ -79,5 +81,7 @@ export const Icons = {
   CALL: MdCall,
   LIST: FaList,
   NOTICE: RiMessage2Line,
+  EYE: FaRegEye,
+  DOWNLOAD: MdFileDownload,
 };
 

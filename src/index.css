@@ -590,36 +590,6 @@ select:hover{
 }
 
 
-.paginate__parent {
-  @apply flex justify-between items-center mt-2 text-xs;
-}
-
-.paginate__button__back {
-  @apply border border-blue-700 w-[20px] h-[20px] grid place-items-center cursor-pointer
-}
-
-.paginate__button__number {
-  @apply w-[20px] h-[20px] text-center cursor-pointer
-}
-
-.paginate__button__number:first-child {
-  border: 1px solid rgb(65, 65, 238);
-}
-
-.paginate__button__number {
-  border: 1px solid rgb(66, 66, 241);
-  border-left: none;
-}
-
-.active__page {
-  background-color: var(--second__color);
-  color: white;
-}
-
-.paginate__button__next {
-  @apply border border-blue-700 border-l-0 w-[20px] h-[20px] flex items-center justify-center cursor-pointer;
-}
-
 
 .list__table {
   border-radius: 5px;
@@ -1064,3 +1034,84 @@ input[type="checkbox"]:checked::before {
 .yellow__grad{
   background:linear-gradient(to bottom, rgb(247, 213, 20), rgb(97, 65, 7));
 }
+
+.chip__green{
+  display: inline-block;
+  padding: 0px 10px;
+  background-color: green;
+  color: white;
+  border-radius: 30px;
+}
+.chip__maroon{
+  display: inline-block;
+  padding: 0px 10px;
+  background-color: maroon;
+  color: white;
+  border-radius: 30px;
+}
+
+.notice__view__btn{
+  @apply mx-auto flex gap-2 items-center text-xs text-white rounded-sm;
+  background-color: var(--second__color);
+  padding: 4px 7px;
+}
+
+
+
+
+
+/* Container */
+.paginate__container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+/* Buttons (numbers, prev, next) */
+.paginate__button__number,
+.paginate__button__back,
+.paginate__button__next {
+  cursor: pointer;
+  min-width: 30px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background-color: #fff;
+  font-size: 10px;
+  font-weight: 500;
+  color: #374151;
+  transition: all 0.2s ease-in-out;
+}
+
+/* Hover effect */
+.paginate__button__number:hover,
+.paginate__button__back:hover,
+.paginate__button__next:hover {
+  background-color: #f3f4f6;
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+/* Active Page */
+.active__page {
+  background-color: #3b82f6; /* blue-500 */
+  color: #fff;
+  border-color: #2563eb; /* blue-600 */
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+}
+
+/* Disabled state for arrows (optional if you want to gray them out) */
+.paginate__button__disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+  box-shadow: none;
+}
+

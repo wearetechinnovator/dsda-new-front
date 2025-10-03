@@ -1,7 +1,7 @@
 import Nav from '../../components/Hotel/Nav';
 import SideNav from '../../components/Hotel/HotelSideNav';
 import { Icons } from '../../helper/icons';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSearchTable from '../../hooks/useSearchTable';
 import useApi from '../../hooks/useApi';
@@ -10,20 +10,19 @@ import downloadPdf from '../../helper/downloadPdf';
 import useExportTable from '../../hooks/useExportTable';
 import useMyToaster from '../../hooks/useMyToaster';
 import Pagination from '../../components/Admin/Pagination';
-import Cookies from 'js-cookie';
 
 
 
-const CheckOut = () => {
+const FinalCheckOut = () => {
     const [searchBy, setSearchBy] = useState("room");
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
     const [activePage, setActivePage] = useState(1);
     const [dataLimit, setDataLimit] = useState(10);
     const [totalData, setTotalData] = useState();
+    const [selected, setSelected] = useState([]);
     const navigate = useNavigate();
     const [data, setData] = useState([]);
-    const [bookingHeadList, setBookingHeadList] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
         return data && data.map(({ name }, _) => ({
@@ -32,39 +31,32 @@ const CheckOut = () => {
     }, [data]);
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
+    const { deleteData, restoreData } = useApi()
     const [quickSearchFields, setQuickSearchFields] = useState({
         roomNo: '', mobileNo: '', fromDate: '', toDate: ''
     })
 
 
-    useEffect(() => {
-        const get = async () => {
-            try {
-                const data = {
-                    token: Cookies.get("token"),
-                    page: activePage,
-                    limit: dataLimit
-                }
-                const url = process.env.REACT_APP_BOOKING_API + `/check-out/get-booking-head`;
-                const req = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                const res = await req.json();
-                console.log(res)
-                setTotalData(res.total)
-                setBookingHeadList([...res.data])
-                setLoading(false);
 
-            } catch (error) {
-                console.log(error)
-            }
+    // Table functionality ---------
+    const selectAll = (e) => {
+        if (e.target.checked) {
+            setSelected(data.map((item, _) => item._id));
+        } else {
+            setSelected([]);
         }
-        get();
-    }, [dataLimit, activePage])
+    };
+
+    const handleCheckboxChange = (id) => {
+        setSelected((prevSelected) => {
+            if (prevSelected.includes(id)) {
+                return prevSelected.filter((previd, _) => previd !== id);
+            } else {
+                return [...prevSelected, id];
+            }
+        });
+    };
+
 
     const exportTable = async (whichType) => {
         if (whichType === "copy") {
@@ -89,60 +81,9 @@ const CheckOut = () => {
             <main id='main'>
                 <SideNav />
                 <div className='content__body'>
-                    <div className='content__body__main'>
-                        <div className='w-full  flex justify-between items-center border-b pb-1'>
-                            <p className='font-semibold text-lg'>Quick Search</p>
-                            <Icons.SEARCH />
-                        </div>
-                        <div className='w-full mt-4'>
-                            <p>Search By</p>
-                            <select value={searchBy} onChange={(e) => setSearchBy(e.target.value)}>
-                                <option value="room">Room</option>
-                                <option value="mobile">Mobile</option>
-                                <option value="date">Check In Date</option>
-                            </select>
-                        </div>
-                        {
-                            searchBy === "room" && <div className='w-full mt-3'>
-                                <p>Room No.*</p>
-                                <input type="text" placeholder='Enter Guest Room No.' />
-                            </div>
-                        }
-                        {
-                            searchBy === "mobile" && <div className='w-full mt-3'>
-                                <p>Guest Mobile Number*</p>
-                                <input type="text" placeholder='Enter Guest Mobile Number' />
-                            </div>
-                        }
-                        {
-                            searchBy === "date" && <div className='w-full mt-3'>
-                                <div className='w-full flex gap-3 items-center justify-between'>
-                                    <div className='w-full'>
-                                        <p>From*</p>
-                                        <input type="date" placeholder='Start Date' />
-                                    </div>
-                                    <div className='w-full'>
-                                        <p>To*</p>
-                                        <input type="date" placeholder='End Date' />
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        <div className='form__btn__grp'>
-                            <button className='reset__btn'>
-                                <Icons.RESET />
-                                Reset
-                            </button>
-                            <button className='save__btn'>
-                                <Icons.SEARCH /> Search
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* ================================== Table start here ============================== */}
-                    {/* ================================================================================== */}
-
                     <div className='content__body__main mt-4'>
+
+
                         {/* Option Bar */}
                         <div className="add_new_compnent">
                             <div className='flex justify-between items-center'>
@@ -209,33 +150,12 @@ const CheckOut = () => {
                                 </thead>
                                 <tbody>
                                     {
-                                        bookingHeadList.map((d, i) => {
+                                        data.map((d, i) => {
                                             return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                <td>{i+1}</td>
-                                                <td className='px-4 border-b'>{d.booking_head_guest_name}</td>
-                                                <td>{d.booking_checkin_date_time}</td>
-                                                <td>--</td>
-                                                <td>{d.booking_head_guest_phone}</td>
-                                                <td>--</td>
-                                                <td>
-                                                    <div className='flex flex-col gap-1'>
-                                                        <span className='bg-green-800 text-white text-xs py-1 px-2 flex gap-1 items-center justify-center rounded-full'>
-                                                            <Icons.CHECK/>
-                                                            Paid
-                                                        </span>
-                                                        <span className='bg-blue-600 text-white text-xs py-1 px-2 flex gap-1 items-center justify-center rounded-full'>
-                                                            <Icons.PRINTER/>
-                                                            Print
-                                                        </span>
-                                                    </div>
-                                                </td>
+                                                <td className='px-4 border-b'>{d.name}</td>
                                                 <td className='px-4 text-center'>
-                                                    <button className='notice__view__btn'>
-                                                        <Icons.CHECK2/>
-                                                        Checkout
-                                                    </button>
+                                                    <button>Checkout</button>
                                                 </td>
-
                                             </tr>
                                         })
                                     }
@@ -258,5 +178,5 @@ const CheckOut = () => {
     )
 }
 
-export default CheckOut;
+export default FinalCheckOut;
 

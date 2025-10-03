@@ -264,7 +264,6 @@ const Sector = ({ mode }) => {
 															</div>
 														</Whisper>
 													</td>
-
 												</tr>
 											})
 										}
