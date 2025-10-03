@@ -116,3 +116,8 @@ a:active, a:focus, a:hover{
 .rs-message-body{
   font-size: 13px !important;
 }
+
+p+p{
+  margin-top: 0px !important;
+}
+ 

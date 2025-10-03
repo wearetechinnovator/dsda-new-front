@@ -1,31 +1,50 @@
 import Cookies from 'js-cookie';
+import useMyToaster from './useMyToaster';
 
 const useApi = () => {
-  const getApiData = async (model, id) => {
-    let payload = { token: Cookies.get("token") };
-    if (id) {
-      payload = { ...payload, id };
-    }
+  const toast = useMyToaster();
 
-    try {
-      const url = process.env.REACT_APP_API_URL + `/${model}/get`;
-      const req = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-      const res = await req.json();
-      return res;
+  const deleteData = async (ids, model, trash = false) => {
+    console.log(ids);
+    const url = process.env.REACT_APP_MASTER_API + `/${model}/delete`;
+    const req = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": 'application/json'
+      },
+      body: JSON.stringify({ ids: ids, trash })
+    });
 
-    } catch (error) {
-      return error;
+    const res = await req.json();
+    if (req.status !== 200) {
+      return toast(res.err, 'error')
     }
+    window.location.reload();
+    return toast("Record delete successfully", 'success');
   }
 
 
-  return { getApiData };
+  const restoreData = async (ids, model) => {
+    console.log(ids);
+    const url = process.env.REACT_APP_MASTER_API + `/${model}/restore`;
+    const req = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": 'application/json'
+      },
+      body: JSON.stringify({ ids: ids })
+    });
+
+    const res = await req.json();
+    if (req.status !== 200) {
+      return toast(res.err, 'error')
+    }
+    window.location.reload();
+    return toast("Record restore successfully", 'success');
+  }
+
+
+  return { deleteData, restoreData };
 }
 
 export default useApi;

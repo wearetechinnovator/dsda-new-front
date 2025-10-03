@@ -1,0 +1,156 @@
+import { useEffect, useState } from 'react'
+import Nav from '../../../../components/Admin/Nav';
+import SideNav from '../../../../components/Admin/SideNav';
+import useMyToaster from '../../../../hooks/useMyToaster';
+import Cookies from 'js-cookie';
+import { useNavigate, useParams } from 'react-router-dom';
+import MySelect2 from '../../../../components/Admin/MySelect2';
+import { Icons } from '../../../../helper/icons';
+
+
+
+const AddPoliceStation = ({ mode, save }) => {
+    return (
+        <>
+            <Nav title={mode ? "Update Police Station " : "Add New Police Station"} />
+            <main id='main'>
+                <SideNav />
+                <PoliceStationComponent mode={mode} save={save} />
+            </main>
+        </>
+    )
+}
+
+const PoliceStationComponent = ({ mode, save }) => {
+    const toast = useMyToaster();
+    const [data, setData] = useState({
+        name: '', details: '', district: ''
+    })
+    const { id } = useParams();
+    const navigate = useNavigate();
+
+
+    useEffect(() => {
+        if (mode) {
+            const get = async () => {
+                const url = process.env.REACT_APP_MASTER_API + "/police-station/get";
+                const cookie = Cookies.get("token");
+
+                const req = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify({ token: cookie, id: id })
+                })
+                const res = await req.json();
+                const data = res.data;
+                console.log(res)
+                setData({ ...res });
+            }
+
+            get();
+        }
+    }, [mode])
+
+
+    const saveData = async (e) => {
+        if (data.name.trim() === "" || !data.name) {
+            return toast("Name can't be blank", "error")
+        }
+
+        try {
+            const url = mode ? process.env.REACT_APP_MASTER_API + "/police-station/update" : process.env.REACT_APP_MASTER_API + "/police-station/create";
+            const token = Cookies.get("token");
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(!mode ? { ...data, token } : { ...data, token, id: id }
+                )
+            })
+            const res = await req.json();
+            if (req.status !== 200 || res.err) {
+                return toast(res.err, 'error');
+            }
+
+            if (!mode) clearData();
+
+            toast(!mode ? "Police Station create success" : "Police Station update success", 'success');
+
+            // for close sidebar in MySelect2
+            if (save) {
+                save(true)
+                return
+            } else {
+                // return navigate("/admin/zone")
+            }
+
+        } catch (error) {
+            console.log(error);
+            return toast("Something went wrong", "error")
+        }
+
+    }
+
+    const clearData = () => {
+        setData({
+            name: '', details: '', district: ''
+        })
+    }
+    return < div className='content__body' >
+        <div className='content__body__main bg-white'>
+            <div className='flex justify-between  gap-5 flex-col lg:flex-row'>
+                <div className='w-full flex flex-col gap-3'>
+                    <div>
+                        <p>Name <span className='required__text'>*</span></p>
+                        <input type='text' onChange={(e) => setData({ ...data, name: e.target.value })} value={data.name} />
+                    </div>
+                </div>
+
+                <div className='w-full flex flex-col gap-3'>
+                    <div className='w-full flex flex-col md:flex-row gap-2'>
+                        <div className='w-full'>
+                            <p className='ml-1'>District <span className='required__text'>*</span></p>
+                            <MySelect2
+                                model={"district"}
+                                onType={(v) => {
+                                    setData({ ...data, district: v })
+                                }}
+                                value={data.district}
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className='w-full overflow-auto mt-2'>
+                <div>
+                    <p>Details</p>
+                    <textarea
+                        name="" id="" rows={4}
+                        onChange={(e) => setData({ ...data, details: e.target.value })}
+                        value={data.details}
+                    ></textarea>
+                </div>
+            </div>
+            <div className='form__btn__grp'>
+                <button className='save__btn' onClick={saveData}>
+                    <Icons.CHECK />
+                    {mode ? "Update" : "Save"}
+                </button>
+                <button className='reset__btn' onClick={clearData}>
+                    <Icons.RESET />
+                    Reset
+                </button>
+            </div>
+        </div>
+    </div >
+}
+
+export {
+    PoliceStationComponent
+}
+
+export default AddPoliceStation;

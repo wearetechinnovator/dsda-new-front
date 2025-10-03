@@ -9,7 +9,7 @@ import { FiMoreHorizontal } from 'react-icons/fi';
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import { MdOutlineArrowDropDown } from "react-icons/md";
 import { RiArrowDropUpFill } from "react-icons/ri";
-import { FaUsers } from "react-icons/fa6";
+import { FaUsers, FaCheck } from "react-icons/fa6";
 import { MdOutlineTrendingUp } from "react-icons/md";
 import { IoMdTrendingDown, IoIosNotifications } from "react-icons/io";
 import { MdOutlineCurrencyRupee, MdLocationPin } from "react-icons/md";
@@ -23,10 +23,14 @@ import { HiOutlineRefresh } from "react-icons/hi";
 import { LuBriefcaseBusiness } from "react-icons/lu";
 import { TbFileInvoice } from "react-icons/tb";
 import { GoPencil } from "react-icons/go";
-import { FaRegFile, FaRegUser, FaRupeeSign, FaBed  } from "react-icons/fa";
+import { FaRegFile, FaRegUser, FaBed, FaRegFolderOpen, FaRegFolder  } from "react-icons/fa";
 import { LuHotel } from "react-icons/lu";
-
-
+import { LiaTrashRestoreAltSolid } from "react-icons/lia";
+import { IoClose } from "react-icons/io5";
+import { MdCall } from "react-icons/md";
+import { IoMdArrowRoundBack } from "react-icons/io";
+import { FaList } from "react-icons/fa";
+import { RiMessage2Line } from "react-icons/ri";
 
 
 
@@ -35,6 +39,7 @@ export const Icons = {
   RESET: HiOutlineRefresh,
   SEARCH: LuSearch,
   ADD: IoIosAdd,
+  BACK: IoMdArrowRoundBack,
   EDIT: FaRegEdit,
   MORE: IoMdMore,
   HORIZONTAL_MORE: FiMoreHorizontal,
@@ -65,6 +70,14 @@ export const Icons = {
   LOCATION: MdLocationPin,
   BELL: IoIosNotifications,
   BED: FaBed,
-  HOTEL: LuHotel
+  HOTEL: LuHotel,
+  FOLDER: FaRegFolder,
+  FOLDER_OPEN: FaRegFolderOpen,
+  RESTORE: LiaTrashRestoreAltSolid,
+  CHECK2: FaCheck,
+  CLOSE: IoClose,
+  CALL: MdCall,
+  LIST: FaList,
+  NOTICE: RiMessage2Line,
 };
 
