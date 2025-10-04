@@ -110,10 +110,16 @@ const TouristData = () => {
                             <div className='flex justify-between items-center'>
                                 <div className='flex flex-col'>
                                     <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
-                                        <option value={10}>10</option>
-                                        <option value={25}>25</option>
-                                        <option value={50}>50</option>
-                                        <option value={100}>100</option>
+                                        <option value={5}>5</option>
+                                            <option value={10}>10</option>
+                                            <option value={50}>50</option>
+                                            <option value={100}>100</option>
+                                            <option value={500}>500</option>
+                                            <option value={1000}>1000</option>
+                                            <option value={5000}>5000</option>
+                                            <option value={10000}>10000</option>
+                                            <option value={50000}>50000</option>
+                                            <option value={totalData}>All</option>
                                     </select>
                                 </div>
                                 <div className='flex items-center gap-2'>

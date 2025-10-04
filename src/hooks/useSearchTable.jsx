@@ -19,6 +19,7 @@ const useSearchTable = () => {
         });
     }, []);
 
+
     return searchTable;
 };
 

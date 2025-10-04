@@ -604,7 +604,6 @@ select:hover{
 .list__table td,
 .list__table th {
   border: 1px solid white;
-  text-align: center;
   padding: 2px;
   font-size: 13px;
 }
@@ -635,7 +634,7 @@ select:hover{
 }
 
 .list__table__head tr th:first-child {
-  @apply w-[30px]
+  @apply min-w-[auto]
 }
 
 .list__table__edit__icon {
@@ -902,7 +901,7 @@ input[type="checkbox"]:checked::before {
 }
 
 .form__btn__grp.filter {
-  @apply justify-end
+  @apply justify-end;
 }
 
 .save__btn {
@@ -1113,5 +1112,9 @@ input[type="checkbox"]:checked::before {
   background-color: #f9fafb;
   border-color: #e5e7eb;
   box-shadow: none;
+}
+.list__table td:not(.list__table td:nth-child(1)){
+  padding: 6px 10px;
+  min-width: 150px;
 }
 

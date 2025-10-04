@@ -1,4 +1,3 @@
-import Cookies from 'js-cookie';
 import useMyToaster from './useMyToaster';
 
 const useApi = () => {
@@ -25,7 +24,6 @@ const useApi = () => {
 
 
   const restoreData = async (ids, model) => {
-    console.log(ids);
     const url = process.env.REACT_APP_MASTER_API + `/${model}/restore`;
     const req = await fetch(url, {
       method: "POST",

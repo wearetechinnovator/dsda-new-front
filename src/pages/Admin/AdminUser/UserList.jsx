@@ -13,13 +13,16 @@ import { Icons } from '../../../helper/icons';
 import Pagination from '../../../components/Admin/Pagination';
 import useSearchTable from '../../../hooks/useSearchTable';
 import useApi from '../../../hooks/useApi';
+import useSetTableFilter from '../../../hooks/useSetTableFilter';
 
 
 const UserList = ({ mode }) => {
 	const toast = useMyToaster();
 	const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
-	const [activePage, setActivePage] = useState(1);
-	const [dataLimit, setDataLimit] = useState(10);
+	const { getFilterState, setFilterState } = useSetTableFilter();
+	const savedFilter = getFilterState("userList");
+	const [activePage, setActivePage] = useState(savedFilter?.activePage || 1);
+	const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
 	const [totalData, setTotalData] = useState()
 	const [selected, setSelected] = useState([]);
 	const navigate = useNavigate();
@@ -37,18 +40,57 @@ const UserList = ({ mode }) => {
 	const searchTable = useSearchTable();
 	const { deleteData, restoreData } = useApi()
 	const [isTrash, setIsTrash] = useState(false);
+	const timeRef = useRef(null);
+
+
 
 
 
 	// Get data;
+	const get = async () => {
+		try {
+			const data = {
+				token: Cookies.get("token"),
+				trash: isTrash,
+				page: activePage,
+				limit: dataLimit
+			}
+			setFilterState("userList", dataLimit, activePage);
+			const url = process.env.REACT_APP_MASTER_API + `/admin/get-users`;
+			const req = await fetch(url, {
+				method: "POST",
+				headers: {
+					"Content-Type": 'application/json'
+				},
+				body: JSON.stringify(data)
+			});
+			const res = await req.json();
+			setTotalData(res.total)
+			setData([...res.data])
+			setLoading(false);
+
+		} catch (error) {
+			console.log(error)
+		}
+	}
 	useEffect(() => {
-		const get = async () => {
+		get();
+	}, [isTrash, dataLimit, activePage])
+
+	const searchTableDatabase = (e) => {
+		const txt = e.target.value;
+		if (timeRef.current) clearTimeout(timeRef.current);
+
+		timeRef.current = setTimeout(async () => {
+			if (!txt) {
+				get();
+				return;
+			}
+
 			try {
 				const data = {
 					token: Cookies.get("token"),
-					trash: isTrash,
-					page: activePage,
-					limit: dataLimit
+					search: txt
 				}
 				const url = process.env.REACT_APP_MASTER_API + `/admin/get-users`;
 				const req = await fetch(url, {
@@ -59,17 +101,17 @@ const UserList = ({ mode }) => {
 					body: JSON.stringify(data)
 				});
 				const res = await req.json();
-				setTotalData(res.total)
-				setData([...res.data])
-				setLoading(false);
+				console.log(res)
+				setTotalData(res.length)
+				setData([...res])
 
 			} catch (error) {
 				console.log(error)
 			}
-		}
-		get();
-	}, [isTrash, dataLimit, activePage])
 
+		}, 300)
+
+	}
 
 	const selectAll = (e) => {
 		if (e.target.checked) {
@@ -121,17 +163,23 @@ const UserList = ({ mode }) => {
 								<div className='flex justify-between items-center'>
 									<div className='flex flex-col'>
 										<select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+											<option value={5}>5</option>
 											<option value={10}>10</option>
-											<option value={25}>25</option>
 											<option value={50}>50</option>
 											<option value={100}>100</option>
+											<option value={500}>500</option>
+											<option value={1000}>1000</option>
+											<option value={5000}>5000</option>
+											<option value={10000}>10000</option>
+											<option value={50000}>50000</option>
+											<option value={totalData}>All</option>
 										</select>
 									</div>
 									<div className='flex items-center gap-2'>
 										<div className='flex w-full flex-col lg:w-[300px]'>
 											<input type='text'
 												placeholder='Search...'
-												onChange={searchTable}
+												onChange={searchTableDatabase}
 											/>
 										</div>
 										{!isTrash && <button

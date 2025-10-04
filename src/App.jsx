@@ -35,6 +35,7 @@ const NotFound = React.lazy(() => import("./pages/Admin/NotFound"));
 // const Invoice = React.lazy(() => import("./pages/Admin/details/Invoice"));
 const ItemDetails = React.lazy(() => import("./pages/Admin/AdminUser/Details"));
 const ManageHotel = React.lazy(() => import("./pages/Admin/ManageHotel"));
+const HotelList = React.lazy(()=>import("./pages/Admin/HotelMaster/HotelList"))
 
 
 // Hotel Dashboard
@@ -54,6 +55,7 @@ const Payments = React.lazy(() => import("./pages/Hotel/Payments"));
 const OtherPayments = React.lazy(() => import("./pages/Hotel/OtherPayments"));
 const Statistics = React.lazy(()=>import('./pages/Hotel/Statistics'));
 const FinalCheckOut = React.lazy(()=>import('./pages/Hotel/FinalCheckOut'));
+
 
 
 const App = () => {
@@ -111,6 +113,7 @@ const App = () => {
           <Route path="hotel" element={<Hotelmaster />} />
           <Route path="hotel/add" element={<AddHotel />} />
           <Route path="hotel/edit/:id" element={<AddHotel mode="edit" />} />
+          <Route path="hotel-list" element={<HotelList/>} />
 
           {/* District */}
           <Route path="district" element={< District />} />

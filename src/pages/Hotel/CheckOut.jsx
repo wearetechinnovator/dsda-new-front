@@ -11,6 +11,7 @@ import useExportTable from '../../hooks/useExportTable';
 import useMyToaster from '../../hooks/useMyToaster';
 import Pagination from '../../components/Admin/Pagination';
 import Cookies from 'js-cookie';
+import useSetTableFilter from '../../hooks/useSetTableFilter';
 
 
 
@@ -18,8 +19,10 @@ const CheckOut = () => {
     const [searchBy, setSearchBy] = useState("room");
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
-    const [activePage, setActivePage] = useState(1);
-    const [dataLimit, setDataLimit] = useState(10);
+    const { getFilterState, setFilterState } = useSetTableFilter();
+    const savedFilter = getFilterState("checkout");
+    const [activePage, setActivePage] = useState(savedFilter?.activePage || 1);
+    const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
     const [totalData, setTotalData] = useState();
     const navigate = useNavigate();
     const [data, setData] = useState([]);
@@ -45,6 +48,7 @@ const CheckOut = () => {
                     page: activePage,
                     limit: dataLimit
                 }
+                setFilterState("checkout", dataLimit, activePage);
                 const url = process.env.REACT_APP_BOOKING_API + `/check-out/get-booking-head`;
                 const req = await fetch(url, {
                     method: "POST",
@@ -148,10 +152,16 @@ const CheckOut = () => {
                             <div className='flex justify-between items-center'>
                                 <div className='flex flex-col'>
                                     <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                        <option value={5}>5</option>
                                         <option value={10}>10</option>
-                                        <option value={25}>25</option>
                                         <option value={50}>50</option>
                                         <option value={100}>100</option>
+                                        <option value={500}>500</option>
+                                        <option value={1000}>1000</option>
+                                        <option value={5000}>5000</option>
+                                        <option value={10000}>10000</option>
+                                        <option value={50000}>50000</option>
+                                        <option value={totalData}>All</option>
                                     </select>
                                 </div>
                                 <div className='flex items-center gap-2'>
@@ -211,7 +221,7 @@ const CheckOut = () => {
                                     {
                                         bookingHeadList.map((d, i) => {
                                             return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                <td>{i+1}</td>
+                                                <td>{i + 1}</td>
                                                 <td className='px-4 border-b'>{d.booking_head_guest_name}</td>
                                                 <td>{d.booking_checkin_date_time}</td>
                                                 <td>--</td>
@@ -220,18 +230,18 @@ const CheckOut = () => {
                                                 <td>
                                                     <div className='flex flex-col gap-1'>
                                                         <span className='bg-green-800 text-white text-xs py-1 px-2 flex gap-1 items-center justify-center rounded-full'>
-                                                            <Icons.CHECK/>
+                                                            <Icons.CHECK />
                                                             Paid
                                                         </span>
                                                         <span className='bg-blue-600 text-white text-xs py-1 px-2 flex gap-1 items-center justify-center rounded-full'>
-                                                            <Icons.PRINTER/>
+                                                            <Icons.PRINTER />
                                                             Print
                                                         </span>
                                                     </div>
                                                 </td>
                                                 <td className='px-4 text-center'>
                                                     <button className='notice__view__btn'>
-                                                        <Icons.CHECK2/>
+                                                        <Icons.CHECK2 />
                                                         Checkout
                                                     </button>
                                                 </td>

@@ -44,8 +44,6 @@ const PoliceStationComponent = ({ mode, save }) => {
                     body: JSON.stringify({ token: cookie, id: id })
                 })
                 const res = await req.json();
-                const data = res.data;
-                console.log(res)
                 setData({ ...res });
             }
 

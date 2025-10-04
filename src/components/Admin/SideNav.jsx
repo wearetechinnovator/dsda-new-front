@@ -83,8 +83,8 @@ const SideNav = () => {
         </div>
         <div className="side__nav__link__group">
           <h3 className='menu__title'>MIS</h3>
-          <Link to={"/admin/item"} data-tooltip-id="sideBarItemToolTip">
-            <li className={`flex items-center ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
+          <Link to={"/admin/hotel-list"} data-tooltip-id="sideBarItemToolTip">
+            <li className={`flex items-center ${activePath.search("/admin/hotel-list") >= 0 ? 'active__link' : ''}`}>
               <span className='mr-3'><Icons.HOTEL /></span>
               <span>Hotel List</span>
             </li>

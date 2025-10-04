@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Nav from '../../components/Admin/Nav';
 import SideNav from '../../components/Admin/SideNav';
-import { useNavigate } from 'react-router-dom';
 import useExportTable from '../../hooks/useExportTable';
 import Cookies from 'js-cookie';
 import downloadPdf from '../../helper/downloadPdf';
@@ -10,13 +9,16 @@ import { Tooltip } from 'react-tooltip';
 import { Popover, Whisper } from 'rsuite';
 import { Icons } from '../../helper/icons';
 import Pagination from '../../components/Admin/Pagination';
-import useSearchTable from '../../hooks/useSearchTable';
+import useSetTableFilter from '../../hooks/useSetTableFilter';
+
 
 
 const Dashboard = () => {
   const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
-  const [activePage, setActivePage] = useState(1);
-  const [dataLimit, setDataLimit] = useState(10);
+  const { getFilterState, setFilterState } = useSetTableFilter();
+  const savedFilter = getFilterState("dashboard");
+  const [activePage, setActivePage] = useState(savedFilter?.activePage || 1);
+  const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
   const [totalData, setTotalData] = useState()
   const [selected, setSelected] = useState([]);
   const [data, setData] = useState([]);
@@ -33,18 +35,55 @@ const Dashboard = () => {
       }));
   }, [data]);
   const [loading, setLoading] = useState(true);
-  const searchTable = useSearchTable();
+  const timeRef = useRef(null);
+
 
 
 
   // Get data;
+  const get = async () => {
+    try {
+      const data = {
+        token: Cookies.get("token"),
+        page: activePage,
+        limit: dataLimit
+      }
+      setFilterState("dashboard", dataLimit, activePage);
+      const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
+      const req = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+      const res = await req.json();
+      setTotalData(res.total)
+      setData([...res.data])
+      setLoading(false);
+
+    } catch (error) {
+      console.log(error)
+    }
+  }
   useEffect(() => {
-    const get = async () => {
+    get();
+  }, [dataLimit, activePage])
+
+  const searchTableDatabase = (e) => {
+    const txt = e.target.value;
+    if (timeRef.current) clearTimeout(timeRef.current);
+
+    timeRef.current = setTimeout(async () => {
+      if (!txt) {
+        get();
+        return;
+      }
+
       try {
         const data = {
           token: Cookies.get("token"),
-          page: activePage,
-          limit: dataLimit
+          search: txt
         }
         const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
         const req = await fetch(url, {
@@ -55,17 +94,17 @@ const Dashboard = () => {
           body: JSON.stringify(data)
         });
         const res = await req.json();
-        console.log(res);
-        setTotalData(res.total)
-        setData([...res.data])
-        setLoading(false);
+        console.log(res)
+        setTotalData(res.length)
+        setData([...res])
 
       } catch (error) {
         console.log(error)
       }
-    }
-    get();
-  }, [dataLimit, activePage])
+
+    }, 300)
+
+  }
 
 
   const selectAll = (e) => {
@@ -117,17 +156,24 @@ const Dashboard = () => {
                 <div className='flex justify-between items-center'>
                   <div className='flex flex-col'>
                     <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                      <option value={5}>5</option>
                       <option value={10}>10</option>
-                      <option value={25}>25</option>
                       <option value={50}>50</option>
                       <option value={100}>100</option>
+                      <option value={500}>500</option>
+                      <option value={1000}>1000</option>
+                      <option value={5000}>5000</option>
+                      <option value={10000}>10000</option>
+                      <option value={50000}>50000</option>
+                      <option value={totalData}>All</option>
                     </select>
                   </div>
                   <div className='flex items-center gap-2'>
                     <div className='flex w-full flex-col lg:w-[300px]'>
                       <input type='text'
                         placeholder='Search...'
-                        onChange={searchTable}
+                        // onChange={searchTable}
+                        onChange={searchTableDatabase}
                         className='p-[6px]'
                       />
                     </div>
