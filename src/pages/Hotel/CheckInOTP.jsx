@@ -15,6 +15,7 @@ const CheckInOTP = () => {
     const otp2 = useRef();
     const otp3 = useRef();
     const otp4 = useRef();
+    const getOTP = localStorage.getItem("OTP");
 
 
     // Handle Check In..............
@@ -25,8 +26,13 @@ const CheckInOTP = () => {
         }
 
         // Proceed with OTP verification logic here
-        toast("OTP verified successfully", "success");
+        if(btoa(OTP) !== getOTP){
+            return toast("Invalid OTP", 'error');
+        }
 
+        localStorage.clear("OTP");
+        toast("OTP verified successfully", "success");
+        console.log(location.state);
         navigate('/hotel/check-in/guest-entry', {
             state: location.state
         });

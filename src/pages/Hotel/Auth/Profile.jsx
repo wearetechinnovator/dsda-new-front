@@ -15,7 +15,7 @@ import { addHotelDetails } from '../../../store/hotelSlice';
 
 
 
-const Profile = ({ mode }) => {
+const Profile = () => {
   const toast = useMyToaster();
   const dispatch = useDispatch();
   const hotelData = useSelector(state => state.hotelDetails);
@@ -58,12 +58,12 @@ const Profile = ({ mode }) => {
       setDocumentData(hotelData.hotel_document);
 
       setData({
-        zone: hotelData.hotel_zone_id?._id || "",
-        sector: hotelData.hotel_sector_id?._id || "",
-        block: hotelData.hotel_block_id || "",
-        category: hotelData.hotel_category?._id || "",
-        district: hotelData.hotel_district_id?._id || "",
-        policeStation: hotelData.hotel_police_station_id?._id || "",
+        zone: hotelData.hotel_zone_id?.name || "",
+        sector: hotelData.hotel_sector_id?.name || "",
+        block: hotelData.hotel_block_id?.name || "",
+        category: hotelData.hotel_category?.name || "",
+        district: hotelData.hotel_district_id?.name || "",
+        policeStation: hotelData.hotel_police_station_id?.name || "",
 
         name: hotelData.hotel_name || "",
         address: hotelData.hotel_address || "",
@@ -164,7 +164,7 @@ const Profile = ({ mode }) => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ ...allData, token, id: hotelId } )
+        body: JSON.stringify({ ...allData, token, id: hotelId })
       })
       const res = await req.json();
       if (req.status !== 200 || res.err) {
@@ -173,7 +173,8 @@ const Profile = ({ mode }) => {
 
 
       toast("Hotel update success", 'success');
-      dispatch(addHotelDetails({ ...allData }));
+      window.location.reload();
+      // dispatch(addHotelDetails({ ...allData }));
       return;
     } catch (error) {
       console.log(error);
@@ -256,172 +257,100 @@ const Profile = ({ mode }) => {
             <div className='flex justify-between  gap-5 flex-col lg:flex-row'>
               <div className='w-full flex flex-col gap-3'>
                 <div>
-                  <p className='ml-1'>Zone<span className='required__text'>*</span></p>
-                  <MySelect2
-                    model={"zone"}
-                    onType={(v) => {
-                      console.log(v)
-                      setData({ ...data, zone: v })
-                    }}
-                    value={data.zone}
-                  />
+                  <p className='ml-1'>Zone</p>
+                  <input type='text' value={data.zone} disabled />
                 </div>
                 <div>
                   <p>Category</p>
-                  <SelectPicker
-                    data={hotelCategories?.map(hc => ({ label: hc.hotel_category_name, value: hc._id })) || []}
-                    style={{ width: '100%' }}
-                    onChange={(v) => setData({ ...data, category: v })}
-                    value={data.category}
-                    placeholder="Select"
-                    searchable={true}
-                    cleanable={true}
-                  />
+                  <input type='text' value={data.category} disabled />
                 </div>
                 <div>
-                  <p className='ml-1'>Sector<span className='required__text'>*</span></p>
-                  <MySelect2
-                    model={"sector"}
-                    onType={(v) => {
-                      console.log(v)
-                      setData({ ...data, sector: v })
-                    }}
-                    value={data.sector}
-                  />
+                  <p className='ml-1'>Sector</p>
+                  <input type='text' value={data.sector} disabled />
                 </div>
                 <div>
                   <p className='ml-1'>Block<span className='required__text'>*</span></p>
-                  <MySelect2
-                    model={"block"}
-                    onType={(v) => {
-                      console.log(v)
-                      setData({ ...data, block: v })
-                    }}
-                    value={data.block}
-                  />
+                  <input type='text' value={data.block} disabled />
                 </div>
                 <div>
-                  <p className='ml-1'>District<span className='required__text'>*</span></p>
-                  <MySelect2
-                    model={"district"}
-                    onType={(v) => {
-                      console.log(v)
-                      setData({ ...data, district: v })
-                    }}
-                    value={data.district}
-                  />
+                  <p className='ml-1'>District</p>
+                  <input type='text' value={data.district} disabled />
                 </div>
                 <div>
-                  <p className='ml-1'>Police Station<span className='required__text'>*</span></p>
-                  <MySelect2
-                    model={"police-station"}
-                    onType={(v) => {
-                      console.log(v)
-                      setData({ ...data, policeStation: v })
-                    }}
-                    value={data.policeStation}
-                  />
+                  <p className='ml-1'>Police Station</p>
+                  <input type='text' value={data.policeStation} disabled />
                 </div>
                 <div>
                   <p>Name<span className='required__text'>*</span></p>
-                  <input type='text' onChange={(e) => setData({ ...data, name: e.target.value })} value={data.name} />
+                  <input type='text' disabled value={data.name} />
                 </div>
                 <div>
                   <p>Year of Establishment<span className='required__text'>*</span></p>
-                  <input type='text' onChange={(e) => setData({ ...data, establishment: e.target.value })}
-                    value={data.establishment} />
+                  <input type='text' disabled value={data.establishment} />
                 </div>
                 <div>
                   <p>Address</p>
-                  <input type='text' onChange={(e) => setData({ ...data, address: e.target.value })} value={data.address} />
+                  <input type='text' disabled value={data.address} />
                 </div>
                 <div>
                   <p>Email</p>
-                  <input type='email' onChange={(e) => setData({ ...data, email: e.target.value })}
-                    value={data.email} />
+                  <input type='email' disabled value={data.email} />
                 </div>
                 <div>
                   <p>Username<span className='required__text'>*</span></p>
-                  <input type='text' onChange={(e) => setData({ ...data, username: e.target.value })}
-                    value={data.username} />
-                </div>
-                <div>
-                  <p>Password<span className='required__text'>*</span></p>
-                  <input type='password' onChange={(e) => setData({ ...data, password: e.target.value })}
-                    value={data.password} />
+                  <input type='text' disabled value={data.username} />
                 </div>
               </div>
 
               <div className='w-full flex flex-col gap-3'>
                 <div>
                   <p>GMB URL (Google My Business URL or Google Map URL)</p>
-                  <input type='text'
-                    onChange={(e) => setData({ ...data, gmbUrl: e.target.value })}
-                    value={data.gmbUrl} />
+                  <input type='text' disabled value={data.gmbUrl} />
                 </div>
                 <div>
                   <p>Distance From Main Road (In Meters)</p>
-                  <input type='text'
-                    onChange={(e) => setData({ ...data, distanceFromRoad: e.target.value })}
-                    value={data.distanceFromRoad} />
+                  <input type='text' disabled value={data.distanceFromRoad} />
                 </div>
                 <div>
                   <p>Distance From Sea Beach (In Meters)</p>
-                  <input type='text'
-                    onChange={(e) => setData({ ...data, distanceFromSeaBeach: e.target.value })}
-                    value={data.distanceFromSeaBeach} />
+                  <input type='text' disabled value={data.distanceFromSeaBeach} />
                 </div>
                 <div>
                   <p>Reception Phone</p>
-                  <input type='text'
-                    onChange={(e) => setData({ ...data, receptionPhone: e.target.value })}
-                    value={data.receptionPhone} />
+                  <input type='text' disabled value={data.receptionPhone} />
                 </div>
                 <div>
                   <p>Proprietor Name</p>
-                  <input type='text'
-                    onChange={(e) => setData({ ...data, proprietorName: e.target.value })}
-                    value={data.proprietorName} />
+                  <input type='text' disabled value={data.proprietorName} />
                 </div>
                 <div>
                   <p>Proprietor Phone</p>
-                  <input type='text'
-                    onChange={(e) => setData({ ...data, proprietorPhone: e.target.value })}
-                    value={data.proprietorPhone} />
+                  <input type='text' disabled value={data.proprietorPhone} />
                 </div>
                 <div>
                   <p>Manager Name</p>
-                  <input type='text'
-                    onChange={(e) => setData({ ...data, managerName: e.target.value })}
-                    value={data.managerName} />
+                  <input type='text' disabled value={data.managerName} />
                 </div>
                 <div>
                   <p>Manager Phone <span className='required__text'>*</span></p>
-                  <input type='text'
-                    onChange={(e) => setData({ ...data, managerPhone: e.target.value })}
-                    value={data.managerPhone} />
+                  <input type='text' disabled value={data.managerPhone} />
                 </div>
                 <div>
                   <p>Alternate Manager Phone</p>
-                  <input type='text'
-                    onChange={(e) => setData({ ...data, alternateManagerPhone: e.target.value })}
-                    value={data.alternateManagerPhone} />
+                  <input type='text' disabled value={data.alternateManagerPhone} />
                 </div>
 
                 <div>
                   <p>Minimum Rate</p>
-                  <input type='text' defaultValue={0}
-                    onChange={(e) => setData({ ...data, miniumRate: e.target.value })} value={data.miniumRate} />
+                  <input type='text' disabled value={data.miniumRate} />
                 </div>
                 <div>
                   <p>Maximum Rate</p>
-                  <input type='text' defaultValue={0}
-                    onChange={(e) => setData({ ...data, maximumRate: e.target.value })} value={data.maximumRate} />
+                  <input type='text' disabled value={data.maximumRate} />
                 </div>
                 <div>
                   <p>Website</p>
-                  <input type='text'
-                    onChange={(e) => setData({ ...data, website: e.target.value })} value={data.website} />
+                  <input type='text' disabled value={data.website} />
                 </div>
               </div>
             </div>
@@ -444,7 +373,7 @@ const Profile = ({ mode }) => {
                       <td className="px-2 py-2 border">
                         <Toggle
                           checked={data.restaurantAvailable === "1"}
-                          onChange={(value) => setData({ ...data, restaurantAvailable: value ? "1" : "0" })}
+                          // onChange={(value) => setData({ ...data, restaurantAvailable: value ? "1" : "0" })}
                           checkedChildren="Yes"
                           unCheckedChildren="No"
                         />
@@ -453,7 +382,7 @@ const Profile = ({ mode }) => {
                       <td className="px-2 py-2 border">
                         <Toggle
                           checked={data.ac === "1"}
-                          onChange={(value) => setData({ ...data, ac: value ? "1" : "0" })}
+                          // onChange={(value) => setData({ ...data, ac: value ? "1" : "0" })}
                           checkedChildren="Yes"
                           unCheckedChildren="No"
                         />
@@ -462,7 +391,7 @@ const Profile = ({ mode }) => {
                       <td className="px-2 py-2 border">
                         <Toggle
                           checked={data.swimmingPool === "1"}
-                          onChange={(value) => setData({ ...data, swimmingPool: value ? "1" : "0" })}
+                          // onChange={(value) => setData({ ...data, swimmingPool: value ? "1" : "0" })}
                           checkedChildren="Yes"
                           unCheckedChildren="No"
                         />
@@ -471,7 +400,7 @@ const Profile = ({ mode }) => {
                       <td className="px-2 py-2 border">
                         <Toggle
                           checked={data.conferanceHallAvailable === "1"}
-                          onChange={(value) => setData({ ...data, conferanceHallAvailable: value ? "1" : "0" })}
+                          // onChange={(value) => setData({ ...data, conferanceHallAvailable: value ? "1" : "0" })}
                           checkedChildren="Yes"
                           unCheckedChildren="No"
                         />
@@ -481,7 +410,7 @@ const Profile = ({ mode }) => {
                         <Toggle
                           size={"md"}
                           checked={data.parkingAvailable === "1"}
-                          onChange={(value) => setData({ ...data, parkingAvailable: value ? "1" : "0" })}
+                          // onChange={(value) => setData({ ...data, parkingAvailable: value ? "1" : "0" })}
                           checkedChildren="Yes"
                           unCheckedChildren="No"
                         />
@@ -490,7 +419,7 @@ const Profile = ({ mode }) => {
                       <td className="px-2 py-2 border">
                         <Toggle
                           checked={data.status === "1"}
-                          onChange={(value) => setData({ ...data, status: value ? "1" : "0" })}
+                          // onChange={(value) => setData({ ...data, status: value ? "1" : "0" })}
                           checkedChildren="Operative"
                           unCheckedChildren="Inoperative"
                         />
@@ -750,23 +679,34 @@ const Profile = ({ mode }) => {
                       <tr key={index} className="border-t">
                         <td>
                           <SelectPicker
-                            data={documentType?.map(t => ({ label: t.document_type_name, value: t._id })) || []}
+                            block
+                            data={documentType?.map(t => ({
+                              label: t.document_type_name,
+                              value: t._id
+                            })) || []}
                             style={{ width: '100%' }}
+                            value={documentData?.[index]?.selectedDocument || null}
                             onChange={(v) => {
+                              if (documentData.some((item, i) => item.selectedDocument === v && i !== index)) {
+                                toast("This document type already added!", "error");
+                                return;
+                              }
+
+                              // Update selected document
                               setDocumentData((prev) =>
                                 prev.map((item, i) =>
                                   i === index ? { ...item, selectedDocument: v } : item
-
                                 )
                               );
                             }}
-                            value={documentData[index].selectedDocument}
                             placeholder="Select"
-                            searchable={true}
-                            cleanable={true}
-                            placement='autoVertical'
-                            className='mx-3'
+                            searchable
+                            cleanable
+                            placement="autoVertical"
+                            className="mx-3"
                           />
+
+
                         </td>
                         <td className="px-4 py-2">
                           <div className="file__uploader__div">
@@ -864,6 +804,7 @@ const Profile = ({ mode }) => {
                     <tr key={index} className="border-t">
                       <td>
                         <SelectPicker
+                          block
                           data={roomType?.map(t => ({ label: t.name, value: t._id })) || []}
                           style={{ width: '100%' }}
                           onChange={(v) => {

@@ -43,7 +43,7 @@ const ManageHotel = () => {
 
     const searchTableDatabase = (txt) => {
         if (timeRef.current) clearTimeout(timeRef.current);
-
+        
         timeRef.current = setTimeout(async () => {
             if (!txt) {
                 get();
@@ -69,7 +69,7 @@ const ManageHotel = () => {
                 console.log(error)
             }
 
-        }, 300)
+        }, 1000)
 
     }
 

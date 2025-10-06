@@ -4,38 +4,68 @@ import { Icons } from '../../helper/icons';
 import { useState } from 'react';
 import useMyToaster from '../../hooks/useMyToaster';
 import { useNavigate } from 'react-router-dom';
+import useConfirmDialog from '../../hooks/useConfirmDialog';
 
 
 
 
 const CheckIn = () => {
+    const { show, modal } = useConfirmDialog();
     const navigate = useNavigate();
     const toast = useMyToaster();
-    const [data, setData] = useState({ guestMobile: '', numberOfGuests: '', verificationBy: 'manager' });
+    const [data, setData] = useState({ guestMobile: '', numberOfGuests: '', verificationBy: 'manager' })
 
 
     // Handle Check In..............
-    const handleCheckIn = () => {
+    const handleCheckIn = async () => {
         if ([data.guestMobile, data.numberOfGuests, data.verificationBy].some(field => field === '')) {
             return toast("All fields are required", "error");
         }
+
         // Validate Mobile Number............
         if (isNaN(data.guestMobile) || data.guestMobile.length !== 10) {
             return toast("Invalid Mobile Number", "error");
         }
 
+        // Validate Guest Number..............
+        if(isNaN(data.numberOfGuests) || parseInt(data.numberOfGuests) <= 0){
+            return toast("Invalid Number of Guest", "error");
+        }
+
 
 
         if (data.verificationBy === 'otp') {
+            // Generate OTP;
+            let newOtp = Math.floor(1000 + Math.random() * 9000);
+            localStorage.setItem("OTP", btoa(newOtp).toString());
+            console.log(newOtp);
+
+            // Send OTP;
+            // const sendotp = await fetch(process.env.REACT_APP_MASTER_API+"/admin/send-checkin-otp", {
+            //     method: "POST",
+            //     headers:{
+            //         "Content-Type":"application/json"
+            //     },
+            //     body: JSON.stringify({mobile: data.guestMobile, otp: newOtp})
+            // })
+            // const res = await sendotp.json();
+            // console.log(res);
+
+
             navigate('/hotel/check-in-otp', {
                 state: data
             });
+
         } else {
-            navigate('/hotel/check-in/guest-entry', {
-                state: data,
-            });
+            const result = await show('Confirm Action', 'Do you want to proceed?');
+            if (result === "ok") {
+                navigate('/hotel/check-in/guest-entry', {
+                    state: data
+                });
+            }
         }
     }
+
 
     // Reset Form Data...............
     const clearData = () => setData({ guestMobile: '', numberOfGuests: '', verificationBy: 'manager' });
@@ -43,6 +73,7 @@ const CheckIn = () => {
 
     return (
         <>
+            {modal}
             <Nav title={"Manage Guest Entry"} />
             <main id='main'>
                 <SideNav />

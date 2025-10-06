@@ -6,11 +6,13 @@ import { useLocation } from 'react-router-dom';
 import base64Data from '../../helper/getBase64';
 import useMyToaster from '../../hooks/useMyToaster';
 import Cookies from 'js-cookie';
-import { TimePicker } from 'rsuite';
+import { SelectPicker, TimePicker } from 'rsuite';
+import { useSelector } from 'react-redux';
 
 
 const GuestEntry = () => {
     const toast = useMyToaster();
+    const settingDetails = useSelector((store) => store.settingSlice)
     const location = useLocation()
     const [state, setState] = useState([]);
     const [country, setCountry] = useState([]);
@@ -23,8 +25,21 @@ const GuestEntry = () => {
         idNumber: '', idProof: '', mobileNumber: '', roomNumber: '', country: "", state: '', city: ''
     }
     const [guestList, setGuestList] = useState([]);
+    const [minDate, setMinDate] = useState(null);
+    const today = new Date();
+    const [guestErrors, setGuestErrors] = useState([]);
 
 
+
+    // Get Checkin Checkout date from setting;
+    useEffect(() => {
+        if (settingDetails?.day_for_checkin_checkout) {
+            const min = new Date(
+                Date.now() - settingDetails.day_for_checkin_checkout * 24 * 60 * 60 * 1000
+            );
+            setMinDate(min);
+        }
+    }, [settingDetails]);
 
 
     // Set Table rows;
@@ -55,16 +70,47 @@ const GuestEntry = () => {
 
 
     const handleSubmit = async () => {
+        // Basic Check-In details validation
         if ([checkInDetails.mobileNumbe, checkInDetails.NumberOfGuest, checkInDetails.checkInDate, checkInDetails.checkInTime].some(field => field === '')) {
-            return toast("All fields are required", "error");
+            return toast("All check-in fields are required", "error");
         }
+
+        let newGuestErrors = [];
 
         for (let i = 0; i < guestList.length; i++) {
             const guest = guestList[i];
-            if ([guest.guestName, guest.gender, guest.age, guest.nationality, guest.address, guest.idType, guest.idNumber, guest.idProof, guest.mobileNumber, guest.roomNumber].some(field => !field || field === '')) {
-                return toast("All fields are required", "error");
+            const errors = {};
+
+            if (i === 0) {
+                // Head guest: all fields required
+                if (!guest.guestName) errors.guestName = true;
+                if (!guest.gender) errors.gender = true;
+                if (!guest.age) errors.age = true;
+                if (!guest.nationality) errors.nationality = true;
+                if (!guest.address) errors.address = true;
+                if (!guest.idType) errors.idType = true;
+                if (!guest.idNumber) errors.idNumber = true;
+                if (!guest.idProof) errors.idProof = true;
+                if (!guest.mobileNumbe) errors.mobileNumbe = true; // head guest uses checkInDetails
+                if (!guest.roomNumber) errors.roomNumber = true;
+            } else {
+                // Other guests: only name, gender, and age required
+                if (!guest.guestName) errors.guestName = true;
+                if (!guest.gender) errors.gender = true;
+                if (!guest.age) errors.age = true;
             }
+
+            newGuestErrors[i] = errors;
         }
+
+        setGuestErrors(newGuestErrors);
+
+        // Check if any guest has missing fields
+        const hasError = newGuestErrors.some(e => Object.keys(e).length > 0);
+        if (hasError) {
+            return toast("Please fill all required fields", "error");
+        }
+
 
 
         try {
@@ -115,14 +161,6 @@ const GuestEntry = () => {
                                 <input type='text'
                                     placeholder='Enter Mobile Number'
                                     value={checkInDetails.mobileNumbe}
-                                    onChange={(e) => {
-                                        const value = e.target.value;
-                                        if (/^\d*$/.test(value) && value.length <= 10) {
-                                            setCheckInDetails({
-                                                ...checkInDetails, mobileNumbe: value
-                                            })
-                                        }
-                                    }}
                                 />
                             </div>
                             <div>
@@ -130,19 +168,30 @@ const GuestEntry = () => {
                                 <input type='text'
                                     placeholder='Enter Number of Guests'
                                     value={checkInDetails.NumberOfGuest}
-                                    onChange={(e) => setCheckInDetails({
-                                        ...checkInDetails, NumberOfGuest: e.target.value
-                                    })}
                                 />
                             </div>
                             <div>
                                 <p>Check In Date<span className='required__text'>*</span></p>
-                                <input type='date'
-                                    placeholder='Enter Check In Date'
+                                <input
+                                    type="date"
+                                    placeholder="Enter Check In Date"
                                     value={checkInDetails.checkInDate}
-                                    onChange={(e) => setCheckInDetails({
-                                        ...checkInDetails, checkInDate: e.target.value
-                                    })}
+                                    min={minDate?.toISOString().split("T")[0]} // 2 days before today
+                                    max={today.toISOString().split("T")[0]}   // today
+                                    onChange={(e) => {
+                                        const selectedDate = e.target.value;
+
+                                        // extra safeguard: prevent manual typing of invalid date
+                                        if (selectedDate < minDate?.toISOString().split("T")[0] || selectedDate > today.toISOString().split("T")[0]) {
+                                            alert("Please select a valid date between 2 days ago and today.");
+                                            return;
+                                        }
+
+                                        setCheckInDetails({
+                                            ...checkInDetails,
+                                            checkInDate: selectedDate,
+                                        });
+                                    }}
                                 />
                             </div>
                             <div>
@@ -154,31 +203,24 @@ const GuestEntry = () => {
                                         ...checkInDetails, checkInTime: e.target.value
                                     })}
                                 />
-                                {/* <TimePicker
-                                    placeholder='Enter Check In Time'
-                                    format="hh:mm aa" showMeridiem
-                                    className='w-full'
-                                    onChange={(e) => {
-                                        console.log(e)
-                                    }}
-                                /> */}
                             </div>
                         </div>
+
                         {/* ============================== TABLE START HERE ====================== */}
-                        <div className='overflow-x-auto list__table mt-5'>
+                        <div className='overflow-x-auto list__table mt-5 list__table__checkin'>
                             <table className='min-w-full bg-white' id='table' >
                                 <thead className='bg-gray-100 list__table__head'>
                                     <tr>
-                                        <td className='min-w-[10px]'>SL No.</td>
-                                        <td>Guest Name *</td>
-                                        <td className='min-w-[15px]'>Gender *</td>
-                                        <td className='min-w-[10px]'>Age *</td>
-                                        <td className='min-w-[15px]'>Nationality *</td>
-                                        <td className='min-w-[30px]'>ID Type *</td>
-                                        <td className='min-w-[30px]'>ID Number *</td>
-                                        <td className='min-w-[30px]'>Mobile Number*</td>
-                                        <td className='min-w-[15px] max-w-[15px]'>Room Number*</td>
-                                        <td align='center'>Action</td>
+                                        <td className='w-[2%]'>#</td>
+                                        <td className='w-[16%]'>Guest Name*</td>
+                                        <td className='w-[7%]'>Gender*</td>
+                                        <td className='w-[5%]'>Age*</td>
+                                        <td className='w-[6%]'>Nationality*</td>
+                                        <td className='w-[8%]'>ID Type/No.*</td>
+                                        <td className='w-[8%]'>ID Proof*</td>
+                                        <td className='w-[8%]'>Mobile No.*</td>
+                                        <td className='w-[6%]'>Room No.*</td>
+                                        <td align='center' width={"5%"}>Action</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -188,14 +230,23 @@ const GuestEntry = () => {
                                                 <td>{index + 1}</td>
                                                 <td valign='top'>
                                                     <input type="text"
-                                                        placeholder='Enter Guest Name'
+                                                        placeholder={index === 0 ? "Enter Head Guest Name" : 'Enter Guest Name'}
                                                         value={gl.guestName}
                                                         onChange={(e) => {
                                                             const updatedList = [...guestList];
                                                             updatedList[index].guestName = e.target.value;
                                                             setGuestList(updatedList);
+
+                                                            setGuestErrors((prev) => {
+                                                                const newErrors = [...prev];
+                                                                if (newErrors[index]) delete newErrors[index].guestName;
+                                                                return newErrors;
+                                                            });
                                                         }}
                                                     />
+                                                    {guestErrors[index]?.guestName && (
+                                                        <span className="required">*This fields is required</span>
+                                                    )}
                                                 </td>
                                                 <td valign='top'>
                                                     <select value={gl.gender}
@@ -203,6 +254,12 @@ const GuestEntry = () => {
                                                             const updatedList = [...guestList];
                                                             updatedList[index].gender = e.target.value;
                                                             setGuestList(updatedList);
+
+                                                            setGuestErrors((prev) => {
+                                                                const newErrors = [...prev];
+                                                                if (newErrors[index]) delete newErrors[index].gender;
+                                                                return newErrors;
+                                                            });
                                                         }}>
                                                         <option value="">--Select--</option>
                                                         <option value="male">Male</option>
@@ -210,17 +267,29 @@ const GuestEntry = () => {
                                                         <option value="transgender">Transgender</option>
                                                         <option value="others">Others</option>
                                                     </select>
+                                                    {guestErrors[index]?.gender && (
+                                                        <span className="required">*This fields is required</span>
+                                                    )}
                                                 </td>
                                                 <td valign='top'>
-                                                    <input type="text"
+                                                    <input type="number"
                                                         placeholder='Guest Age'
                                                         value={gl.age}
                                                         onChange={(e) => {
                                                             const updatedList = [...guestList];
                                                             updatedList[index].age = e.target.value;
                                                             setGuestList(updatedList);
+
+                                                            setGuestErrors((prev) => {
+                                                                const newErrors = [...prev];
+                                                                if (newErrors[index]) delete newErrors[index].age;
+                                                                return newErrors;
+                                                            });
                                                         }}
                                                     />
+                                                    {guestErrors[index]?.age && (
+                                                        <span className="required">*This fields is required</span>
+                                                    )}
                                                 </td>
                                                 <td valign='top'>
                                                     <div className='flex flex-col gap-1'>
@@ -237,45 +306,57 @@ const GuestEntry = () => {
                                                         {
                                                             gl.nationality === "india" && (
                                                                 <>
-                                                                    <select value={gl.state}
-                                                                        onChange={(e) => {
+                                                                    <SelectPicker
+                                                                        block
+                                                                        data={state?.map(s => ({
+                                                                            label: s.state_name,
+                                                                            value: s._id
+                                                                        })) || []}
+                                                                        style={{ width: '100%' }}
+                                                                        value={gl.state}
+                                                                        onChange={(v) => {
                                                                             const updatedList = [...guestList];
-                                                                            updatedList[index].state = e.target.value;
+                                                                            updatedList[index].state = v;
                                                                             setGuestList(updatedList);
-                                                                        }}>
-                                                                        <option value="">--Select State --</option>
-                                                                        {
-                                                                            state.map((s, _) => {
-                                                                                return <option value={s._id}>{s.state_name}</option>
-                                                                            })
-                                                                        }
-                                                                    </select>
-                                                                    <select value={gl.city}
+
+                                                                        }}
+                                                                        placeholder="Select State"
+                                                                        searchable
+                                                                        cleanable
+                                                                        placement="auto"
+                                                                    />
+                                                                    <input type="text"
+                                                                        placeholder='Enter City'
+                                                                        value={gl.city}
                                                                         onChange={(e) => {
                                                                             const updatedList = [...guestList];
                                                                             updatedList[index].city = e.target.value;
                                                                             setGuestList(updatedList);
-                                                                        }}>
-                                                                        <option value="">--Select City --</option>
-                                                                    </select>
+                                                                        }}
+                                                                    />
                                                                 </>
                                                             )
                                                         }
                                                         {
                                                             gl.nationality === "foriegn" && (
-                                                                <select value={gl.country}
-                                                                    onChange={(e) => {
+                                                                <SelectPicker
+                                                                    block
+                                                                    data={country?.map(t => ({
+                                                                        label: t.country_name,
+                                                                        value: t._id
+                                                                    })) || []}
+                                                                    style={{ width: '100%' }}
+                                                                    value={gl.country}
+                                                                    onChange={(v) => {
                                                                         const updatedList = [...guestList];
-                                                                        updatedList[index].country = e.target.value;
+                                                                        updatedList[index].country = v;
                                                                         setGuestList(updatedList);
-                                                                    }}>
-                                                                    <option value="">--Select Country --</option>
-                                                                    {
-                                                                        country.map((c, _) => {
-                                                                            return <option value={c._id}>{c.country_name}</option>
-                                                                        })
-                                                                    }
-                                                                </select>
+                                                                    }}
+                                                                    placeholder="Select Country"
+                                                                    searchable
+                                                                    cleanable
+                                                                    placement="auto"
+                                                                />
                                                             )
                                                         }
                                                         {
@@ -290,6 +371,9 @@ const GuestEntry = () => {
                                                             />
                                                         }
                                                     </div>
+                                                    {guestErrors[index]?.nationality && (
+                                                        <span className="required">*This fields is required</span>
+                                                    )}
                                                 </td>
                                                 <td valign='top'>
                                                     <div className='flex flex-col gap-2'>
@@ -299,7 +383,7 @@ const GuestEntry = () => {
                                                                 updatedList[index].idType = e.target.value;
                                                                 setGuestList(updatedList);
                                                             }}>
-                                                            <option value="">Select ID Type</option>
+                                                            <option value="">--Select--</option>
                                                             <option value="Aadhaar">Aadhaar</option>
                                                             <option value="Voter ID">Voter ID</option>
                                                             <option value="PAN">PAN</option>
@@ -307,58 +391,72 @@ const GuestEntry = () => {
                                                             <option value="Passport">Passport</option>
                                                             <option value="Others">Others</option>
                                                         </select>
-                                                        <div>
-                                                            <input type="file" id={`idProof-${index}`} className='hidden'
-                                                                onChange={async (e) => {
-                                                                    const file = e.target.files[0];
-                                                                    const fileBinary = await base64Data(file);
-
-                                                                    const updatedList = [...guestList];
-                                                                    updatedList[index].idProof = fileBinary
-                                                                    setGuestList(updatedList);
-                                                                }}
-                                                            />
-                                                            <label htmlFor={`idProof-${index}`} className='upload__label'>
-                                                                {gl.idProof ? "Uploaded ✔" : "Upload ID Proof"}
-                                                            </label>
-                                                        </div>
+                                                        <input type="text"
+                                                            placeholder='Enter ID No.'
+                                                            value={gl.idNumber}
+                                                            onChange={(e) => {
+                                                                const updatedList = [...guestList];
+                                                                updatedList[index].idNumber = e.target.value;
+                                                                setGuestList(updatedList);
+                                                            }}
+                                                        />
                                                     </div>
+                                                    {guestErrors[index]?.idType && (
+                                                        <span className="required">*This fields is required</span>
+                                                    )}
                                                 </td>
                                                 <td valign='top'>
-                                                    <input type="text"
-                                                        placeholder='Enter Guest ID Number'
-                                                        value={gl.idNumber}
-                                                        onChange={(e) => {
-                                                            const updatedList = [...guestList];
-                                                            updatedList[index].idNumber = e.target.value;
-                                                            setGuestList(updatedList);
-                                                        }}
-                                                    />
+                                                        <input type="file" id={`idProof-${index}`} className='hidden'
+                                                            onChange={async (e) => {
+                                                                const file = e.target.files[0];
+                                                                const fileBinary = await base64Data(file);
+
+                                                                const updatedList = [...guestList];
+                                                                updatedList[index].idProof = fileBinary
+                                                                setGuestList(updatedList);
+                                                            }}
+                                                        />
+                                                        <label htmlFor={`idProof-${index}`} className='upload__label'>
+                                                            <Icons.UPLOAD_IMAGE/>
+                                                            {gl.idProof ? "Uploaded ✔" : "Upload Photo"}
+                                                        </label>
                                                 </td>
                                                 <td valign='top'>
                                                     <input type="text"
                                                         placeholder='Enter Guest Mobile Number'
-                                                        value={gl.mobileNumber}
-                                                        onChange={(e) => {
+                                                        value={index === 0 ? checkInDetails.mobileNumbe : gl.mobileNumber}
+                                                        onChange={index === 0 ? null : (e) => {
                                                             const updatedList = [...guestList];
                                                             updatedList[index].mobileNumber = e.target.value;
                                                             setGuestList(updatedList);
                                                         }}
                                                     />
+                                                    {guestErrors[index]?.mobileNumbe && (
+                                                        <span className="required">*This fields is required</span>
+                                                    )}
                                                 </td>
                                                 <td valign='top'>
                                                     <input type="text"
-                                                        placeholder='Room Number'
+                                                        placeholder='Enter No.'
                                                         value={gl.roomNumber}
                                                         onChange={(e) => {
                                                             const updatedList = [...guestList];
                                                             updatedList[index].roomNumber = e.target.value;
                                                             setGuestList(updatedList);
+
+                                                            setGuestErrors((prev) => {
+                                                                const newErrors = [...prev];
+                                                                if (newErrors[index]) delete newErrors[index].roomNumber;
+                                                                return newErrors;
+                                                            });
                                                         }}
                                                     />
+                                                    {guestErrors[index]?.roomNumber && (
+                                                        <span className="required">*This fields is required</span>
+                                                    )}
                                                 </td>
-                                                <td>
-                                                    <button
+                                                <td align='center' valign='top'>
+                                                    {index !== 0 && <button
                                                         className="bg-red-500 text-white p-1 rounded text-lg"
                                                         title="Delete"
                                                         onClick={() => {
@@ -370,7 +468,7 @@ const GuestEntry = () => {
                                                         }}
                                                     >
                                                         <Icons.DELETE />
-                                                    </button>
+                                                    </button>}
                                                 </td>
                                             </tr>
                                         })

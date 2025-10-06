@@ -101,6 +101,10 @@ const Nav = ({ title }) => {
                     <FiUser size={"16px"} />
                     <span>Profile</span>
                   </Link>
+                  <Link className='menu-link' to="/hotel/profile/change-password">
+                    <FiUser size={"16px"} />
+                    <span>Change Password</span>
+                  </Link>
                   <Link className='menu-link' onClick={logout}>
                     <IoIosLogOut size={"16px"} />
                     <span>Logout</span>

@@ -1,3 +1,4 @@
+
 import React, { Suspense, useEffect } from "react";
 import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { ProtectRoute, UnProtectRoute } from "./components/Admin/ProtectRoute";
@@ -35,7 +36,8 @@ const NotFound = React.lazy(() => import("./pages/Admin/NotFound"));
 // const Invoice = React.lazy(() => import("./pages/Admin/details/Invoice"));
 const ItemDetails = React.lazy(() => import("./pages/Admin/AdminUser/Details"));
 const ManageHotel = React.lazy(() => import("./pages/Admin/ManageHotel"));
-const HotelList = React.lazy(()=>import("./pages/Admin/HotelMaster/HotelList"))
+const HotelList = React.lazy(() => import("./pages/Admin/Report/HotelList"));
+const BedAvailablity = React.lazy(() => import("./pages/Admin/Report/BedAvailablity"));
 
 
 // Hotel Dashboard
@@ -44,6 +46,7 @@ const HotelLogin = React.lazy(() => import("./pages/Hotel/Auth/Login"));
 const HotelForgot = React.lazy(() => import("./pages/Hotel/Auth/Forgot"));
 const HotelOtp = React.lazy(() => import("./pages/Hotel/Auth/Otp"));
 const HotelChangePassword = React.lazy(() => import("./pages/Hotel/Auth/ChangePassword"));
+const ChangeProfilePassword = React.lazy(() => import("./pages/Hotel/Auth/ChangeProfilePassword"));
 const HotelProfile = React.lazy(() => import("./pages/Hotel/Auth/Profile"));
 const CheckIn = React.lazy(() => import("./pages/Hotel/CheckIn"));
 const CheckInOTP = React.lazy(() => import("./pages/Hotel/CheckInOTP"));
@@ -53,8 +56,8 @@ const GuestEntry = React.lazy(() => import("./pages/Hotel/GuestEntry"));
 const Amenities = React.lazy(() => import("./pages/Hotel/Amenities"));
 const Payments = React.lazy(() => import("./pages/Hotel/Payments"));
 const OtherPayments = React.lazy(() => import("./pages/Hotel/OtherPayments"));
-const Statistics = React.lazy(()=>import('./pages/Hotel/Statistics'));
-const FinalCheckOut = React.lazy(()=>import('./pages/Hotel/FinalCheckOut'));
+const Statistics = React.lazy(() => import('./pages/Hotel/Statistics'));
+const FinalCheckOut = React.lazy(() => import('./pages/Hotel/FinalCheckOut'));
 
 
 
@@ -88,6 +91,7 @@ const App = () => {
       </div>
     </div>}>
       <Routes>
+
         {/* ======================================== Admin Routes ==================================== */}
         {/* ========================================================================================== */}
         <Route path="/admin" element={<UnProtectRoute login={true}><Login /></UnProtectRoute>} />
@@ -113,7 +117,6 @@ const App = () => {
           <Route path="hotel" element={<Hotelmaster />} />
           <Route path="hotel/add" element={<AddHotel />} />
           <Route path="hotel/edit/:id" element={<AddHotel mode="edit" />} />
-          <Route path="hotel-list" element={<HotelList/>} />
 
           {/* District */}
           <Route path="district" element={< District />} />
@@ -149,6 +152,10 @@ const App = () => {
           <Route path="notice" element={<Notice />} />
           <Route path="notice/add" element={<AddNotice />} />
           <Route path="notice/edit/:id" element={<AddNotice mode="edit" />} />
+
+          {/* Report */}
+          <Route path="report/hotel-list" element={<HotelList />} />
+          <Route path="report/bed-availablity" element={<BedAvailablity />} />
         </Route>
 
 
@@ -163,6 +170,7 @@ const App = () => {
           <Route path="dashboard" element={<HotelDashboard />} />
           <Route path="statistics" element={<Statistics />} />
           <Route path="profile" element={<HotelProfile />} />
+          <Route path="profile/change-password" element={<ChangeProfilePassword />} />
           <Route path="check-in" element={<CheckIn />} />
           <Route path="check-in-otp" element={<CheckInOTP />} />
           <Route path="check-in/guest-entry" element={<GuestEntry />} />

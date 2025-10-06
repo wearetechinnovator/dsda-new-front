@@ -17,6 +17,7 @@
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.1.1",
     "react-scripts": "5.0.1",
+    "react-sweetalert2": "^0.6.0",
     "react-tooltip": "^5.28.0",
     "rsuite": "^6.0.0-canary-20241227",
     "sweetalert": "^2.1.2",

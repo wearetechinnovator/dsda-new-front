@@ -32,6 +32,9 @@ import { IoMdArrowRoundBack } from "react-icons/io";
 import { FaList } from "react-icons/fa";
 import { RiMessage2Line } from "react-icons/ri";
 import { FaRegEye } from "react-icons/fa";
+import { IoEyeOffOutline } from "react-icons/io5";
+import { TbPasswordFingerprint } from "react-icons/tb";
+import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { MdFileDownload } from "react-icons/md";
 
 
@@ -82,6 +85,9 @@ export const Icons = {
   LIST: FaList,
   NOTICE: RiMessage2Line,
   EYE: FaRegEye,
+  EYE_CLOSE: IoEyeOffOutline,
   DOWNLOAD: MdFileDownload,
+  PASSWORD: TbPasswordFingerprint,
+  UPLOAD_IMAGE: MdOutlineAddPhotoAlternate
 };
 

@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 import 'rsuite/dist/rsuite.min.css';
 import { Provider } from 'react-redux';
 import store from './store/store';
+import {CustomProvider} from 'rsuite'
 
 
 // JAY JAGANNATH //
@@ -15,9 +16,11 @@ import store from './store/store';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Provider store={store}>
-    <BrowserRouter>
+    <CustomProvider theme='light'>
+      <BrowserRouter>
       <App />
     </BrowserRouter>
+    </CustomProvider>
   </Provider>
 );
 

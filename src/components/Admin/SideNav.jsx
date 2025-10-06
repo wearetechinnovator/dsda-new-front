@@ -83,8 +83,8 @@ const SideNav = () => {
         </div>
         <div className="side__nav__link__group">
           <h3 className='menu__title'>MIS</h3>
-          <Link to={"/admin/hotel-list"} data-tooltip-id="sideBarItemToolTip">
-            <li className={`flex items-center ${activePath.search("/admin/hotel-list") >= 0 ? 'active__link' : ''}`}>
+          <Link to={"/admin/report/hotel-list"} data-tooltip-id="sideBarItemToolTip">
+            <li className={`flex items-center ${activePath.search("/admin/report/hotel-list") >= 0 ? 'active__link' : ''}`}>
               <span className='mr-3'><Icons.HOTEL /></span>
               <span>Hotel List</span>
             </li>
@@ -102,10 +102,10 @@ const SideNav = () => {
             </div>
 
             <ul className='sidebar__sub__menu sidebar__sub__menu__bed'>
-              <li><Link to="/admin/bed/total">Total</Link></li>
-              <li><Link to="/admin/bed/occupied">Occupied</Link></li>
-              <li><Link to="/admin/bed/vacant">Vacant</Link></li>
-              <li><Link to="/admin/bed/extra-occupancy">Extra Occupancy</Link></li>
+              <li><Link to="/admin/report/bed-availablity">Total</Link></li>
+              <li><Link to="/admin/report/bed-availablity">Occupied</Link></li>
+              <li><Link to="/admin/report/bed-availablity">Vacant</Link></li>
+              <li><Link to="/admin/report/bed-availablity">Extra Occupancy</Link></li>
             </ul>
           </li>
 

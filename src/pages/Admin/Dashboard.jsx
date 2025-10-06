@@ -245,15 +245,15 @@ const Dashboard = () => {
                     }
                   </tbody>
                 </table>
-                <div className='paginate__parent'>
-                  <p>Showing {data.length} of {totalData} entries</p>
-                  <Pagination
-                    activePage={activePage}
-                    totalData={totalData}
-                    dataLimit={dataLimit}
-                    setActivePage={setActivePage}
-                  />
-                </div>
+              </div>
+              <div className='paginate__parent'>
+                <p>Showing {data.length} of {totalData} entries</p>
+                <Pagination
+                  activePage={activePage}
+                  totalData={totalData}
+                  dataLimit={dataLimit}
+                  setActivePage={setActivePage}
+                />
               </div>
             </div>
               : <DataShimmer />

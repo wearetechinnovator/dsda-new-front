@@ -61,7 +61,7 @@
   padding: 10px;
   border-radius: 5px;
   box-shadow: 0px 0px 5px lightgrey;
-  border:1px solid var(--first__color);
+  border: 1px solid var(--first__color);
   font-size: 13px !important;
   background-color: white;
 }
@@ -75,18 +75,19 @@ h6 {
   line-height: 0% !important;
 }
 
-nav{
+nav {
   @apply w-full h-[50px] border-b bg-white shadow-lg flex justify-between;
 }
 
-.nav__profile__area{
+.nav__profile__area {
   background-color: var(--second__color) !important;
   color: white !important;
   height: 100%;
-  padding:0px 10px;
+  padding: 0px 10px;
   display: flex;
   align-items: center;
 }
+
 .navbar__tools {
   display: flex;
   align-items: center;
@@ -112,7 +113,7 @@ nav{
 /* Sidenav */
 .logo__area {
   transition: 0.3s all;
-  @apply  w-[175px] h-[100%] bg-[#084A0C] px-3 flex justify-between items-center;
+  @apply w-[175px] h-[100%] bg-[#084A0C] px-3 flex justify-between items-center;
 }
 
 .side__nav {
@@ -269,8 +270,10 @@ textarea {
   line-height: 16px !important;
   border-radius: 4px;
 }
-input:focus, textarea:focus{
-  border:1px solid var(--first__color)
+
+input:focus,
+textarea:focus {
+  border: 1px solid var(--first__color)
 }
 
 /* input[type="checkbox"] {
@@ -280,7 +283,8 @@ input:focus, textarea:focus{
 select {
   @apply w-full p-[0.1rem] border border-gray-200 rounded outline-none;
 }
-select:hover{
+
+select:hover {
   border: 1px solid var(--first__color);
 }
 
@@ -374,7 +378,8 @@ select:hover{
 .file__uploader__div {
   @apply w-full border rounded flex justify-between items-center gap-1 p-1;
 }
-.file__uploader__div:hover{
+
+.file__uploader__div:hover {
   border: 1px solid var(--first__color)
 }
 
@@ -948,8 +953,21 @@ input[type="checkbox"]:checked::before {
 }
 
 .upload__label {
-  @apply text-white cursor-pointer rounded-sm p-1.5 text-xs bg-blue-600;
+  @apply text-white cursor-pointer rounded-sm p-1.5;
+  display: inline-flex;
+  align-items: center;
+  flex-direction: column;
+  color: #2563eb;
+  border: 1px dashed #2563eb;
+  font-size: 12px;
 }
+
+.upload__label svg{
+  font-size: 30px;
+  color: #2563eb;
+  margin-bottom: 3px;
+}
+
 
 .hotel__amemities__card {
   @apply rounded-xl p-2 h-[70px] flex flex-col justify-end text-right text-white text-sm;
@@ -979,11 +997,13 @@ input[type="checkbox"]:checked::before {
 .total__data_cards {
   @apply grid grid-cols-2 lg:grid-cols-5 gap-8;
 }
-.total__data_cards__bottom{
+
+.total__data_cards__bottom {
   @apply grid grid-cols-2 lg:grid-cols-4 gap-8 mt-4;
 }
 
-.total__data_cards .total__card, .total__data_cards__bottom .total__card {
+.total__data_cards .total__card,
+.total__data_cards__bottom .total__card {
   border-radius: 20px;
   display: flex;
   justify-content: end;
@@ -997,7 +1017,8 @@ input[type="checkbox"]:checked::before {
   box-shadow: 0px 0px 10px rgb(79, 79, 80);
   cursor: pointer;
 }
-.total__data_cards .total__card.center{
+
+.total__data_cards .total__card.center {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1019,29 +1040,34 @@ input[type="checkbox"]:checked::before {
 .total__card__data p:first-child {
   @apply text-right text-3xl;
 }
+
 .blue__grad {
   background: linear-gradient(to bottom, rgba(29, 29, 104, 0.774), rgb(25, 25, 90));
   /* box-shadow: 0px 0px 10px blue; */
 }
+
 .green__grad {
   background: linear-gradient(to bottom, rgb(0, 128, 0), rgb(3, 51, 3));
   /* box-shadow: 0px 0px 10px blue; */
 }
-.red__grad{
+
+.red__grad {
   background: linear-gradient(to bottom, rgb(231, 125, 125), rgb(189, 18, 18));
 }
-.yellow__grad{
-  background:linear-gradient(to bottom, rgb(247, 213, 20), rgb(97, 65, 7));
+
+.yellow__grad {
+  background: linear-gradient(to bottom, rgb(247, 213, 20), rgb(97, 65, 7));
 }
 
-.chip__green{
+.chip__green {
   display: inline-block;
   padding: 0px 10px;
   background-color: green;
   color: white;
   border-radius: 30px;
 }
-.chip__maroon{
+
+.chip__maroon {
   display: inline-block;
   padding: 0px 10px;
   background-color: maroon;
@@ -1049,7 +1075,7 @@ input[type="checkbox"]:checked::before {
   border-radius: 30px;
 }
 
-.notice__view__btn{
+.notice__view__btn {
   @apply mx-auto flex gap-2 items-center text-xs text-white rounded-sm;
   background-color: var(--second__color);
   padding: 4px 7px;
@@ -1098,9 +1124,11 @@ input[type="checkbox"]:checked::before {
 
 /* Active Page */
 .active__page {
-  background-color: #3b82f6; /* blue-500 */
+  background-color: #3b82f6;
+  /* blue-500 */
   color: #fff;
-  border-color: #2563eb; /* blue-600 */
+  border-color: #2563eb;
+  /* blue-600 */
   font-weight: 500;
   box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
 }
@@ -1113,8 +1141,21 @@ input[type="checkbox"]:checked::before {
   border-color: #e5e7eb;
   box-shadow: none;
 }
-.list__table td:not(.list__table td:nth-child(1)){
+
+.list__table td:not(.list__table td:nth-child(1)) {
   padding: 6px 10px;
   min-width: 150px;
 }
 
+.list__table__checkin td{
+  padding: 5px 8px !important;
+  min-width: 0 !important;
+}
+
+
+.required {
+  color: tomato;
+  font-weight: 400;
+  margin-top: 3px;
+  font-size: 10px;
+}
