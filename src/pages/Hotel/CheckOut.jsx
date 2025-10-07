@@ -42,16 +42,21 @@ const CheckOut = () => {
     const hotelDetails = useSelector((store) => store.hotelDetails);
 
 
+    // Get all Head List
     useEffect(() => {
-        const get = async () => {
+        (async () => {
             try {
                 const data = {
                     token: Cookies.get("token"),
                     page: activePage,
-                    limit: dataLimit
+                    limit: dataLimit,
+                    head: true, // Get head guest,
+                    room: quickSearchFields.roomNo,
+                    mobile: quickSearchFields.mobileNo,
                 }
                 setFilterState("checkout", dataLimit, activePage);
-                const url = process.env.REACT_APP_BOOKING_API + `/check-out/get-booking-head`;
+
+                const url = process.env.REACT_APP_BOOKING_API + `/check-in/get-booking`;
                 const req = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -60,17 +65,19 @@ const CheckOut = () => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
-                console.log(res)
+
                 setTotalData(res.total)
                 setBookingHeadList([...res.data])
                 setLoading(false);
 
             } catch (error) {
+                toast("Something went wrong", "error")
                 console.log(error)
             }
-        }
-        get();
-    }, [dataLimit, activePage])
+        })()
+
+    }, [dataLimit, activePage, quickSearchFields])
+
 
     const exportTable = async (whichType) => {
         if (whichType === "copy") {
@@ -88,6 +95,7 @@ const CheckOut = () => {
         }
     }
 
+
     const printSlip = async (id) => {
         const Url = process.env.REACT_APP_BOOKING_API + "/check-out/get-booking-head";
         const req = await fetch(Url, {
@@ -95,7 +103,7 @@ const CheckOut = () => {
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({id: id}),
+            body: JSON.stringify({ id: id }),
         })
         const res = await req.json();
 
@@ -134,13 +142,19 @@ const CheckOut = () => {
                         {
                             searchBy === "room" && <div className='w-full mt-3'>
                                 <p>Room No.*</p>
-                                <input type="text" placeholder='Enter Guest Room No.' />
+                                <input type="text" placeholder='Enter Guest Room No.'
+                                    value={quickSearchFields.roomNo}
+                                    onChange={(e) => setQuickSearchFields({ ...quickSearchFields, roomNo: e.target.value })}
+                                />
                             </div>
                         }
                         {
                             searchBy === "mobile" && <div className='w-full mt-3'>
                                 <p>Guest Mobile Number*</p>
-                                <input type="text" placeholder='Enter Guest Mobile Number' />
+                                <input type="text" placeholder='Enter Guest Mobile Number'
+                                    value={quickSearchFields.mobileNo}
+                                    onChange={(e) => setQuickSearchFields({ ...quickSearchFields, mobileNo: e.target.value })}
+                                />
                             </div>
                         }
                         {
@@ -238,8 +252,7 @@ const CheckOut = () => {
                                         <td className='py-2 '>ID Card</td>
                                         <td className='py-2 '>Mobile</td>
                                         <td className='py-2 '>Room No.</td>
-                                        <td className='py-2 '>Payment</td>
-                                        <td className='py-2 '>Action</td>
+                                        <td className='py-2 w-[10%]'>Action</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -247,28 +260,26 @@ const CheckOut = () => {
                                         bookingHeadList.map((d, i) => {
                                             return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
                                                 <td>{i + 1}</td>
-                                                <td className='px-4 border-b'>{d.booking_head_guest_name}</td>
-                                                <td>{d.booking_checkin_date_time}</td>
-                                                <td>--</td>
-                                                <td>{d.booking_head_guest_phone}</td>
-                                                <td>--</td>
-                                                <td>
-                                                    <span
-                                                        onClick={()=>printSlip(d._id)}
-                                                        className='bg-blue-600 text-white text-xs py-1 px-2 flex gap-1 items-center justify-center rounded-full'>
-                                                        <Icons.PRINTER />
-                                                        Print
-                                                    </span>
-                                                </td>
+                                                <td className='px-4 border-b'>{d.booking_details_guest_name}</td>
+                                                <td>{d.booking_details_checkin_date_time}</td>
+                                                <td>{d.booking_details_guest_id_type}</td>
+                                                <td>{d.booking_details_guest_phone}</td>
+                                                <td>{d.booking_details_room_no}</td>
                                                 <td className='px-4 text-center'>
-                                                    <button className='notice__view__btn' onClick={() => {
-                                                        navigate("/hotel/check-out/details", {
-                                                            state: {bookingId: d._id}
-                                                        })
-                                                    }}>
-                                                        <Icons.CHECK2 />
-                                                        Checkout
-                                                    </button>
+                                                    <div className='flex items-center gap-2'>
+                                                        <button className='notice__view__btn' onClick={() => printSlip(d.booking_details_booking_id)}>
+                                                            <Icons.PRINTER />
+                                                            Print
+                                                        </button>
+                                                        <button className='notice__view__btn' onClick={() => {
+                                                            navigate("/hotel/check-out/details", {
+                                                                state: { bookingId: d.booking_details_booking_id }
+                                                            })
+                                                        }}>
+                                                            <Icons.CHECK2 />
+                                                            Checkout
+                                                        </button>
+                                                    </div>
                                                 </td>
 
                                             </tr>

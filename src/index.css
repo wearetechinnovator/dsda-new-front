@@ -1078,9 +1078,12 @@ input[type="checkbox"]:checked::before {
 }
 
 .notice__view__btn {
-  @apply mx-auto flex gap-2 items-center text-xs text-white rounded-sm;
+  @apply flex gap-2 items-center text-xs text-white rounded-sm;
   background-color: var(--second__color);
   padding: 4px 7px;
+}
+.notice__view__btn:first-child{
+  @apply bg-blue-600 hover:bg-blue-500
 }
 
 

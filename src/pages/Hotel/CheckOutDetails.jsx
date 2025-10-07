@@ -4,9 +4,11 @@ import { Icons } from '../../helper/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
+import useMyToaster from '../../hooks/useMyToaster';
 
 
 const CheckOutDetails = () => {
+    const toast = useMyToaster();
     const settingDetails = useSelector((store) => store.settingSlice)
     const navigate = useNavigate();
     const location = useLocation();
@@ -16,6 +18,8 @@ const CheckOutDetails = () => {
     const [minDate, setMinDate] = useState(null);
     const today = new Date();
     const [selectedCheckout, setSelectedCheckout] = useState([]);
+    const [checkoutDate, setCheckoutDate] = useState();
+    const [checkoutTime, setCheckoutTime] = useState();
 
 
     // Get Checkin Checkout date from setting;
@@ -53,7 +57,40 @@ const CheckOutDetails = () => {
 
     // Checkout
     const handleCheckOut = async () => {
-        
+        if (!checkoutDate) {
+            return toast("Please Select Checkout Date", "error");
+        } else if (!checkoutTime) {
+            return toast("Please Select Checkout Time", "error");
+        } else if (!selectedCheckout || selectedCheckout.length < 1) {
+            return toast("Please Select Checkout User", "error");
+        }
+
+        try {
+            const Url = process.env.REACT_APP_BOOKING_API + "/check-out/guest-checkout";
+            const req = await fetch(Url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    ids: selectedCheckout, bookingId, date: checkoutDate,
+                    time: checkoutTime, numberOfGuest: bookingDetails.length
+                }),
+            })
+            const res = await req.json();
+            if (req.status === 200) {
+                toast("Checkout successfully", 'success');
+                setBookingDetails((p) => p.filter((bData) => !selectedCheckout.includes(bData._id)));
+                return;
+            }
+
+            return toast("User not checkout", "error")
+
+        } catch (error) {
+            console.log(error);
+            toast("Something went wrong", "error")
+        }
+
     }
 
     return (
@@ -73,7 +110,7 @@ const CheckOutDetails = () => {
                                 <input
                                     type="date"
                                     placeholder="Enter Date"
-                                    // value={checkInDetails.checkInDate}
+                                    value={checkoutDate}
                                     min={minDate?.toISOString().split("T")[0]} // 2 days before today
                                     max={today.toISOString().split("T")[0]}   // today
                                     onChange={(e) => {
@@ -84,11 +121,7 @@ const CheckOutDetails = () => {
                                             alert("Please select a valid date between 2 days ago and today.");
                                             return;
                                         }
-
-                                        // setCheckInDetails({
-                                        //     ...checkInDetails,
-                                        //     checkInDate: selectedDate,
-                                        // });
+                                        setCheckoutDate(selectedDate)
                                     }}
                                 />
                             </div>
@@ -96,6 +129,10 @@ const CheckOutDetails = () => {
                                 <p>Check Out Time<span className='required__text'>*</span></p>
                                 <input type='time'
                                     placeholder='Enter Time'
+                                    value={checkoutTime}
+                                    onChange={(e) => {
+                                        setCheckoutTime(e.target.value);
+                                    }}
                                 />
                             </div>
                         </div>
@@ -174,7 +211,9 @@ const CheckOutDetails = () => {
                                                     <Icons.BACK />
                                                     Back
                                                 </button>
-                                                <button className='bg-[#32C5D2] rounded px-3 py-2 text-white flex items-center gap-2'>
+                                                <button
+                                                    onClick={handleCheckOut}
+                                                    className='bg-[#32C5D2] rounded px-3 py-2 text-white flex items-center gap-2'>
                                                     <Icons.CHECK2 />
                                                     Check-Out
                                                 </button>

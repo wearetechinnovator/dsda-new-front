@@ -97,7 +97,7 @@ const GuestEntry = () => {
                 if (!guest.address) errors.address = true;
                 if (!guest.idType) errors.idType = true;
                 if (!guest.idNumber) errors.idNumber = true;
-                if (!guest.idProof) errors.idProof = true;
+                // if (!guest.idProof) errors.idProof = true;
                 // if (!guest.mobileNumbe) errors.mobileNumbe = true;
                 if (!guest.roomNumber) errors.roomNumber = true;
             } else {
@@ -404,12 +404,6 @@ const GuestEntry = () => {
                                                             const updatedList = [...guestList];
                                                             updatedList[index].idProof = fileBinary
                                                             setGuestList(updatedList);
-
-                                                            setGuestErrors((prev) => {
-                                                                const newErrors = [...prev];
-                                                                if (newErrors[index]) delete newErrors[index].idProof;
-                                                                return newErrors;
-                                                            });
                                                         }}
                                                     />
                                                     <GuestEntryDocUpload
@@ -421,9 +415,6 @@ const GuestEntry = () => {
                                                             setGuestList(updatedList);
                                                         }}
                                                     />
-                                                    {guestErrors[index]?.idProof && (
-                                                        <span className="required">*This fields is required</span>
-                                                    )}
                                                 </td>
                                                 <td valign='top'>
                                                     <input type="text"
