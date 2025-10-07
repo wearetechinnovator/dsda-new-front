@@ -15,6 +15,7 @@ const Nav = ({ title }) => {
   const navigate = useNavigate();
   const { getHotelData } = useGetHotelData();
   const { getSetting } = useGetUserData(); // Get user info api call
+  
   const hotelDetails = useSelector((store) => store.hotelDetails);
   const settingDetails = useSelector((store) => store.settingSlice)
   const [dateTime, setDateTime] = useState("");

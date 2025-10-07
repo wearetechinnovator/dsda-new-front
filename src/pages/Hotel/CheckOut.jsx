@@ -12,6 +12,7 @@ import useMyToaster from '../../hooks/useMyToaster';
 import Pagination from '../../components/Admin/Pagination';
 import Cookies from 'js-cookie';
 import useSetTableFilter from '../../hooks/useSetTableFilter';
+import { useSelector } from 'react-redux';
 
 
 
@@ -38,6 +39,7 @@ const CheckOut = () => {
     const [quickSearchFields, setQuickSearchFields] = useState({
         roomNo: '', mobileNo: '', fromDate: '', toDate: ''
     })
+    const hotelDetails = useSelector((store) => store.hotelDetails);
 
 
     useEffect(() => {
@@ -84,6 +86,29 @@ const CheckOut = () => {
             let document = exportPdf('Block List', exportData);
             downloadPdf(document)
         }
+    }
+
+    const printSlip = async (id) => {
+        const Url = process.env.REACT_APP_BOOKING_API + "/check-out/get-booking-head";
+        const req = await fetch(Url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({id: id}),
+        })
+        const res = await req.json();
+
+        navigate("/hotel/check-in/guest-entry/bill-details/print", {
+            state: {
+                id: res._id,
+                hotelName: hotelDetails?.hotel_name,
+                headGuest: res.booking_head_guest_name,
+                checkIn: res.booking_checkin_date_time,
+                guests: res.booking_number_of_guest,
+                totalAmount: res.booking_bill_amount,
+            }
+        })
     }
 
 
@@ -228,19 +253,19 @@ const CheckOut = () => {
                                                 <td>{d.booking_head_guest_phone}</td>
                                                 <td>--</td>
                                                 <td>
-                                                    <div className='flex flex-col gap-1'>
-                                                        <span className='bg-green-800 text-white text-xs py-1 px-2 flex gap-1 items-center justify-center rounded-full'>
-                                                            <Icons.CHECK />
-                                                            Paid
-                                                        </span>
-                                                        <span className='bg-blue-600 text-white text-xs py-1 px-2 flex gap-1 items-center justify-center rounded-full'>
-                                                            <Icons.PRINTER />
-                                                            Print
-                                                        </span>
-                                                    </div>
+                                                    <span
+                                                        onClick={()=>printSlip(d._id)}
+                                                        className='bg-blue-600 text-white text-xs py-1 px-2 flex gap-1 items-center justify-center rounded-full'>
+                                                        <Icons.PRINTER />
+                                                        Print
+                                                    </span>
                                                 </td>
                                                 <td className='px-4 text-center'>
-                                                    <button className='notice__view__btn'>
+                                                    <button className='notice__view__btn' onClick={() => {
+                                                        navigate("/hotel/check-out/details", {
+                                                            state: {bookingId: d._id}
+                                                        })
+                                                    }}>
                                                         <Icons.CHECK2 />
                                                         Checkout
                                                     </button>

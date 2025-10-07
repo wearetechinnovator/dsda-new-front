@@ -2,21 +2,23 @@ import Nav from '../../components/Hotel/Nav';
 import SideNav from '../../components/Hotel/HotelSideNav'
 import { Icons } from '../../helper/icons';
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import base64Data from '../../helper/getBase64';
 import useMyToaster from '../../hooks/useMyToaster';
 import Cookies from 'js-cookie';
 import { SelectPicker, TimePicker } from 'rsuite';
 import { useSelector } from 'react-redux';
+import GuestEntryDocUpload from '../../components/Hotel/GuestEntryDocUpload';
 
 
 const GuestEntry = () => {
+    const navigate = useNavigate();
     const toast = useMyToaster();
     const settingDetails = useSelector((store) => store.settingSlice)
     const location = useLocation()
     const [state, setState] = useState([]);
     const [country, setCountry] = useState([]);
-    const { guestMobile, numberOfGuests, } = location.state || {};
+    const { guestMobile, numberOfGuests, verificationBy } = location.state || {};
     const [checkInDetails, setCheckInDetails] = useState({
         mobileNumbe: '', NumberOfGuest: '', checkInDate: '', checkInTime: ''
     });
@@ -44,13 +46,19 @@ const GuestEntry = () => {
 
     // Set Table rows;
     useEffect(() => {
-        Array.from({ length: numberOfGuests }).forEach(() => {
-            setGuestList((prev) => [...prev, { ...guestListSet }]);
+        Array.from({ length: numberOfGuests }).forEach((v, i) => {
+            setGuestList((prev) => [...prev, { ...guestListSet, mobileNumber: i === 0 ? guestMobile : '', }]);
         });
-        setCheckInDetails({ ...checkInDetails, NumberOfGuest: numberOfGuests, mobileNumbe: guestMobile })
+        setCheckInDetails({
+            ...checkInDetails,
+            NumberOfGuest: numberOfGuests,
+            mobileNumbe: guestMobile,
+            verificationBy
+        })
     }, [location.state])
 
 
+    // Get Country and State
     useEffect(() => {
         const get = async (which) => {
             const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/${which}`)
@@ -76,7 +84,6 @@ const GuestEntry = () => {
         }
 
         let newGuestErrors = [];
-
         for (let i = 0; i < guestList.length; i++) {
             const guest = guestList[i];
             const errors = {};
@@ -91,7 +98,7 @@ const GuestEntry = () => {
                 if (!guest.idType) errors.idType = true;
                 if (!guest.idNumber) errors.idNumber = true;
                 if (!guest.idProof) errors.idProof = true;
-                if (!guest.mobileNumbe) errors.mobileNumbe = true; // head guest uses checkInDetails
+                // if (!guest.mobileNumbe) errors.mobileNumbe = true;
                 if (!guest.roomNumber) errors.roomNumber = true;
             } else {
                 // Other guests: only name, gender, and age required
@@ -112,30 +119,13 @@ const GuestEntry = () => {
         }
 
 
+        // Goto Final submit.......
+        const hotelId = Cookies.get('hotelId');
+        const token = Cookies.get('hotel-token');
+        navigate('/hotel/check-in/guest-entry/bill-details', {
+            state: { ...checkInDetails, guestList, hotelId, token }
+        });
 
-        try {
-            const Url = process.env.REACT_APP_BOOKING_API + "/check-in/add-booking";
-            const hotelId = Cookies.get('hotelId');
-            const token = Cookies.get('hotel-token');
-
-            const req = await fetch(Url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ ...checkInDetails, guestList, hotelId, token }),
-            })
-            const res = await req.json();
-            if (res.success) {
-                toast("Guest entry successfully", "success");
-            } else {
-                toast(res.err, "error");
-            }
-
-        } catch (error) {
-            console.log(error);
-            toast("Something went wrong", "error");
-        }
 
     }
 
@@ -211,22 +201,22 @@ const GuestEntry = () => {
                             <table className='min-w-full bg-white' id='table' >
                                 <thead className='bg-gray-100 list__table__head'>
                                     <tr>
-                                        <td className='w-[2%]'>#</td>
+                                        <td align='center' className='w-[2%]'>#</td>
                                         <td className='w-[16%]'>Guest Name*</td>
                                         <td className='w-[7%]'>Gender*</td>
                                         <td className='w-[5%]'>Age*</td>
                                         <td className='w-[6%]'>Nationality*</td>
                                         <td className='w-[8%]'>ID Type/No.*</td>
-                                        <td className='w-[8%]'>ID Proof*</td>
+                                        <td className='w-[7%]'>ID Proof*</td>
                                         <td className='w-[8%]'>Mobile No.*</td>
                                         <td className='w-[6%]'>Room No.*</td>
-                                        <td align='center' width={"5%"}>Action</td>
+                                        <td align='center' width={"1%"}></td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         guestList.map((gl, index) => {
-                                            return <tr key={index}>
+                                            return <tr align='center' key={index}>
                                                 <td>{index + 1}</td>
                                                 <td valign='top'>
                                                     <input type="text"
@@ -273,7 +263,7 @@ const GuestEntry = () => {
                                                 </td>
                                                 <td valign='top'>
                                                     <input type="number"
-                                                        placeholder='Guest Age'
+                                                        placeholder='Age'
                                                         value={gl.age}
                                                         onChange={(e) => {
                                                             const updatedList = [...guestList];
@@ -310,7 +300,7 @@ const GuestEntry = () => {
                                                                         block
                                                                         data={state?.map(s => ({
                                                                             label: s.state_name,
-                                                                            value: s._id
+                                                                            value: s.state_name
                                                                         })) || []}
                                                                         style={{ width: '100%' }}
                                                                         value={gl.state}
@@ -406,20 +396,34 @@ const GuestEntry = () => {
                                                     )}
                                                 </td>
                                                 <td valign='top'>
-                                                        <input type="file" id={`idProof-${index}`} className='hidden'
-                                                            onChange={async (e) => {
-                                                                const file = e.target.files[0];
-                                                                const fileBinary = await base64Data(file);
+                                                    <input type="file" id={`idProof-${index}`} className='hidden'
+                                                        onChange={async (e) => {
+                                                            const file = e.target.files[0];
+                                                            const fileBinary = await base64Data(file);
 
-                                                                const updatedList = [...guestList];
-                                                                updatedList[index].idProof = fileBinary
-                                                                setGuestList(updatedList);
-                                                            }}
-                                                        />
-                                                        <label htmlFor={`idProof-${index}`} className='upload__label'>
-                                                            <Icons.UPLOAD_IMAGE/>
-                                                            {gl.idProof ? "Uploaded ✔" : "Upload Photo"}
-                                                        </label>
+                                                            const updatedList = [...guestList];
+                                                            updatedList[index].idProof = fileBinary
+                                                            setGuestList(updatedList);
+
+                                                            setGuestErrors((prev) => {
+                                                                const newErrors = [...prev];
+                                                                if (newErrors[index]) delete newErrors[index].idProof;
+                                                                return newErrors;
+                                                            });
+                                                        }}
+                                                    />
+                                                    <GuestEntryDocUpload
+                                                        forId={`idProof-${index}`}
+                                                        idProof={gl.idProof}
+                                                        onRemove={() => {
+                                                            const updatedList = [...guestList];
+                                                            updatedList[index].idProof = ""
+                                                            setGuestList(updatedList);
+                                                        }}
+                                                    />
+                                                    {guestErrors[index]?.idProof && (
+                                                        <span className="required">*This fields is required</span>
+                                                    )}
                                                 </td>
                                                 <td valign='top'>
                                                     <input type="text"
@@ -431,9 +435,6 @@ const GuestEntry = () => {
                                                             setGuestList(updatedList);
                                                         }}
                                                     />
-                                                    {guestErrors[index]?.mobileNumbe && (
-                                                        <span className="required">*This fields is required</span>
-                                                    )}
                                                 </td>
                                                 <td valign='top'>
                                                     <input type="text"
@@ -455,7 +456,7 @@ const GuestEntry = () => {
                                                         <span className="required">*This fields is required</span>
                                                     )}
                                                 </td>
-                                                <td align='center' valign='top'>
+                                                <td align='center'>
                                                     {index !== 0 && <button
                                                         className="bg-red-500 text-white p-1 rounded text-lg"
                                                         title="Delete"

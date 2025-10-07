@@ -58,7 +58,9 @@ const Payments = React.lazy(() => import("./pages/Hotel/Payments"));
 const OtherPayments = React.lazy(() => import("./pages/Hotel/OtherPayments"));
 const Statistics = React.lazy(() => import('./pages/Hotel/Statistics'));
 const FinalCheckOut = React.lazy(() => import('./pages/Hotel/FinalCheckOut'));
-
+const BookingBillDetails = React.lazy(()=>import('./pages/Hotel/BookingBillDetails'));
+const BookingBillPrint = React.lazy(()=>import("./pages/Hotel/BookingBillPrint"));
+const CheckOutDetails = React.lazy(()=>import('./pages/Hotel/CheckOutDetails'));
 
 
 const App = () => {
@@ -174,7 +176,10 @@ const App = () => {
           <Route path="check-in" element={<CheckIn />} />
           <Route path="check-in-otp" element={<CheckInOTP />} />
           <Route path="check-in/guest-entry" element={<GuestEntry />} />
+          <Route path="check-in/guest-entry/bill-details" element={<BookingBillDetails />} />
+          <Route path="check-in/guest-entry/bill-details/print" element={<BookingBillPrint />} />
           <Route path="check-out" element={<CheckOut />} />
+          <Route path="check-out/details" element={<CheckOutDetails />} />
           <Route path="final-check-out" element={<FinalCheckOut />} />
           <Route path="tourist-data" element={<TouristData />} />
           <Route path="amenities" element={<Amenities />} />
