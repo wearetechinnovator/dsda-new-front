@@ -87,12 +87,6 @@ const Login = () => {
           </button>
         </form>
         <div className='flex justify-center text-[12px]'>
-          You have no account?
-          <Link to={'/admin/signup'} className="ml-1">
-            SignUp
-          </Link>
-        </div>
-        <div className='flex justify-center mt-2 text-[12px]'>
           <Link to={'/admin/forgot-password'}>Forgot password</Link>
         </div>
       </div>
@@ -100,4 +94,4 @@ const Login = () => {
   )
 }
 
-export default Login
+export default Login;

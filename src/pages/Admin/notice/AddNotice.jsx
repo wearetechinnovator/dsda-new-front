@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Nav from '../../../components/Admin/Nav';
 import SideNav from '../../../components/Admin/SideNav'
 import { FaRegCheckCircle } from "react-icons/fa";
@@ -24,14 +24,50 @@ const AddNotice = ({ mode }) => {
         title: '', date: "", status: '1', details: '',
         file: '', hotel: ''
     })
+    const timeRef = useRef(null);
+
+
 
 
     // =========== [GET HOTELS] =========
+    const get = async () => {
+        try {
+            const data = {
+                token: Cookies.get("token")
+            }
+            const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const res = await req.json();
+            setAllHotels([...res.data])
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
     useEffect(() => {
-        const get = async () => {
+        get()
+    }, [])
+
+
+    const searchTableDatabase = (txt) => {
+        if (timeRef.current) clearTimeout(timeRef.current);
+
+        timeRef.current = setTimeout(async () => {
+            if (!txt) {
+                get();
+                return;
+            }
+
             try {
                 const data = {
-                    token: Cookies.get("token")
+                    token: Cookies.get("token"),
+                    search: txt
                 }
                 const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
                 const req = await fetch(url, {
@@ -42,14 +78,14 @@ const AddNotice = ({ mode }) => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
-                setAllHotels([...res.data])
-
+                setAllHotels([...res])
             } catch (error) {
                 console.log(error)
             }
-        }
-        get();
-    }, [])
+
+        }, 1000)
+
+    }
 
 
     useEffect(() => {
@@ -151,6 +187,7 @@ const AddNotice = ({ mode }) => {
                             <div className='w-full'>
                                 <p>Select Hotel<span className='required__text'>*</span></p>
                                 <CheckPicker
+                                    block
                                     data={[
                                         ...allHotels.map((item) => ({
                                             label: item.hotel_name,
@@ -160,11 +197,13 @@ const AddNotice = ({ mode }) => {
                                     style={{ width: '100%' }}
                                     onChange={(v) => setData({ ...data, hotel: v })}
                                     onClean={() => setData({ ...data, hotel: '' })}
-                                    value={mode&&data.hotel}
+                                    value={mode && data.hotel}
                                     placeholder="Select"
                                     searchable={true}
                                     cleanable={true}
                                     placement='bottomEnd'
+                                    onSearch={(serachTxt) => searchTableDatabase(serachTxt)}
+
                                 />
                             </div>
                             <div className='w-full'>

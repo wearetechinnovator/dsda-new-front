@@ -114,9 +114,9 @@ const GuestEntry = () => {
 
         // Check if any guest has missing fields
         const hasError = newGuestErrors.some(e => Object.keys(e).length > 0);
-        if (hasError) {
-            return toast("Please fill all required fields", "error");
-        }
+        // if (hasError) {
+        //     return toast("Please fill all required fields", "error");
+        // }
 
 
         // Goto Final submit.......

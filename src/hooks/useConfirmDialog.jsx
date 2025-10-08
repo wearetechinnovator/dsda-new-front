@@ -22,9 +22,12 @@ const useConfirmDialog = () => {
     };
 
     const modal = (
-        <Modal open={state.isOpen} onClose={() => handleClose('cancel')}>
+        <Modal open={state.isOpen} onClose={() => handleClose('cancel')} >
             <Modal.Header>{state.title}</Modal.Header>
-            <Modal.Body>{state.text}</Modal.Body>
+            <Modal.Body>
+                <p></p>
+                <p className='font-bold'>{state.text}</p>
+            </Modal.Body>
             <Modal.Footer>
                 <Button onClick={() => handleClose('cancel')} appearance="subtle" color='red'>
                     Cancel

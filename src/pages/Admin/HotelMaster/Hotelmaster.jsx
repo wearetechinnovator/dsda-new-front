@@ -61,8 +61,11 @@ const Hotelmaster = ({ mode }) => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            setTotalData(res.total)
-            setData([...res.data])
+            if (req.status === 200) {
+                setTotalData(res.total)
+                setData([...res.data])
+                setLoading(false);
+            }
             setLoading(false);
 
         } catch (error) {

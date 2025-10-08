@@ -58,7 +58,7 @@
 }
 
 .content__body__main {
-  padding: 10px;
+  padding: 5px;
   border-radius: 5px;
   box-shadow: 0px 0px 5px lightgrey;
   border: 1px solid var(--first__color);
@@ -266,7 +266,7 @@ nav {
 
 input,
 textarea {
-  @apply w-full p-1 border border-gray-200 outline-none focus:shadow-gray-300;
+  @apply w-full p-1 py-2 border border-gray-200 outline-none focus:shadow-gray-300;
   line-height: 16px !important;
   border-radius: 4px;
 }
@@ -281,7 +281,7 @@ textarea:focus {
 } */
 
 select {
-  @apply w-full p-[0.1rem] border border-gray-200 rounded outline-none;
+  @apply w-full p-[0.1rem] py-[6px] border border-gray-200 rounded outline-none;
 }
 
 select:hover {
@@ -961,12 +961,13 @@ input[type="checkbox"]:checked::before {
   font-size: 11px;
 }
 
-.upload__label svg{
+.upload__label svg {
   font-size: 30px;
   color: #2563eb;
   margin-bottom: 3px;
 }
-.upload__label .remove__upload__label{
+
+.upload__label .remove__upload__label {
   @apply text-2xl cursor-pointer text-white;
 }
 
@@ -1054,6 +1055,11 @@ input[type="checkbox"]:checked::before {
 }
 
 .red__grad {
+  background: linear-gradient(to bottom, red, rgb(3, 51, 3));
+  /* box-shadow: 0px 0px 10px blue; */
+}
+
+.red__grad {
   background: linear-gradient(to bottom, rgb(231, 125, 125), rgb(189, 18, 18));
 }
 
@@ -1082,7 +1088,8 @@ input[type="checkbox"]:checked::before {
   background-color: var(--second__color);
   padding: 4px 7px;
 }
-.notice__view__btn:first-child{
+
+.notice__view__btn:first-child {
   @apply bg-blue-600 hover:bg-blue-500
 }
 
@@ -1152,42 +1159,50 @@ input[type="checkbox"]:checked::before {
   min-width: 150px;
 }
 
-.list__table__checkin td{
+.list__table__checkin td {
   padding: 5px 8px !important;
   min-width: 0 !important;
 }
+
 .required {
   color: tomato;
   font-weight: 400;
   margin-top: 3px;
   font-size: 10px;
 }
-.booking__details__table__title{
+
+.booking__details__table__title {
   @apply border-r border-gray-300 w-full p-2 font-semibold text-blue-400 text-xs;
 }
-.booking__details__table__row{
+
+.booking__details__table__row {
   @apply flex items-center justify-between bg-[white] border-b border-gray-300 hover:bg-gray-50;
 }
-.booking__details__table__row:last-child{
+
+.booking__details__table__row:last-child {
   border-bottom: none;
 }
-.bill__print table{
+
+.bill__print table {
   width: 80%;
   border: 1px solid black;
 }
-.bill__print table tr td{
+
+.bill__print table tr td {
   padding: 10px;
   border: 1px solid black;
 }
-.bill__print table tr td:nth-child(1){
+
+.bill__print table tr td:nth-child(1) {
   font-weight: bold;
   color: black;
 }
 
-.check__out__details__table tr td{
+.check__out__details__table tr td {
   border: 1px solid rgb(238, 236, 236);
   padding: 7px;
 }
-.check__out__details__table thead tr td{
+
+.check__out__details__table thead tr td {
   font-weight: 500;
 }

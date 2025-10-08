@@ -1,11 +1,12 @@
 import Nav from '../../components/Hotel/Nav';
 import SideNav from '../../components/Hotel/HotelSideNav'
 import { Icons } from '../../helper/icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import useMyToaster from '../../hooks/useMyToaster';
 import { useNavigate } from 'react-router-dom';
 import useConfirmDialog from '../../hooks/useConfirmDialog';
-
+import Cookies from 'js-cookie';
+import { useSelector } from 'react-redux';
 
 
 
@@ -13,7 +14,31 @@ const CheckIn = () => {
     const { show, modal } = useConfirmDialog();
     const navigate = useNavigate();
     const toast = useMyToaster();
-    const [data, setData] = useState({ guestMobile: '', numberOfGuests: '', verificationBy: 'manager' })
+    const [data, setData] = useState({ guestMobile: '', numberOfGuests: '', verificationBy: 'manager' });
+    const hotelDetails = useSelector((store) => store.hotelDetails);
+    const [staticticData, setStaticticsData] = useState(null);
+
+
+    
+    // Get Statictics Data;
+    useEffect(() => {
+        (async () => {
+            const url = process.env.REACT_APP_BOOKING_API + "/check-in/get-stats";
+            const hotelId = Cookies.get('hotelId');
+            const token = Cookies.get('hotel-token');
+
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({ hotelId })
+            })
+            const res = await req.json();
+            if (req.status === 200) setStaticticsData(res);
+        })()
+    }, [])
+
 
 
     // Handle Check In..............
@@ -28,7 +53,7 @@ const CheckIn = () => {
         }
 
         // Validate Guest Number..............
-        if(isNaN(data.numberOfGuests) || parseInt(data.numberOfGuests) <= 0){
+        if (isNaN(data.numberOfGuests) || parseInt(data.numberOfGuests) <= 0) {
             return toast("Invalid Number of Guest", "error");
         }
 
@@ -67,6 +92,7 @@ const CheckIn = () => {
     }
 
 
+
     // Reset Form Data...............
     const clearData = () => setData({ guestMobile: '', numberOfGuests: '', verificationBy: 'manager' });
 
@@ -81,7 +107,13 @@ const CheckIn = () => {
                     <div className='content__body__main w-[500px] border border-gray-300'>
                         <div className='w-full flex items-center justify-between border-b pb-1'>
                             <p className='text-lg font-semibold'>Add New Booking</p>
-                            <p className='font-semibold'>Total Unreserved Bed : 50</p>
+                            <p className='font-semibold'>Total Unreserved Bed : {
+
+                                (parseInt(hotelDetails?.hotel_total_bed) - parseInt(staticticData?.occupied)) > 1 ?
+                                    parseInt(hotelDetails?.hotel_total_bed) - parseInt(staticticData?.occupied) :
+                                    0
+
+                            }</p>
                         </div>
                         <div className='w-full flex flex-col gap-4 mt-4'>
                             <div>

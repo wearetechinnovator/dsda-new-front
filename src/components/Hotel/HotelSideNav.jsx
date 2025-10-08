@@ -15,16 +15,16 @@ const SideNav = () => {
       <div className="side__nav__links pb-3">
         <div className="side__nav__link__group">
           <ul>
-            <Link to="/hotel/dashboard" data-tooltip-id="sideBarItemToolTip">
+            {/* <Link to="/hotel/dashboard" data-tooltip-id="sideBarItemToolTip">
               <li className={`flex items-center ${"/hotel/dashboard" === activePath ? 'active__link' : ''}`} >
                 <span className='mr-3'><HiOutlineHome /></span>
                 <span>Dashboard</span>
               </li>
-            </Link>
-            <Link to="/hotel/statistics" data-tooltip-id="sideBarItemToolTip">
-              <li className={`flex items-center ${"/hotel/statistics" === activePath ? 'active__link' : ''}`} >
+            </Link> */}
+            <Link to="/hotel/dashboard" data-tooltip-id="sideBarItemToolTip">
+              <li className={`flex items-center ${"/hotel/dashboard" === activePath ? 'active__link' : ''}`} >
                 <span className='mr-3'><HiOutlineHome /></span>
-                <span>Statistics</span>
+                <span>Dashboard</span>
               </li>
             </Link>
           </ul>
