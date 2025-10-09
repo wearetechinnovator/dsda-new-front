@@ -42,41 +42,63 @@ const CheckOut = () => {
     const hotelDetails = useSelector((store) => store.hotelDetails);
 
 
+
+
     // Get all Head List
-    useEffect(() => {
-        (async () => {
-            try {
-                const data = {
-                    token: Cookies.get("token"),
-                    page: activePage,
-                    limit: dataLimit,
-                    head: true, // Get head guest,
-                    room: quickSearchFields.roomNo,
-                    mobile: quickSearchFields.mobileNo,
-                }
-                setFilterState("checkout", dataLimit, activePage);
-
-                const url = process.env.REACT_APP_BOOKING_API + `/check-in/get-booking`;
-                const req = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                const res = await req.json();
-
-                setTotalData(res.total)
-                setBookingHeadList([...res.data])
-                setLoading(false);
-
-            } catch (error) {
-                toast("Something went wrong", "error")
-                console.log(error)
+    const getHeadList = async () => {
+        try {
+            const data = {
+                token: Cookies.get("token"),
+                page: activePage,
+                limit: dataLimit,
+                head: true, // Get head guest,
+                room: quickSearchFields.roomNo,
+                mobile: quickSearchFields.mobileNo,
+                fromDate: quickSearchFields.fromDate,
+                toDate: quickSearchFields.toDate
             }
-        })()
+            setFilterState("checkout", dataLimit, activePage);
 
-    }, [dataLimit, activePage, quickSearchFields])
+            const url = process.env.REACT_APP_BOOKING_API + `/check-in/get-booking`;
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const res = await req.json();
+
+            setTotalData(res.total)
+            setBookingHeadList([...res.data])
+            setLoading(false);
+
+        } catch (error) {
+            toast("Something went wrong", "error")
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        getHeadList();
+    }, [dataLimit, activePage])
+
+    // Handle Quick Search
+    const handleQuickSearch = () => getHeadList();
+
+    // Reset Quick Search Data
+    const resetQuickSearch = () => setQuickSearchFields({ roomNo: '', mobileNo: '', fromDate: '', toDate: '' })
+
+    useEffect(() => {
+        if (
+            quickSearchFields.roomNo === '' &&
+            quickSearchFields.mobileNo === '' &&
+            quickSearchFields.fromDate === '' &&
+            quickSearchFields.toDate === ''
+        ) {
+            getHeadList();
+        }
+    }, [quickSearchFields]);
+
 
 
     const exportTable = async (whichType) => {
@@ -126,6 +148,9 @@ const CheckOut = () => {
             <main id='main'>
                 <SideNav />
                 <div className='content__body'>
+                    {/* ========================== [Quick Search] ===================== */}
+                    {/* =============================================================== */}
+                    
                     <div className='content__body__main'>
                         <div className='w-full  flex justify-between items-center border-b pb-1'>
                             <p className='font-semibold text-lg'>Quick Search</p>
@@ -162,21 +187,30 @@ const CheckOut = () => {
                                 <div className='w-full flex gap-3 items-center justify-between'>
                                     <div className='w-full'>
                                         <p>From*</p>
-                                        <input type="date" placeholder='Start Date' />
+                                        <input type="date" placeholder='Start Date'
+                                            value={quickSearchFields.fromDate}
+                                            onChange={(e) => {
+                                                setQuickSearchFields({ ...quickSearchFields, fromDate: e.target.value })
+                                            }} />
                                     </div>
                                     <div className='w-full'>
                                         <p>To*</p>
-                                        <input type="date" placeholder='End Date' />
+                                        <input type="date" placeholder='End Date'
+                                            value={quickSearchFields.toDate}
+                                            onChange={(e) => {
+                                                setQuickSearchFields({ ...quickSearchFields, toDate: e.target.value })
+                                            }}
+                                        />
                                     </div>
                                 </div>
                             </div>
                         }
                         <div className='form__btn__grp'>
-                            <button className='reset__btn'>
+                            <button className='reset__btn' onClick={resetQuickSearch}>
                                 <Icons.RESET />
                                 Reset
                             </button>
-                            <button className='save__btn'>
+                            <button className='save__btn' onClick={handleQuickSearch}>
                                 <Icons.SEARCH /> Search
                             </button>
                         </div>

@@ -30,7 +30,7 @@ const SideNav = () => {
           </ul>
         </div>
         <div className="side__nav__link__group">
-          <h3 className='text-[16px] my-5'>Management</h3>
+          <h3 className='text-[16px] my-5 uppercase'>Management</h3>
           <Link to={"/hotel/check-in"} data-tooltip-id="sideBarItemToolTip">
             <li className={`flex items-center ${activePath.search("/hotel/check-in") >= 0 ? 'active__link' : ''}`}>
               <span className='mr-3'><Icons.USER size={"13px"} /></span>

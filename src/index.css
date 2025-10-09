@@ -58,12 +58,16 @@
 }
 
 .content__body__main {
-  padding: 5px;
+  padding: 10px;
   border-radius: 5px;
   box-shadow: 0px 0px 5px lightgrey;
   border: 1px solid var(--first__color);
   font-size: 13px !important;
   background-color: white;
+}
+
+.content__body__main.charges__card {
+  @apply px-4;
 }
 
 h1,
@@ -78,6 +82,9 @@ h6 {
 nav {
   @apply w-full h-[50px] border-b bg-white shadow-lg flex justify-between;
 }
+ nav h6{
+  font-weight: 400;
+ }
 
 .nav__profile__area {
   background-color: var(--second__color) !important;
@@ -513,7 +520,7 @@ select:hover {
 }
 
 .add_new_compnent {
-  @apply mb-5 w-full bg-white p-2 pb-3 overflow-hidden transition-all border-b;
+  @apply w-full bg-white p-2 pb-3 overflow-hidden transition-all border-b;
 }
 
 .add_new_compnent button {
@@ -606,8 +613,7 @@ select:hover {
 }
 
 .list__table tr,
-.list__table td,
-.list__table th {
+.list__table td {
   border: 1px solid white;
   padding: 2px;
   font-size: 13px;
@@ -618,12 +624,12 @@ select:hover {
   /* padding-left: 30px; */
 }
 
-.list__table__head {
+.list__table__head td {
   /* background-color: #003E32; */
   background-color: var(--second__color);
   color: white;
-  font-weight: bold;
   border: 1px solid #003E32;
+  font-size: 11px !important;
 }
 
 .list__table tbody tr:hover {
@@ -973,8 +979,13 @@ input[type="checkbox"]:checked::before {
 
 
 .hotel__amemities__card {
-  @apply rounded-xl p-2 h-[70px] flex flex-col justify-end text-right text-white text-sm;
-  box-shadow: 3px 3px 7px rgb(185, 184, 184);
+  @apply p-2 h-[70px] flex flex-col justify-end text-right text-white text-sm;
+  border-radius: 14px;
+  -webkit-box-shadow: 9px 9px 30px 2px rgba(148, 148, 148, 1);
+  -moz-box-shadow: 9px 9px 30px 2px rgba(148, 148, 148, 1);
+  box-shadow: 5px 5px 8px 2px rgba(148, 148, 148, 1);
+  overflow: hidden;
+  position: relative;
 }
 
 .hotel__amemities__card div p:first-child {
@@ -997,6 +1008,10 @@ input[type="checkbox"]:checked::before {
   background: linear-gradient(180deg, rgba(3, 179, 20, 1) 0%, rgba(0, 52, 56, 1) 100%);
 }
 
+.hotel__amemities__card.red__card {
+  background: linear-gradient(180deg, rgba(237, 55, 68, 1) 0%, rgba(147, 0, 10, 1) 100%);
+}
+
 .total__data_cards {
   @apply grid grid-cols-2 lg:grid-cols-5 gap-8;
 }
@@ -1011,14 +1026,13 @@ input[type="checkbox"]:checked::before {
   display: flex;
   justify-content: end;
   align-items: end;
-  height: 120px;
   color: white;
   position: relative;
   overflow: hidden;
-  padding-right: 10px;
-  padding-bottom: 10px;
+  padding: 14.25px;
   box-shadow: 0px 0px 10px rgb(79, 79, 80);
   cursor: pointer;
+
 }
 
 .total__data_cards .total__card.center {
@@ -1029,14 +1043,40 @@ input[type="checkbox"]:checked::before {
 
 .card__icon {
   position: absolute;
-  left: -25px;
-  bottom: -25px;
-  font-size: 150px;
+  left: -2px;
+  bottom: -12px;
+  font-size: 89px;
   color: rgba(255, 255, 255, 0.171);
 }
 
+.card__icon2 {
+  position: absolute;
+  left: -25px;
+  bottom: -25px;
+  font-size: 100px;
+  color: rgba(255, 255, 255, 0.171);
+}
+
+.dashboard__cards {
+  @apply text-white grid place-items-center center cursor-pointer;
+  border-radius: 14px;
+  -webkit-box-shadow: 9px 9px 30px 2px rgba(148, 148, 148, 1);
+  -moz-box-shadow: 9px 9px 30px 2px rgba(148, 148, 148, 1);
+  box-shadow: 5px 5px 8px 2px rgba(148, 148, 148, 1);
+  padding: 10px;
+}
+
+.checkin__card {
+  @apply green__grad;
+
+}
+
+.checkout__card {
+  @apply red__grad;
+}
+
 .center__icon {
-  font-size: 60px;
+  font-size: 43px;
   color: rgb(238, 235, 235);
 }
 
@@ -1045,26 +1085,23 @@ input[type="checkbox"]:checked::before {
 }
 
 .blue__grad {
-  background: linear-gradient(to bottom, rgba(29, 29, 104, 0.774), rgb(25, 25, 90));
-  /* box-shadow: 0px 0px 10px blue; */
+  background: linear-gradient(180deg, rgba(0, 120, 214, 1) 0%, rgba(0, 50, 84, 1) 100%);
 }
 
 .green__grad {
-  background: linear-gradient(to bottom, rgb(0, 128, 0), rgb(3, 51, 3));
-  /* box-shadow: 0px 0px 10px blue; */
+  background: linear-gradient(180deg, rgba(3, 179, 20, 1) 0%, rgba(0, 52, 56, 1) 100%);
 }
 
 .red__grad {
-  background: linear-gradient(to bottom, red, rgb(3, 51, 3));
-  /* box-shadow: 0px 0px 10px blue; */
-}
-
-.red__grad {
-  background: linear-gradient(to bottom, rgb(231, 125, 125), rgb(189, 18, 18));
+  background: linear-gradient(180deg, rgba(237, 55, 68, 1) 0%, rgba(147, 0, 10, 1) 100%);
 }
 
 .yellow__grad {
   background: linear-gradient(to bottom, rgb(247, 213, 20), rgb(97, 65, 7));
+}
+
+.purple__grad{
+  background: linear-gradient(180deg, rgba(142, 68, 173, 1) 0%, rgba(61, 0, 87, 1) 100%);
 }
 
 .chip__green {
@@ -1160,7 +1197,7 @@ input[type="checkbox"]:checked::before {
 }
 
 .list__table__checkin td {
-  padding: 5px 8px !important;
+  padding: 3px 4px !important;
   min-width: 0 !important;
 }
 
@@ -1205,4 +1242,24 @@ input[type="checkbox"]:checked::before {
 
 .check__out__details__table thead tr td {
   font-weight: 500;
+}
+
+/* ::::::::::::::::::::::::::: [Chip Area] ::::::::::::::::::::: */
+.chip {
+  @apply flex gap-1 items-center justify-center text-xs text-white rounded-sm;
+  background-color: var(--second__color);
+  padding: 4px 7px;
+  border-radius: 15px;
+}
+
+.chip__green {
+  @apply bg-[green] hover:bg-[#09a809]
+}
+
+.chip__blue {
+  @apply bg-[#659BE0] hover:bg-[#79adf1]
+}
+
+.chip__black {
+  @apply bg-[#364336] hover:bg-[#4d5e4d]
 }

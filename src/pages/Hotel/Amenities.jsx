@@ -1,25 +1,26 @@
 import Nav from '../../components/Hotel/Nav';
 import SideNav from '../../components/Hotel/HotelSideNav'
 import { Icons } from '../../helper/icons';
-import { useMemo, useRef, useState } from 'react';
+import { use, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSearchTable from '../../hooks/useSearchTable';
-import useApi from '../../hooks/useApi';
 import { Popover, SelectPicker, Whisper } from 'rsuite';
 import downloadPdf from '../../helper/downloadPdf';
 import useExportTable from '../../hooks/useExportTable';
 import useMyToaster from '../../hooks/useMyToaster';
 import Pagination from '../../components/Admin/Pagination';
-
+import useSetTableFilter from '../../hooks/useSetTableFilter';
+import Cookies from 'js-cookie';
 
 
 const Amenities = () => {
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
-    const [activePage, setActivePage] = useState(1);
-    const [dataLimit, setDataLimit] = useState(10);
+    const { getFilterState, setFilterState } = useSetTableFilter();
+    const savedFilter = getFilterState("amenities");
+    const [activePage, setActivePage] = useState(savedFilter?.activePage || 1);
+    const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
     const [totalData, setTotalData] = useState()
-    const [selected, setSelected] = useState([]);
     const navigate = useNavigate();
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
@@ -30,27 +31,129 @@ const Amenities = () => {
     }, [data]);
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
-    const { deleteData, restoreData } = useApi()
     const months = [
-        { label: 'January', value: 'january' },
-        { label: 'February', value: 'february' },
-        { label: 'March', value: 'march' },
-        { label: 'April', value: 'april' },
-        { label: 'May', value: 'may' },
-        { label: 'June', value: 'june' },
-        { label: 'July', value: 'july' },
-        { label: 'August', value: 'august' },
-        { label: 'September', value: 'september' },
-        { label: 'October', value: 'october' },
-        { label: 'November', value: 'november' },
-        { label: 'December', value: 'december' }
+        { label: 'January', value: '1' },
+        { label: 'February', value: '2' },
+        { label: 'March', value: '3' },
+        { label: 'April', value: '4' },
+        { label: 'May', value: '5' },
+        { label: 'June', value: '6' },
+        { label: 'July', value: '7' },
+        { label: 'August', value: '8' },
+        { label: 'September', value: '9' },
+        { label: 'October', value: '10' },
+        { label: 'November', value: '11' },
+        { label: 'December', value: '12' }
     ];
     const currentYear = new Date().getFullYear();
+    const currentMonthIndex = new Date().getMonth(); // 0-11
     const years = Array.from({ length: currentYear - 2000 + 1 }, (_, i) => {
         const year = 2000 + i;
         return { label: year.toString(), value: year.toString() };
     });
+    const [filterData, setFilterData] = useState({ month: '', year: '' })
+    const [currentMonthDateList, setCurrentMonthDateList] = useState([]);
+    const [staticticData, setStaticticsData] = useState(null);
 
+
+    // Set current year and month
+    useEffect(() => {
+        setFilterData({
+            year: currentYear.toString(),
+            month: months[currentMonthIndex].value
+        })
+    }, [])
+
+    // Get Statictics Data;
+    useEffect(() => {
+        (async () => {
+            const url = process.env.REACT_APP_BOOKING_API + "/check-in/get-stats";
+            const hotelId = Cookies.get('hotelId');
+            const token = Cookies.get('hotel-token');
+
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({ hotelId })
+            })
+            const res = await req.json();
+            if (req.status === 200) setStaticticsData(res);
+        })()
+    }, [])
+
+
+    // Get Guest Data
+    const get = async (y, m) => {
+        try {
+            const hotelId = Cookies.get('hotelId');
+            const token = Cookies.get('hotel-token');
+            const data = {
+                token: Cookies.get("token"),
+                page: activePage,
+                limit: dataLimit,
+                year: filterData.year || y,
+                month: filterData.month || m,
+                hotel_id: hotelId
+            }
+
+            setFilterState("amenities", dataLimit, activePage);
+
+            const url = process.env.REACT_APP_BOOKING_API + `/check-out/get-booking-head`;
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const res = await req.json();
+            console.log(res)
+            if (req.status === 200) {
+                setTotalData(res.total)
+                setData([...res.data])
+                setLoading(false);
+            }
+            setLoading(false);
+
+        } catch (error) {
+            toast("Something went wrong", "error")
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        get(currentYear.toString(), months[currentMonthIndex].value)
+    }, [dataLimit, activePage])
+
+
+    const handleFilterData = () => get();
+
+    const handleResetFilterData = () => {
+        setFilterData({
+            year: currentYear.toString(),
+            month: months[currentMonthIndex].value
+        })
+        get(currentYear.toString(), months[currentMonthIndex].value)
+    }
+
+
+    useEffect(() => {
+        const month = filterData.month;
+        const year = filterData.year;
+        const dates = [];
+
+        // JS Date month is 0-based → subtract 1
+        const date = new Date(year, month - 1, 1);
+
+        while (date.getMonth() === month - 1) {
+            const formatted = date.toISOString().split('T')[0]; // yyyy-mm-dd
+            dates.push(formatted);
+            date.setDate(date.getDate() + 1);
+        }
+        setCurrentMonthDateList(dates);
+
+    }, [filterData])
 
     // Table functionality ---------
     const exportTable = async (whichType) => {
@@ -77,60 +180,70 @@ const Amenities = () => {
                 <SideNav />
                 <div className='content__body'>
                     <div className='w-full flex flex-col md:flex-row gap-4'>
-                        <div className='content__body__main w-full'>
-                            <div className='w-full  flex justify-between items-center border-b pb-1'>
-                                <p className='font-semibold text-lg'>Filter Guest Entry</p>
+                        <div className='content__body__main w-full '>
+                            <div className='w-full  flex gap-1 items-center border-b pb-1'>
                                 <Icons.SEARCH />
+                                <p className='font-semibold text-[16px]'>Filter Guest Entry</p>
                             </div>
                             <div className='w-full flex flex-col md:flex-row justify-between gap-4 items-center mt-4'>
                                 <div className='w-full mt-3'>
                                     <p>Select Month *</p>
                                     <SelectPicker
+                                        block
                                         className='w-full'
                                         data={months}
+                                        value={filterData.month}
+                                        onChange={(v) => setFilterData({ ...filterData, month: v })}
                                     />
                                 </div>
                                 <div className='w-full mt-3'>
                                     <p>Select Year*</p>
                                     <SelectPicker
+                                        block
                                         className='w-full'
                                         data={years}
+                                        value={filterData.year}
+                                        onChange={(v) => setFilterData({ ...filterData, year: v })}
                                     />
                                 </div>
                             </div>
 
                             <div className='form__btn__grp'>
-                                <button className='reset__btn'>
+                                <button className='reset__btn' onClick={handleResetFilterData}>
                                     <Icons.RESET />
                                     Reset
                                 </button>
-                                <button className='save__btn'>
+                                <button className='save__btn' onClick={handleFilterData}>
                                     <Icons.SEARCH /> Search
                                 </button>
                             </div>
                         </div>
 
-                        <div className='content__body__main w-full'>
-                            <div className='w-full  flex justify-between items-center border-b pb-1'>
-                                <p className='font-semibold text-lg'>Aminity Charges</p>
+                        <div className='content__body__main charges__card w-full'>
+                            <div className='w-full flex gap-1 items-center border-b pb-1'>
                                 <Icons.RUPES />
+                                <p className='font-semibold text-[16px]'>Aminity Charges</p>
                             </div>
                             <div className='w-full grid grid-cols-2 md:grid-cols-4 gap-4 mt-4'>
                                 <div className='hotel__amemities__card'>
-                                    <p className='text-2xl'>0</p>
-                                    <p>Today Charges</p>
+                                    <p className='text-2xl'>{staticticData?.todayAminity}</p>
+                                    <p className='text-[12px]'>Today Charges</p>
+                                    <Icons.RUPES className='card__icon2' />
+                                </div>
+                                <div className='hotel__amemities__card '>
+                                    <p className='text-2xl'>{staticticData?.totalAminity}</p>
+                                    <p className='text-[12px]'>Total Charges</p>
+                                    <Icons.RUPES className='card__icon2' />
                                 </div>
                                 <div className='hotel__amemities__card'>
                                     <p className='text-2xl'>0</p>
-                                    <p>Today Charges</p>
+                                    <p className='text-[12px]'>Total Payment</p>
+                                    <Icons.RUPES className='card__icon2' />
                                 </div>
-                                <div className='hotel__amemities__card'>
+                                <div className='hotel__amemities__card red__card'>
                                     <p className='text-2xl'>0</p>
-                                    <p>Today Charges</p>
-                                </div>
-                                <div className='hotel__amemities__card'>
-                                    <p className='text-2xl'>0</p>
-                                    <p>Today Charges</p>
+                                    <p className='text-[12px]'>Total Due</p>
+                                    <Icons.RUPES className='card__icon2' />
                                 </div>
                             </div>
 
@@ -202,39 +315,40 @@ const Amenities = () => {
                             <table className='min-w-full bg-white' id='table' ref={tableRef}>
                                 <thead className='bg-gray-100 list__table__head'>
                                     <tr>
-                                        <td className='py-2 '>SL No.</td>
-                                        <td className='py-2 '>Date</td>
-                                        <td className='py-2 '>Total Guest(s) Enrolled</td>
-                                        <td className='py-2 '>Total Amenities Charge Payable (Rs)</td>
-                                        <td className='py-2 '>Remark</td>
+                                        <td align='center'>SL No.</td>
+                                        <td >Date</td>
+                                        <td >Total Guest(s) Enrolled</td>
+                                        <td >Total Amenities Charge Payable (Rs)</td>
+                                        <td align='center'>Remark</td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
-                                        data.map((d, i) => {
+                                        currentMonthDateList.map((d, i) => {
+                                            let allData = data.find((ad, _) => ad.date === d);
+
                                             return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                <td className='px-4 border-b'>{d.name}</td>
-                                                <td className='px-4 text-center'>
-                                                    <button className='rounded px-3 py-1 bg-blue-300 text-white'>
+                                                <td align='center'>{i + 1}</td>
+                                                <td>{d}</td>
+                                                <td className='px-4 border-b'>{allData?.total_guest || 0}</td>
+                                                <td className='px-4 border-b'>{allData?.total_bill || 0}</td>
+                                                <td className='px-4' align='center'>
+                                                    <button
+                                                        onClick={() => navigate("/hotel/tourist-data", {
+                                                            state: { date: d }
+                                                        })}
+                                                        className='rounded px-3 py-1 bg-blue-300 text-white'>
                                                         Booking
                                                     </button>
                                                 </td>
                                             </tr>
                                         })
                                     }
-                                    <tr className='cursor-pointer hover:bg-gray-100'>
-                                        <td className='px-4 border-b'>test</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td className='px-4 text-center'>
-                                            <button className='rounded px-3 py-1 bg-blue-300 text-white'>
-                                                Booking
-                                            </button>
-                                        </td>
-                                    </tr>
                                 </tbody>
                             </table>
+                            {totalData < 1 && <div className='w-full bg-gray-100 text-md text-center py-6'>
+                                NO DATA FOUND
+                            </div>}
                             <div className='paginate__parent'>
                                 <p>Showing {data.length} of {totalData} entries</p>
                                 <Pagination

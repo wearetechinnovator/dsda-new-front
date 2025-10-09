@@ -36,6 +36,10 @@ import { IoEyeOffOutline } from "react-icons/io5";
 import { TbPasswordFingerprint } from "react-icons/tb";
 import { MdOutlineAddPhotoAlternate } from "react-icons/md";
 import { MdFileDownload } from "react-icons/md";
+import { FaStar } from "react-icons/fa6";
+import { FaUserTie } from "react-icons/fa";
+import { FiTable } from "react-icons/fi";
+
 
 
 
@@ -88,6 +92,9 @@ export const Icons = {
   EYE_CLOSE: IoEyeOffOutline,
   DOWNLOAD: MdFileDownload,
   PASSWORD: TbPasswordFingerprint,
-  UPLOAD_IMAGE: MdOutlineAddPhotoAlternate
+  UPLOAD_IMAGE: MdOutlineAddPhotoAlternate,
+  STAR: FaStar,
+  ADMIN_USER: FaUserTie,
+  TABLE: FiTable,
 };
 

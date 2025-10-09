@@ -59,6 +59,7 @@ const Statistics = () => {
     const [quickSearchFields, setQuickSearchFields] = useState({
         roomNo: '', mobileNo: '', fromDate: '', toDate: ''
     })
+    const [isOpenNotificationModal, setIsOpenNotificationModal] = useState(false);
 
 
     // Get all Head List
@@ -96,24 +97,6 @@ const Statistics = () => {
         })()
 
     }, [dataLimit, activePage, quickSearchFields])
-
-
-    const exportTable = async (whichType) => {
-        if (whichType === "copy") {
-            copyTable("table"); // Pass tableid
-        }
-        else if (whichType === "excel") {
-            downloadExcel(exportData, 'guest-list.xlsx') // Pass data and filename
-        }
-        else if (whichType === "print") {
-            printTable(tableRef, "Guest List"); // Pass table ref and title
-        }
-        else if (whichType === "pdf") {
-            let document = exportPdf('Guest List', exportData);
-            downloadPdf(document)
-        }
-    }
-
 
     // Get Notice
     useEffect(() => {
@@ -153,8 +136,13 @@ const Statistics = () => {
         })()
     }, [])
 
+    // Notification Modal
+    useEffect(() => {
+        setIsOpenNotificationModal(true)
+    }, [])
 
 
+    // Print slip
     const printSlip = async (id) => {
         const Url = process.env.REACT_APP_BOOKING_API + "/check-out/get-booking-head";
         const req = await fetch(Url, {
@@ -178,6 +166,23 @@ const Statistics = () => {
         })
     }
 
+
+    const exportTable = async (whichType) => {
+        if (whichType === "copy") {
+            copyTable("table"); // Pass tableid
+        }
+        else if (whichType === "excel") {
+            downloadExcel(exportData, 'guest-list.xlsx') // Pass data and filename
+        }
+        else if (whichType === "print") {
+            printTable(tableRef, "Guest List"); // Pass table ref and title
+        }
+        else if (whichType === "pdf") {
+            let document = exportPdf('Guest List', exportData);
+            downloadPdf(document)
+        }
+    }
+
     return (
         <>
             <Nav title={"Statistics"} />
@@ -190,7 +195,7 @@ const Statistics = () => {
                         <div className='flex flex-col gap-4 min-w-[200px]'>
                             <div
                                 onClick={() => navigate("/hotel/check-in")}
-                                className='text-white grid place-items-center green__grad center h-[120px] rounded-2xl cursor-pointer'>
+                                className='dashboard__cards checkin__card'>
                                 <div className='flex flex-col justify-center items-center'>
                                     <FaCheckToSlot className='center__icon' />
                                     <p>CHECK IN</p>
@@ -198,14 +203,14 @@ const Statistics = () => {
                             </div>
                             <div
                                 onClick={() => navigate("/hotel/check-out")}
-                                className='text-white grid place-items-center red__grad center h-[120px] rounded-2xl cursor-pointer'>
+                                className='dashboard__cards checkout__card'>
                                 <div className='flex flex-col justify-center items-center'>
                                     <LuArrowRightFromLine className='center__icon' />
                                     <p>CHECK OUT</p>
                                 </div>
                             </div>
                         </div>
-                        <div className='w-full'>
+                        <div className='w-full px-[25px]'>
                             <div className="total__data_cards">
                                 <div className='total__card blue__grad'>
                                     <div className='total__card__data'>
@@ -257,14 +262,14 @@ const Statistics = () => {
                             </div>
 
                             <div className="total__data_cards__bottom">
-                                <div className='total__card blue__grad'>
+                                <div className='total__card purple__grad'>
                                     <div className='total__card__data'>
                                         <p>{staticticData?.todayFootFall}</p>
                                         <p>Today Footfals</p>
                                     </div>
                                     <FaUsers className='card__icon' />
                                 </div>
-                                <div className='total__card green__grad'>
+                                <div className='total__card purple__grad'>
                                     <div className='total__card__data'>
                                         <p>{staticticData?.totalFootFall}</p>
                                         <p>Total Footfals</p>
@@ -294,7 +299,7 @@ const Statistics = () => {
                     {/* ============================================================== */}
 
                     <div className='content__body__main mt-4'>
-                        <div className='w-full flex gap-3 items-center mb-3 pb-2 border-b'>
+                        <div className='w-full flex gap-3 items-center pb-2 border-b'>
                             <Icons.USERS className='text-xl' />
                             <p className='font-semibold text-md uppercase'>Current Stay In Guest List</p>
                         </div>
@@ -364,14 +369,14 @@ const Statistics = () => {
                                         <td className='py-2 '>ID Card</td>
                                         <td className='py-2 '>Mobile</td>
                                         <td className='py-2 '>Room No.</td>
-                                        <td className='py-2 w-[10%]'>Action</td>
+                                        <td className='py-2 w-[10%]' align='center'>Action</td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         bookingHeadList.map((d, i) => {
                                             return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                <td>{i + 1}</td>
+                                                <td align='center'>{i + 1}</td>
                                                 <td className='px-4 border-b'>{d.booking_details_guest_name}</td>
                                                 <td>{d.booking_details_checkin_date_time}</td>
                                                 <td>{d.booking_details_guest_id_type}</td>
@@ -497,6 +502,67 @@ const Statistics = () => {
                         </button>
                     </div>
                 </Modal.Footer>
+            </Modal>
+
+            {/* ::::::::::::::::::::::::::::::: [NOTIFICATION MODAL] :::::::::::::::::::::: */}
+            <Modal open={isOpenNotificationModal} className='min-h-[80%] w-[90%]' onClose={() => {
+                setIsOpenNotificationModal(false);
+            }}>
+                <Modal.Header className=''>
+                    <p></p>
+                </Modal.Header>
+                <Modal.Body>
+                    <div>
+                        <div className='w-full flex gap-3 items-center mb-3 pb-2 border-b'>
+                            <Icons.NOTICE className='text-xl' />
+                            <p className='font-semibold text-md uppercase'>Recent Notice</p>
+                        </div>
+                        {/* Table start */}
+                        <div className='overflow-x-auto list__table notice__modal'>
+                            <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
+                                <thead className='bg-gray-100 list__table__head'>
+                                    <tr>
+                                        <td className='py-2 px-4 border-b w-[5%]' align='center'>Sl.</td>
+                                        <th className='py-2 px-4 border-b w-[10%]'>Date</th>
+                                        <th className='py-2 px-4 border-b w-[*]' align='left'>Title</th>
+                                        <th className='py-2 px-4 border-b w-[12%]' align='center'>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        recentNotice?.map((d, i) => {
+                                            return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
+                                                <td className='py-2 px-4 border-b max-w-[10px]' align='center'>{i + 1}</td>
+                                                <td className='px-4 border-b' align='center'>{new Date(d?.notice_date).toLocaleDateString()}</td>
+                                                <td className='px-4 border-b' align='left'>{d.notice_title}</td>
+                                                <td className='px-4 border-b' align='center'>
+                                                    <button className='notice__view__btn' onClick={() => {
+                                                        setModalData({
+                                                            isOpen: true,
+                                                            ...d
+                                                        })
+                                                    }}>
+                                                        <Icons.EYE />
+                                                        View Details
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        })
+                                    }
+                                    {
+                                        recentNotice.length < 1 && (
+                                            <tr>
+                                                <td colSpan={5} align='center' >
+                                                    No Notice Available
+                                                </td>
+                                            </tr>
+                                        )
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </Modal.Body>
             </Modal>
         </>
     )
