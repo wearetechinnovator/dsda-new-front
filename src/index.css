@@ -1251,15 +1251,15 @@ input[type="checkbox"]:checked::before {
   padding: 4px 7px;
   border-radius: 15px;
 }
-
 .chip__green {
-  @apply bg-[green] hover:bg-[#09a809]
+  @apply bg-[green] hover:bg-[#09a809];
 }
-
 .chip__blue {
-  @apply bg-[#659BE0] hover:bg-[#79adf1]
+  @apply bg-[#659BE0] hover:bg-[#79adf1];
 }
-
 .chip__black {
-  @apply bg-[#364336] hover:bg-[#4d5e4d]
+  @apply bg-[#364336] hover:bg-[#4d5e4d];
+}
+.chip__red{
+  @apply bg-[#ED6B75] hover:bg-[#dd5964];
 }

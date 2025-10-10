@@ -23,15 +23,26 @@ const HotelList = () => {
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return data && data.map(({ hotel_name, hotel_zone_id, hotel_sector_id,
-            hotel_block_id, hotel_police_station_id, hotel_district_id, }, _) => ({
-                Name: hotel_name,
-                Zone: hotel_zone_id?.name,
-                Sector: hotel_sector_id?.name,
-                Proprietor: hotel_block_id?.name || "--",
-                PoliceStation: hotel_police_station_id?.name || "--",
-                District: hotel_district_id?.name || "--"
-            }));
+        return data && data?.map((h, _) => ({
+            Name: h.hotel_name,
+            Zone: h.hotel_zone_id?.name,
+            Sector: h.hotel_sector_id?.name,
+            Proprietor: h.hotel_block_id?.name,
+            PoliceStation: h.hotel_police_station_id?.name,
+            District: h.hotel_district_id?.name,
+            Address: h.hotel_address,
+            Email: h.hotel_email,
+            "Reception Phone": h.hotel_reception_phone,
+            "Proprietor Name": h.hotel_proprietor_name,
+            "Proprietor Phone": h.hotel_proprietor_phone,
+            "Manager Name": h.hotel_manager_name,
+            "Manager Phone": h.hotel_proprietor_phone,
+            "Alternative Phone": "",
+            "Total Room": h.hotel_total_room,
+            "Total Bed": h.hotel_total_bed,
+            "Restaurant": h.hotel_has_restaurant === "1" ? "Available" : "Not Available",
+            "Confarence Hall": h.hotel_has_conference_hall === "1" ? "Available" : "Not Available"
+        }));
     }, [data]);
     const [loading, setLoading] = useState(true);
     const timeRef = useRef(null);
@@ -45,13 +56,21 @@ const HotelList = () => {
     const [filterDistrict, setFilterDistrict] = useState([]);
     const [filterPoliceStation, setFilterPoliceStation] = useState([]);
 
-    // :::::::::::::::::::::: [GET ALL HOTEL] :::::::::::::::::;
+
+
+    // :::::::::::::::::::::: [GET ALL HOTEL] ::::::::::::::::::::
     const get = async () => {
         try {
             const data = {
                 token: Cookies.get("token"),
                 page: activePage,
-                limit: dataLimit
+                limit: dataLimit,
+                zone: selectedFilters.zone,
+                block: selectedFilters.block,
+                sector: selectedFilters.sector,
+                district: selectedFilters.district,
+                policeStation: selectedFilters.policeStation,
+                hotelId: selectedHotel
             }
             setFilterState("hotel-list", dataLimit, activePage);
             const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
@@ -75,7 +94,8 @@ const HotelList = () => {
         get();
     }, [dataLimit, activePage])
 
-    // ::::::::::::::::::::::::::: [ ALL SEARCH FILTER CODE HERE ] ::::::::::::::::::::::::::
+
+    // ::::::::::::::::::: [ ALL SEARCH FILTER CODE HERE ] :::::::::::::
     const searchTableDatabase = (txt, model) => {
         if (timeRef.current) clearTimeout(timeRef.current);
 
@@ -112,8 +132,7 @@ const HotelList = () => {
 
     }
 
-
-    // :::::::::::::::::: [GET ALL FILTER DATA WITHOUT HOTEL] :::::::::::::
+    // :::::::::::::::::: [GET ALL FILTER DATA WITHOUT HOTEL] ::::::::::::
     useEffect(() => {
         const get = async (model) => {
             const data = {
@@ -152,6 +171,7 @@ const HotelList = () => {
     }, [])
 
 
+    // Export table
     const exportTable = async (whichType) => {
         if (whichType === "copy") {
             copyTable("itemTable"); // Pass tableid
@@ -168,6 +188,12 @@ const HotelList = () => {
         }
     }
 
+    // handle filter
+    const handleFilter = async () => get();
+
+    // Reset filter form
+    const handleResetFilter = async () => window.location.reload();
+
 
     return (
         <>
@@ -176,19 +202,25 @@ const HotelList = () => {
                 <SideNav />
                 <Tooltip id='itemTooltip' />
                 <div className='content__body'>
-                    <div className={`add_new_compnent`}>
+                    <div className='add_new_compnent border rounded'>
                         <div className='flex justify-between items-center'>
                             <div className='flex flex-col'>
                                 <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                    <option value={5}>5</option>
                                     <option value={10}>10</option>
-                                    <option value={25}>25</option>
                                     <option value={50}>50</option>
                                     <option value={100}>100</option>
+                                    <option value={500}>500</option>
+                                    <option value={1000}>1000</option>
+                                    <option value={5000}>5000</option>
+                                    <option value={10000}>10000</option>
+                                    <option value={50000}>50000</option>
+                                    <option value={totalData}>All</option>
                                 </select>
                             </div>
                             <div className='flex items-center gap-2'>
                                 <div className='flex w-full flex-col lg:w-[300px]'>
-                                    <input type='text'
+                                    <input type='search'
                                         placeholder='Search...'
                                         onChange={(e) => searchTableDatabase(e.target.value, "hotel")}
                                         className='p-[6px]'
@@ -349,67 +381,91 @@ const HotelList = () => {
                                 </div>
                             </div>
                             <div className='form__btn__grp filter'>
-                                <button className='save__btn'>
-                                    <Icons.SEARCH />
-                                    Search
-                                </button>
-                                <button className='reset__btn'>
+                                <button className='reset__btn' onClick={handleResetFilter}>
                                     <Icons.RESET />
                                     Reset
+                                </button>
+                                <button className='save__btn' onClick={handleFilter}>
+                                    <Icons.SEARCH />
+                                    Search
                                 </button>
                             </div>
                         </div>
                     </div>
                     {!loading ?
-                        <div className='content__body__main'>
+                        <div className='content__body__main mt-4'>
                             {/* Table start */}
                             <div className='overflow-x-auto list__table'>
                                 <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
                                     <thead className='bg-gray-100 list__table__head'>
                                         <tr>
-                                            <th className='py-2 px-4 border-b '>SL No.</th>
-                                            <th className='py-2 px-4 border-b '>Hotel Name</th>
-                                            <th className='py-2 px-4 border-b'>Zone</th>
-                                            <th className='py-2 px-4 border-b '>Sector</th>
-                                            <th className='py-2 px-4 border-b'>Block</th>
-                                            <th className='py-2 px-4 border-b'>Police Station</th>
-                                            <th className='py-2 px-4 border-b'>Dictrict</th>
-                                            <th className='py-2 px-4 border-b'>Address</th>
-                                            <th className='py-2 px-4 border-b'>Email</th>
-                                            <th className='py-2 px-4 border-b'>Reception Phone</th>
-                                            <th className='py-2 px-4 border-b'>Proprietor Phone</th>
-                                            <th className='py-2 px-4 border-b'>Manager Name</th>
-                                            <th className='py-2 px-4 border-b'>Manager Phone</th>
-                                            <th className='py-2 px-4 border-b'>Alternative Phone</th>
-                                            <th className='py-2 px-4 border-b'>Total Room</th>
-                                            <th className='py-2 px-4 border-b'>Total Bed</th>
-                                            <th className='py-2 px-4 border-b'>Restaurant</th>
-                                            <th className='py-2 px-4 border-b'>Confarence Hall</th>
+                                            <td className='w-[5%]' align='center'>SL No.</td>
+                                            <td className=''>Hotel Name</td>
+                                            <td className=''>Zone</td>
+                                            <td className=' '>Sector</td>
+                                            <td className=''>Block</td>
+                                            <td className='w-[8%]'>Police Station</td>
+                                            <td className=''>Dictrict</td>
+                                            <td className='w-[12%]'>Address</td>
+                                            <td className=''>Email</td>
+                                            <td className='w-[15%]'>Reception Phone</td>
+                                            <td className='w-[12%]'>Proprietor Phone</td>
+                                            <td className='w-[12%]'>Proprietor Name</td>
+                                            <td className='w-[12%]'>Manager Name</td>
+                                            <td className='w-[12%]'>Manager Phone</td>
+                                            <td className='w-[12%]'>Alternative Phone</td>
+                                            <td className='w-[12%]'>Total Room</td>
+                                            <td className=''>Total Bed</td>
+                                            <td align='center'>Restaurant</td>
+                                            <td align='center'>Confarence Hall</td>
+                                            <td align='center'>AC</td>
+                                            <td align='center'>Swimming Pool</td>
+                                            <td align='center'>Parking</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
-                                            data.map((d, i) => {
+                                            data?.map((d, i) => {
                                                 return <tr key={i}>
-                                                    <td className='px-4 border-b'>{i + 1}</td>
-                                                    <td className='px-4 border-b'>{d.hotel_name}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_zone_id?.name}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_sector_id?.name}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_block_id?.name || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_police_station_id?.name || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_district_id?.name || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_address || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_email || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_reception_phone || "--"}</td>
+                                                    <td align='center'>{i + 1}</td>
+                                                    <td>{d.hotel_name}</td>
+                                                    <td>{d?.hotel_zone_id?.name}</td>
+                                                    <td>{d?.hotel_sector_id?.name}</td>
+                                                    <td>{d?.hotel_block_id?.name || "--"}</td>
+                                                    <td>{d?.hotel_police_station_id?.name || "--"}</td>
+                                                    <td>{d?.hotel_district_id?.name || "--"}</td>
+                                                    <td>{d?.hotel_address || "--"}</td>
+                                                    <td>{d?.hotel_email || "--"}</td>
+                                                    <td>{d?.hotel_reception_phone || "--"}</td>
+                                                    <td>{d?.hotel_proprietor_phone || "--"}</td>
+                                                    <td>{d?.hotel_proprietor_name || "--"}</td>
+                                                    <td>{d?.hotel_manager_name || "--"}</td>
+                                                    <td>{d?.hotel_manager_name || "--"}</td>
+                                                    <td>{d?.hotel_manager_phone_alternative || "--"}</td>
+                                                    <td>{d?.hotel_total_room || "--"}</td>
+                                                    <td>{d?.hotel_total_bed || "--"}</td>
+                                                    <td>{
+                                                        d?.hotel_restaurant === "1" ?
+                                                            <span className='chip chip__green'> Yes </span> :
+                                                            <span className='chip chip__red'> No </span>
+                                                    }</td>
+                                                    <td>{d?.hotel_conference_hall === "1" ?
+                                                        <span className='chip chip__green'> Yes </span> :
+                                                        <span className='chip chip__red'> No </span>
+                                                    }</td>
+                                                    <td>{d?.hotel_has_ac === "1" ?
+                                                        <span className='chip chip__green'> Yes </span> :
+                                                        <span className='chip chip__red'> No </span>
+                                                    }</td>
+                                                    <td>{d?.hotel_has_swiming_pool === "1" ?
+                                                        <span className='chip chip__green'> Yes </span> :
+                                                        <span className='chip chip__red'> No </span>
+                                                    }</td>
+                                                    <td>{d?.hotel_has_parking === "1" ?
+                                                        <span className='chip chip__green'> Yes </span> :
+                                                        <span className='chip chip__red'> No </span>
+                                                    }</td>
 
-                                                    <td className='px-4 border-b'>{d?.hotel_proprietor_phone || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_manager_name || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_manager_phone || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_manager_phone_alternative || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_total_room || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_total_bed || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_has_restaurant === "1" ? "Available" : "Not Available"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_has_conference_hall === "1" ? "Available" : "Not Available"}</td>
                                                 </tr>
                                             })
                                         }

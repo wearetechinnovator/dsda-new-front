@@ -250,41 +250,69 @@ const Hotelmaster = ({ mode }) => {
                                 </div>
                             </div>
                             {/* Table start */}
-                            <div className='overflow-x-auto list__table'>
+                            <div className='overflow-x-auto list__table list__table__checkin'>
                                 <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
                                     <thead className='bg-gray-100 list__table__head'>
                                         <tr>
-                                            <th className='py-2 px-4 border-b w-[50px]'>
+                                            <td className='w-[3%]' align='center'>
                                                 <input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
-                                            </th>
-                                            <td className='py-2 px-4 border-b '>Name</td>
-                                            <th className='py-2 px-4 border-b '>Zone</th>
-                                            <th className='py-2 px-4 border-b '>Sector</th>
-                                            <th className='py-2 px-4 border-b'>Proprietor Name</th>
-                                            <th className='py-2 px-4 border-b'>Username</th>
-                                            <th className='py-2 px-4 border-b'>Restaurant</th>
-                                            <th className='py-2 px-4 border-b'>Confarence Hall</th>
-                                            <th className='py-2 px-4 border-b'>Status</th>
-                                            <th className='py-2 px-4 border-b'>Action</th>
+                                            </td>
+                                            <td>Hotel Name</td>
+                                            <td>Category</td>
+                                            <td>Establish</td>
+                                            <td>Zone</td>
+                                            <td>Sector</td>
+                                            <td>Proprietor Name</td>
+                                            <td className='w-8%]'>Username</td>
+                                            <td className='w-10%]' align='center'>Restaurant</td>
+                                            <td className='w-10%]' align='center'>Confarence Hall</td>
+                                            <td className='w-10%]' align='center'>AC</td>
+                                            <td className='w-10%]' align='center'>Swimming Pool</td>
+                                            <td className='w-10%]' align='center'>Parking</td>
+                                            <td className='w-10%]' align='center'>Status</td>
+                                            <td align='center'>Action</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
                                             data.map((d, i) => {
                                                 return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                    <td className='py-2 px-4 border-b max-w-[10px]'>
+                                                    <td align='center'>
                                                         <input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
                                                     </td>
-                                                    <td className='px-4 border-b'>{d.hotel_name}</td>
-                                                    <td className='px-4 border-b' align='center'>{d?.hotel_zone_id?.name}</td>
-                                                    <td className='px-4 border-b' align='center'>{d?.hotel_sector_id?.name}</td>
-                                                    <td className='px-4 border-b' align='center'>{d?.hotel_proprietor_name || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_username}</td>
-                                                    <td className='px-4 border-b' align='center'>{d?.hotel_restaurant === "1" ? "Yes" : "No"}</td>
-                                                    <td className='px-4 border-b' align='center'>{d?.hotel_conference_hall === "1" ? "Yes" : "No"}</td>
-                                                    <td className='px-4 border-b' align='center'>{d?.hotel_conference_hall === "1" ? "Active" : "Inactive"}</td>
-
-                                                    <td className='px-4 text-center'>
+                                                    <td>{d.hotel_name}</td>
+                                                    <td>{d?.hotel_category?.hotel_category_name}</td>
+                                                    <td>{d?.hotel_year_of_establishment}</td>
+                                                    <td>{d?.hotel_zone_id?.name}</td>
+                                                    <td>{d?.hotel_sector_id?.name}</td>
+                                                    <td>{d?.hotel_proprietor_name || "--"}</td>
+                                                    <td>{d?.hotel_username}</td>
+                                                    <td>{
+                                                        d?.hotel_restaurant === "1" ?
+                                                            <span className='chip chip__green'> Yes </span> :
+                                                            <span className='chip chip__red'> No </span>
+                                                    }</td>
+                                                    <td>{d?.hotel_conference_hall === "1" ?
+                                                        <span className='chip chip__green'> Yes </span> :
+                                                        <span className='chip chip__red'> No </span>
+                                                    }</td>
+                                                    <td>{d?.hotel_has_ac === "1" ?
+                                                        <span className='chip chip__green'> Yes </span> :
+                                                        <span className='chip chip__red'> No </span>
+                                                    }</td>
+                                                    <td>{d?.hotel_has_swiming_pool === "1" ?
+                                                        <span className='chip chip__green'> Yes </span> :
+                                                        <span className='chip chip__red'> No </span>
+                                                    }</td>
+                                                    <td>{d?.hotel_has_parking === "1" ?
+                                                        <span className='chip chip__green'> Yes </span> :
+                                                        <span className='chip chip__red'> No </span>
+                                                    }</td>
+                                                    <td>{d?.hotel_status === "1" ?
+                                                        <span className='chip chip__green'> Operative </span> :
+                                                        <span className='chip chip__red'> In Operative </span>
+                                                    }</td>
+                                                    <td align='center'>
                                                         <Whisper
                                                             placement='leftStart'
                                                             trigger={"click"}

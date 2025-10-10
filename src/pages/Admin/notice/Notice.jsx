@@ -30,8 +30,10 @@ const Notice = ({ mode }) => {
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return data && data.map(({ name }, _) => ({
-            Name: name
+        return data && data.map((n, _) => ({
+            Date: n.notice_date,
+            Title: n.notice_title,
+            Status: n.status
         }));
     }, [data]);
     const [loading, setLoading] = useState(true);
@@ -43,7 +45,7 @@ const Notice = ({ mode }) => {
 
     // Get data;
     useEffect(() => {
-        const get = async () => {
+        (async () => {
             try {
                 const data = {
                     token: Cookies.get("token"),
@@ -69,8 +71,7 @@ const Notice = ({ mode }) => {
             } catch (error) {
                 console.log(error)
             }
-        }
-        get();
+        })()
     }, [isTrash, dataLimit, activePage])
 
 
@@ -95,16 +96,16 @@ const Notice = ({ mode }) => {
 
     const exportTable = async (whichType) => {
         if (whichType === "copy") {
-            copyTable("table"); // Pass tableid
+            copyTable("noticeTable"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'sector-list.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'notice-list.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Sector List"); // Pass table ref and title
+            printTable(tableRef, "Notice List"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Sector List', exportData);
+            let document = exportPdf('Notice List', exportData);
             downloadPdf(document)
         }
     }
@@ -211,35 +212,36 @@ const Notice = ({ mode }) => {
                                     </div>
                                 </div>
                             </div>
+
                             {/* Table start */}
                             <div className='overflow-x-auto list__table'>
-                                <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
+                                <table className='min-w-full bg-white' id='noticeTable' ref={tableRef}>
                                     <thead className='bg-gray-100 list__table__head'>
                                         <tr>
-                                            <th className='py-2 px-4 border-b w-[50px]'>
+                                            <td className='w-[50px]' align='center'>
                                                 <input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
-                                            </th>
-                                            <td className='py-2 px-4 border-b'>date</td>
-                                            <td className='py-2 px-4 border-b'>title</td>
-                                            <th className='py-2 px-4 border-b'>Status</th>
-                                            <th className='py-2 px-4 border-b'>Action</th>
+                                            </td>
+                                            <td>date</td>
+                                            <td>title</td>
+                                            <td>Status</td>
+                                            <td align='center'>Action</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
                                             data.map((d, i) => {
                                                 return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                    <td className='py-2 px-4 border-b max-w-[10px]'>
+                                                    <td align='center'>
                                                         <input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
                                                     </td>
-                                                    <td className='px-4 border-b'>{new Date(d.notice_date).toLocaleDateString()}</td>
-                                                    <td className='px-4 border-b'>{d.notice_title}</td>
-                                                    <td className='px-4 border-b'>
+                                                    <td>{new Date(d.notice_date).toLocaleDateString()}</td>
+                                                    <td>{d.notice_title}</td>
+                                                    <td>
                                                         <span className='chip__green'>
                                                             {d.notice_status === '1' ? "New" : "Expired"}
                                                         </span>
                                                     </td>
-                                                    <td className='px-4 text-center'>
+                                                    <td align='center'>
                                                         <Whisper
                                                             placement='leftStart'
                                                             trigger={"click"}

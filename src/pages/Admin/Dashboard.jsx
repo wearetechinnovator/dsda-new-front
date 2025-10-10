@@ -24,15 +24,14 @@ const Dashboard = () => {
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const exportData = useMemo(() => {
-    return data && data.map(({ hotel_name, hotel_zone_id, hotel_sector_id,
-      hotel_block_id, hotel_police_station_id, hotel_district_id, }, _) => ({
-        Name: hotel_name,
-        Zone: hotel_zone_id?.name,
-        Sector: hotel_sector_id?.name,
-        Proprietor: hotel_block_id?.name || "--",
-        PoliceStation: hotel_police_station_id?.name || "--",
-        District: hotel_district_id?.name || "--"
-      }));
+    return data && data.map((h, _) => ({
+      Name: h.hotel_name,
+      Zone: h.hotel_zone_id?.name,
+      Sector: h.hotel_sector_id?.name,
+      Proprietor: h.hotel_block_id?.name,
+      PoliceStation: h.hotel_police_station_id?.name,
+      District: h.hotel_district_id?.name
+    }));
   }, [data]);
   const [loading, setLoading] = useState(true);
   const timeRef = useRef(null);
@@ -46,7 +45,8 @@ const Dashboard = () => {
       const data = {
         token: Cookies.get("token"),
         page: activePage,
-        limit: dataLimit
+        limit: dataLimit,
+        enrolled: true
       }
       setFilterState("dashboard", dataLimit, activePage);
       const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
@@ -58,8 +58,13 @@ const Dashboard = () => {
         body: JSON.stringify(data)
       });
       const res = await req.json();
-      setTotalData(res.total)
-      setData([...res.data])
+
+      if (req.status === 200) {
+        console.log(res);
+        setTotalData(res.total)
+        setData([...res.data])
+        setLoading(false);
+      }
       setLoading(false);
 
     } catch (error) {
@@ -83,7 +88,8 @@ const Dashboard = () => {
       try {
         const data = {
           token: Cookies.get("token"),
-          search: txt
+          search: txt,
+          enrolled: true
         }
         const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
         const req = await fetch(url, {
@@ -94,7 +100,6 @@ const Dashboard = () => {
           body: JSON.stringify(data)
         });
         const res = await req.json();
-        console.log(res)
         setTotalData(res.length)
         setData([...res])
 
@@ -152,6 +157,7 @@ const Dashboard = () => {
         <div className='content__body'>
           {
             !loading ? <div className='content__body__main'>
+              {/* Option bar */}
               <div className={`add_new_compnent`}>
                 <div className='flex justify-between items-center'>
                   <div className='flex flex-col'>
@@ -207,39 +213,40 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
+
               {/* Table start */}
-              <div className='overflow-x-auto list__table'>
+              <div className='overflow-x-auto list__table list__table__checkin'>
                 <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
                   <thead className='bg-gray-100 list__table__head'>
                     <tr>
-                      <th className='py-2 px-4 border-b w-[50px]'>
+                      <td className='w-[5%]' align='center'>
                         <input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
-                      </th>
-                      <td className='py-2 px-4 border-b '>Name</td>
-                      <th className='py-2 px-4 border-b '>Zone</th>
-                      <th className='py-2 px-4 border-b '>Sector</th>
-                      <th className='py-2 px-4 border-b'>Block</th>
-                      <th className='py-2 px-4 border-b'>Police Station</th>
-                      <th className='py-2 px-4 border-b'>District</th>
-                      <th className='py-2 px-4 border-b'>Total Guest(s) Enrolled</th>
-                      <th className='py-2 px-4 border-b'>Total Charges</th>
+                      </td>
+                      <td className=''>Name</td>
+                      <td className=''>Zone</td>
+                      <td className=' '>Sector</td>
+                      <td className=''>Block</td>
+                      <td className=''>Police Station</td>
+                      <td className=''>District</td>
+                      <td className='w-[12%]'>Total Guest(s) Enrolled</td>
+                      <td className='w-[8%]'>Total Charges</td>
                     </tr>
                   </thead>
                   <tbody>
                     {
-                      data.map((d, i) => {
+                      data?.map((d, i) => {
                         return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                          <td className='py-2 px-4 border-b max-w-[10px]'>
+                          <td align='center'>
                             <input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
                           </td>
-                          <td className='px-4 border-b'>{d.hotel_name}</td>
-                          <td className='px-4 border-b' align='center'>{d?.hotel_zone_id?.name}</td>
-                          <td className='px-4 border-b' align='center'>{d?.hotel_sector_id?.name}</td>
-                          <td className='px-4 border-b' align='center'>{d?.hotel_block_id?.name || "--"}</td>
-                          <td className='px-4 border-b'>{d?.hotel_police_station_id?.name || "--"}</td>
-                          <td className='px-4 border-b' align='center'>{d?.hotel_district_id?.name || "--"}</td>
-                          <td className='px-4 border-b' align='center'>{d?.hotel_conference_hall === "1" ? "Yes" : "No"}</td>
-                          <td className='px-4 border-b' align='center'>{d?.hotel_conference_hall === "1" ? "Active" : "Inactive"}</td>
+                          <td>{d.hotel_name}</td>
+                          <td>{d.hotel_zone_id?.name || "--"}</td>
+                          <td>{d.hotel_sector_id?.name || "--"}</td>
+                          <td>{d.hotel_block_id?.name || "--"}</td>
+                          <td>{d.hotel_police_station_id?.name || "--"}</td>
+                          <td>{d.hotel_district_id?.name || "--"}</td>
+                          <td>{d.hotel_total_guest}</td>
+                          <td>{d.hotel_total_charges}</td>
                         </tr>
                       })
                     }

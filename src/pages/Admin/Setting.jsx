@@ -175,7 +175,7 @@ const Setting = () => {
                 />
               </div>
               <div>
-                <p className="font-medium">Minimus Age for Charge</p>
+                <p className="font-medium">Minimum Age for Charge</p>
                 <input
                   type="tel"
                   value={data.age_for_charges}

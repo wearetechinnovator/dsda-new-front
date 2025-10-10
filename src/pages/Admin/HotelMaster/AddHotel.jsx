@@ -290,6 +290,7 @@ const AddHotel = ({ mode }) => {
                   </select> */}
 
                   <SelectPicker
+                    block
                     data={hotelCategories?.map(hc => ({ label: hc.hotel_category_name, value: hc._id })) || []}
                     style={{ width: '100%' }}
                     onChange={(v) => setData({ ...data, category: v })}
@@ -771,6 +772,7 @@ const AddHotel = ({ mode }) => {
                       <tr key={index} className="border-t">
                         <td>
                           <SelectPicker
+                            block
                             data={documentType?.map(t => ({ label: t.document_type_name, value: t._id })) || []}
                             style={{ width: '100%' }}
                             onChange={(v) => {
@@ -885,6 +887,7 @@ const AddHotel = ({ mode }) => {
                     <tr key={index} className="border-t">
                       <td>
                         <SelectPicker
+                          block
                           data={roomType?.map(t => ({ label: t.name, value: t._id })) || []}
                           style={{ width: '100%' }}
                           onChange={(v) => {
@@ -981,13 +984,13 @@ const AddHotel = ({ mode }) => {
             </div>
 
             <div className='form__btn__grp pb-2'>
-              <button className='save__btn' onClick={saveData}>
-                <Icons.CHECK />
-                {mode ? "Update" : "Save"}
-              </button>
               <button className='reset__btn' onClick={clearData}>
                 <Icons.RESET />
                 Reset
+              </button>
+              <button className='save__btn' onClick={saveData}>
+                <Icons.CHECK />
+                {mode ? "Update" : "Save"}
               </button>
             </div>
           </div>

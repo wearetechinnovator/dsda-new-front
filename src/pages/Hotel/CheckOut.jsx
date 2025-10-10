@@ -4,7 +4,6 @@ import { Icons } from '../../helper/icons';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSearchTable from '../../hooks/useSearchTable';
-import useApi from '../../hooks/useApi';
 import { Popover, Whisper } from 'rsuite';
 import downloadPdf from '../../helper/downloadPdf';
 import useExportTable from '../../hooks/useExportTable';
@@ -26,14 +25,17 @@ const CheckOut = () => {
     const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
     const [totalData, setTotalData] = useState();
     const navigate = useNavigate();
-    const [data, setData] = useState([]);
     const [bookingHeadList, setBookingHeadList] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return data && data.map(({ name }, _) => ({
-            Name: name,
+        return bookingHeadList && bookingHeadList?.map((b, _) => ({
+            'Guest Details': b.booking_details_guest_name,
+            'Check In Date & Time': b.booking_details_checkin_date_time,
+            'ID Card': b.booking_details_guest_id_type,
+            'Mobile': b.booking_details_guest_phone,
+            "Room No.": b.booking_details_room_no
         }));
-    }, [data]);
+    }, [bookingHeadList]);
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
     const [quickSearchFields, setQuickSearchFields] = useState({
@@ -82,8 +84,10 @@ const CheckOut = () => {
         getHeadList();
     }, [dataLimit, activePage])
 
+
     // Handle Quick Search
     const handleQuickSearch = () => getHeadList();
+
 
     // Reset Quick Search Data
     const resetQuickSearch = () => setQuickSearchFields({ roomNo: '', mobileNo: '', fromDate: '', toDate: '' })
@@ -117,7 +121,7 @@ const CheckOut = () => {
         }
     }
 
-
+    // Print slip
     const printSlip = async (id) => {
         const Url = process.env.REACT_APP_BOOKING_API + "/check-out/get-booking-head";
         const req = await fetch(Url, {
@@ -150,7 +154,7 @@ const CheckOut = () => {
                 <div className='content__body'>
                     {/* ========================== [Quick Search] ===================== */}
                     {/* =============================================================== */}
-                    
+
                     <div className='content__body__main'>
                         <div className='w-full  flex justify-between items-center border-b pb-1'>
                             <p className='font-semibold text-lg'>Quick Search</p>
@@ -322,7 +326,7 @@ const CheckOut = () => {
                                 </tbody>
                             </table>
                             <div className='paginate__parent'>
-                                <p>Showing {data.length} of {totalData} entries</p>
+                                <p>Showing {bookingHeadList.length} of {totalData} entries</p>
                                 <Pagination
                                     activePage={activePage}
                                     setActivePage={setActivePage}

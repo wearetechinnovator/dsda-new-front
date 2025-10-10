@@ -19,7 +19,7 @@ const CheckIn = () => {
     const [staticticData, setStaticticsData] = useState(null);
 
 
-    
+
     // Get Statictics Data;
     useEffect(() => {
         (async () => {
@@ -150,12 +150,12 @@ const CheckIn = () => {
                             <p className='italic'>* Mandatory field: you must have to entry the field.</p>
                         </div>
                         <div className='form__btn__grp'>
-                            <button className='save__btn' onClick={handleCheckIn}>
-                                <Icons.CHECK /> Submit
-                            </button>
                             <button className='reset__btn' onClick={clearData}>
                                 <Icons.RESET />
                                 Reset
+                            </button>
+                            <button className='save__btn' onClick={handleCheckIn}>
+                                <Icons.CHECK /> Submit
                             </button>
                         </div>
                     </div>

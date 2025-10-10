@@ -35,19 +35,17 @@ const Statistics = () => {
     const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
     const [totalData, setTotalData] = useState();
     const navigate = useNavigate();
-    const [data, setData] = useState([]);
+    const [bookingHeadList, setBookingHeadList] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return data && data?.map(({
-            booking_details_guest_name, booking_details_checkin_date_time,
-            booking_details_guest_id_type, booking_details_guest_phone
-        }, _) => ({
-            'Guest Details': booking_details_guest_name,
-            'Check In Date & Time': booking_details_checkin_date_time,
-            'ID Card': booking_details_guest_id_type,
-            'Mobile': booking_details_guest_phone,
+        return bookingHeadList && bookingHeadList?.map((b, _) => ({
+            'Guest Details': b.booking_details_guest_name,
+            'Check In Date & Time': b.booking_details_checkin_date_time,
+            'ID Card': b.booking_details_guest_id_type,
+            'Mobile': b.booking_details_guest_phone,
+            "Room No.": b.booking_details_room_no
         }));
-    }, [data]);
+    }, [bookingHeadList]);
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
     const [recentNotice, setRecentNotice] = useState([]);
@@ -55,7 +53,6 @@ const Statistics = () => {
     const token = Cookies.get('hotel-token');
     const [modalData, setModalData] = useState({ isOpen: false })
     const [staticticData, setStaticticsData] = useState(null);
-    const [bookingHeadList, setBookingHeadList] = useState([]);
     const [quickSearchFields, setQuickSearchFields] = useState({
         roomNo: '', mobileNo: '', fromDate: '', toDate: ''
     })
@@ -98,6 +95,7 @@ const Statistics = () => {
 
     }, [dataLimit, activePage, quickSearchFields])
 
+    
     // Get Notice
     useEffect(() => {
         (async () => {
@@ -135,6 +133,7 @@ const Statistics = () => {
             if (req.status === 200) setStaticticsData(res);
         })()
     }, [])
+
 
     // Notification Modal
     useEffect(() => {
@@ -405,7 +404,7 @@ const Statistics = () => {
                                 </tbody>
                             </table>
                             <div className='paginate__parent'>
-                                <p>Showing {data.length} of {totalData} entries</p>
+                                <p>Showing {bookingHeadList.length} of {totalData} entries</p>
                                 <Pagination
                                     activePage={activePage}
                                     setActivePage={setActivePage}
@@ -432,10 +431,10 @@ const Statistics = () => {
                                 <thead className='bg-gray-100 list__table__head'>
                                     <tr>
                                         <td className='py-2 px-4 border-b w-[5%]' align='center'>Sl.</td>
-                                        <th className='py-2 px-4 border-b w-[10%]'>Date</th>
-                                        <th className='py-2 px-4 border-b w-[*]' align='left'>Title</th>
-                                        <th className='py-2 px-4 border-b w-[10%]'>Status</th>
-                                        <th className='py-2 px-4 border-b w-[12%]' align='center'>Action</th>
+                                        <td className='py-2 px-4 border-b w-[10%]'>Date</td>
+                                        <td className='py-2 px-4 border-b w-[*]' align='left'>Title</td>
+                                        <td className='py-2 px-4 border-b w-[10%]'>Status</td>
+                                        <td className='py-2 px-4 border-b w-[12%]' align='center'>Action</td>
                                     </tr>
                                 </thead>
                                 <tbody>

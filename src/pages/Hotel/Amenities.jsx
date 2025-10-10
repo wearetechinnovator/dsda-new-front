@@ -4,7 +4,7 @@ import { Icons } from '../../helper/icons';
 import { use, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSearchTable from '../../hooks/useSearchTable';
-import { Popover, SelectPicker, Whisper } from 'rsuite';
+import { Placeholder, Popover, SelectPicker, Whisper } from 'rsuite';
 import downloadPdf from '../../helper/downloadPdf';
 import useExportTable from '../../hooks/useExportTable';
 import useMyToaster from '../../hooks/useMyToaster';
@@ -349,15 +349,6 @@ const Amenities = () => {
                             {totalData < 1 && <div className='w-full bg-gray-100 text-md text-center py-6'>
                                 NO DATA FOUND
                             </div>}
-                            <div className='paginate__parent'>
-                                <p>Showing {data.length} of {totalData} entries</p>
-                                <Pagination
-                                    activePage={activePage}
-                                    setActivePage={setActivePage}
-                                    totalData={totalData}
-                                    dataLimit={dataLimit}
-                                />
-                            </div>
                         </div>
                     </div>
                 </div>

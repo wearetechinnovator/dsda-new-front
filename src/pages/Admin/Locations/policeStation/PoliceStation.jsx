@@ -251,25 +251,25 @@ const PoliceStation = () => {
 								<table className='min-w-full bg-white' id='table' ref={tableRef}>
 									<thead className='bg-gray-100 list__table__head'>
 										<tr>
-											<th className='py-2 px-4 border-b w-[50px]'>
+											<td className='w-[50px]' align='center'>
 												<input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
-											</th>
-											<td className='py-2 px-4 border-b '>Name</td>
-											<th className='py-2 px-4 border-b '>District</th>
-											<th className='py-2 px-4 border-b w-[100px]'>Action</th>
+											</td>
+											<td>Name</td>
+											<td>District</td>
+											<td align='center'>Action</td>
 										</tr>
 									</thead>
 									<tbody>
 										{
 											data.map((d, i) => {
 												return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-													<td className='py-2 px-4 border-b max-w-[10px]'>
+													<td align='center'>
 														<input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
 													</td>
-													<td className='px-4 border-b'>{d.name}</td>
-													<td className='px-4 border-b'>{d.district?.name}</td>
+													<td>{d.name}</td>
+													<td>{d.district?.name}</td>
 
-													<td className='px-4 text-center'>
+													<td align='center'>
 														<Whisper
 															placement='leftStart'
 															trigger={"click"}

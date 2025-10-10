@@ -250,34 +250,35 @@ const UserList = ({ mode }) => {
 									</div>
 								</div>
 							</div>
+
 							{/* Table start */}
 							<div className='overflow-x-auto list__table'>
 								<table className='min-w-full bg-white' id='table' ref={tableRef}>
 									<thead className='bg-gray-100 list__table__head'>
 										<tr>
-											<th className='py-2 border-b'>
+											<td align='center'>
 												<input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
-											</th>
-											<td className='py-2 px-4 border-b '>Name</td>
-											<th className='py-2 px-4 border-b '>Role</th>
-											<th className='py-2 px-4 border-b '>Contact</th>
-											<th className='py-2 px-4 border-b '>Designation</th>
-											<th className='py-2 px-4 border-b w-[100px]'>Action</th>
+											</td>
+											<td>Name</td>
+											<td>Role</td>
+											<td>Contact</td>
+											<td>Designation</td>
+											<td align='center'>Action</td>
 										</tr>
 									</thead>
 									<tbody>
 										{
 											data.map((d, i) => {
 												return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-													<td className='py-2 border-b'>
+													<td align='center'>
 														<input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
 													</td>
-													<td className='px-4 border-b'>
+													<td>
 														{d.name}
 													</td>
-													<td className='px-4 border-b' align='center'>{d.role}</td>
-													<td className='px-4 border-b' align='center'>{d.contact}</td>
-													<td className='px-4 border-b' align='center'>{d.designation}</td>
+													<td>{d.role}</td>
+													<td>{d.contact}</td>
+													<td>{d.designation}</td>
 
 													<td className='px-4 text-center'>
 														<Whisper

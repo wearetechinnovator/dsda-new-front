@@ -24,14 +24,14 @@ const BedAvailablity = () => {
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
         return data && data.map(({ hotel_name, hotel_zone_id, hotel_sector_id,
-            hotel_block_id, hotel_police_station_id, hotel_district_id, hotel_total_bed}, _) => ({
+            hotel_block_id, hotel_police_station_id, hotel_district_id, hotel_total_bed }, _) => ({
                 "Hotel Name": hotel_name,
                 Zone: hotel_zone_id?.name,
                 Sector: hotel_sector_id?.name,
                 Block: hotel_block_id?.name || "--",
                 PoliceStation: hotel_police_station_id?.name || "--",
                 District: hotel_district_id?.name || "--",
-                "Total Bed":hotel_total_bed || "--"
+                "Total Bed": hotel_total_bed || "--"
             }));
     }, [data]);
     const [loading, setLoading] = useState(true);
@@ -45,7 +45,8 @@ const BedAvailablity = () => {
             const data = {
                 token: Cookies.get("token"),
                 page: activePage,
-                limit: dataLimit
+                limit: dataLimit,
+                occupied: true // Get Occupied field also;
             }
             setFilterState("bed-availablity", dataLimit, activePage);
             const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
@@ -82,7 +83,8 @@ const BedAvailablity = () => {
             try {
                 const data = {
                     token: Cookies.get("token"),
-                    search: txt
+                    search: txt,
+                    occupied: true // Get Occupied field also;
                 }
                 const url = process.env.REACT_APP_MASTER_API + `/${model}/get`;
                 const req = await fetch(url, {
@@ -131,14 +133,20 @@ const BedAvailablity = () => {
                 <SideNav />
                 <Tooltip id='itemTooltip' />
                 <div className='content__body'>
-                    <div className={`add_new_compnent`}>
+                    <div className='add_new_compnent border rounded mb-4'>
                         <div className='flex justify-between items-center'>
                             <div className='flex flex-col'>
                                 <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                    <option value={5}>5</option>
                                     <option value={10}>10</option>
-                                    <option value={25}>25</option>
                                     <option value={50}>50</option>
                                     <option value={100}>100</option>
+                                    <option value={500}>500</option>
+                                    <option value={1000}>1000</option>
+                                    <option value={5000}>5000</option>
+                                    <option value={10000}>10000</option>
+                                    <option value={50000}>50000</option>
+                                    <option value={totalData}>All</option>
                                 </select>
                             </div>
                             <div className='flex items-center gap-2'>
@@ -179,7 +187,7 @@ const BedAvailablity = () => {
                         </div>
 
                         <div id='itemFilter' className='mt-5 w-full border-t pt-2'>
-                            <div className='w-full mt-3 text-[13px]'>
+                            <div className='w-full mt-3 text-[13px] flex items-center gap-4'>
                                 <div className='w-full'>
                                     <p className='mb-1'>Hotel List</p>
                                     <SelectPicker
@@ -200,59 +208,77 @@ const BedAvailablity = () => {
                                         onSearch={(serachTxt) => searchTableDatabase(serachTxt, "hotel")}
                                     />
                                 </div>
+                                <div className="w-full">
+                                    <p className='mb-1'>Status</p>
+                                    <select className='' value={"all"}>
+                                        <option value="total">Total</option>
+                                        <option value="occupied">Occupied</option>
+                                        <option value="vacant">Vacant</option>
+                                        <option value="extra_occupancy">Extra Occupancy</option>
+                                        <option value="all">All</option>
+                                    </select>
+                                </div>
                             </div>
                             <div className='form__btn__grp filter'>
-                                <button className='save__btn' onClick={()=>{
-                                    searchTableDatabase(selectedHotel, "hotel")
-                                }}>
-                                    <Icons.SEARCH />
-                                    Search
-                                </button>
-                                <button className='reset__btn' onClick={()=>{
+                                <button className='reset__btn' onClick={() => {
                                     get();
                                     setSelectedHotel('');
                                 }}>
                                     <Icons.RESET />
                                     Reset
                                 </button>
+                                <button className='save__btn' onClick={() => {
+                                    searchTableDatabase(selectedHotel, "hotel")
+                                }}>
+                                    <Icons.SEARCH />
+                                    Search
+                                </button>
                             </div>
                         </div>
                     </div>
                     {!loading ?
-                        <div className='content__body__main'>
+                        <div className='content__body__main '>
                             {/* Table start */}
-                            <div className='overflow-x-auto list__table'>
+                            <div className='overflow-x-auto list__table list__table__checkin'>
                                 <table className='min-w-full bg-white' id='ReportTable' ref={tableRef}>
                                     <thead className='bg-gray-100 list__table__head'>
                                         <tr>
-                                            <th className='py-2 px-4 border-b '>SL No.</th>
-                                            <th className='py-2 px-4 border-b '>Hotel Name</th>
-                                            <th className='py-2 px-4 border-b'>Zone</th>
-                                            <th className='py-2 px-4 border-b '>Sector</th>
-                                            <th className='py-2 px-4 border-b'>Block</th>
-                                            <th className='py-2 px-4 border-b'>Police Station</th>
-                                            <th className='py-2 px-4 border-b'>Dictrict</th>
-                                            <th className='py-2 px-4 border-b'>Total Bed</th>
-                                            <th className='py-2 px-4 border-b'>Occupied Bed</th>
-                                            <th className='py-2 px-4 border-b'>Vacant Bed</th>
-                                            <th className='py-2 px-4 border-b'>Extra Occupied Bed</th>
+                                            <td align='center'>SL No.</td>
+                                            <td>Hotel Name</td>
+                                            <td>Zone</td>
+                                            <td>Sector</td>
+                                            <td>Block</td>
+                                            <td>Police Station</td>
+                                            <td>Dictrict</td>
+                                            <td>Total Bed</td>
+                                            <td>Occupied Bed</td>
+                                            <td>Vacant Bed</td>
+                                            <td>Extra Occupied Bed</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
-                                            data.map((d, i) => {
+                                            data?.map((d, i) => {
                                                 return <tr key={i}>
-                                                    <td className='px-4 border-b'>{i + 1}</td>
-                                                    <td className='px-4 border-b'>{d.hotel_name}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_zone_id?.name}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_sector_id?.name}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_block_id?.name || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_police_station_id?.name || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_district_id?.name || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_total_bed || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_email || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_reception_phone || "--"}</td>
-                                                    <td className='px-4 border-b'>{d?.hotel_proprietor_phone || "--"}</td>
+                                                    <td align='center'>{i + 1}</td>
+                                                    <td>{d.hotel_name}</td>
+                                                    <td>{d.hotel_zone_id?.name}</td>
+                                                    <td>{d.hotel_sector_id?.name}</td>
+                                                    <td>{d.hotel_block_id?.name}</td>
+                                                    <td>{d.hotel_police_station_id?.name}</td>
+                                                    <td>{d.hotel_district_id?.name}</td>
+                                                    <td>{d.hotel_total_bed}</td>
+                                                    <td>{d.hotel_total_occupied}</td>
+                                                    <td>{
+                                                        parseInt(d.hotel_total_bed) - parseInt(d.hotel_total_occupied) < 1 ?
+                                                            0 :
+                                                            parseInt(d.hotel_total_bed) - parseInt(d.hotel_total_occupied)
+                                                    }</td>
+                                                    <td>{
+                                                        parseInt(d.hotel_total_bed) - parseInt(d.hotel_total_occupied) < 1 ?
+                                                            parseInt(d.hotel_total_occupied) - parseInt(d.hotel_total_bed) :
+                                                            0
+                                                    }</td>
                                                 </tr>
                                             })
                                         }
