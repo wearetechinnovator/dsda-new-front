@@ -129,7 +129,7 @@ const SideNav = () => {
             </div>
 
             <ul className='sidebar__sub__menu sidebar__sub__menu__tourist'>
-              <li><Link to="/admin/report/tourist-data/footfall-hotel">Data Wise</Link></li>
+              <li><Link to="/admin/report/tourist-data/footfall-hotel">Date Wise</Link></li>
               <li><Link to="/admin/report/tourist-data/footfall-hotel/today">Today Hotel Wise</Link></li>
               <li><Link to="/admin/report/tourist-data/footfall">Overall</Link></li>
               <li><Link to="/admin/report/tourist-data/bed/extra-occupied">Extra Occupancy</Link></li>

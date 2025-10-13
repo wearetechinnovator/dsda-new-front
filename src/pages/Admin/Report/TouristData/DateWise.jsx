@@ -23,24 +23,8 @@ const DateWise = () => {
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
         return data && data?.map((h, _) => ({
-            Name: h.hotel_name,
-            Zone: h.hotel_zone_id?.name,
-            Sector: h.hotel_sector_id?.name,
-            Proprietor: h.hotel_block_id?.name,
-            PoliceStation: h.hotel_police_station_id?.name,
-            District: h.hotel_district_id?.name,
-            Address: h.hotel_address,
-            Email: h.hotel_email,
-            "Reception Phone": h.hotel_reception_phone,
-            "Proprietor Name": h.hotel_proprietor_name,
-            "Proprietor Phone": h.hotel_proprietor_phone,
-            "Manager Name": h.hotel_manager_name,
-            "Manager Phone": h.hotel_proprietor_phone,
-            "Alternative Phone": "",
-            "Total Room": h.hotel_total_room,
-            "Total Bed": h.hotel_total_bed,
-            "Restaurant": h.hotel_has_restaurant === "1" ? "Available" : "Not Available",
-            "Confarence Hall": h.hotel_has_conference_hall === "1" ? "Available" : "Not Available"
+            Date: h.hotel_name,
+            "Total Guest(s) Enrolled": ''
         }));
     }, [data]);
     const [loading, setLoading] = useState(true);
@@ -49,26 +33,20 @@ const DateWise = () => {
     const [selectedFilters, setSelectedFilters] = useState({
         hotel: '', zone: '', block: '', district: '', policeStation: '', sector: ''
     })
+    const [enrolledData, setEnrolledData] = useState([]);
 
 
 
 
-    // :::::::::::::::::::::: [GET ALL HOTEL] ::::::::::::::::::::
-    const get = async () => {
+    const getEnrolled = async () => {
         try {
             const data = {
                 token: Cookies.get("token"),
                 page: activePage,
                 limit: dataLimit,
-                zone: selectedFilters.zone,
-                block: selectedFilters.block,
-                sector: selectedFilters.sector,
-                district: selectedFilters.district,
-                policeStation: selectedFilters.policeStation,
-                hotelId: selectedHotel
             }
             setFilterState("dateWise-touristdata", dataLimit, activePage);
-            const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
+            const url = process.env.REACT_APP_BOOKING_API + `/check-in/tourist-data/footfall`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -77,8 +55,9 @@ const DateWise = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
+            console.log(res.data)
             setTotalData(res.total)
-            setData([...res.data])
+            setEnrolledData([...res.data])
             setLoading(false);
 
         } catch (error) {
@@ -86,24 +65,28 @@ const DateWise = () => {
         }
     }
     useEffect(() => {
-        get();
+        getEnrolled();
     }, [dataLimit, activePage])
+
 
     // ::::::::::::::::::: [ ALL SEARCH FILTER CODE HERE ] :::::::::::::
     const searchTableDatabase = (txt, model) => {
+        if (txt === "") return;
         if (timeRef.current) clearTimeout(timeRef.current);
 
         timeRef.current = setTimeout(async () => {
-            if (!txt && model === "hotel") {
-                get();
-                return;
+            let data = {
+                token: Cookies.get("token"),
+                search: txt
+            }
+
+            if (!txt) {
+                data = {
+                    token: Cookies.get("token")
+                }
             }
 
             try {
-                const data = {
-                    token: Cookies.get("token"),
-                    search: txt
-                }
                 const url = process.env.REACT_APP_MASTER_API + `/${model}/get`;
                 const req = await fetch(url, {
                     method: "POST",
@@ -113,7 +96,8 @@ const DateWise = () => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
-                if (model === "hotel") {
+
+                if (req.status === 200) {
                     setTotalData(res.length)
                     setData([...res])
                 }
@@ -145,7 +129,7 @@ const DateWise = () => {
 
 
     // handle filter
-    const handleFilter = async () => get();
+    const handleFilter = async () => getEnrolled();
 
     // Reset filter form
     const handleResetFilter = async () => window.location.reload();
@@ -179,7 +163,7 @@ const DateWise = () => {
                                 <div className='flex w-full flex-col lg:w-[300px]'>
                                     <input type='search'
                                         placeholder='Search...'
-                                        onChange={(e) => searchTableDatabase(e.target.value, "hotel")}
+                                        onChange={(e) => searchTableDatabase(e.target.value)}
                                         className='p-[6px]'
                                     />
                                 </div>
@@ -232,7 +216,7 @@ const DateWise = () => {
                                         searchable={true}
                                         cleanable={true}
                                         placement='bottomEnd'
-                                        onSearch={(serachTxt) => searchTableDatabase(serachTxt, "hotel")}
+                                        onSearch={(serachTxt) => searchTableDatabase(serachTxt)}
                                     />
                                 </div>
                                 <div className='w-full'>
@@ -271,11 +255,11 @@ const DateWise = () => {
                                 </thead>
                                 <tbody>
                                     {
-                                        data?.map((d, i) => {
+                                        enrolledData?.map((d, i) => {
                                             return <tr key={i}>
                                                 <td align='center'>{i + 1}</td>
-                                                <td>{d.hotel_name}</td>
-                                                <td>{d?.hotel_zone_id?.name}</td>
+                                                <td>{d._id.split(" ")[0]}</td>
+                                                <td>{d.totalGuests}</td>
                                             </tr>
                                         })
                                     }
@@ -283,7 +267,7 @@ const DateWise = () => {
                             </table>
                         </div>
                         <div className='paginate__parent'>
-                            <p>Showing {data.length} of {totalData} entries</p>
+                            <p>Showing {enrolledData.length} of {totalData} entries</p>
                             <Pagination
                                 activePage={activePage}
                                 totalData={totalData}
