@@ -1,54 +1,73 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
-import Nav from '../../../components/Admin/Nav';
-import SideNav from '../../../components/Admin/SideNav';
-import useExportTable from '../../../hooks/useExportTable';
-import Cookies from 'js-cookie';
-import downloadPdf from '../../../helper/downloadPdf';
-import DataShimmer from '../../../components/Admin/DataShimmer';
-import { Tooltip } from 'react-tooltip';
-import { Popover, SelectPicker, Whisper } from 'rsuite';
-import { Icons } from '../../../helper/icons';
-import Pagination from '../../../components/Admin/Pagination';
-import useSetTableFilter from '../../../hooks/useSetTableFilter';
+import SideNav from "../../../../components/Admin/SideNav";
+import Nav from "../../../../components/Admin/Nav";
+import { useRef, useState, useMemo, useEffect } from "react";
+import useExportTable from '../../../../hooks/useExportTable';
+import useSetTableFilter from '../../../../hooks/useSetTableFilter';
+import { Icons } from "../../../../helper/icons";
+import { Popover, SelectPicker, Whisper } from "rsuite";
+import Cookies from "js-cookie";
+import downloadPdf from '../../../../helper/downloadPdf';
+import Pagination from '../../../../components/Admin/Pagination';
 
 
 
-const BedAvailablity = () => {
+
+const ExtraOccupancy = () => {
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
     const { getFilterState, setFilterState } = useSetTableFilter();
-    const savedFilter = getFilterState("bed-availablity");
+    const savedFilter = getFilterState("dateWise-touristdata");
     const [activePage, setActivePage] = useState(savedFilter?.activePage || 1);
     const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
     const [totalData, setTotalData] = useState()
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return data && data.map(({ hotel_name, hotel_zone_id, hotel_sector_id,
-            hotel_block_id, hotel_police_station_id, hotel_district_id, hotel_total_bed }, _) => ({
-                "Hotel Name": hotel_name,
-                Zone: hotel_zone_id?.name,
-                Sector: hotel_sector_id?.name,
-                Block: hotel_block_id?.name || "--",
-                PoliceStation: hotel_police_station_id?.name || "--",
-                District: hotel_district_id?.name || "--",
-                "Total Bed": hotel_total_bed || "--"
-            }));
+        return data && data?.map((h, _) => ({
+            Name: h.hotel_name,
+            Zone: h.hotel_zone_id?.name,
+            Sector: h.hotel_sector_id?.name,
+            Proprietor: h.hotel_block_id?.name,
+            PoliceStation: h.hotel_police_station_id?.name,
+            District: h.hotel_district_id?.name,
+            Address: h.hotel_address,
+            Email: h.hotel_email,
+            "Reception Phone": h.hotel_reception_phone,
+            "Proprietor Name": h.hotel_proprietor_name,
+            "Proprietor Phone": h.hotel_proprietor_phone,
+            "Manager Name": h.hotel_manager_name,
+            "Manager Phone": h.hotel_proprietor_phone,
+            "Alternative Phone": "",
+            "Total Room": h.hotel_total_room,
+            "Total Bed": h.hotel_total_bed,
+            "Restaurant": h.hotel_has_restaurant === "1" ? "Available" : "Not Available",
+            "Confarence Hall": h.hotel_has_conference_hall === "1" ? "Available" : "Not Available"
+        }));
     }, [data]);
     const [loading, setLoading] = useState(true);
     const timeRef = useRef(null);
     const [selectedHotel, setSelectedHotel] = useState(null);
+    const [selectedFilters, setSelectedFilters] = useState({
+        hotel: '', zone: '', block: '', district: '', policeStation: '', sector: ''
+    })
 
 
-    // :::::::::::::::::::::: [GET ALL HOTEL] :::::::::::::::::;
+
+
+    // :::::::::::::::::::::: [GET ALL HOTEL] ::::::::::::::::::::
     const get = async () => {
         try {
             const data = {
                 token: Cookies.get("token"),
                 page: activePage,
                 limit: dataLimit,
-                occupied: true // Get Occupied field also;
+                zone: selectedFilters.zone,
+                block: selectedFilters.block,
+                sector: selectedFilters.sector,
+                district: selectedFilters.district,
+                policeStation: selectedFilters.policeStation,
+                hotelId: selectedHotel
             }
-            setFilterState("bed-availablity", dataLimit, activePage);
+            setFilterState("dateWise-touristdata", dataLimit, activePage);
             const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
             const req = await fetch(url, {
                 method: "POST",
@@ -70,7 +89,7 @@ const BedAvailablity = () => {
         get();
     }, [dataLimit, activePage])
 
-    // ::::::::::::::::::::::::::: [ ALL SEARCH FILTER CODE HERE ] ::::::::::::::::::::::::::
+    // ::::::::::::::::::: [ ALL SEARCH FILTER CODE HERE ] :::::::::::::
     const searchTableDatabase = (txt, model) => {
         if (timeRef.current) clearTimeout(timeRef.current);
 
@@ -83,8 +102,7 @@ const BedAvailablity = () => {
             try {
                 const data = {
                     token: Cookies.get("token"),
-                    search: txt,
-                    occupied: true // Get Occupied field also;
+                    search: txt
                 }
                 const url = process.env.REACT_APP_MASTER_API + `/${model}/get`;
                 const req = await fetch(url, {
@@ -104,36 +122,44 @@ const BedAvailablity = () => {
                 console.log(error)
             }
 
-        }, 150)
+        }, 300)
 
     }
 
-
+    // Export table
     const exportTable = async (whichType) => {
         if (whichType === "copy") {
-            copyTable("ReportTable"); // Pass tableid
+            copyTable("itemTable"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'HotelReport-list.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'item-list.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Hotel Report"); // Pass table ref and title
+            printTable(tableRef, "Item List"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Hotel Report', exportData);
+            let document = exportPdf('Item List', exportData);
             downloadPdf(document)
         }
     }
 
 
+    // handle filter
+    const handleFilter = async () => get();
+
+    // Reset filter form
+    const handleResetFilter = async () => window.location.reload();
+
+
     return (
         <>
-            <Nav title={"Hotel Report Table"} />
+            <Nav title={"Footfall Stats"} />
             <main id='main'>
                 <SideNav />
-                <Tooltip id='itemTooltip' />
                 <div className='content__body'>
-                    <div className='add_new_compnent border rounded mb-4'>
+
+                    {/* Option Bar */}
+                    <div className='add_new_compnent border rounded'>
                         <div className='flex justify-between items-center'>
                             <div className='flex flex-col'>
                                 <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
@@ -151,7 +177,7 @@ const BedAvailablity = () => {
                             </div>
                             <div className='flex items-center gap-2'>
                                 <div className='flex w-full flex-col lg:w-[300px]'>
-                                    <input type='text'
+                                    <input type='search'
                                         placeholder='Search...'
                                         onChange={(e) => searchTableDatabase(e.target.value, "hotel")}
                                         className='p-[6px]'
@@ -187,7 +213,8 @@ const BedAvailablity = () => {
                         </div>
 
                         <div id='itemFilter' className='mt-5 w-full border-t pt-2'>
-                            <div className='w-full mt-3 text-[13px] flex items-center gap-4'>
+                            <p className='font-bold'>Filter</p>
+                            <div className='w-full mt-3 text-[13px]'>
                                 <div className='w-full'>
                                     <p className='mb-1'>Hotel List</p>
                                     <SelectPicker
@@ -195,7 +222,7 @@ const BedAvailablity = () => {
                                         data={[
                                             ...data.map((item) => ({
                                                 label: item.hotel_name,
-                                                value: item.hotel_name
+                                                value: item._id
                                             }))
                                         ]}
                                         style={{ width: '100%' }}
@@ -208,99 +235,67 @@ const BedAvailablity = () => {
                                         onSearch={(serachTxt) => searchTableDatabase(serachTxt, "hotel")}
                                     />
                                 </div>
-                                {/* <div className="w-full">
-                                    <p className='mb-1'>Status</p>
-                                    <select className='' value={"all"}>
-                                        <option value="total">Total</option>
-                                        <option value="occupied">Occupied</option>
-                                        <option value="vacant">Vacant</option>
-                                        <option value="extra_occupancy">Extra Occupancy</option>
-                                        <option value="all">All</option>
-                                    </select>
-                                </div> */}
                             </div>
                             <div className='form__btn__grp filter'>
-                                <button className='reset__btn' onClick={() => {
-                                    get();
-                                    setSelectedHotel('');
-                                }}>
+                                <button className='reset__btn' onClick={handleResetFilter}>
                                     <Icons.RESET />
                                     Reset
                                 </button>
-                                <button className='save__btn' onClick={() => {
-                                    searchTableDatabase(selectedHotel, "hotel")
-                                }}>
+                                <button className='save__btn' onClick={handleFilter}>
                                     <Icons.SEARCH />
                                     Search
                                 </button>
                             </div>
                         </div>
                     </div>
-                    {!loading ?
-                        <div className='content__body__main '>
-                            {/* Table start */}
-                            <div className='overflow-x-auto list__table list__table__checkin'>
-                                <table className='min-w-full bg-white' id='ReportTable' ref={tableRef}>
-                                    <thead className='bg-gray-100 list__table__head'>
-                                        <tr>
-                                            <td align='center'>SL No.</td>
-                                            <td>Hotel Name</td>
-                                            <td>Zone</td>
-                                            <td>Sector</td>
-                                            <td>Block</td>
-                                            <td>Police Station</td>
-                                            <td>Dictrict</td>
-                                            <td>Total Bed</td>
-                                            <td>Occupied Bed</td>
-                                            <td>Vacant Bed</td>
-                                            <td>Extra Occupied Bed</td>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            data?.map((d, i) => {
-                                                return <tr key={i}>
-                                                    <td align='center'>{i + 1}</td>
-                                                    <td>{d.hotel_name}</td>
-                                                    <td>{d.hotel_zone_id?.name}</td>
-                                                    <td>{d.hotel_sector_id?.name}</td>
-                                                    <td>{d.hotel_block_id?.name}</td>
-                                                    <td>{d.hotel_police_station_id?.name}</td>
-                                                    <td>{d.hotel_district_id?.name}</td>
-                                                    <td>{d.hotel_total_bed}</td>
-                                                    <td>{d.hotel_total_occupied}</td>
-                                                    <td>{
-                                                        parseInt(d.hotel_total_bed) - parseInt(d.hotel_total_occupied) < 1 ?
-                                                            0 :
-                                                            parseInt(d.hotel_total_bed) - parseInt(d.hotel_total_occupied)
-                                                    }</td>
-                                                    <td>{
-                                                        parseInt(d.hotel_total_bed) - parseInt(d.hotel_total_occupied) < 1 ?
-                                                            parseInt(d.hotel_total_occupied) - parseInt(d.hotel_total_bed) :
-                                                            0
-                                                    }</td>
-                                                </tr>
-                                            })
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div className='paginate__parent'>
-                                <p>Showing {data.length} of {totalData} entries</p>
-                                <Pagination
-                                    activePage={activePage}
-                                    totalData={totalData}
-                                    dataLimit={dataLimit}
-                                    setActivePage={setActivePage}
-                                />
-                            </div>
+
+                    {/* Table */}
+                    <div className='content__body__main mt-4'>
+                        {/* Table start */}
+                        <div className='overflow-x-auto list__table list__table__checkin'>
+                            <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
+                                <thead className='bg-gray-100 list__table__head'>
+                                    <tr>
+                                        <td className='w-[5%]' align='center'>SL No.</td>
+                                        <td className='w-[15%]'>Hotel Name</td>
+                                        <td className=''>Zone</td>
+                                        <td>Sector</td>
+                                        <td>Block</td>
+                                        <td>District</td>
+                                        <td>Police Station</td>
+                                        <td>Total Bed</td>
+                                        <td>Occupied Bed</td>
+                                        <td>Vacant Bed</td>
+                                        <td>Extra Occupied Bed</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        data?.map((d, i) => {
+                                            return <tr key={i}>
+                                                <td align='center'>{i + 1}</td>
+                                                <td>{d.hotel_name}</td>
+                                                <td>{d?.hotel_zone_id?.name}</td>
+                                            </tr>
+                                        })
+                                    }
+                                </tbody>
+                            </table>
                         </div>
-                        : <DataShimmer />
-                    }
+                        <div className='paginate__parent'>
+                            <p>Showing {data.length} of {totalData} entries</p>
+                            <Pagination
+                                activePage={activePage}
+                                totalData={totalData}
+                                dataLimit={dataLimit}
+                                setActivePage={setActivePage}
+                            />
+                        </div>
+                    </div>
                 </div>
             </main>
         </>
     )
 }
 
-export default BedAvailablity;
+export default ExtraOccupancy;

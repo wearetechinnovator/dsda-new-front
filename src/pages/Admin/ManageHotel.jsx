@@ -42,14 +42,10 @@ const ManageHotel = () => {
     }, [])
 
     const searchTableDatabase = (txt) => {
+        if (txt === "") return;
         if (timeRef.current) clearTimeout(timeRef.current);
-        
-        timeRef.current = setTimeout(async () => {
-            if (!txt) {
-                get();
-                return;
-            }
 
+        timeRef.current = setTimeout(async () => {
             try {
                 const data = {
                     token: Cookies.get("token"),
@@ -69,7 +65,7 @@ const ManageHotel = () => {
                 console.log(error)
             }
 
-        }, 1000)
+        }, 350)
 
     }
 
@@ -133,6 +129,7 @@ const ManageHotel = () => {
                             cleanable={true}
                             placement='bottomEnd'
                             onSearch={(serachTxt) => searchTableDatabase(serachTxt)}
+                            onClean={get}
                         />
                         <button
                             onClick={loginHotel}

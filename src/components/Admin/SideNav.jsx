@@ -17,7 +17,7 @@ const SideNav = () => {
       <div className="side__nav__links pb-3">
         <div className="side__nav__link__group">
           <ul>
-            <Link  to="/admin/dashboard" data-tooltip-id="sideBarItemToolTip">
+            <Link to="/admin/dashboard" data-tooltip-id="sideBarItemToolTip">
               <li className={`flex items-center ${"/admin/dashboard" === activePath ? 'active__link' : ''}`} >
                 <span className='mr-3'><HiOutlineHome /></span>
                 <span>Dashboard</span>
@@ -90,7 +90,7 @@ const SideNav = () => {
             </li>
           </Link>
 
-          <li className={`drp__dwn__menu flex flex-col w-full items-center  ${activePath.search("/admin/bed") >= 0 ? 'active__link' : ''}`}>
+          {/* <li className={`drp__dwn__menu flex flex-col w-full items-center  ${activePath.search("/admin/bed") >= 0 ? 'active__link' : ''}`}>
             <div className='flex cursor-pointer w-full relative'
               onClick={() => {
                 document.querySelector(".sidebar__sub__menu__bed")
@@ -107,7 +107,14 @@ const SideNav = () => {
               <li><Link to="/admin/report/bed-availablity">Vacant</Link></li>
               <li><Link to="/admin/report/bed-availablity">Extra Occupancy</Link></li>
             </ul>
-          </li>
+          </li> */}
+          <Link to={"/admin/report/bed-availablity"} data-tooltip-id="sideBarItemToolTip">
+            <li className={`flex  items-center  ${activePath.search("/admin/bed") >= 0 ? 'active__link' : ''}`}>
+              <span className='mr-3'><Icons.BED /></span>
+              <span>Bed Availability</span>
+              <span className='absolute right-0'><Icons.DROPDOWN /></span>
+            </li>
+          </Link>
 
           <li className={`drp__dwn__menu flex flex-col w-full items-center 
             ${activePath.search("/admin/tourist") >= 0 ? 'active__link' : ''}`}>
@@ -122,10 +129,10 @@ const SideNav = () => {
             </div>
 
             <ul className='sidebar__sub__menu sidebar__sub__menu__tourist'>
-              <li><Link to="/admin/tourist/data-wise">Data Wise</Link></li>
-              <li><Link to="/admin/tourist/today-hotel-wise">Today Hotel Wise</Link></li>
-              <li><Link to="/admin/tourist/overall">Overall</Link></li>
-              <li><Link to="/admin/tourist/details">Tourist Details</Link></li>
+              <li><Link to="/admin/report/tourist-data/footfall-hotel">Data Wise</Link></li>
+              <li><Link to="/admin/report/tourist-data/footfall-hotel/today">Today Hotel Wise</Link></li>
+              <li><Link to="/admin/report/tourist-data/footfall">Overall</Link></li>
+              <li><Link to="/admin/report/tourist-data/bed/extra-occupied">Extra Occupancy</Link></li>
             </ul>
           </li>
 

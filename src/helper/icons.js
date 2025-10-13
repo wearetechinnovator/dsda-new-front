@@ -39,12 +39,20 @@ import { MdFileDownload } from "react-icons/md";
 import { FaStar } from "react-icons/fa6";
 import { FaUserTie } from "react-icons/fa";
 import { FiTable } from "react-icons/fi";
+import { FaChildReaching } from "react-icons/fa6";
+import { IoIosMale } from "react-icons/io";
+import { IoFemaleOutline } from "react-icons/io5";
+import { FaTransgender } from "react-icons/fa6";
+import { FaUser } from "react-icons/fa6";
 
 
 
 
 
 export const Icons = {
+  GENDER_MALE: IoIosMale,
+  GENDER_FEMALE: IoFemaleOutline,
+  GENDER_TRANS: FaTransgender,
   RESET: HiOutlineRefresh,
   SEARCH: LuSearch,
   ADD: IoIosAdd,
@@ -96,5 +104,8 @@ export const Icons = {
   STAR: FaStar,
   ADMIN_USER: FaUserTie,
   TABLE: FiTable,
+  CHILD: FaChildReaching,
+  USER_FILL: FaUser
+  
 };
 

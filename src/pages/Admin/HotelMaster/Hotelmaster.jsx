@@ -156,6 +156,10 @@ const Hotelmaster = ({ mode }) => {
                 <div className='content__body'>
                     {
                         !loading ? <div className='content__body__main'>
+                            <div className='w-full flex gap-1 items-center border-b pb-1'>
+                                <Icons.HOTEL/>
+                                <p className='font-semibold uppercase'>Hotel Table</p>
+                            </div>
                             <div className={`add_new_compnent`}>
                                 <div className='flex justify-between items-center'>
                                     <div className='flex flex-col'>
@@ -276,7 +280,7 @@ const Hotelmaster = ({ mode }) => {
                                     <tbody>
                                         {
                                             data.map((d, i) => {
-                                                return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
+                                                return <tr key={i} className='hover:bg-gray-100'>
                                                     <td align='center'>
                                                         <input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
                                                     </td>

@@ -6,14 +6,19 @@ import Cookies from 'js-cookie';
 import downloadPdf from '../../helper/downloadPdf';
 import DataShimmer from '../../components/Admin/DataShimmer';
 import { Tooltip } from 'react-tooltip';
-import { Popover, Whisper } from 'rsuite';
+import { Placeholder, Popover, Whisper } from 'rsuite';
 import { Icons } from '../../helper/icons';
 import Pagination from '../../components/Admin/Pagination';
 import useSetTableFilter from '../../hooks/useSetTableFilter';
+import { BsBuildings } from 'react-icons/bs';
+import { FaBed, FaRupeeSign, FaUsers } from 'react-icons/fa';
+import { HiUserAdd } from 'react-icons/hi';
+import useMyToaster from '../../hooks/useMyToaster';
 
 
 
 const Dashboard = () => {
+  const toast = useMyToaster();
   const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
   const { getFilterState, setFilterState } = useSetTableFilter();
   const savedFilter = getFilterState("dashboard");
@@ -35,6 +40,14 @@ const Dashboard = () => {
   }, [data]);
   const [loading, setLoading] = useState(true);
   const timeRef = useRef(null);
+  const [statsData, setStatsData] = useState({
+    allHotels: '', totalOperativeHotel: '', totalInOperativeHotel: '', dayWiseAcitveHotel: '',
+    todayActive: '', totalBeds: '', occupiedBeds: '', vacantsBeds: '', extraOccupency: '', toDayFtFls: '',
+    tillTodayFtFls: '', toDayChild: '', tillTodyChild: '', toDayAdult: '', tillTodayAdult: '',
+    toDayAmicharges: '', totalAmiCharges: '', dueAmiCharge: '', amiChargePaid: '', tillTodayMale: '',
+    tillTodayFemale: '', tillTodayOtherGender: '', tillTodayIndian: '', tillTodayForeigner: ''
+  })
+  const [statsLoading, setStatsLoading] = useState(false);
 
 
 
@@ -112,6 +125,52 @@ const Dashboard = () => {
   }
 
 
+
+  // ================== [Get Statictics] =============
+  useEffect(() => {
+    setStatsLoading(true);
+    (async () => {
+      const [resAdmin, resHotel] = await Promise.all([
+        fetch(process.env.REACT_APP_MASTER_API + "/admin/statictics", {
+          method: "post"
+        }).then(r => r.json()),
+        
+        fetch(process.env.REACT_APP_BOOKING_API + "/check-in/get-admin-stats",{
+          method:"post"
+        }).then(r => r.json())
+      ]);
+
+      setStatsData(prev => ({
+        ...prev,
+        allHotels: resAdmin.total_hotel,
+        totalOperativeHotel: resAdmin.total_operative_hotel,
+        totalInOperativeHotel: parseInt(resAdmin.total_hotel) - parseInt(resAdmin.total_operative_hotel),
+        totalBeds: resAdmin.total_beds,
+        todayActive: resHotel.active_hotel,
+        occupiedBeds: resHotel.total_occupied,
+        vacantsBeds: Math.max(0, parseInt(resAdmin.total_beds) - parseInt(resHotel.total_occupied)),
+        extraOccupency: Math.max(0, parseInt(resHotel.total_occupied) - parseInt(resAdmin.total_beds)),
+        toDayFtFls: resHotel.today_footfall,
+        tillTodayFtFls: resHotel.total_footfall,
+        toDayChild: resHotel.today_child,
+        tillTodyChild: resHotel.total_child,
+        toDayAdult: resHotel.today_adult,
+        tillTodayAdult: resHotel.total_adult,
+        toDayAmicharges: resHotel.today_aminity_charge,
+        totalAmiCharges: resHotel.total_aminity_charge,
+        tillTodayMale: resHotel.total_male,
+        tillTodayFemale: resHotel.total_female,
+        tillTodayOtherGender: resHotel.total_other_gender,
+        tillTodayIndian: resHotel.total_indian,
+        tillTodayForeigner: resHotel.total_foreigner
+      }));
+
+      setStatsLoading(false);
+    })();
+  }, []);
+
+
+
   const selectAll = (e) => {
     if (e.target.checked) {
       setSelected(data.map((item, _) => item._id));
@@ -155,8 +214,208 @@ const Dashboard = () => {
         <SideNav />
         <Tooltip id='itemTooltip' />
         <div className='content__body'>
+
+          {/* Cards  */}
           {
-            !loading ? <div className='content__body__main'>
+            statsLoading ?
+              <div className='w-full'>
+                <div className='total__data_cards dashboard'>
+                  {
+                    Array.from({ length: 24 }).map((c, i) => {
+                      return <Placeholder.Graph active height={90} className='shadow-lg'>
+                        <Placeholder.Paragraph active />
+                      </Placeholder.Graph>
+                    })
+                  }
+                </div>
+              </div>
+              : <div className='w-full'>
+                <div className="total__data_cards dashboard">
+                  <div className='total__card blue__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.allHotels}</p>
+                      <p>Total Hotels</p>
+                    </div>
+                    <BsBuildings className='card__icon' />
+                  </div>
+                  <div className='total__card blue__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.totalOperativeHotel}</p>
+                      <p>Operative Hotels</p>
+                    </div>
+                    <BsBuildings className='card__icon' />
+                  </div>
+                  <div className='total__card blue__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.totalInOperativeHotel}</p>
+                      <p>Inoperative Hotels</p>
+                    </div>
+                    <BsBuildings className='card__icon' />
+                  </div>
+                  <div className='total__card blue__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.todayActive}</p>
+                      <p>Day Wise Active Hotels</p>
+                    </div>
+                    <BsBuildings className='card__icon' />
+                  </div>
+                  <div className='total__card blue__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.todayActive}</p>
+                      <p>Today Active Hotels</p>
+                    </div>
+                    <BsBuildings className='card__icon' />
+                  </div>
+                  <div className='total__card green__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.totalBeds}</p>
+                      <p>Total Beds</p>
+                    </div>
+                    <FaBed className='card__icon' />
+                  </div>
+
+                  <div className='total__card green__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.occupiedBeds}</p>
+                      <p>Occupied Beds</p>
+                    </div>
+                    <FaBed className='card__icon' />
+                  </div>
+                  <div className='total__card green__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.vacantsBeds}</p>
+                      <p>Vacant Beds</p>
+                    </div>
+                    <FaBed className='card__icon' />
+                  </div>
+                  <div className='total__card red__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.extraOccupency}</p>
+                      <p>Extra Occupancy</p>
+                    </div>
+                    <HiUserAdd className='card__icon' />
+                  </div>
+                  <div className='total__card purple__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.toDayFtFls}</p>
+                      <p>Today Footfalls</p>
+                    </div>
+                    <Icons.USERS className='card__icon' />
+                  </div>
+                  <div className='total__card purple__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.tillTodayFtFls}</p>
+                      <p>Till Today Footfalls</p>
+                    </div>
+                    <Icons.USERS className='card__icon' />
+                  </div>
+                  <div className='total__card purple__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.toDayChild}</p>
+                      <p>Today Child</p>
+                    </div>
+                    <Icons.CHILD className='card__icon' />
+                  </div>
+
+                  <div className='total__card purple__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.tillTodyChild}</p>
+                      <p>Till Today Child</p>
+                    </div>
+                    <Icons.CHILD className='card__icon' />
+                  </div>
+                  <div className='total__card purple__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.toDayAdult}</p>
+                      <p>Today Adult</p>
+                    </div>
+                    <Icons.USER_FILL className='card__icon' />
+                  </div>
+                  <div className='total__card purple__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.tillTodayAdult}</p>
+                      <p>Till Today Adult</p>
+                    </div>
+                    <Icons.USER_FILL className='card__icon' />
+                  </div>
+                  <div className='total__card yellow__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.toDayAmicharges}</p>
+                      <p>Today Aminity Charges</p>
+                    </div>
+                    <Icons.RUPES className='card__icon' />
+                  </div>
+                  <div className='total__card yellow__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.totalAmiCharges}</p>
+                      <p>Total Aminity Charges</p>
+                    </div>
+                    <Icons.RUPES className='card__icon' />
+                  </div>
+                  <div className='total__card yellow__grad'>
+                    <div className='total__card__data'>
+                      <p>{0}</p>
+                      <p>Aminity Charges Due</p>
+                    </div>
+                    <Icons.RUPES className='card__icon' />
+                  </div>
+
+                  <div className='total__card yellow__grad'>
+                    <div className='total__card__data'>
+                      <p>{0}</p>
+                      <p>Aminity Charges Paid</p>
+                    </div>
+                    <Icons.RUPES className='card__icon' />
+                  </div>
+                  <div className='total__card green__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.tillTodayMale}</p>
+                      <p>Till Today Male</p>
+                    </div>
+                    <Icons.GENDER_MALE className='card__icon' />
+                  </div>
+                  <div className='total__card green__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.tillTodayFemale}</p>
+                      <p>Till Today Female</p>
+                    </div>
+                    <Icons.GENDER_FEMALE className='card__icon' />
+                  </div>
+                  <div className='total__card green__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.tillTodayOtherGender}</p>
+                      <p>Till Today Other Gender</p>
+                    </div>
+                    <Icons.GENDER_TRANS className='card__icon' />
+                  </div>
+                  <div className='total__card blue__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.tillTodayIndian}</p>
+                      <p>Till Today Indians</p>
+                    </div>
+                    <Icons.USER_FILL className='card__icon' />
+                  </div>
+                  <div className='total__card blue__grad'>
+                    <div className='total__card__data'>
+                      <p>{statsData.tillTodayForeigner}</p>
+                      <p>Till Today Foreigner</p>
+                    </div>
+                    <Icons.USER_FILL className='card__icon' />
+                  </div>
+                </div>
+              </div>
+          }
+
+
+          {/* ============================================================== */}
+          {/* Current Stay In Guest List */}
+          {/* ============================================================== */}
+          {
+            !loading ? <div className='content__body__main mt-4'>
+              <div className='w-full flex gap-1 border-b pb-1'>
+                <Icons.USERS />
+                <p className='font-semibold uppercase'>Current Status</p>
+              </div>
               {/* Option bar */}
               <div className={`add_new_compnent`}>
                 <div className='flex justify-between items-center'>
@@ -235,7 +494,7 @@ const Dashboard = () => {
                   <tbody>
                     {
                       data?.map((d, i) => {
-                        return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
+                        return <tr key={i} className='hover:bg-gray-100'>
                           <td align='center'>
                             <input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
                           </td>
