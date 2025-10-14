@@ -8,80 +8,68 @@ import { Popover, SelectPicker, Whisper } from "rsuite";
 import Cookies from "js-cookie";
 import downloadPdf from '../../../../helper/downloadPdf';
 import Pagination from '../../../../components/Admin/Pagination';
+import DataShimmer from "../../../../components/Admin/DataShimmer";
+import useMyToaster from "../../../../hooks/useMyToaster";
 
 
 
 
 const TodayHotelWise = () => {
+    const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
     const { getFilterState, setFilterState } = useSetTableFilter();
-    const savedFilter = getFilterState("hotel-list");
+    const savedFilter = getFilterState("todayhotel-wise");
     const [activePage, setActivePage] = useState(savedFilter?.activePage || 1);
     const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
     const [totalData, setTotalData] = useState()
+    const [hotelList, setHotelList] = useState([]);
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return data && data?.map((h, _) => ({
-            Name: h.hotel_name,
-            Zone: h.hotel_zone_id?.name,
-            Sector: h.hotel_sector_id?.name,
-            Proprietor: h.hotel_block_id?.name,
-            PoliceStation: h.hotel_police_station_id?.name,
-            District: h.hotel_district_id?.name,
-            Address: h.hotel_address,
-            Email: h.hotel_email,
-            "Reception Phone": h.hotel_reception_phone,
-            "Proprietor Name": h.hotel_proprietor_name,
-            "Proprietor Phone": h.hotel_proprietor_phone,
-            "Manager Name": h.hotel_manager_name,
-            "Manager Phone": h.hotel_proprietor_phone,
-            "Alternative Phone": "",
-            "Total Room": h.hotel_total_room,
-            "Total Bed": h.hotel_total_bed,
-            "Restaurant": h.hotel_has_restaurant === "1" ? "Available" : "Not Available",
-            "Confarence Hall": h.hotel_has_conference_hall === "1" ? "Available" : "Not Available"
+        return data && data?.map((h, i) => ({
+            "Sl No.": i + 1,
+            "Hotel Name": h.hotel_details?.hotel_name,
+            Zone: h.hotel_details?.hotel_zone_id?.name,
+            Sector: h.hotel_details?.hotel_sector_id?.name,
+            Block: h.hotel_details?.hotel_block_id?.name,
+            "Police Station": h.hotel_details?.hotel_police_station_id?.name,
+            District: h.hotel_details?.hotel_district_id?.name,
+            Footfall: "--",
+            "Male": h.totalMale,
+            "Female": h.totalFemale,
+            "Other Gender": h.totalOtherGender,
+            "Adult": h.totalAdult,
+            "Child": h.totalChild,
+            "Indian": h.totalIndian,
+            "Foreigner": h.totalForeigner,
+            "Amenity Charge": "--",
         }));
     }, [data]);
     const [loading, setLoading] = useState(true);
     const timeRef = useRef(null);
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [selectedFilters, setSelectedFilters] = useState({
-        hotel: '', zone: '', block: '', district: '', policeStation: '', sector: ''
+        hotel: '', zone: '', block: '', district: '', policeStation: '', sector: '',
+        startDate: new Date().toISOString().split("T")[0], endDate: new Date().toISOString().split("T")[0],
+        month: '', year: ''
     })
-    const months = [
-        { label: 'January', value: '1' },
-        { label: 'February', value: '2' },
-        { label: 'March', value: '3' },
-        { label: 'April', value: '4' },
-        { label: 'May', value: '5' },
-        { label: 'June', value: '6' },
-        { label: 'July', value: '7' },
-        { label: 'August', value: '8' },
-        { label: 'September', value: '9' },
-        { label: 'October', value: '10' },
-        { label: 'November', value: '11' },
-        { label: 'December', value: '12' }
-    ];
-    const currentYear = new Date().getFullYear();
-    const currentMonthIndex = new Date().getMonth(); // 0-11
-    const years = Array.from({ length: currentYear - 2000 + 1 }, (_, i) => {
-        const year = 2000 + i;
-        return { label: year.toString(), value: year.toString() };
-    });
-    const [filterData, setFilterData] = useState({ month: '', year: '' })
-    const [searchBy, setSearchBy] = useState('');
     const [filterBlock, setFilterBlock] = useState([]);
     const [filterZone, setFilterZone] = useState([]);
     const [filterSector, setFilterSector] = useState([]);
     const [filterDistrict, setFilterDistrict] = useState([]);
     const [filterPoliceStation, setFilterPoliceStation] = useState([]);
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const [tableTotalValues, setTableTotalValues] = useState({
+        footfall: '', male: '', female: '', adult: '', child: '', indian: '',
+        foreigner: '', amenitis: '', otherGender: ''
+    })
 
 
 
 
     // :::::::::::::::::::::: [GET ALL HOTEL] ::::::::::::::::::::
     const get = async () => {
+        setLoading(true);
         try {
             const data = {
                 token: Cookies.get("token"),
@@ -92,10 +80,12 @@ const TodayHotelWise = () => {
                 sector: selectedFilters.sector,
                 district: selectedFilters.district,
                 policeStation: selectedFilters.policeStation,
-                hotelId: selectedHotel
+                hotelId: selectedHotel,
+                startDate: selectedFilters.startDate,
+                endDate: selectedFilters.endDate
             }
-            setFilterState("hotel-list", dataLimit, activePage);
-            const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
+            setFilterState("todayhotel-wise", dataLimit, activePage);
+            const url = process.env.REACT_APP_BOOKING_API + `/check-in/tourist-data/footfall-daywise`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -104,9 +94,42 @@ const TodayHotelWise = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            setTotalData(res.total)
-            setData([...res.data])
-            setLoading(false);
+            if (req.status === 200) {
+                setTotalData(res.total)
+                setData([...res.data])
+                setLoading(false);
+
+                let totalmale = 0;
+                let totalfemale = 0;
+                let totaladult = 0;
+                let totalchild = 0;
+                let totalindian = 0;
+                let totalforeigner = 0;
+                let totalothergender = 0;
+                let totalfootfall = 0;
+                let totalamenities = 0;
+
+                res.data.forEach((d, _) => {
+                    totalmale += d.totalMale;
+                    totalfemale += d.totalFemale;
+                    totaladult += d.totalAdult;
+                    totalchild +=d.totalChild;
+                    totalindian += d.totalIndian;
+                    totalforeigner += d.totalForeigner;
+                    totalothergender += d.totalOtherGender;
+                })
+                setTableTotalValues({
+                    male: totalmale, female: totalfemale, adult: totaladult,
+                    child: totalchild, indian: totalindian, foreigner: totalforeigner,
+                    otherGender: totalothergender
+                })
+
+            } else {
+                // setLoading(false); 
+                return toast("Hotel data not load", 'error')
+            }
+
+
 
         } catch (error) {
             console.log(error)
@@ -143,7 +166,7 @@ const TodayHotelWise = () => {
                 const res = await req.json();
                 if (model === "hotel") {
                     setTotalData(res.length)
-                    setData([...res])
+                    setHotelList([...res])
                 }
 
             } catch (error) {
@@ -156,41 +179,44 @@ const TodayHotelWise = () => {
 
 
     // :::::::::::::::::: [GET ALL FILTER DATA WITHOUT HOTEL] ::::::::::::
-    useEffect(() => {
-        const get = async (model) => {
-            const data = {
-                token: Cookies.get("token")
-            }
-            const url = process.env.REACT_APP_MASTER_API + `/${model}/get`
-            const req = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-            const res = await req.json();
-
-            if (model === "block") {
-                setFilterBlock([...res.data])
-            } else if (model === "zone") {
-                setFilterZone([...res.data]);
-            } else if (model === "sector") {
-                setFilterSector([...res.data]);
-            }
-            else if (model === "district") {
-                setFilterDistrict([...res.data]);
-            }
-            else if (model === "police-station") {
-                setFilterPoliceStation([...res.data]);
-            }
+    const getFilters = async (model) => {
+        const data = {
+            token: Cookies.get("token")
         }
+        const url = process.env.REACT_APP_MASTER_API + `/${model}/get`
+        const req = await fetch(url, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        const res = await req.json();
 
-        get("block");
-        get("zone");
-        get("sector");
-        get("district");
-        get("police-station");
+        if (model === "block") {
+            setFilterBlock([...res.data])
+        } else if (model === "zone") {
+            setFilterZone([...res.data]);
+        } else if (model === "sector") {
+            setFilterSector([...res.data]);
+        }
+        else if (model === "district") {
+            setFilterDistrict([...res.data]);
+        }
+        else if (model === "police-station") {
+            setFilterPoliceStation([...res.data]);
+        }
+        else if (model === "hotel") {
+            setHotelList([...res.data]);
+        }
+    }
+    useEffect(() => {
+        getFilters("block");
+        getFilters("zone");
+        getFilters("sector");
+        getFilters("district");
+        getFilters("police-station");
+        getFilters("hotel");
     }, [])
 
 
@@ -221,7 +247,7 @@ const TodayHotelWise = () => {
 
     return (
         <>
-            <Nav title={"Footfall Stats of Today(13 Oct, 2025)"} />
+            <Nav title={`Footfall Stats of Today(${new Date().getDate()} ${monthNames[new Date().getMonth()]}, ${new Date().getFullYear()})`} />
             <main id='main'>
                 <SideNav />
                 <div className='content__body'>
@@ -279,64 +305,30 @@ const TodayHotelWise = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-full flex flex-col lg:flex-row gap-8 items-center mt-4">
-                            <div className="w-full">
-                                <p>Search By</p>
-                                <select
-                                    value={searchBy}
-                                    onChange={(e) => setSearchBy(e.target.value)}
-                                >
-                                    <option value="">--Choose--</option>
-                                    <option value="daily">Daily</option>
-                                    <option value="month">Month</option>
-                                    <option value="yearly">Yearly</option>
-                                </select>
-                            </div>
-                            <div className="w-full flex flex-col lg:flex-row gap-2 items-center">
-                                {(searchBy === "daily") && <div className='w-full'>
-                                    <p>Select Month *</p>
-                                    <input type="date" />
-                                </div>}
-                                {(searchBy === "month") && <div className='w-full'>
-                                    <p>Select Month *</p>
-                                    <SelectPicker
-                                        block
-                                        className='w-full'
-                                        data={months}
-                                        value={filterData.month}
-                                        onChange={(v) => setFilterData({ ...filterData, month: v })}
-                                    />
-                                </div>}
-                                {(searchBy === "yearly" || searchBy === "month") && <div className='w-full'>
-                                    <p>Select Year*</p>
-                                    <SelectPicker
-                                        block
-                                        className='w-full'
-                                        data={years}
-                                        value={filterData.year}
-                                        onChange={(v) => setFilterData({ ...filterData, year: v })}
-                                    />
-                                </div>}
-                            </div>
-                        </div>
 
                         <div className='mt-5 w-full border-t pt-2'>
                             <p className='font-bold'>Filter</p>
                             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-3 text-[13px]'>
                                 <div className='w-full'>
                                     <p className='mb-1'>Start Date<span className='required__text'>*</span></p>
-                                    <input type="date" name="" id="" />
+                                    <input type="date"
+                                        value={selectedFilters.startDate}
+                                        onChange={(e) => setSelectedFilters({ ...selectedFilters, startDate: e.target.value })}
+                                    />
                                 </div>
                                 <div className='w-full'>
                                     <p className='mb-1'>End Date<span className='required__text'>*</span></p>
-                                    <input type="date" name="" id="" />
+                                    <input type="date"
+                                        value={selectedFilters.endDate}
+                                        onChange={(e) => setSelectedFilters({ ...selectedFilters, endDate: e.target.value })}
+                                    />
                                 </div>
                                 <div className='w-full'>
                                     <p className='mb-1'>Hotel List</p>
                                     <SelectPicker
                                         block
                                         data={[
-                                            ...data.map((item) => ({
+                                            ...hotelList.map((item) => ({
                                                 label: item.hotel_name,
                                                 value: item._id
                                             }))
@@ -349,6 +341,7 @@ const TodayHotelWise = () => {
                                         cleanable={true}
                                         placement='bottomEnd'
                                         onSearch={(serachTxt) => searchTableDatabase(serachTxt, "hotel")}
+                                        onClean={() => getFilters("hotel")}
                                     />
                                 </div>
                                 <div className='w-full'>
@@ -468,7 +461,7 @@ const TodayHotelWise = () => {
                     {/* Table */}
                     <div className='content__body__main mt-4'>
                         {/* Table start */}
-                        <div className='overflow-x-auto list__table list__table__checkin'>
+                        {loading === false ? <div className='overflow-x-auto list__table list__table__checkin'>
                             <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
                                 <thead className='bg-gray-100 list__table__head'>
                                     <tr>
@@ -495,27 +488,72 @@ const TodayHotelWise = () => {
                                         data?.map((d, i) => {
                                             return <tr key={i}>
                                                 <td align='center'>{i + 1}</td>
-                                                <td>{d.hotel_name}</td>
-                                                <td>{d?.hotel_zone_id?.name}</td>
+                                                <td>{d.hotel_details?.hotel_name}</td>
+                                                <td>{d?.hotel_details?.hotel_zone_id?.name}</td>
+                                                <td>{d?.hotel_details?.hotel_sector_id?.name}</td>
+                                                <td>{d?.hotel_details?.hotel_block_id?.name}</td>
+                                                <td>{d?.hotel_details?.hotel_police_station_id?.name}</td>
+                                                <td>{d?.hotel_details?.hotel_district_id?.name}</td>
+                                                <td>--</td>
+                                                <td>{d?.totalMale}</td>
+                                                <td>{d?.totalFemale}</td>
+                                                <td>{d?.totalOtherGender}</td>
+                                                <td>{d?.totalAdult}</td>
+                                                <td>{d?.totalChild}</td>
+                                                <td>{d?.totalIndian}</td>
+                                                <td>{d?.totalForeigner}</td>
+                                                <td>--</td>
                                             </tr>
                                         })
                                     }
+
+                                    {
+                                        data.length < 1 && (
+                                            <tr>
+                                                <td colSpan={16} align="center" className="text-xl">
+                                                    No Data Found
+                                                </td>
+                                            </tr>
+                                        )
+                                    }
+
+                                    {/* Total Calculation */}
                                     <tr align="right">
                                         <td colSpan={7} className="font-bold">Total</td>
-                                        <td align="center">0</td>
-                                        <td align="center">0</td>
-                                        <td align="center">0</td>
-                                        <td align="center">0</td>
-                                        <td align="center">0</td>
-                                        <td align="center">0</td>
-                                        <td align="center">0</td>
-                                        <td align="center">0</td>
-                                        <td align="center">0</td>
+                                        <td align="center" className="font-semibold">{tableTotalValues.footfall}</td>
+                                        <td align="center" className="font-semibold">{tableTotalValues.male}</td>
+                                        <td align="center" className="font-semibold">{tableTotalValues.female}</td>
+                                        <td align="center" className="font-semibold">{tableTotalValues.otherGender}</td>
+                                        <td align="center" className="font-semibold">{tableTotalValues.adult}</td>
+                                        <td align="center" className="font-semibold">{tableTotalValues.child}</td>
+                                        <td align="center" className="font-semibold">{tableTotalValues.indian}</td>
+                                        <td align="center" className="font-semibold">{tableTotalValues.foreigner}</td>
+                                        <td align="center" className="font-semibold">{tableTotalValues.amenitis}</td>
                                     </tr>
                                 </tbody>
+                                <tfoot className='bg-gray-100 list__table__head'>
+                                    <tr>
+                                        <td className='w-[5%]' align='center'>SL No.</td>
+                                        <td className='w-[15%]'>Hotel Name</td>
+                                        <td className=''>Zone</td>
+                                        <td>Sector</td>
+                                        <td>Block</td>
+                                        <td>Police Station</td>
+                                        <td>District</td>
+                                        <td>Footfall</td>
+                                        <td>Male</td>
+                                        <td>Female</td>
+                                        <td>Other Gender</td>
+                                        <td>Adult</td>
+                                        <td>Child</td>
+                                        <td>Indian</td>
+                                        <td>Foreigner</td>
+                                        <td>Amenity Charge</td>
+                                    </tr>
+                                </tfoot>
                             </table>
-                        </div>
-                        <div className='paginate__parent'>
+                        </div> : <DataShimmer />}
+                        {data.length > 0 && <div className='paginate__parent'>
                             <p>Showing {data.length} of {totalData} entries</p>
                             <Pagination
                                 activePage={activePage}
@@ -523,7 +561,7 @@ const TodayHotelWise = () => {
                                 dataLimit={dataLimit}
                                 setActivePage={setActivePage}
                             />
-                        </div>
+                        </div>}
                     </div>
                 </div>
             </main>

@@ -8,42 +8,48 @@ import { Popover, SelectPicker, Whisper } from "rsuite";
 import Cookies from "js-cookie";
 import downloadPdf from '../../../../helper/downloadPdf';
 import Pagination from '../../../../components/Admin/Pagination';
+import useMyToaster from "../../../../hooks/useMyToaster";
 
 
 
 
 const DateWise = () => {
+    const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
     const { getFilterState, setFilterState } = useSetTableFilter();
     const savedFilter = getFilterState("dateWise-touristdata");
     const [activePage, setActivePage] = useState(savedFilter?.activePage || 1);
     const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
     const [totalData, setTotalData] = useState()
-    const [data, setData] = useState([]);
+    const [hotelList, setHotelList] = useState([]);
+    const [enrolledData, setEnrolledData] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return data && data?.map((h, _) => ({
-            Date: h.hotel_name,
-            "Total Guest(s) Enrolled": ''
+        return enrolledData && enrolledData?.map((e, i) => ({
+            "Sl No.": i + 1,
+            Date: e.booking_checkin_date_time.split(" ")[0],
+            "Total Guest(s) Enrolled": e.booking_number_of_guest
         }));
-    }, [data]);
+    }, [enrolledData]);
     const [loading, setLoading] = useState(true);
     const timeRef = useRef(null);
     const [selectedHotel, setSelectedHotel] = useState(null);
-    const [selectedFilters, setSelectedFilters] = useState({
-        hotel: '', zone: '', block: '', district: '', policeStation: '', sector: ''
-    })
-    const [enrolledData, setEnrolledData] = useState([]);
+    const [startDate, setStartDate] = useState();
+    const [endDate, setEndDate] = useState();
+    const firstRender = useRef(true); // For don't run useEffect first time;
 
 
 
-
-    const getEnrolled = async () => {
+    // ::::::::::::::::::::::::::::::: [ GET ENROLLED DATA ] ::::::::::::::::::::::::
+    const getEnrolled = async (params) => {
         try {
             const data = {
                 token: Cookies.get("token"),
                 page: activePage,
                 limit: dataLimit,
+                id: params.hotelId,
+                startDate: params.startDate,
+                endDate: params.endDate
             }
             setFilterState("dateWise-touristdata", dataLimit, activePage);
             const url = process.env.REACT_APP_BOOKING_API + `/check-in/tourist-data/footfall`;
@@ -55,23 +61,57 @@ const DateWise = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            console.log(res.data)
+            console.log(res);
             setTotalData(res.total)
             setEnrolledData([...res.data])
             setLoading(false);
 
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
     }
     useEffect(() => {
-        getEnrolled();
+        if (firstRender.current) {
+            firstRender.current = false;
+            return;
+        }
+
+        getEnrolled({
+            hotelId: selectedHotel,
+            startDate: startDate,
+            endDate: endDate
+        })
     }, [dataLimit, activePage])
 
 
-    // ::::::::::::::::::: [ ALL SEARCH FILTER CODE HERE ] :::::::::::::
-    const searchTableDatabase = (txt, model) => {
-        if (txt === "") return;
+    // ::::::::::::::::::: [ GET HOTEL LIST ALL AND SEARCH FILTER CODE HERE ] :::::::::::::
+    const getHotelList = async () => {
+        try {
+            const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({ token: Cookies.get("token") })
+            });
+            const res = await req.json();
+
+            if (req.status === 200 && res.data.length > 0) {
+                setHotelList([...res.data])
+            }
+
+        } catch (error) {
+            console.log(error);
+            return toast("Hotel list not load", 'error')
+        }
+    }
+
+    useEffect(() => {
+        getHotelList();
+    }, [])
+
+    const searchTableDatabase = (txt) => {
         if (timeRef.current) clearTimeout(timeRef.current);
 
         timeRef.current = setTimeout(async () => {
@@ -79,15 +119,8 @@ const DateWise = () => {
                 token: Cookies.get("token"),
                 search: txt
             }
-
-            if (!txt) {
-                data = {
-                    token: Cookies.get("token")
-                }
-            }
-
             try {
-                const url = process.env.REACT_APP_MASTER_API + `/${model}/get`;
+                const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
                 const req = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -97,9 +130,8 @@ const DateWise = () => {
                 });
                 const res = await req.json();
 
-                if (req.status === 200) {
-                    setTotalData(res.length)
-                    setData([...res])
+                if (req.status === 200 && res.length > 0) {
+                    setHotelList([...res])
                 }
 
             } catch (error) {
@@ -107,8 +139,8 @@ const DateWise = () => {
             }
 
         }, 300)
-
     }
+
 
     // Export table
     const exportTable = async (whichType) => {
@@ -116,23 +148,38 @@ const DateWise = () => {
             copyTable("itemTable"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'item-list.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'footfall-list.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Item List"); // Pass table ref and title
+            printTable(tableRef, "Footfall List"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Item List', exportData);
+            let document = exportPdf('Footfall List', exportData);
             downloadPdf(document)
         }
     }
 
 
     // handle filter
-    const handleFilter = async () => getEnrolled();
+    const handleFilter = async () => {
+        if (!selectedHotel) return toast("Please select hotel", 'error');
+        if (!startDate) return toast("Start date can't be blank", 'error');
+        if (!endDate) return toast("End date can't be blank", 'error');
+
+        await getEnrolled({
+            hotelId: selectedHotel,
+            startDate: startDate,
+            endDate: endDate
+        })
+    };
 
     // Reset filter form
-    const handleResetFilter = async () => window.location.reload();
+    const handleResetFilter = async () => {
+        setSelectedHotel(null);
+        setStartDate(null);
+        setEndDate(null);
+        setEnrolledData([]);
+    };
 
 
     return (
@@ -160,13 +207,13 @@ const DateWise = () => {
                                 </select>
                             </div>
                             <div className='flex items-center gap-2'>
-                                <div className='flex w-full flex-col lg:w-[300px]'>
+                                {/* <div className='flex w-full flex-col lg:w-[300px]'>
                                     <input type='search'
                                         placeholder='Search...'
-                                        onChange={(e) => searchTableDatabase(e.target.value)}
+                                        // onChange={(e) => searchTableDatabase(e.target.value)}
                                         className='p-[6px]'
                                     />
-                                </div>
+                                </div> */}
                                 <div className='flex justify-end'>
                                     <Whisper placement='leftStart' enterable
                                         speaker={<Popover full>
@@ -200,11 +247,11 @@ const DateWise = () => {
                             <p className='font-bold'>Filter</p>
                             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-3 text-[13px]'>
                                 <div className='w-full'>
-                                    <p className='mb-1'>Hotel List</p>
+                                    <p className='mb-1'>Hotel List<span className='required__text'>*</span></p>
                                     <SelectPicker
                                         block
                                         data={[
-                                            ...data.map((item) => ({
+                                            ...hotelList?.map((item) => ({
                                                 label: item.hotel_name,
                                                 value: item._id
                                             }))
@@ -217,15 +264,22 @@ const DateWise = () => {
                                         cleanable={true}
                                         placement='bottomEnd'
                                         onSearch={(serachTxt) => searchTableDatabase(serachTxt)}
+                                        onClean={getHotelList}
                                     />
                                 </div>
                                 <div className='w-full'>
                                     <p className='mb-1'>Start Date<span className='required__text'>*</span></p>
-                                    <input type="date" name="" id="" />
+                                    <input type="date"
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                    />
                                 </div>
                                 <div className='w-full'>
                                     <p className='mb-1'>End Date<span className='required__text'>*</span></p>
-                                    <input type="date" name="" id="" />
+                                    <input type="date"
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                    />
                                 </div>
                             </div>
                             <div className='form__btn__grp filter'>
@@ -258,15 +312,22 @@ const DateWise = () => {
                                         enrolledData?.map((d, i) => {
                                             return <tr key={i}>
                                                 <td align='center'>{i + 1}</td>
-                                                <td>{d._id.split(" ")[0]}</td>
-                                                <td>{d.totalGuests}</td>
+                                                <td>{d.booking_checkin_date_time.split(" ")[0]}</td>
+                                                <td>{d.booking_number_of_guest}</td>
                                             </tr>
                                         })
+                                    }
+                                    {
+                                        enrolledData.length < 1 && <tr>
+                                            <td colSpan={3} align="center" className="p-4">
+                                                No Data Found
+                                            </td>
+                                        </tr>
                                     }
                                 </tbody>
                             </table>
                         </div>
-                        <div className='paginate__parent'>
+                        {enrolledData.length > 0 && <div className='paginate__parent'>
                             <p>Showing {enrolledData.length} of {totalData} entries</p>
                             <Pagination
                                 activePage={activePage}
@@ -274,7 +335,7 @@ const DateWise = () => {
                                 dataLimit={dataLimit}
                                 setActivePage={setActivePage}
                             />
-                        </div>
+                        </div>}
                     </div>
                 </div>
             </main>
