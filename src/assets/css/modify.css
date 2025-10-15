@@ -120,4 +120,11 @@ a:active, a:focus, a:hover{
 p+p{
   margin-top: 0px !important;
 }
- 
+.rs-picker-toggle{
+  background-color: #fff !important;
+}
+/* .rs-picker-toggle:focus-visible{border-color: #78efff !important;} */
+.rs-picker-toggle[data-active=true]:focus{
+  border-color: #78efff !important;
+  outline: none !important;
+}

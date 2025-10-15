@@ -10,11 +10,14 @@ import downloadPdf from '../../../../helper/downloadPdf';
 import Pagination from '../../../../components/Admin/Pagination';
 import DataShimmer from "../../../../components/Admin/DataShimmer";
 import useMyToaster from "../../../../hooks/useMyToaster";
+import { useLocation } from "react-router-dom";
 
 
 
 
 const TodayHotelWise = () => {
+    const currentLocation = useLocation();
+    const isTodayFootFallPage = currentLocation.pathname?.endsWith("/today");
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
     const { getFilterState, setFilterState } = useSetTableFilter();
@@ -50,7 +53,8 @@ const TodayHotelWise = () => {
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [selectedFilters, setSelectedFilters] = useState({
         hotel: '', zone: '', block: '', district: '', policeStation: '', sector: '',
-        startDate: new Date().toISOString().split("T")[0], endDate: new Date().toISOString().split("T")[0],
+        startDate: isTodayFootFallPage ? new Date().toISOString().split("T")[0] : "",
+        endDate: isTodayFootFallPage ? new Date().toISOString().split("T")[0] : "",
         month: '', year: ''
     })
     const [filterBlock, setFilterBlock] = useState([]);
@@ -63,9 +67,27 @@ const TodayHotelWise = () => {
         footfall: '', male: '', female: '', adult: '', child: '', indian: '',
         foreigner: '', amenitis: '', otherGender: ''
     })
+    const [navTitle, setNavTitle] = useState("")
 
 
-
+    // Page wise data change, `Overall` or `Todaywise`
+    useEffect(() => {
+        if (isTodayFootFallPage) {
+            setSelectedFilters({
+                ...selectedFilters,
+                startDate: new Date().toISOString().split("T")[0],
+                endDate: new Date().toISOString().split("T")[0]
+            })
+            setNavTitle(`Footfall Stats of Today(${new Date().getDate()} ${monthNames[new Date().getMonth()]}, ${new Date().getFullYear()})`)
+        } else {
+            setSelectedFilters({
+                ...selectedFilters,
+                startDate: '',
+                endDate: ''
+            })
+            setNavTitle('Footfall Stats')
+        }
+    }, [currentLocation])
 
     // :::::::::::::::::::::: [GET ALL HOTEL] ::::::::::::::::::::
     const get = async () => {
@@ -84,6 +106,7 @@ const TodayHotelWise = () => {
                 startDate: selectedFilters.startDate,
                 endDate: selectedFilters.endDate
             }
+            console.log(data);
             setFilterState("todayhotel-wise", dataLimit, activePage);
             const url = process.env.REACT_APP_BOOKING_API + `/check-in/tourist-data/footfall-daywise`;
             const req = await fetch(url, {
@@ -113,7 +136,7 @@ const TodayHotelWise = () => {
                     totalmale += d.totalMale;
                     totalfemale += d.totalFemale;
                     totaladult += d.totalAdult;
-                    totalchild +=d.totalChild;
+                    totalchild += d.totalChild;
                     totalindian += d.totalIndian;
                     totalforeigner += d.totalForeigner;
                     totalothergender += d.totalOtherGender;
@@ -129,15 +152,14 @@ const TodayHotelWise = () => {
                 return toast("Hotel data not load", 'error')
             }
 
-
-
         } catch (error) {
             console.log(error)
+            return toast("Hotel data not load", 'error')
         }
     }
     useEffect(() => {
         get();
-    }, [dataLimit, activePage])
+    }, [dataLimit, activePage, currentLocation])
 
 
     // ::::::::::::::::::: [ ALL SEARCH FILTER CODE HERE ] :::::::::::::
@@ -247,7 +269,7 @@ const TodayHotelWise = () => {
 
     return (
         <>
-            <Nav title={`Footfall Stats of Today(${new Date().getDate()} ${monthNames[new Date().getMonth()]}, ${new Date().getFullYear()})`} />
+            <Nav title={navTitle} />
             <main id='main'>
                 <SideNav />
                 <div className='content__body'>
@@ -306,7 +328,7 @@ const TodayHotelWise = () => {
                             </div>
                         </div>
 
-                        <div className='mt-5 w-full border-t pt-2'>
+                        <div className='mt-3 w-full border-t pt-2'>
                             <p className='font-bold'>Filter</p>
                             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-3 text-[13px]'>
                                 <div className='w-full'>

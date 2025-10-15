@@ -109,7 +109,7 @@ const SideNav = () => {
             </ul>
           </li> */}
           <Link to={"/admin/report/bed-availablity"} data-tooltip-id="sideBarItemToolTip">
-            <li className={`flex  items-center  ${activePath.search("/admin/bed") >= 0 ? 'active__link' : ''}`}>
+            <li className={`flex  items-center  ${activePath.search("/admin/report/bed-availablity") >= 0 ? 'active__link' : ''}`}>
               <span className='mr-3'><Icons.BED /></span>
               <span>Bed Availability</span>
               <span className='absolute right-0'><Icons.DROPDOWN /></span>
@@ -132,7 +132,7 @@ const SideNav = () => {
               <li><Link to="/admin/report/tourist-data/footfall-hotel">Date Wise</Link></li>
               <li><Link to="/admin/report/tourist-data/footfall-hotel/today">Today Hotel Wise</Link></li>
               <li><Link to="/admin/report/tourist-data/footfall">Overall</Link></li>
-              <li><Link to="/admin/report/tourist-data/bed/extra-occupied">Extra Occupancy</Link></li>
+              <li><Link to="/admin/report/tourist-data/tourist-details">Tourist Details</Link></li>
             </ul>
           </li>
 

@@ -14,6 +14,7 @@ import { BsBuildings } from 'react-icons/bs';
 import { FaBed, FaRupeeSign, FaUsers } from 'react-icons/fa';
 import { HiUserAdd } from 'react-icons/hi';
 import useMyToaster from '../../hooks/useMyToaster';
+import CardLoading from '../../components/Admin/CardLoader';
 
 
 
@@ -41,11 +42,11 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const timeRef = useRef(null);
   const [statsData, setStatsData] = useState({
-    allHotels: '', totalOperativeHotel: '', totalInOperativeHotel: '', dayWiseAcitveHotel: '',
-    todayActive: '', totalBeds: '', occupiedBeds: '', vacantsBeds: '', extraOccupency: '', toDayFtFls: '',
-    tillTodayFtFls: '', toDayChild: '', tillTodyChild: '', toDayAdult: '', tillTodayAdult: '',
-    toDayAmicharges: '', totalAmiCharges: '', dueAmiCharge: '', amiChargePaid: '', tillTodayMale: '',
-    tillTodayFemale: '', tillTodayOtherGender: '', tillTodayIndian: '', tillTodayForeigner: ''
+    allHotels: null, totalOperativeHotel: null, totalInOperativeHotel: null, dayWiseAcitveHotel: null,
+    todayActive: null, totalBeds: null, occupiedBeds: null, vacantsBeds: null, extraOccupency: null, toDayFtFls: null,
+    tillTodayFtFls: null, toDayChild: null, tillTodyChild: null, toDayAdult: null, tillTodayAdult: null,
+    toDayAmicharges: null, totalAmiCharges: null, dueAmiCharge: null, amiChargePaid: null, tillTodayMale: null,
+    tillTodayFemale: null, tillTodayOtherGender: null, tillTodayIndian: null, tillTodayForeigner: null
   })
   const [statsLoading, setStatsLoading] = useState(false);
 
@@ -134,9 +135,9 @@ const Dashboard = () => {
         fetch(process.env.REACT_APP_MASTER_API + "/admin/statictics", {
           method: "post"
         }).then(r => r.json()),
-        
-        fetch(process.env.REACT_APP_BOOKING_API + "/check-in/get-admin-stats",{
-          method:"post"
+
+        fetch(process.env.REACT_APP_BOOKING_API + "/check-in/get-admin-stats", {
+          method: "post"
         }).then(r => r.json())
       ]);
 
@@ -216,196 +217,185 @@ const Dashboard = () => {
         <div className='content__body'>
 
           {/* Cards  */}
-          {
-            statsLoading ?
-              <div className='w-full'>
-                <div className='total__data_cards dashboard'>
-                  {
-                    Array.from({ length: 24 }).map((c, i) => {
-                      return <Placeholder.Graph active height={90} className='shadow-lg'>
-                        <Placeholder.Paragraph active />
-                      </Placeholder.Graph>
-                    })
-                  }
+
+          {/* // statsLoading ? */}
+
+          <div className='w-full
+          '>
+            <div className="total__data_cards dashboard">
+              <div className='total__card blue__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.allHotels ?? <CardLoading/>}</p>
+                  <p>{"Total Hotels"}</p>
                 </div>
+                <BsBuildings className='card__icon' />
               </div>
-              : <div className='w-full'>
-                <div className="total__data_cards dashboard">
-                  <div className='total__card blue__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.allHotels}</p>
-                      <p>Total Hotels</p>
-                    </div>
-                    <BsBuildings className='card__icon' />
-                  </div>
-                  <div className='total__card blue__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.totalOperativeHotel}</p>
-                      <p>Operative Hotels</p>
-                    </div>
-                    <BsBuildings className='card__icon' />
-                  </div>
-                  <div className='total__card blue__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.totalInOperativeHotel}</p>
-                      <p>Inoperative Hotels</p>
-                    </div>
-                    <BsBuildings className='card__icon' />
-                  </div>
-                  <div className='total__card blue__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.todayActive}</p>
-                      <p>Day Wise Active Hotels</p>
-                    </div>
-                    <BsBuildings className='card__icon' />
-                  </div>
-                  <div className='total__card blue__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.todayActive}</p>
-                      <p>Today Active Hotels</p>
-                    </div>
-                    <BsBuildings className='card__icon' />
-                  </div>
-                  <div className='total__card green__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.totalBeds}</p>
-                      <p>Total Beds</p>
-                    </div>
-                    <FaBed className='card__icon' />
-                  </div>
-
-                  <div className='total__card green__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.occupiedBeds}</p>
-                      <p>Occupied Beds</p>
-                    </div>
-                    <FaBed className='card__icon' />
-                  </div>
-                  <div className='total__card green__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.vacantsBeds}</p>
-                      <p>Vacant Beds</p>
-                    </div>
-                    <FaBed className='card__icon' />
-                  </div>
-                  <div className='total__card red__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.extraOccupency}</p>
-                      <p>Extra Occupancy</p>
-                    </div>
-                    <HiUserAdd className='card__icon' />
-                  </div>
-                  <div className='total__card purple__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.toDayFtFls}</p>
-                      <p>Today Footfalls</p>
-                    </div>
-                    <Icons.USERS className='card__icon' />
-                  </div>
-                  <div className='total__card purple__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.tillTodayFtFls}</p>
-                      <p>Till Today Footfalls</p>
-                    </div>
-                    <Icons.USERS className='card__icon' />
-                  </div>
-                  <div className='total__card purple__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.toDayChild}</p>
-                      <p>Today Child</p>
-                    </div>
-                    <Icons.CHILD className='card__icon' />
-                  </div>
-
-                  <div className='total__card purple__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.tillTodyChild}</p>
-                      <p>Till Today Child</p>
-                    </div>
-                    <Icons.CHILD className='card__icon' />
-                  </div>
-                  <div className='total__card purple__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.toDayAdult}</p>
-                      <p>Today Adult</p>
-                    </div>
-                    <Icons.USER_FILL className='card__icon' />
-                  </div>
-                  <div className='total__card purple__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.tillTodayAdult}</p>
-                      <p>Till Today Adult</p>
-                    </div>
-                    <Icons.USER_FILL className='card__icon' />
-                  </div>
-                  <div className='total__card yellow__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.toDayAmicharges}</p>
-                      <p>Today Aminity Charges</p>
-                    </div>
-                    <Icons.RUPES className='card__icon' />
-                  </div>
-                  <div className='total__card yellow__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.totalAmiCharges}</p>
-                      <p>Total Aminity Charges</p>
-                    </div>
-                    <Icons.RUPES className='card__icon' />
-                  </div>
-                  <div className='total__card yellow__grad'>
-                    <div className='total__card__data'>
-                      <p>{0}</p>
-                      <p>Aminity Charges Due</p>
-                    </div>
-                    <Icons.RUPES className='card__icon' />
-                  </div>
-
-                  <div className='total__card yellow__grad'>
-                    <div className='total__card__data'>
-                      <p>{0}</p>
-                      <p>Aminity Charges Paid</p>
-                    </div>
-                    <Icons.RUPES className='card__icon' />
-                  </div>
-                  <div className='total__card green__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.tillTodayMale}</p>
-                      <p>Till Today Male</p>
-                    </div>
-                    <Icons.GENDER_MALE className='card__icon' />
-                  </div>
-                  <div className='total__card green__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.tillTodayFemale}</p>
-                      <p>Till Today Female</p>
-                    </div>
-                    <Icons.GENDER_FEMALE className='card__icon' />
-                  </div>
-                  <div className='total__card green__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.tillTodayOtherGender}</p>
-                      <p>Till Today Other Gender</p>
-                    </div>
-                    <Icons.GENDER_TRANS className='card__icon' />
-                  </div>
-                  <div className='total__card blue__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.tillTodayIndian}</p>
-                      <p>Till Today Indians</p>
-                    </div>
-                    <Icons.USER_FILL className='card__icon' />
-                  </div>
-                  <div className='total__card blue__grad'>
-                    <div className='total__card__data'>
-                      <p>{statsData.tillTodayForeigner}</p>
-                      <p>Till Today Foreigner</p>
-                    </div>
-                    <Icons.USER_FILL className='card__icon' />
-                  </div>
+              <div className='total__card blue__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.totalOperativeHotel ?? <CardLoading/>}</p>
+                  <p>Operative Hotels</p>
                 </div>
+                <BsBuildings className='card__icon' />
               </div>
-          }
+              <div className='total__card blue__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.totalInOperativeHotel ?? <CardLoading/>}</p>
+                  <p>Inoperative Hotels</p>
+                </div>
+                <BsBuildings className='card__icon' />
+              </div>
+              <div className='total__card blue__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.todayActive ?? <CardLoading/>}</p>
+                  <p>Day Wise Active Hotels</p>
+                </div>
+                <BsBuildings className='card__icon' />
+              </div>
+              <div className='total__card blue__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.todayActive ?? <CardLoading/>}</p>
+                  <p>Today Active Hotels</p>
+                </div>
+                <BsBuildings className='card__icon' />
+              </div>
+              <div className='total__card green__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.totalBeds ?? <CardLoading/>}</p>
+                  <p>Total Beds</p>
+                </div>
+                <FaBed className='card__icon' />
+              </div>
 
+              <div className='total__card green__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.occupiedBeds ?? <CardLoading/>}</p>
+                  <p>Occupied Beds</p>
+                </div>
+                <FaBed className='card__icon' />
+              </div>
+              <div className='total__card green__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.vacantsBeds ?? <CardLoading/>}</p>
+                  <p>Vacant Beds</p>
+                </div>
+                <FaBed className='card__icon' />
+              </div>
+              <div className='total__card red__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.extraOccupency ?? <CardLoading/>}</p>
+                  <p>Extra Occupancy</p>
+                </div>
+                <HiUserAdd className='card__icon' />
+              </div>
+              <div className='total__card purple__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.toDayFtFls ?? <CardLoading/>}</p>
+                  <p>Today Footfalls</p>
+                </div>
+                <Icons.USERS className='card__icon' />
+              </div>
+              <div className='total__card purple__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.tillTodayFtFls ?? <CardLoading/>}</p>
+                  <p>Till Today Footfalls</p>
+                </div>
+                <Icons.USERS className='card__icon' />
+              </div>
+              <div className='total__card purple__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.toDayChild ?? <CardLoading/>}</p>
+                  <p>Today Child</p>
+                </div>
+                <Icons.CHILD className='card__icon' />
+              </div>
+
+              <div className='total__card purple__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.tillTodyChild ?? <CardLoading/>}</p>
+                  <p>Till Today Child</p>
+                </div>
+                <Icons.CHILD className='card__icon' />
+              </div>
+              <div className='total__card purple__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.toDayAdult ?? <CardLoading/>}</p>
+                  <p>Today Adult</p>
+                </div>
+                <Icons.USER_FILL className='card__icon' />
+              </div>
+              <div className='total__card purple__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.tillTodayAdult ?? <CardLoading/>}</p>
+                  <p>Till Today Adult</p>
+                </div>
+                <Icons.USER_FILL className='card__icon' />
+              </div>
+              <div className='total__card yellow__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.toDayAmicharges ?? <CardLoading/>}</p>
+                  <p>Today Aminity Charges</p>
+                </div>
+                <Icons.RUPES className='card__icon' />
+              </div>
+              <div className='total__card yellow__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.totalAmiCharges ?? <CardLoading/>}</p>
+                  <p>Total Aminity Charges</p>
+                </div>
+                <Icons.RUPES className='card__icon' />
+              </div>
+              <div className='total__card yellow__grad'>
+                <div className='total__card__data'>
+                  <p>{0 ?? <CardLoading/>}</p>
+                  <p>Aminity Charges Due</p>
+                </div>
+                <Icons.RUPES className='card__icon' />
+              </div>
+
+              <div className='total__card yellow__grad'>
+                <div className='total__card__data'>
+                  <p>{0 ?? <CardLoading/>}</p>
+                  <p>Aminity Charges Paid</p>
+                </div>
+                <Icons.RUPES className='card__icon' />
+              </div>
+              <div className='total__card male__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.tillTodayMale ?? <CardLoading/>}</p>
+                  <p>Till Today Male</p>
+                </div>
+                <Icons.GENDER_MALE className='card__icon' />
+              </div>
+              <div className='total__card pink__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.tillTodayFemale ?? <CardLoading/>}</p>
+                  <p>Till Today Female</p>
+                </div>
+                <Icons.GENDER_FEMALE className='card__icon' />
+              </div>
+              <div className='total__card rainbow__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.tillTodayOtherGender ?? <CardLoading/>}</p>
+                  <p>Till Today Other Gender</p>
+                </div>
+                <Icons.GENDER_TRANS className='card__icon' />
+              </div>
+              <div className='total__card flag__grad'>
+                <div className='total__card__data'>
+                  <p>{statsData.tillTodayIndian ?? <CardLoading/>}</p>
+                  <p>Till Today Indians</p>
+                </div>
+                <Icons.USER_FILL className='card__icon' />
+              </div>
+              <div className='total__card red__chilli'>
+                <div className='total__card__data'>
+                  <p>{statsData.tillTodayForeigner ?? <CardLoading/>}</p>
+                  <p>Till Today Foreigner</p>
+                </div>
+                <Icons.USER_FILL className='card__icon' />
+              </div>
+            </div>
+          </div>
 
           {/* ============================================================== */}
           {/* Current Stay In Guest List */}

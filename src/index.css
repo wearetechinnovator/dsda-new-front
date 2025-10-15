@@ -1033,10 +1033,10 @@ input[type="checkbox"]:checked::before {
   color: white;
   position: relative;
   overflow: hidden;
-  padding: 14.25px;
+  padding: 14px 10px;
   box-shadow: 0px 0px 10px rgb(79, 79, 80);
   cursor: pointer;
-
+  min-height: 105px;
 }
 
 .total__data_cards .total__card.center {
@@ -1068,6 +1068,7 @@ input[type="checkbox"]:checked::before {
   -moz-box-shadow: 9px 9px 30px 2px rgba(148, 148, 148, 1);
   box-shadow: 5px 5px 8px 2px rgba(148, 148, 148, 1);
   padding: 10px;
+  min-height: 105px;
 }
 
 .checkin__card {
@@ -1086,6 +1087,9 @@ input[type="checkbox"]:checked::before {
 
 .total__card__data p:first-child {
   @apply text-right text-3xl;
+}
+.total__card__data p{
+  text-align: end;
 }
 
 .blue__grad {
@@ -1106,6 +1110,23 @@ input[type="checkbox"]:checked::before {
 
 .purple__grad{
   background: linear-gradient(180deg, rgba(142, 68, 173, 1) 0%, rgba(61, 0, 87, 1) 100%);
+}
+
+.pink__grad{
+  background: linear-gradient(180deg, rgba(246, 58, 117, 1) 0%, rgba(245, 199, 199, 1) 100%);
+}
+
+.rainbow__grad{
+  background: linear-gradient(to bottom right, #FF0018, #FFA52C, #FFFF41, #008018, #0000F9, #86007D);
+}
+.flag__grad{
+    background: linear-gradient(143deg, rgba(255, 100, 0, 1) 0%, rgba(255, 255, 255, 1) 50%, rgba(0, 100, 57, 1) 100%);
+}
+.red__chilli{
+    background: linear-gradient(90deg, rgba(131, 58, 180, 1) 0%, rgba(253, 29, 29, 1) 50%, rgba(252, 176, 69, 1) 100%);
+}
+.male__grad{
+      background: linear-gradient(134deg, rgba(54, 30, 18, 1) 0%, rgba(90, 47, 30, 1) 100%);
 }
 
 .chip__green {
@@ -1185,6 +1206,7 @@ input[type="checkbox"]:checked::before {
   font-weight: 500;
   box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
 }
+.active__page:hover{color: #000;}
 
 /* Disabled state for arrows (optional if you want to gray them out) */
 .paginate__button__disabled {

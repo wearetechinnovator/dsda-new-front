@@ -40,7 +40,7 @@ const HotelList = React.lazy(() => import("./pages/Admin/Report/HotelList"));
 const BedAvailablity = React.lazy(() => import("./pages/Admin/Report/BedAvailablity"));
 const DateWiseFootFall = React.lazy(() => import("./pages/Admin/Report/TouristData/DateWise"));
 const TodayHotelWise = React.lazy(() => import("./pages/Admin/Report/TouristData/TodayHotelWise"));
-const ExtraOccupancy = React.lazy(() => import("./pages/Admin/Report/TouristData/ExtraOccupancy"));
+const TouristDetails = React.lazy(() => import("./pages/Admin/Report/TouristData/TouristDetails"));
 
 
 // Hotel Dashboard
@@ -163,7 +163,7 @@ const App = () => {
           <Route path="report/tourist-data/footfall" element={<TodayHotelWise />} />
           <Route path="report/tourist-data/footfall-hotel" element={<DateWiseFootFall />} />
           <Route path="report/tourist-data/footfall-hotel/today" element={<TodayHotelWise />} />
-          <Route path="report/tourist-data/bed/extra-occupied" element={<ExtraOccupancy />} />
+          <Route path="report/tourist-data/tourist-details" element={<TouristDetails />} />
         </Route>
 
 

@@ -20,6 +20,7 @@
     "react-sweetalert2": "^0.6.0",
     "react-tooltip": "^5.28.0",
     "rsuite": "^6.0.0-canary-20241227",
+    "styled-components": "^6.1.19",
     "sweetalert": "^2.1.2",
     "xlsx": "^0.18.5"
   },

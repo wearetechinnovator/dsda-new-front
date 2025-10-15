@@ -297,7 +297,7 @@ const Statistics = () => {
                     {/* Current Stay In Guest List */}
                     {/* ============================================================== */}
 
-                    <div className='content__body__main mt-4'>
+                    <div className='content__body__main mt-8'>
                         <div className='w-full flex gap-3 items-center pb-2 border-b'>
                             <Icons.USERS className='text-xl' />
                             <p className='font-semibold text-md uppercase'>Current Stay In Guest List</p>

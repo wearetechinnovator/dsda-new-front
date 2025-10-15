@@ -26,15 +26,21 @@ const Hotelmaster = ({ mode }) => {
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return data && data.map(({ hotel_name, hotel_zone_id, hotel_sector_id,
-            hotel_proprietor_name, hotel_username, hotel_status }, _) => ({
-                Name: hotel_name,
-                Zone: hotel_zone_id?.name,
-                Sector: hotel_sector_id?.name,
-                Proprietor: hotel_proprietor_name || "--",
-                Username: hotel_username || "--",
-                Status: hotel_status === "1" ? "Operative" : "In Operative"
-            }));
+        return data && data.map((h, _) => ({
+            "Hotel Name": h.hotel_name,
+            'Category': h.hotel_category?.hotel_category_name,
+            'Establish': h.hotel_year_of_establishment,
+            'Zone': h.hotel_zone_id?.name,
+            'Sector': h.hotel_sector_id?.name,
+            "Proprietor Name": h.hotel_proprietor_name || "--",
+            'Username': h.hotel_username || "--",
+            "Restaurant": h.hotel_restaurant === "1" ? 'Yes' : 'No',
+            'Confarence Hall': h.hotel_conference_hall === "1" ? 'Yes' : 'No',
+            'AC': h.hotel_has_ac === "1" ? 'Yes' : 'No',
+            'Swimming Pool': h.hotel_has_swiming_pool === "1" ? 'Yes' : 'No',
+            'Parking': h.hotel_has_parking === "1" ? 'Yes' : 'No',
+            'Status': h.hotel_status === "1" ? "Operative" : "In Operative"
+        }));
     }, [data]);
     const [loading, setLoading] = useState(true);
     const { deleteData, restoreData } = useApi()
@@ -157,7 +163,7 @@ const Hotelmaster = ({ mode }) => {
                     {
                         !loading ? <div className='content__body__main'>
                             <div className='w-full flex gap-1 items-center border-b pb-1'>
-                                <Icons.HOTEL/>
+                                <Icons.HOTEL />
                                 <p className='font-semibold uppercase'>Hotel Table</p>
                             </div>
                             <div className={`add_new_compnent`}>
@@ -255,7 +261,7 @@ const Hotelmaster = ({ mode }) => {
                             </div>
                             {/* Table start */}
                             <div className='overflow-x-auto list__table list__table__checkin'>
-                                <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
+                                <table className='min-w-full bg-white' id='table' ref={tableRef}>
                                     <thead className='bg-gray-100 list__table__head'>
                                         <tr>
                                             <td className='w-[3%]' align='center'>
