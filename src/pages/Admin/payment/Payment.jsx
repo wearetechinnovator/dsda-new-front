@@ -128,8 +128,7 @@ const Payment = ({ mode }) => {
                 <SideNav />
                 <Tooltip id='itemTooltip' />
                 <div className='content__body'>
-                    <div
-                        className={`w-full bg-white rounded p-4 shadow-sm add_new_compnent overflow-hidden transition-all `}>
+                    <div className='add_new_compnent border rounded'>
                         <div className='flex justify-between items-center'>
                             <div className='flex flex-col'>
                                 <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
@@ -189,7 +188,6 @@ const Payment = ({ mode }) => {
 
                         <div id='itemFilter' className='mt-5 w-full border-t pt-2'>
                             <p className='font-bold'>Filter by Hotel Date</p>
-
                             <div className='flex flex-col md:flex-row md:gap-4 w-full mt-3 text-[13px]'>
                                 <div className='w-full'>
                                     <p className='mb-1'>Hotel List</p>
@@ -227,24 +225,24 @@ const Payment = ({ mode }) => {
                         </div>
                     </div>
                     {
-                        <div className='content__body__main'>
+                        <div className='content__body__main mt-4'>
                             {/* Table start */}
-                            <div className='overflow-x-auto list__table'>
+                            <div className='overflow-x-auto list__table list__table__checkin'>
                                 <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
                                     <thead className='bg-gray-100 list__table__head'>
                                         <tr>
-                                            <th className='py-2 px-4 border-b w-[50px]'>
+                                            <td align='center'>
                                                 <input type='checkbox' onChange={selectAll} checked={itemData.length > 0 && selected.length === itemData.length} />
-                                            </th>
-                                            <td className='py-2 px-4 border-b '>SL No.</td>
-                                            <th className='py-2 px-4 border-b '>Date</th>
-                                            <th className='py-2 px-4 border-b'>Hotel</th>
-                                            <th className='py-2 px-4 border-b '>Amount</th>
-                                            <th className='py-2 px-4 border-b'>Year</th>
-                                            <th className='py-2 px-4 border-b'>Month</th>
-                                            <th className='py-2 px-4 border-b'>Payment Mode</th>
-                                            <th className='py-2 px-4 border-b'>Transaction ID</th>
-                                            <th className='py-2 px-4 border-b'>Action</th>
+                                            </td>
+                                            <td>SL No.</td>
+                                            <td>Date</td>
+                                            <td>Hotel</td>
+                                            <td>Amount</td>
+                                            <td>Year</td>
+                                            <td>Month</td>
+                                            <td>Payment Mode</td>
+                                            <td>Transaction ID</td>
+                                            <td>Action</td>
                                         </tr>
                                     </thead>
                                     <tbody>

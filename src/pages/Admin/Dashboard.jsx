@@ -15,6 +15,7 @@ import { FaBed, FaRupeeSign, FaUsers } from 'react-icons/fa';
 import { HiUserAdd } from 'react-icons/hi';
 import useMyToaster from '../../hooks/useMyToaster';
 import CardLoading from '../../components/Admin/CardLoader';
+import NoData from '../../components/Admin/NoData';
 
 
 
@@ -219,48 +220,46 @@ const Dashboard = () => {
           {/* Cards  */}
 
           {/* // statsLoading ? */}
-
-          <div className='w-full
-          '>
+          <div className='w-full'>
             <div className="total__data_cards dashboard">
               <div className='total__card blue__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.allHotels ?? <CardLoading/>}</p>
+                  <p>{statsData.allHotels ?? <CardLoading />}</p>
                   <p>{"Total Hotels"}</p>
                 </div>
                 <BsBuildings className='card__icon' />
               </div>
               <div className='total__card blue__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.totalOperativeHotel ?? <CardLoading/>}</p>
+                  <p>{statsData.totalOperativeHotel ?? <CardLoading />}</p>
                   <p>Operative Hotels</p>
                 </div>
                 <BsBuildings className='card__icon' />
               </div>
               <div className='total__card blue__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.totalInOperativeHotel ?? <CardLoading/>}</p>
+                  <p>{statsData.totalInOperativeHotel ?? <CardLoading />}</p>
                   <p>Inoperative Hotels</p>
                 </div>
                 <BsBuildings className='card__icon' />
               </div>
               <div className='total__card blue__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.todayActive ?? <CardLoading/>}</p>
+                  <p>{statsData.todayActive ?? <CardLoading />}</p>
                   <p>Day Wise Active Hotels</p>
                 </div>
                 <BsBuildings className='card__icon' />
               </div>
               <div className='total__card blue__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.todayActive ?? <CardLoading/>}</p>
+                  <p>{statsData.todayActive ?? <CardLoading />}</p>
                   <p>Today Active Hotels</p>
                 </div>
                 <BsBuildings className='card__icon' />
               </div>
               <div className='total__card green__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.totalBeds ?? <CardLoading/>}</p>
+                  <p>{statsData.totalBeds ?? <CardLoading />}</p>
                   <p>Total Beds</p>
                 </div>
                 <FaBed className='card__icon' />
@@ -268,42 +267,42 @@ const Dashboard = () => {
 
               <div className='total__card green__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.occupiedBeds ?? <CardLoading/>}</p>
+                  <p>{statsData.occupiedBeds ?? <CardLoading />}</p>
                   <p>Occupied Beds</p>
                 </div>
                 <FaBed className='card__icon' />
               </div>
               <div className='total__card green__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.vacantsBeds ?? <CardLoading/>}</p>
+                  <p>{statsData.vacantsBeds ?? <CardLoading />}</p>
                   <p>Vacant Beds</p>
                 </div>
                 <FaBed className='card__icon' />
               </div>
               <div className='total__card red__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.extraOccupency ?? <CardLoading/>}</p>
+                  <p>{statsData.extraOccupency ?? <CardLoading />}</p>
                   <p>Extra Occupancy</p>
                 </div>
                 <HiUserAdd className='card__icon' />
               </div>
               <div className='total__card purple__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.toDayFtFls ?? <CardLoading/>}</p>
+                  <p>{statsData.toDayFtFls ?? <CardLoading />}</p>
                   <p>Today Footfalls</p>
                 </div>
                 <Icons.USERS className='card__icon' />
               </div>
               <div className='total__card purple__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.tillTodayFtFls ?? <CardLoading/>}</p>
+                  <p>{statsData.tillTodayFtFls ?? <CardLoading />}</p>
                   <p>Till Today Footfalls</p>
                 </div>
                 <Icons.USERS className='card__icon' />
               </div>
               <div className='total__card purple__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.toDayChild ?? <CardLoading/>}</p>
+                  <p>{statsData.toDayChild ?? <CardLoading />}</p>
                   <p>Today Child</p>
                 </div>
                 <Icons.CHILD className='card__icon' />
@@ -311,42 +310,42 @@ const Dashboard = () => {
 
               <div className='total__card purple__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.tillTodyChild ?? <CardLoading/>}</p>
+                  <p>{statsData.tillTodyChild ?? <CardLoading />}</p>
                   <p>Till Today Child</p>
                 </div>
                 <Icons.CHILD className='card__icon' />
               </div>
               <div className='total__card purple__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.toDayAdult ?? <CardLoading/>}</p>
+                  <p>{statsData.toDayAdult ?? <CardLoading />}</p>
                   <p>Today Adult</p>
                 </div>
                 <Icons.USER_FILL className='card__icon' />
               </div>
               <div className='total__card purple__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.tillTodayAdult ?? <CardLoading/>}</p>
+                  <p>{statsData.tillTodayAdult ?? <CardLoading />}</p>
                   <p>Till Today Adult</p>
                 </div>
                 <Icons.USER_FILL className='card__icon' />
               </div>
               <div className='total__card yellow__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.toDayAmicharges ?? <CardLoading/>}</p>
+                  <p>{statsData.toDayAmicharges ?? <CardLoading />}</p>
                   <p>Today Aminity Charges</p>
                 </div>
                 <Icons.RUPES className='card__icon' />
               </div>
               <div className='total__card yellow__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.totalAmiCharges ?? <CardLoading/>}</p>
+                  <p>{statsData.totalAmiCharges ?? <CardLoading />}</p>
                   <p>Total Aminity Charges</p>
                 </div>
                 <Icons.RUPES className='card__icon' />
               </div>
               <div className='total__card yellow__grad'>
                 <div className='total__card__data'>
-                  <p>{0 ?? <CardLoading/>}</p>
+                  <p>{0 ?? <CardLoading />}</p>
                   <p>Aminity Charges Due</p>
                 </div>
                 <Icons.RUPES className='card__icon' />
@@ -354,42 +353,42 @@ const Dashboard = () => {
 
               <div className='total__card yellow__grad'>
                 <div className='total__card__data'>
-                  <p>{0 ?? <CardLoading/>}</p>
+                  <p>{0 ?? <CardLoading />}</p>
                   <p>Aminity Charges Paid</p>
                 </div>
                 <Icons.RUPES className='card__icon' />
               </div>
               <div className='total__card male__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.tillTodayMale ?? <CardLoading/>}</p>
+                  <p>{statsData.tillTodayMale ?? <CardLoading />}</p>
                   <p>Till Today Male</p>
                 </div>
                 <Icons.GENDER_MALE className='card__icon' />
               </div>
               <div className='total__card pink__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.tillTodayFemale ?? <CardLoading/>}</p>
+                  <p>{statsData.tillTodayFemale ?? <CardLoading />}</p>
                   <p>Till Today Female</p>
                 </div>
                 <Icons.GENDER_FEMALE className='card__icon' />
               </div>
               <div className='total__card rainbow__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.tillTodayOtherGender ?? <CardLoading/>}</p>
+                  <p>{statsData.tillTodayOtherGender ?? <CardLoading />}</p>
                   <p>Till Today Other Gender</p>
                 </div>
                 <Icons.GENDER_TRANS className='card__icon' />
               </div>
               <div className='total__card flag__grad'>
                 <div className='total__card__data'>
-                  <p>{statsData.tillTodayIndian ?? <CardLoading/>}</p>
+                  <p>{statsData.tillTodayIndian ?? <CardLoading />}</p>
                   <p>Till Today Indians</p>
                 </div>
                 <Icons.USER_FILL className='card__icon' />
               </div>
               <div className='total__card red__chilli'>
                 <div className='total__card__data'>
-                  <p>{statsData.tillTodayForeigner ?? <CardLoading/>}</p>
+                  <p>{statsData.tillTodayForeigner ?? <CardLoading />}</p>
                   <p>Till Today Foreigner</p>
                 </div>
                 <Icons.USER_FILL className='card__icon' />
@@ -501,8 +500,9 @@ const Dashboard = () => {
                     }
                   </tbody>
                 </table>
+                {data.length < 1 && <NoData />}
               </div>
-              <div className='paginate__parent'>
+              {data.length > 0 && <div className='paginate__parent'>
                 <p>Showing {data.length} of {totalData} entries</p>
                 <Pagination
                   activePage={activePage}
@@ -510,7 +510,7 @@ const Dashboard = () => {
                   dataLimit={dataLimit}
                   setActivePage={setActivePage}
                 />
-              </div>
+              </div>}
             </div>
               : <DataShimmer />
           }

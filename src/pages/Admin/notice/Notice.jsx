@@ -15,6 +15,7 @@ import Pagination from '../../../components/Admin/Pagination';
 import useSearchTable from '../../../hooks/useSearchTable';
 import useApi from '../../../hooks/useApi';
 import useSetTableFilter from '../../../hooks/useSetTableFilter';
+import NoData from '../../../components/Admin/NoData';
 
 
 const Notice = ({ mode }) => {
@@ -221,15 +222,15 @@ const Notice = ({ mode }) => {
                                             <td className='w-[50px]' align='center'>
                                                 <input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
                                             </td>
-                                            <td>date</td>
-                                            <td>title</td>
+                                            <td>Date</td>
+                                            <td>Title</td>
                                             <td>Status</td>
                                             <td align='center'>Action</td>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
-                                            data.map((d, i) => {
+                                            data?.map((d, i) => {
                                                 return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
                                                     <td align='center'>
                                                         <input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
@@ -289,16 +290,17 @@ const Notice = ({ mode }) => {
                                         }
                                     </tbody>
                                 </table>
-                                <div className='paginate__parent'>
-                                    <p>Showing {data.length} of {totalData} entries</p>
-                                    <Pagination
-                                        activePage={activePage}
-                                        totalData={totalData}
-                                        dataLimit={dataLimit}
-                                        setActivePage={setActivePage}
-                                    />
-                                </div>
+                                {data.length < 1 && <NoData />}
                             </div>
+                            {data.length > 0 && <div className='paginate__parent'>
+                                <p>Showing {data.length} of {totalData} entries</p>
+                                <Pagination
+                                    activePage={activePage}
+                                    totalData={totalData}
+                                    dataLimit={dataLimit}
+                                    setActivePage={setActivePage}
+                                />
+                            </div>}
                         </div>
                         : <DataShimmer />
                     }

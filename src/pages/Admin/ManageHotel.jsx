@@ -66,7 +66,6 @@ const ManageHotel = () => {
             }
 
         }, 350)
-
     }
 
 

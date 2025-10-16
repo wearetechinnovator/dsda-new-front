@@ -1,27 +1,27 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import Nav from '../../../../components/Admin/Nav';
-import SideNav from '../../../../components/Admin/SideNav';
+import Nav from '../../../components/Admin/Nav';
+import SideNav from '../../../components/Admin/SideNav';
 import { useNavigate } from 'react-router-dom';
-import useExportTable from '../../../../hooks/useExportTable';
-import useMyToaster from '../../../../hooks/useMyToaster';
+import useExportTable from '../../../hooks/useExportTable';
+import useMyToaster from '../../../hooks/useMyToaster';
 import Cookies from 'js-cookie';
-import downloadPdf from '../../../../helper/downloadPdf';
-import DataShimmer from '../../../../components/Admin/DataShimmer';
+import downloadPdf from '../../../helper/downloadPdf';
+import DataShimmer from '../../../components/Admin/DataShimmer';
 import { Tooltip } from 'react-tooltip';
 import { Popover, Whisper } from 'rsuite';
-import { Icons } from '../../../../helper/icons';
-import Pagination from '../../../../components/Admin/Pagination';
-import useApi from '../../../../hooks/useApi';
-import useSetTableFilter from '../../../../hooks/useSetTableFilter';
-import NoData from '../../../../components/Admin/NoData';
+import { Icons } from '../../../helper/icons';
+import Pagination from '../../../components/Admin/Pagination';
+import useSearchTable from '../../../hooks/useSearchTable';
+import useApi from '../../../hooks/useApi';
+import useSetTableFilter from '../../../hooks/useSetTableFilter';
+import NoData from '../../../components/Admin/NoData';
 
 
-
-const PoliceStation = () => {
+const OtherPaymentList = ({ mode }) => {
 	const toast = useMyToaster();
 	const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
 	const { getFilterState, setFilterState } = useSetTableFilter();
-	const savedFilter = getFilterState("policeStation");
+	const savedFilter = getFilterState("extraPayment");
 	const [activePage, setActivePage] = useState(savedFilter?.activePage || 1);
 	const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
 	const [totalData, setTotalData] = useState()
@@ -30,15 +30,20 @@ const PoliceStation = () => {
 	const [data, setData] = useState([]);
 	const tableRef = useRef(null);
 	const exportData = useMemo(() => {
-		return data && data.map(({ name, district }, _) => ({
+		return data && data.map(({ name, role, contact, designation }, _) => ({
 			Name: name,
-			District: district.name
+			Role: role,
+			Contact: contact,
+			Designation: designation
 		}));
 	}, [data]);
 	const [loading, setLoading] = useState(true);
+	const searchTable = useSearchTable();
 	const { deleteData, restoreData } = useApi()
 	const [isTrash, setIsTrash] = useState(false);
 	const timeRef = useRef(null);
+
+
 
 
 
@@ -51,8 +56,8 @@ const PoliceStation = () => {
 				page: activePage,
 				limit: dataLimit
 			}
-			setFilterState("policeStation", dataLimit, activePage);
-			const url = process.env.REACT_APP_MASTER_API + `/police-station/get`;
+			setFilterState("extraPayment", dataLimit, activePage);
+			const url = process.env.REACT_APP_MASTER_API + `/admin/get-users`;
 			const req = await fetch(url, {
 				method: "POST",
 				headers: {
@@ -62,7 +67,7 @@ const PoliceStation = () => {
 			});
 			const res = await req.json();
 			setTotalData(res.total)
-			setData([...res.data])
+			// setData([...res.data])
 			setLoading(false);
 
 		} catch (error) {
@@ -70,7 +75,6 @@ const PoliceStation = () => {
 		}
 	}
 	useEffect(() => {
-
 		get();
 	}, [isTrash, dataLimit, activePage])
 
@@ -89,7 +93,7 @@ const PoliceStation = () => {
 					token: Cookies.get("token"),
 					search: txt
 				}
-				const url = process.env.REACT_APP_MASTER_API + `/police-station/get`;
+				const url = process.env.REACT_APP_MASTER_API + `/admin/get-users`;
 				const req = await fetch(url, {
 					method: "POST",
 					headers: {
@@ -98,6 +102,7 @@ const PoliceStation = () => {
 					body: JSON.stringify(data)
 				});
 				const res = await req.json();
+				console.log(res)
 				setTotalData(res.length)
 				setData([...res])
 
@@ -133,27 +138,32 @@ const PoliceStation = () => {
 			copyTable("table"); // Pass tableid
 		}
 		else if (whichType === "excel") {
-			downloadExcel(exportData, 'Station-list.xlsx') // Pass data and filename
+			downloadExcel(exportData, 'data-list.xlsx') // Pass data and filename
 		}
 		else if (whichType === "print") {
-			printTable(tableRef, "Police Station List"); // Pass table ref and title
+			printTable(tableRef, "Data"); // Pass table ref and title
 		}
 		else if (whichType === "pdf") {
-			let document = exportPdf('Police Station List', exportData);
-			downloadPdf(document)
+			let document = exportPdf('Item List', exportData);
+			downloadPdf(document);
 		}
 	}
 
 
 	return (
 		<>
-			<Nav title={"Police Station Table"} />
+			<Nav title={"Manage Extra Payment"} />
 			<main id='main'>
 				<SideNav />
 				<Tooltip id='itemTooltip' />
 				<div className='content__body'>
+
 					{
 						!loading ? <div className='content__body__main'>
+							<div className='w-full flex gap-1 items-center border-b pb-1'>
+								<Icons.RUPES />
+								<span className='font-semibold'>Extra Payment Table</span>
+							</div>
 							<div className={`add_new_compnent`}>
 								<div className='flex justify-between items-center'>
 									<div className='flex flex-col'>
@@ -172,28 +182,27 @@ const PoliceStation = () => {
 									</div>
 									<div className='flex items-center gap-2'>
 										<div className='flex w-full flex-col lg:w-[300px]'>
-											<input type='text'
+											<input type='search'
 												placeholder='Search...'
 												onChange={searchTableDatabase}
-												className='p-[6px]'
 											/>
 										</div>
 										{!isTrash && <button
-											onClick={() => deleteData(selected, "police-station", true)}
+											onClick={() => deleteData(selected, "admin", true)}
 											className={`${selected.length > 0 ? 'bg-red-400 text-white' : 'bg-gray-100'}`}>
 											<Icons.DELETE className='text-lg' />
 											Trash
 										</button>}
 										{
 											isTrash && <button
-												onClick={() => restoreData(selected, "police-station")}
+												onClick={() => restoreData(selected, "admin")}
 												className={`${selected.length > 0 ? 'bg-[#003E32] text-white' : 'bg-gray-100'}`}>
 												<Icons.RESTORE className='text-lg' />
 												Restore
 											</button>
 										}
 										<button
-											onClick={() => deleteData(selected, 'police-station')}
+											onClick={() => deleteData(selected, "admin")}
 											className={`${selected.length > 0 ? 'bg-red-400 text-white' : 'bg-gray-100'} border`}>
 											<Icons.DELETE className='text-lg' />
 											Delete
@@ -212,7 +221,7 @@ const PoliceStation = () => {
 											View Trash
 										</button>
 										<button
-											onClick={() => navigate("/admin/police-station/add")}
+											onClick={() => navigate("/admin/other-payment/add")}
 											className='bg-[#003E32] text-white '>
 											<Icons.ADD className='text-lg text-white' />
 											Add New
@@ -248,29 +257,37 @@ const PoliceStation = () => {
 							</div>
 
 							{/* Table start */}
-							<div className='overflow-x-auto list__table'>
+							<div className='overflow-x-auto list__table list__table__checkin'>
 								<table className='min-w-full bg-white' id='table' ref={tableRef}>
 									<thead className='bg-gray-100 list__table__head'>
 										<tr>
-											<td className='w-[50px]' align='center'>
+											<td align='center'>
 												<input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
 											</td>
-											<td>Name</td>
-											<td>District</td>
+											<td>Hotel</td>
+											<td>Date</td>
+											<td>Amount</td>
+											<td>Purpose</td>
+											<td>Status</td>
+											<td>Ref. ID</td>
 											<td align='center'>Action</td>
 										</tr>
 									</thead>
 									<tbody>
 										{
-											data?.map((d, i) => {
-												return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
+											data.map((d, i) => {
+												return <tr key={i} className='hover:bg-gray-100'>
 													<td align='center'>
 														<input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
 													</td>
-													<td>{d.name}</td>
-													<td>{d.district?.name}</td>
+													<td>
+														{d.name}
+													</td>
+													<td>{d.role}</td>
+													<td>{d.contact}</td>
+													<td>{d.designation}</td>
 
-													<td align='center'>
+													<td className='px-4 text-center'>
 														<Whisper
 															placement='leftStart'
 															trigger={"click"}
@@ -280,7 +297,7 @@ const PoliceStation = () => {
 																	className='table__list__action__icon'
 																	onClick={(e) => {
 																		e.stopPropagation()
-																		navigate("/admin/police-station/edit/" + d._id)
+																		navigate("/admin/user/edit/" + d._id)
 																	}}
 																>
 																	<Icons.EDIT className='text-[16px]' />
@@ -290,7 +307,7 @@ const PoliceStation = () => {
 																	className='table__list__action__icon'
 																	onClick={(e) => {
 																		e.stopPropagation()
-																		deleteData(d._id, "police-station");
+																		deleteData(d._id, "admin");
 																	}}
 																>
 																	<Icons.DELETE className='text-[16px]' />
@@ -300,7 +317,7 @@ const PoliceStation = () => {
 																	className='table__list__action__icon'
 																	onClick={(e) => {
 																		e.stopPropagation()
-																		deleteData(d._id, "police-station", true);
+																		deleteData(d._id, "admin", true);
 																	}}
 																>
 																	<Icons.DELETE className='text-[16px]' />
@@ -319,7 +336,7 @@ const PoliceStation = () => {
 										}
 									</tbody>
 								</table>
-								{data.length < 1 && <NoData />}
+								{data.length < 1 && <NoData/> }
 							</div>
 							{data.length > 0 && <div className='paginate__parent'>
 								<p>Showing {data.length} of {totalData} entries</p>
@@ -339,4 +356,4 @@ const PoliceStation = () => {
 	)
 }
 
-export default PoliceStation;
+export default OtherPaymentList;

@@ -36,6 +36,11 @@ const Pagination = ({ activePage, totalData, dataLimit, setActivePage }) => {
     return pages;
   };
 
+  
+  if(dataLimit > totalData){
+    return;
+  }
+
   return (
     <div className="flex justify-end items-center space-x-2">
       {/* Back button */}

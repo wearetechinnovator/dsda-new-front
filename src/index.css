@@ -84,6 +84,7 @@ nav {
 }
  nav h6{
   font-weight: 400;
+  text-transform: uppercase;
  }
 
 .nav__profile__area {
@@ -527,9 +528,10 @@ select:hover {
   @apply px-3 py-1 rounded flex items-center gap-1 text-[13px] border;
 }
 
-.add_new_compnent input {
+.add_new_compnent input[type='search']{
   padding: 5px !important;
 }
+
 
 .add_new_compnent select {
   padding: 1px !important;
@@ -899,7 +901,7 @@ input[type="checkbox"]:checked::before {
 
 
 .form__btn__grp {
-  @apply flex justify-center mt-8 mb-4 gap-4;
+  @apply flex justify-center mt-4 gap-4;
 }
 
 .form__btn__grp button {

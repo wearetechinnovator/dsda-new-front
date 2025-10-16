@@ -151,13 +151,13 @@ const SideNav = () => {
 
             <ul className='sidebar__sub__menu sidebar__sub__menu__amenities'>
               <li><Link to="/admin/amenities-charges/overall-date-wise">Overall Date Wise</Link></li>
-              <li><Link to="/admin/amenities-charges/total-till-today-hotel-wise">Total Till Today Hotel Wise</Link></li>
-              <li><Link to="/admin/amenities-charges/today-hotel-wise">Today Hotel Wise</Link></li>
-              <li><Link to="/admin/amenities-charges/paid-due-hotel-wise">Paid & Due Hotel Wise</Link></li>
+              <li><Link to="/admin/amenities-charges/hotel-wise/today">Total Till Today Hotel Wise</Link></li>
+              <li><Link to="/admin/amenities-charges/hotel-wise">Today Hotel Wise</Link></li>
+              <li><Link to="/admin/amenities-charges/amenities-payment">Paid & Due Hotel Wise</Link></li>
             </ul>
           </li>
-          <Link to={"/admin/other-payments"} data-tooltip-id="sideBarItemToolTip">
-            <li className={`flex items-center ${activePath.search("/admin/other-payments") >= 0 ? 'active__link' : ''}`}>
+          <Link to={"/admin/other-payment"} data-tooltip-id="sideBarItemToolTip">
+            <li className={`flex items-center ${activePath.search("/admin/other-payment") >= 0 ? 'active__link' : ''}`}>
               <span className='mr-3'><Icons.RUPES /></span>
               <span>Other Payments</span>
             </li>
@@ -165,13 +165,6 @@ const SideNav = () => {
         </div>
       </div>
       <Tooltip id='sideBarItemToolTip' />
-      {/* <div
-        onClick={toggleSideBar}
-        className='cursor-pointer flex justify-center items-center p-2 text-center bg-[#003628] w-full sticky bottom-0 text-xl'>
-        <IoIosArrowForward
-          className='transition-all'
-          id='toggler' />
-      </div> */}
     </aside>
   );
 }

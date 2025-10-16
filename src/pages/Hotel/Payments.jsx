@@ -86,6 +86,7 @@ const Payments = () => {
                             <div className='w-full mt-3'>
                                 <p>Select Month *</p>
                                 <SelectPicker
+                                    block
                                     className='w-full'
                                     data={months}
                                 />
@@ -93,6 +94,7 @@ const Payments = () => {
                             <div className='w-full mt-3'>
                                 <p>Select Year*</p>
                                 <SelectPicker
+                                    block
                                     className='w-full'
                                     data={years}
                                 />

@@ -13,6 +13,7 @@ import { Icons } from '../../../../helper/icons';
 import Pagination from '../../../../components/Admin/Pagination';
 import useApi from '../../../../hooks/useApi';
 import useSetTableFilter from '../../../../hooks/useSetTableFilter';
+import NoData from '../../../../components/Admin/NoData';
 
 
 
@@ -259,7 +260,7 @@ const Block = () => {
 									</thead>
 									<tbody>
 										{
-											data.map((d, i) => {
+											data?.map((d, i) => {
 												return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
 													<td align='center'>
 														<input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
@@ -308,27 +309,27 @@ const Block = () => {
 															</div>
 														</Whisper>
 													</td>
-
 												</tr>
 											})
 										}
 									</tbody>
 								</table>
-								<div className='paginate__parent'>
-									<p>Showing {data.length} of {totalData} entries</p>
-									<Pagination
-										activePage={activePage}
-										setActivePage={setActivePage}
-										totalData={totalData}
-										dataLimit={dataLimit}
-									/>
-								</div>
+								{data.length < 1 && <NoData />}
 							</div>
+							{data.length > 0 && <div className='paginate__parent'>
+								<p>Showing {data.length} of {totalData} entries</p>
+								<Pagination
+									activePage={activePage}
+									setActivePage={setActivePage}
+									totalData={totalData}
+									dataLimit={dataLimit}
+								/>
+							</div>}
 						</div>
 						: <DataShimmer />
 					}
 				</div>
-			</main>
+			</main >
 		</>
 	)
 }

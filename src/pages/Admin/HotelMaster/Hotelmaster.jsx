@@ -12,6 +12,7 @@ import { Icons } from '../../../helper/icons';
 import Pagination from '../../../components/Admin/Pagination';
 import useApi from '../../../hooks/useApi';
 import useSetTableFilter from '../../../hooks/useSetTableFilter';
+import NoData from '../../../components/Admin/NoData';
 
 
 const Hotelmaster = ({ mode }) => {
@@ -67,6 +68,7 @@ const Hotelmaster = ({ mode }) => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
+            console.log(res.data)
             if (req.status === 200) {
                 setTotalData(res.total)
                 setData([...res.data])
@@ -184,7 +186,7 @@ const Hotelmaster = ({ mode }) => {
                                     </div>
                                     <div className='flex items-center gap-2'>
                                         <div className='flex w-full flex-col lg:w-[300px]'>
-                                            <input type='text'
+                                            <input type='search'
                                                 placeholder='Search...'
                                                 onChange={searchTableDatabase}
                                                 className='p-[6px]'
@@ -298,11 +300,11 @@ const Hotelmaster = ({ mode }) => {
                                                     <td>{d?.hotel_proprietor_name || "--"}</td>
                                                     <td>{d?.hotel_username}</td>
                                                     <td>{
-                                                        d?.hotel_restaurant === "1" ?
+                                                        d?.hotel_has_restaurant === "1" ?
                                                             <span className='chip chip__green'> Yes </span> :
                                                             <span className='chip chip__red'> No </span>
                                                     }</td>
-                                                    <td>{d?.hotel_conference_hall === "1" ?
+                                                    <td>{d?.hotel_has_conference_hall === "1" ?
                                                         <span className='chip chip__green'> Yes </span> :
                                                         <span className='chip chip__red'> No </span>
                                                     }</td>
@@ -310,7 +312,7 @@ const Hotelmaster = ({ mode }) => {
                                                         <span className='chip chip__green'> Yes </span> :
                                                         <span className='chip chip__red'> No </span>
                                                     }</td>
-                                                    <td>{d?.hotel_has_swiming_pool === "1" ?
+                                                    <td>{d?.hotel_has_swimming_pool === "1" ?
                                                         <span className='chip chip__green'> Yes </span> :
                                                         <span className='chip chip__red'> No </span>
                                                     }</td>
@@ -345,22 +347,22 @@ const Hotelmaster = ({ mode }) => {
                                                             </div>
                                                         </Whisper>
                                                     </td>
-
                                                 </tr>
                                             })
                                         }
                                     </tbody>
                                 </table>
-                                <div className='paginate__parent'>
-                                    <p>Showing {data.length} of {totalData} entries</p>
-                                    <Pagination
-                                        activePage={activePage}
-                                        totalData={totalData}
-                                        dataLimit={dataLimit}
-                                        setActivePage={setActivePage}
-                                    />
-                                </div>
+                                {data.length < 1 && <NoData />}
                             </div>
+                            {data.length > 0 && <div className='paginate__parent'>
+                                <p>Showing {data.length} of {totalData} entries</p>
+                                <Pagination
+                                    activePage={activePage}
+                                    totalData={totalData}
+                                    dataLimit={dataLimit}
+                                    setActivePage={setActivePage}
+                                />
+                            </div>}
                         </div>
                             // : <AddNew title={"Item"} link={"/admin/item/add"} />
                             : <DataShimmer />

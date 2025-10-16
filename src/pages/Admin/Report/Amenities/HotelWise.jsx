@@ -16,15 +16,13 @@ import NoData from "../../../../components/Admin/NoData";
 
 
 
-const TodayHotelWise = () => {
+const HotelWise = () => {
     const currentLocation = useLocation();
     const isTodayFootFallPage = currentLocation.pathname?.endsWith("/today");
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
-    const { getFilterState, setFilterState } = useSetTableFilter();
-    const savedFilter = getFilterState("todayhotel-wise");
-    const [activePage, setActivePage] = useState(savedFilter?.activePage || 1);
-    const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
+    const [activePage, setActivePage] = useState(1);
+    const [dataLimit, setDataLimit] = useState(10);
     const [totalData, setTotalData] = useState()
     const [hotelList, setHotelList] = useState([]);
     const [data, setData] = useState([]);
@@ -58,16 +56,7 @@ const TodayHotelWise = () => {
         endDate: isTodayFootFallPage ? new Date().toISOString().split("T")[0] : "",
         month: '', year: ''
     })
-    const [filterBlock, setFilterBlock] = useState([]);
-    const [filterZone, setFilterZone] = useState([]);
-    const [filterSector, setFilterSector] = useState([]);
-    const [filterDistrict, setFilterDistrict] = useState([]);
-    const [filterPoliceStation, setFilterPoliceStation] = useState([]);
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const [tableTotalValues, setTableTotalValues] = useState({
-        footfall: '', male: '', female: '', adult: '', child: '', indian: '',
-        foreigner: '', amenitis: '', otherGender: ''
-    })
     const [navTitle, setNavTitle] = useState("")
 
 
@@ -79,14 +68,14 @@ const TodayHotelWise = () => {
                 startDate: new Date().toISOString().split("T")[0],
                 endDate: new Date().toISOString().split("T")[0]
             })
-            setNavTitle(`Footfall Stats of Today(${new Date().getDate()} ${monthNames[new Date().getMonth()]}, ${new Date().getFullYear()})`)
+            setNavTitle(`Amenities Stats of Today(${new Date().getDate()} ${monthNames[new Date().getMonth()]}, ${new Date().getFullYear()})`)
         } else {
             setSelectedFilters({
                 ...selectedFilters,
                 startDate: '',
                 endDate: ''
             })
-            setNavTitle('Footfall Stats')
+            setNavTitle('Amenities Stats')
         }
     }, [currentLocation])
 
@@ -98,17 +87,10 @@ const TodayHotelWise = () => {
                 token: Cookies.get("token"),
                 page: activePage,
                 limit: dataLimit,
-                zone: selectedFilters.zone,
-                block: selectedFilters.block,
-                sector: selectedFilters.sector,
-                district: selectedFilters.district,
-                policeStation: selectedFilters.policeStation,
                 hotelId: selectedHotel,
                 startDate: selectedFilters.startDate,
                 endDate: selectedFilters.endDate
             }
-            console.log(data);
-            setFilterState("todayhotel-wise", dataLimit, activePage);
             const url = process.env.REACT_APP_BOOKING_API + `/check-in/tourist-data/footfall-daywise`;
             const req = await fetch(url, {
                 method: "POST",
@@ -122,31 +104,6 @@ const TodayHotelWise = () => {
                 setTotalData(res.total)
                 setData([...res.data])
                 setLoading(false);
-
-                let totalmale = 0;
-                let totalfemale = 0;
-                let totaladult = 0;
-                let totalchild = 0;
-                let totalindian = 0;
-                let totalforeigner = 0;
-                let totalothergender = 0;
-                let totalfootfall = 0;
-                let totalamenities = 0;
-
-                res.data.forEach((d, _) => {
-                    totalmale += d.totalMale;
-                    totalfemale += d.totalFemale;
-                    totaladult += d.totalAdult;
-                    totalchild += d.totalChild;
-                    totalindian += d.totalIndian;
-                    totalforeigner += d.totalForeigner;
-                    totalothergender += d.totalOtherGender;
-                })
-                setTableTotalValues({
-                    male: totalmale, female: totalfemale, adult: totaladult,
-                    child: totalchild, indian: totalindian, foreigner: totalforeigner,
-                    otherGender: totalothergender
-                })
 
             } else {
                 // setLoading(false); 
@@ -164,11 +121,11 @@ const TodayHotelWise = () => {
 
 
     // ::::::::::::::::::: [ ALL SEARCH FILTER CODE HERE ] :::::::::::::
-    const searchTableDatabase = (txt, model) => {
+    const searchTableDatabase = (txt) => {
         if (timeRef.current) clearTimeout(timeRef.current);
 
         timeRef.current = setTimeout(async () => {
-            if (!txt && model === "hotel") {
+            if (!txt) {
                 get();
                 return;
             }
@@ -178,7 +135,7 @@ const TodayHotelWise = () => {
                     token: Cookies.get("token"),
                     search: txt
                 }
-                const url = process.env.REACT_APP_MASTER_API + `/${model}/get`;
+                const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
                 const req = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -187,11 +144,8 @@ const TodayHotelWise = () => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
-                if (model === "hotel") {
-                    setTotalData(res.length)
-                    setHotelList([...res])
-                }
-
+                setTotalData(res.length);
+                setHotelList([...res]);
             } catch (error) {
                 console.log(error)
             }
@@ -202,44 +156,20 @@ const TodayHotelWise = () => {
 
 
     // :::::::::::::::::: [GET ALL FILTER DATA WITHOUT HOTEL] ::::::::::::
-    const getFilters = async (model) => {
-        const data = {
-            token: Cookies.get("token")
-        }
-        const url = process.env.REACT_APP_MASTER_API + `/${model}/get`
-        const req = await fetch(url, {
+    const getFilters = async () => {
+        const req = await fetch(process.env.REACT_APP_MASTER_API + `/hotel/get`, {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify({ token: Cookies.get("token") })
         })
         const res = await req.json();
+        setHotelList([...res.data]);
 
-        if (model === "block") {
-            setFilterBlock([...res.data])
-        } else if (model === "zone") {
-            setFilterZone([...res.data]);
-        } else if (model === "sector") {
-            setFilterSector([...res.data]);
-        }
-        else if (model === "district") {
-            setFilterDistrict([...res.data]);
-        }
-        else if (model === "police-station") {
-            setFilterPoliceStation([...res.data]);
-        }
-        else if (model === "hotel") {
-            setHotelList([...res.data]);
-        }
     }
     useEffect(() => {
-        getFilters("block");
-        getFilters("zone");
-        getFilters("sector");
-        getFilters("district");
-        getFilters("police-station");
-        getFilters("hotel");
+        getFilters();
     }, [])
 
 
@@ -330,21 +260,7 @@ const TodayHotelWise = () => {
                         </div>
 
                         <div className='mt-3 w-full border-t pt-2'>
-                            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-3 text-[13px]'>
-                                <div className='w-full'>
-                                    <p className='mb-1'>Start Date<span className='required__text'>*</span></p>
-                                    <input type="date"
-                                        value={selectedFilters.startDate}
-                                        onChange={(e) => setSelectedFilters({ ...selectedFilters, startDate: e.target.value })}
-                                    />
-                                </div>
-                                <div className='w-full'>
-                                    <p className='mb-1'>End Date<span className='required__text'>*</span></p>
-                                    <input type="date"
-                                        value={selectedFilters.endDate}
-                                        onChange={(e) => setSelectedFilters({ ...selectedFilters, endDate: e.target.value })}
-                                    />
-                                </div>
+                            <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 w-full mt-3 text-[13px]'>
                                 <div className='w-full'>
                                     <p className='mb-1'>Hotel List</p>
                                     <SelectPicker
@@ -367,103 +283,17 @@ const TodayHotelWise = () => {
                                     />
                                 </div>
                                 <div className='w-full'>
-                                    <p className='mb-1'>Zone<span className='required__text'>*</span></p>
-                                    <SelectPicker
-                                        block
-                                        data={[
-                                            ...filterZone.map((item) => ({
-                                                label: item.name,
-                                                value: item._id
-                                            }))
-                                        ]}
-                                        style={{ width: '100%' }}
-                                        onChange={(v) => setSelectedFilters({ ...selectedFilters, zone: v })}
-                                        value={selectedFilters.zone}
-                                        placeholder="Select"
-                                        searchable={true}
-                                        cleanable={true}
-                                        placement='bottomEnd'
-                                        onSearch={(serachTxt) => searchTableDatabase(serachTxt, "zone")}
+                                    <p className='mb-1'>Start Date<span className='required__text'>*</span></p>
+                                    <input type="date"
+                                        value={selectedFilters.startDate}
+                                        onChange={(e) => setSelectedFilters({ ...selectedFilters, startDate: e.target.value })}
                                     />
                                 </div>
                                 <div className='w-full'>
-                                    <p className='mb-1'>Sector<span className='required__text'>*</span></p>
-                                    <SelectPicker
-                                        block
-                                        data={[
-                                            ...filterSector.map((item) => ({
-                                                label: item.name,
-                                                value: item._id
-                                            }))
-                                        ]}
-                                        style={{ width: '100%' }}
-                                        onChange={(v) => setSelectedFilters({ ...selectedFilters, sector: v })}
-                                        value={selectedFilters.sector}
-                                        placeholder="Select"
-                                        searchable={true}
-                                        cleanable={true}
-                                        placement='bottomEnd'
-                                        onSearch={(serachTxt) => searchTableDatabase(serachTxt, "sector")}
-                                    />
-                                </div>
-                                <div className='w-full'>
-                                    <p className='mb-1'>Block<span className='required__text'>*</span></p>
-                                    <SelectPicker
-                                        block
-                                        data={[
-                                            ...filterBlock.map((item) => ({
-                                                label: item.name,
-                                                value: item._id
-                                            }))
-                                        ]}
-                                        style={{ width: '100%' }}
-                                        onChange={(v) => setSelectedFilters({ ...selectedFilters, block: v })}
-                                        value={selectedFilters.block}
-                                        placeholder="Select"
-                                        searchable={true}
-                                        cleanable={true}
-                                        placement='bottomEnd'
-                                        onSearch={(serachTxt) => searchTableDatabase(serachTxt, "block")}
-                                    />
-                                </div>
-                                <div className='w-full'>
-                                    <p className='mb-1'>District<span className='required__text'>*</span></p>
-                                    <SelectPicker
-                                        block
-                                        data={[
-                                            ...filterDistrict.map((item) => ({
-                                                label: item.name,
-                                                value: item._id
-                                            }))
-                                        ]}
-                                        style={{ width: '100%' }}
-                                        onChange={(v) => setSelectedFilters({ ...selectedFilters, district: v })}
-                                        value={selectedFilters.district}
-                                        placeholder="Select"
-                                        searchable={true}
-                                        cleanable={true}
-                                        placement='bottomEnd'
-                                        onSearch={(serachTxt) => searchTableDatabase(serachTxt, "district")}
-                                    />
-                                </div>
-                                <div className='w-full'>
-                                    <p className='mb-1'>Police Station<span className='required__text'>*</span></p>
-                                    <SelectPicker
-                                        block
-                                        data={[
-                                            ...filterPoliceStation.map((item) => ({
-                                                label: item.name,
-                                                value: item._id
-                                            }))
-                                        ]}
-                                        style={{ width: '100%' }}
-                                        onChange={(v) => setSelectedFilters({ ...selectedFilters, policeStation: v })}
-                                        value={selectedFilters.policeStation}
-                                        placeholder="Select"
-                                        searchable={true}
-                                        cleanable={true}
-                                        placement='bottomEnd'
-                                        onSearch={(serachTxt) => searchTableDatabase(serachTxt, "police-station")}
+                                    <p className='mb-1'>End Date<span className='required__text'>*</span></p>
+                                    <input type="date"
+                                        value={selectedFilters.endDate}
+                                        onChange={(e) => setSelectedFilters({ ...selectedFilters, endDate: e.target.value })}
                                     />
                                 </div>
                             </div>
@@ -494,15 +324,8 @@ const TodayHotelWise = () => {
                                         <td>Block</td>
                                         <td>Police Station</td>
                                         <td>District</td>
-                                        <td>Footfall</td>
-                                        <td>Male</td>
-                                        <td>Female</td>
-                                        <td>Other Gender</td>
-                                        <td>Adult</td>
-                                        <td>Child</td>
-                                        <td>Indian</td>
-                                        <td>Foreigner</td>
-                                        <td>Amenity Charge</td>
+                                        <td>Total Guest(s) Enrolled</td>
+                                        <td>Total Charges (₹)</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -515,54 +338,10 @@ const TodayHotelWise = () => {
                                                 <td>{d?.hotel_details?.hotel_sector_id?.name}</td>
                                                 <td>{d?.hotel_details?.hotel_block_id?.name}</td>
                                                 <td>{d?.hotel_details?.hotel_police_station_id?.name}</td>
-                                                <td>{d?.hotel_details?.hotel_district_id?.name}</td>
-                                                <td>--</td>
-                                                <td>{d?.totalMale}</td>
-                                                <td>{d?.totalFemale}</td>
-                                                <td>{d?.totalOtherGender}</td>
-                                                <td>{d?.totalAdult}</td>
-                                                <td>{d?.totalChild}</td>
-                                                <td>{d?.totalIndian}</td>
-                                                <td>{d?.totalForeigner}</td>
-                                                <td>--</td>
                                             </tr>
                                         })
                                     }
-
-                                    {/* Total Calculation */}
-                                    {data.length > 0 && <tr align="right">
-                                        <td colSpan={7} className="font-bold">Total</td>
-                                        <td align="center" className="font-semibold">{tableTotalValues.footfall}</td>
-                                        <td align="center" className="font-semibold">{tableTotalValues.male}</td>
-                                        <td align="center" className="font-semibold">{tableTotalValues.female}</td>
-                                        <td align="center" className="font-semibold">{tableTotalValues.otherGender}</td>
-                                        <td align="center" className="font-semibold">{tableTotalValues.adult}</td>
-                                        <td align="center" className="font-semibold">{tableTotalValues.child}</td>
-                                        <td align="center" className="font-semibold">{tableTotalValues.indian}</td>
-                                        <td align="center" className="font-semibold">{tableTotalValues.foreigner}</td>
-                                        <td align="center" className="font-semibold">{tableTotalValues.amenitis}</td>
-                                    </tr>}
                                 </tbody>
-                                {data.length > 0 && <tfoot className='bg-gray-100 list__table__head'>
-                                    <tr>
-                                        <td className='w-[5%]' align='center'>SL No.</td>
-                                        <td className='w-[15%]'>Hotel Name</td>
-                                        <td className=''>Zone</td>
-                                        <td>Sector</td>
-                                        <td>Block</td>
-                                        <td>Police Station</td>
-                                        <td>District</td>
-                                        <td>Footfall</td>
-                                        <td>Male</td>
-                                        <td>Female</td>
-                                        <td>Other Gender</td>
-                                        <td>Adult</td>
-                                        <td>Child</td>
-                                        <td>Indian</td>
-                                        <td>Foreigner</td>
-                                        <td>Amenity Charge</td>
-                                    </tr>
-                                </tfoot>}
                             </table>
                             {data.length < 1 && <NoData />}
                         </div> : <DataShimmer />}
@@ -582,4 +361,4 @@ const TodayHotelWise = () => {
     )
 }
 
-export default TodayHotelWise;
+export default HotelWise;

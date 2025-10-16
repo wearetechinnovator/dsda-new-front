@@ -10,6 +10,7 @@ import { Popover, SelectPicker, Whisper } from 'rsuite';
 import { Icons } from '../../../helper/icons';
 import Pagination from '../../../components/Admin/Pagination';
 import useSetTableFilter from '../../../hooks/useSetTableFilter';
+import NoData from '../../../components/Admin/NoData'
 
 
 
@@ -37,6 +38,7 @@ const BedAvailablity = () => {
     const [loading, setLoading] = useState(true);
     const timeRef = useRef(null);
     const [selectedHotel, setSelectedHotel] = useState(null);
+    const [hotelList, setHotelList] = useState([]);
 
 
     // :::::::::::::::::::::: [GET ALL HOTEL] :::::::::::::::::;
@@ -60,6 +62,7 @@ const BedAvailablity = () => {
             const res = await req.json();
             setTotalData(res.total)
             setData([...res.data])
+            setHotelList([...res.data]);
             setLoading(false);
 
         } catch (error) {
@@ -70,23 +73,23 @@ const BedAvailablity = () => {
         get();
     }, [dataLimit, activePage])
 
+
     // ::::::::::::::::::::::::::: [ ALL SEARCH FILTER CODE HERE ] ::::::::::::::::::::::::::
-    const searchTableDatabase = (txt, model) => {
+    const searchTableDatabase = (txt, from) => {
         if (timeRef.current) clearTimeout(timeRef.current);
 
         timeRef.current = setTimeout(async () => {
-            if (!txt && model === "hotel") {
+            if (!txt) {
                 get();
                 return;
             }
-
             try {
                 const data = {
                     token: Cookies.get("token"),
                     search: txt,
                     occupied: true // Get Occupied field also;
                 }
-                const url = process.env.REACT_APP_MASTER_API + `/${model}/get`;
+                const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
                 const req = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -95,10 +98,15 @@ const BedAvailablity = () => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
-                if (model === "hotel") {
+
+                if (from === "picker") {
+                    setHotelList([...res]);
+                } else {
                     setTotalData(res.length)
                     setData([...res])
                 }
+
+
 
             } catch (error) {
                 console.log(error)
@@ -151,9 +159,9 @@ const BedAvailablity = () => {
                             </div>
                             <div className='flex items-center gap-2'>
                                 <div className='flex w-full flex-col lg:w-[300px]'>
-                                    <input type='text'
+                                    <input type='search'
                                         placeholder='Search...'
-                                        onChange={(e) => searchTableDatabase(e.target.value, "hotel")}
+                                        onChange={(e) => searchTableDatabase(e.target.value)}
                                         className='p-[6px]'
                                     />
                                 </div>
@@ -193,7 +201,7 @@ const BedAvailablity = () => {
                                     <SelectPicker
                                         block
                                         data={[
-                                            ...data.map((item) => ({
+                                            ...hotelList.map((item) => ({
                                                 label: item.hotel_name,
                                                 value: item.hotel_name
                                             }))
@@ -205,7 +213,7 @@ const BedAvailablity = () => {
                                         searchable={true}
                                         cleanable={true}
                                         placement='bottomEnd'
-                                        onSearch={(serachTxt) => searchTableDatabase(serachTxt, "hotel")}
+                                        onSearch={(serachTxt) => searchTableDatabase(serachTxt, "picker")}
                                     />
                                 </div>
                                 {/* <div className="w-full">
@@ -284,8 +292,9 @@ const BedAvailablity = () => {
                                         }
                                     </tbody>
                                 </table>
+                                {data.length < 1 && <NoData />}
                             </div>
-                            <div className='paginate__parent'>
+                            {data.length > 0 && <div className='paginate__parent'>
                                 <p>Showing {data.length} of {totalData} entries</p>
                                 <Pagination
                                     activePage={activePage}
@@ -293,7 +302,7 @@ const BedAvailablity = () => {
                                     dataLimit={dataLimit}
                                     setActivePage={setActivePage}
                                 />
-                            </div>
+                            </div>}
                         </div>
                         : <DataShimmer />
                     }

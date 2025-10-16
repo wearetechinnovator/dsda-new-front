@@ -41,6 +41,11 @@ const BedAvailablity = React.lazy(() => import("./pages/Admin/Report/BedAvailabl
 const DateWiseFootFall = React.lazy(() => import("./pages/Admin/Report/TouristData/DateWise"));
 const TodayHotelWise = React.lazy(() => import("./pages/Admin/Report/TouristData/TodayHotelWise"));
 const TouristDetails = React.lazy(() => import("./pages/Admin/Report/TouristData/TouristDetails"));
+const OtherPaymentList = React.lazy(() => import("./pages/Admin/OtherPayment/OtherPaymentList"));
+const OtherPaymentAdd = React.lazy(() => import("./pages/Admin/OtherPayment/OtherPaymentAdd"));
+const OverallDateWise = React.lazy(() => import("./pages/Admin/Report/Amenities/DateWise"));
+const HotelWise = React.lazy(() => import("./pages/Admin/Report/Amenities/HotelWise"));
+const PaidAndDueHotel = React.lazy(() => import("./pages/Admin/Report/Amenities/PaidAndDueHotel"));
 
 
 // Hotel Dashboard
@@ -60,9 +65,9 @@ const Amenities = React.lazy(() => import("./pages/Hotel/Amenities"));
 const Payments = React.lazy(() => import("./pages/Hotel/Payments"));
 const OtherPayments = React.lazy(() => import("./pages/Hotel/OtherPayments"));
 const FinalCheckOut = React.lazy(() => import('./pages/Hotel/FinalCheckOut'));
-const BookingBillDetails = React.lazy(()=>import('./pages/Hotel/BookingBillDetails'));
-const BookingBillPrint = React.lazy(()=>import("./pages/Hotel/BookingBillPrint"));
-const CheckOutDetails = React.lazy(()=>import('./pages/Hotel/CheckOutDetails'));
+const BookingBillDetails = React.lazy(() => import('./pages/Hotel/BookingBillDetails'));
+const BookingBillPrint = React.lazy(() => import("./pages/Hotel/BookingBillPrint"));
+const CheckOutDetails = React.lazy(() => import('./pages/Hotel/CheckOutDetails'));
 
 
 const App = () => {
@@ -164,6 +169,17 @@ const App = () => {
           <Route path="report/tourist-data/footfall-hotel" element={<DateWiseFootFall />} />
           <Route path="report/tourist-data/footfall-hotel/today" element={<TodayHotelWise />} />
           <Route path="report/tourist-data/tourist-details" element={<TouristDetails />} />
+
+          {/* other payment */}
+          <Route path="other-payment" element={<OtherPaymentList />} />
+          <Route path="other-payment/add" element={<OtherPaymentAdd />} />
+          <Route path="other-payment/edit/:id" element={<OtherPaymentAdd mode="edit" />} />
+
+          {/* Amenities */}
+          <Route path="amenities-charges/overall-date-wise" element={<OverallDateWise />} />
+          <Route path="amenities-charges/hotel-wise" element={<HotelWise />} />
+          <Route path="amenities-charges/hotel-wise/today" element={<HotelWise />} />
+          <Route path="amenities-charges/amenities-payment" element={<PaidAndDueHotel />} />
         </Route>
 
 

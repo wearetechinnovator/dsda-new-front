@@ -10,6 +10,7 @@ import { Popover, SelectPicker, Whisper } from 'rsuite';
 import { Icons } from '../../../helper/icons';
 import Pagination from '../../../components/Admin/Pagination';
 import useSetTableFilter from '../../../hooks/useSetTableFilter';
+import NoData from '../../../components/Admin/NoData'
 
 
 
@@ -82,6 +83,7 @@ const HotelList = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
+            console.log(res.data);
             setTotalData(res.total)
             setData([...res.data])
             setLoading(false);
@@ -440,16 +442,16 @@ const HotelList = () => {
                                                     <td>{d?.hotel_proprietor_phone || "--"}</td>
                                                     <td>{d?.hotel_proprietor_name || "--"}</td>
                                                     <td>{d?.hotel_manager_name || "--"}</td>
-                                                    <td>{d?.hotel_manager_name || "--"}</td>
+                                                    <td>{d?.hotel_manager_phone || "--"}</td>
                                                     <td>{d?.hotel_manager_phone_alternative || "--"}</td>
                                                     <td>{d?.hotel_total_room || "--"}</td>
                                                     <td>{d?.hotel_total_bed || "--"}</td>
                                                     <td>{
-                                                        d?.hotel_restaurant === "1" ?
+                                                        d?.hotel_has_restaurant === "1" ?
                                                             <span className='chip chip__green'> Yes </span> :
                                                             <span className='chip chip__red'> No </span>
                                                     }</td>
-                                                    <td>{d?.hotel_conference_hall === "1" ?
+                                                    <td>{d?.hotel_has_conference_hall === "1" ?
                                                         <span className='chip chip__green'> Yes </span> :
                                                         <span className='chip chip__red'> No </span>
                                                     }</td>
@@ -457,7 +459,7 @@ const HotelList = () => {
                                                         <span className='chip chip__green'> Yes </span> :
                                                         <span className='chip chip__red'> No </span>
                                                     }</td>
-                                                    <td>{d?.hotel_has_swiming_pool === "1" ?
+                                                    <td>{d?.hotel_has_swimming_pool === "1" ?
                                                         <span className='chip chip__green'> Yes </span> :
                                                         <span className='chip chip__red'> No </span>
                                                     }</td>
@@ -471,8 +473,9 @@ const HotelList = () => {
                                         }
                                     </tbody>
                                 </table>
+                                {data.length < 1 && <NoData />}
                             </div>
-                            <div className='paginate__parent'>
+                            {data.length > 0 && <div className='paginate__parent'>
                                 <p>Showing {data.length} of {totalData} entries</p>
                                 <Pagination
                                     activePage={activePage}
@@ -480,7 +483,7 @@ const HotelList = () => {
                                     dataLimit={dataLimit}
                                     setActivePage={setActivePage}
                                 />
-                            </div>
+                            </div>}
                         </div>
                         : <DataShimmer />
                     }

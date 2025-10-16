@@ -14,6 +14,7 @@ import base64Data from '../../../helper/getBase64';
 
 
 const AddHotel = ({ mode }) => {
+  const navigate = useNavigate();
   const toast = useMyToaster();
   const { id } = useParams();
   const [hotelCategories, setHotelCategories] = useState([]);
@@ -185,6 +186,7 @@ const AddHotel = ({ mode }) => {
       if (!mode) clearData();
 
       toast(!mode ? "Hotel create success" : "Hotel update success", 'success');
+      navigate('/admin/hotel')
 
     } catch (error) {
       console.log(error);
@@ -779,9 +781,9 @@ const AddHotel = ({ mode }) => {
                               setDocumentData((prev) =>
                                 prev.map((item, i) =>
                                   i === index ? { ...item, selectedDocument: v } : item
-
                                 )
                               );
+                              console.log(v)
                             }}
                             value={documentData[index].selectedDocument}
                             placeholder="Select"
