@@ -6,12 +6,12 @@ import Cookies from 'js-cookie';
 import downloadPdf from '../../helper/downloadPdf';
 import DataShimmer from '../../components/Admin/DataShimmer';
 import { Tooltip } from 'react-tooltip';
-import { Placeholder, Popover, Whisper } from 'rsuite';
+import { Popover, Whisper } from 'rsuite';
 import { Icons } from '../../helper/icons';
 import Pagination from '../../components/Admin/Pagination';
 import useSetTableFilter from '../../hooks/useSetTableFilter';
 import { BsBuildings } from 'react-icons/bs';
-import { FaBed, FaRupeeSign, FaUsers } from 'react-icons/fa';
+import { FaBed } from 'react-icons/fa';
 import { HiUserAdd } from 'react-icons/hi';
 import useMyToaster from '../../hooks/useMyToaster';
 import CardLoading from '../../components/Admin/CardLoader';
@@ -37,7 +37,9 @@ const Dashboard = () => {
       Sector: h.hotel_sector_id?.name,
       Proprietor: h.hotel_block_id?.name,
       PoliceStation: h.hotel_police_station_id?.name,
-      District: h.hotel_district_id?.name
+      District: h.hotel_district_id?.name,
+      "Total Guest(s) Enrolled": h.hotel_total_guest,
+      "Total Charges": h.hotel_total_charges
     }));
   }, [data]);
   const [loading, setLoading] = useState(true);
@@ -142,6 +144,7 @@ const Dashboard = () => {
         }).then(r => r.json())
       ]);
 
+      console.log(resHotel)
       setStatsData(prev => ({
         ...prev,
         allHotels: resAdmin.total_hotel,

@@ -118,6 +118,7 @@ const TodayHotelWise = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
+            console.log(res.data);
             if (req.status === 200) {
                 setTotalData(res.total)
                 setData([...res.data])
@@ -141,11 +142,13 @@ const TodayHotelWise = () => {
                     totalindian += d.totalIndian;
                     totalforeigner += d.totalForeigner;
                     totalothergender += d.totalOtherGender;
+                    totalfootfall += d.totalFootFall;
+                    totalamenities += d.totalAmenitiesCharges
                 })
                 setTableTotalValues({
                     male: totalmale, female: totalfemale, adult: totaladult,
                     child: totalchild, indian: totalindian, foreigner: totalforeigner,
-                    otherGender: totalothergender
+                    otherGender: totalothergender, amenitis:totalamenities, footfall: totalfootfall
                 })
 
             } else {
@@ -516,7 +519,7 @@ const TodayHotelWise = () => {
                                                 <td>{d?.hotel_details?.hotel_block_id?.name}</td>
                                                 <td>{d?.hotel_details?.hotel_police_station_id?.name}</td>
                                                 <td>{d?.hotel_details?.hotel_district_id?.name}</td>
-                                                <td>--</td>
+                                                <td>{d?.totalFootFall}</td>
                                                 <td>{d?.totalMale}</td>
                                                 <td>{d?.totalFemale}</td>
                                                 <td>{d?.totalOtherGender}</td>
@@ -524,7 +527,7 @@ const TodayHotelWise = () => {
                                                 <td>{d?.totalChild}</td>
                                                 <td>{d?.totalIndian}</td>
                                                 <td>{d?.totalForeigner}</td>
-                                                <td>--</td>
+                                                <td>{d?.totalAmenitiesCharges}</td>
                                             </tr>
                                         })
                                     }

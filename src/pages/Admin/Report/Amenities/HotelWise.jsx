@@ -28,23 +28,15 @@ const HotelWise = () => {
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return data && data?.map((h, i) => ({
-            "Sl No.": i + 1,
-            "Hotel Name": h.hotel_details?.hotel_name,
-            Zone: h.hotel_details?.hotel_zone_id?.name,
-            Sector: h.hotel_details?.hotel_sector_id?.name,
-            Block: h.hotel_details?.hotel_block_id?.name,
-            "Police Station": h.hotel_details?.hotel_police_station_id?.name,
-            District: h.hotel_details?.hotel_district_id?.name,
-            Footfall: "--",
-            "Male": h.totalMale,
-            "Female": h.totalFemale,
-            "Other Gender": h.totalOtherGender,
-            "Adult": h.totalAdult,
-            "Child": h.totalChild,
-            "Indian": h.totalIndian,
-            "Foreigner": h.totalForeigner,
-            "Amenity Charge": "--",
+        return data && data.map((h, _) => ({
+            Name: h.hotel_name,
+            Zone: h.hotel_zone_id?.name,
+            Sector: h.hotel_sector_id?.name,
+            Proprietor: h.hotel_block_id?.name,
+            PoliceStation: h.hotel_police_station_id?.name,
+            District: h.hotel_district_id?.name,
+            "Total Guest(s) Enrolled": h.hotel_total_guest,
+            "Total Charges": h.hotel_total_charges
         }));
     }, [data]);
     const [loading, setLoading] = useState(true);
@@ -81,17 +73,14 @@ const HotelWise = () => {
 
     // :::::::::::::::::::::: [GET ALL HOTEL] ::::::::::::::::::::
     const get = async () => {
-        setLoading(true);
         try {
             const data = {
                 token: Cookies.get("token"),
                 page: activePage,
                 limit: dataLimit,
-                hotelId: selectedHotel,
-                startDate: selectedFilters.startDate,
-                endDate: selectedFilters.endDate
+                enrolled: true
             }
-            const url = process.env.REACT_APP_BOOKING_API + `/check-in/tourist-data/footfall-daywise`;
+            const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -100,19 +89,17 @@ const HotelWise = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
+
             if (req.status === 200) {
+                console.log(res);
                 setTotalData(res.total)
                 setData([...res.data])
                 setLoading(false);
-
-            } else {
-                // setLoading(false); 
-                return toast("Hotel data not load", 'error')
             }
+            setLoading(false);
 
         } catch (error) {
             console.log(error)
-            return toast("Hotel data not load", 'error')
         }
     }
     useEffect(() => {
@@ -310,51 +297,119 @@ const HotelWise = () => {
                         </div>
                     </div>
 
-                    {/* Table */}
-                    <div className='content__body__main mt-4'>
-                        {/* Table start */}
-                        {loading === false ? <div className='overflow-x-auto list__table list__table__checkin'>
-                            <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
-                                <thead className='bg-gray-100 list__table__head'>
-                                    <tr>
-                                        <td className='w-[5%]' align='center'>SL No.</td>
-                                        <td className='w-[15%]'>Hotel Name</td>
-                                        <td className=''>Zone</td>
-                                        <td>Sector</td>
-                                        <td>Block</td>
-                                        <td>Police Station</td>
-                                        <td>District</td>
-                                        <td>Total Guest(s) Enrolled</td>
-                                        <td>Total Charges (₹)</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        data?.map((d, i) => {
-                                            return <tr key={i}>
-                                                <td align='center'>{i + 1}</td>
-                                                <td>{d.hotel_details?.hotel_name}</td>
-                                                <td>{d?.hotel_details?.hotel_zone_id?.name}</td>
-                                                <td>{d?.hotel_details?.hotel_sector_id?.name}</td>
-                                                <td>{d?.hotel_details?.hotel_block_id?.name}</td>
-                                                <td>{d?.hotel_details?.hotel_police_station_id?.name}</td>
-                                            </tr>
-                                        })
-                                    }
-                                </tbody>
-                            </table>
-                            {data.length < 1 && <NoData />}
-                        </div> : <DataShimmer />}
-                        {data.length > 0 && <div className='paginate__parent'>
-                            <p>Showing {data.length} of {totalData} entries</p>
-                            <Pagination
-                                activePage={activePage}
-                                totalData={totalData}
-                                dataLimit={dataLimit}
-                                setActivePage={setActivePage}
-                            />
-                        </div>}
-                    </div>
+                    {/* ============================================================== */}
+                    {/* Current Stay In Guest List */}
+                    {/* ============================================================== */}
+                    {
+                        !loading ? <div className='content__body__main mt-4'>
+                            <div className='w-full flex gap-1 border-b pb-1'>
+                                <Icons.USERS />
+                                <p className='font-semibold uppercase'>Current Status</p>
+                            </div>
+                            {/* Option bar */}
+                            <div className={`add_new_compnent`}>
+                                <div className='flex justify-between items-center'>
+                                    <div className='flex flex-col'>
+                                        <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                            <option value={5}>5</option>
+                                            <option value={10}>10</option>
+                                            <option value={50}>50</option>
+                                            <option value={100}>100</option>
+                                            <option value={500}>500</option>
+                                            <option value={1000}>1000</option>
+                                            <option value={5000}>5000</option>
+                                            <option value={10000}>10000</option>
+                                            <option value={50000}>50000</option>
+                                            <option value={totalData}>All</option>
+                                        </select>
+                                    </div>
+                                    <div className='flex items-center gap-2'>
+                                        <div className='flex w-full flex-col lg:w-[300px]'>
+                                            <input type='text'
+                                                placeholder='Search...'
+                                                // onChange={searchTable}
+                                                onChange={searchTableDatabase}
+                                                className='p-[6px]'
+                                            />
+                                        </div>
+                                        {/* menu... */}
+                                        <div className='flex justify-end'>
+                                            <Whisper placement='leftStart' enterable
+                                                speaker={<Popover full>
+                                                    <div className='download__menu' onClick={() => exportTable('print')} >
+                                                        <Icons.PRINTER className='text-[16px]' />
+                                                        Print Table
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('copy')}>
+                                                        <Icons.COPY className='text-[16px]' />
+                                                        Copy Table
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('pdf')}>
+                                                        <Icons.PDF className="text-[16px]" />
+                                                        Download Pdf
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('excel')} >
+                                                        <Icons.EXCEL className='text-[16px]' />
+                                                        Download Excel
+                                                    </div>
+                                                </Popover>}
+                                            >
+                                                <div className='record__download' >
+                                                    <Icons.MORE />
+                                                </div>
+                                            </Whisper>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Table start */}
+                            <div className='overflow-x-auto list__table list__table__checkin'>
+                                <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
+                                    <thead className='bg-gray-100 list__table__head'>
+                                        <tr>
+                                            <td className=''>Name</td>
+                                            <td className=''>Zone</td>
+                                            <td className=' '>Sector</td>
+                                            <td className=''>Block</td>
+                                            <td className=''>Police Station</td>
+                                            <td className=''>District</td>
+                                            <td className='w-[12%]'>Total Guest(s) Enrolled</td>
+                                            <td className='w-[8%]'>Total Charges</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            data?.map((d, i) => {
+                                                return <tr key={i} className='hover:bg-gray-100'>
+                                                    <td>{d.hotel_name}</td>
+                                                    <td>{d.hotel_zone_id?.name || "--"}</td>
+                                                    <td>{d.hotel_sector_id?.name || "--"}</td>
+                                                    <td>{d.hotel_block_id?.name || "--"}</td>
+                                                    <td>{d.hotel_police_station_id?.name || "--"}</td>
+                                                    <td>{d.hotel_district_id?.name || "--"}</td>
+                                                    <td>{d.hotel_total_guest}</td>
+                                                    <td>{d.hotel_total_charges}</td>
+                                                </tr>
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
+                                {data.length < 1 && <NoData />}
+                            </div>
+                            {data.length > 0 && <div className='paginate__parent'>
+                                <p>Showing {data.length} of {totalData} entries</p>
+                                <Pagination
+                                    activePage={activePage}
+                                    totalData={totalData}
+                                    dataLimit={dataLimit}
+                                    setActivePage={setActivePage}
+                                />
+                            </div>}
+                        </div>
+                            : <DataShimmer />
+                    }
+
                 </div>
             </main>
         </>

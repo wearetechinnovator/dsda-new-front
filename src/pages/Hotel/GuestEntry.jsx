@@ -291,7 +291,7 @@ const GuestEntry = () => {
                                                             }}>
                                                             <option value="">--Select--</option>
                                                             <option value="india">India</option>
-                                                            <option value="foriegn">Foriegn</option>
+                                                            <option value="foreign">Foreign</option>
                                                         </select>
                                                         {
                                                             gl.nationality === "india" && (
