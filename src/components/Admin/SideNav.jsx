@@ -25,7 +25,7 @@ const SideNav = () => {
             </Link>
           </ul>
         </div>
-        <div className="side__nav__link__group">
+        <ul className="side__nav__link__group">
           <h3 className='menu__title'>Master</h3>
           <Link to={"/admin/user"} data-tooltip-id="sideBarItemToolTip">
             <li className={`flex items-center ${activePath.search("/admin/user") >= 0 ? 'active__link' : ''}`}>
@@ -34,8 +34,7 @@ const SideNav = () => {
             </li>
           </Link>
 
-          <li className={`drp__dwn__menu flex flex-col w-full items-center 
-            ${activePath.search("/admin/item") >= 0 ? 'active__link' : ''}`}>
+          <li className={`drp__dwn__menu flex flex-col w-full items-center`}>
             <div className=' flex cursor-pointer w-full relative' onClick={() => {
               document.querySelector(".sidebar__sub__menu").classList.toggle('open__sidebar__sub__menu');
             }}>
@@ -59,7 +58,7 @@ const SideNav = () => {
               <span>Hotel Master</span>
             </li>
           </Link>
-        </div>
+        </ul>
         <div className="side__nav__link__group">
           <h3 className='menu__title'>Management</h3>
           <Link to={"/admin/manage-hotel"} data-tooltip-id="sideBarItemToolTip">
@@ -90,24 +89,6 @@ const SideNav = () => {
             </li>
           </Link>
 
-          {/* <li className={`drp__dwn__menu flex flex-col w-full items-center  ${activePath.search("/admin/bed") >= 0 ? 'active__link' : ''}`}>
-            <div className='flex cursor-pointer w-full relative'
-              onClick={() => {
-                document.querySelector(".sidebar__sub__menu__bed")
-                  .classList.toggle('open__sidebar__sub__menu');
-              }}>
-              <span className='mr-3'><Icons.BED /></span>
-              <span>Bed Availability</span>
-              <span className='absolute right-0'><Icons.DROPDOWN /></span>
-            </div>
-
-            <ul className='sidebar__sub__menu sidebar__sub__menu__bed'>
-              <li><Link to="/admin/report/bed-availablity">Total</Link></li>
-              <li><Link to="/admin/report/bed-availablity">Occupied</Link></li>
-              <li><Link to="/admin/report/bed-availablity">Vacant</Link></li>
-              <li><Link to="/admin/report/bed-availablity">Extra Occupancy</Link></li>
-            </ul>
-          </li> */}
           <Link to={"/admin/report/bed-availablity"} data-tooltip-id="sideBarItemToolTip">
             <li className={`flex  items-center  ${activePath.search("/admin/report/bed-availablity") >= 0 ? 'active__link' : ''}`}>
               <span className='mr-3'><Icons.BED /></span>
@@ -129,16 +110,23 @@ const SideNav = () => {
             </div>
 
             <ul className='sidebar__sub__menu sidebar__sub__menu__tourist'>
-              <li><Link to="/admin/report/tourist-data/footfall-hotel">Date Wise</Link></li>
-              <li><Link to="/admin/report/tourist-data/footfall-hotel/today">Today Hotel Wise</Link></li>
-              <li><Link to="/admin/report/tourist-data/footfall">Overall</Link></li>
-              <li><Link to="/admin/report/tourist-data/tourist-details">Tourist Details</Link></li>
+              <li className={`${activePath.search("/admin/report/tourist-data/footfall-hotel") == 0 ? 'active__link' : ''}`}>
+                <Link to="/admin/report/tourist-data/footfall-hotel">Date Wise</Link>
+              </li>
+              <li className={`${activePath.search("/admin/report/tourist-data/footfall-hotel/today") == 0 ? 'active__link' : ''}`}>
+                <Link to="/admin/report/tourist-data/footfall-hotel/today">Today Hotel Wise</Link>
+              </li>
+              <li className={`${activePath.search("/admin/report/tourist-data/footfall") == 0 ? 'active__link' : ''}`}>
+                <Link to="/admin/report/tourist-data/footfall">Overall</Link>
+              </li>
+              <li className={`${activePath.search("/admin/report/tourist-data/tourist-details") == 0 ? 'active__link' : ''}`}>
+                <Link to="/admin/report/tourist-data/tourist-details">Tourist Details</Link>
+              </li>
             </ul>
           </li>
 
           <li className={`drp__dwn__menu flex flex-col w-full items-center 
             ${activePath.search("/admin/amenities-charges") >= 0 ? 'active__link' : ''}`}>
-
             <div className='flex cursor-pointer w-full relative'
               onClick={() => {
                 document.querySelector(".sidebar__sub__menu__amenities")
@@ -150,10 +138,18 @@ const SideNav = () => {
             </div>
 
             <ul className='sidebar__sub__menu sidebar__sub__menu__amenities'>
-              <li><Link to="/admin/amenities-charges/overall-date-wise">Overall Date Wise</Link></li>
-              <li><Link to="/admin/amenities-charges/hotel-wise/today">Total Till Today Hotel Wise</Link></li>
-              <li><Link to="/admin/amenities-charges/hotel-wise">Today Hotel Wise</Link></li>
-              <li><Link to="/admin/amenities-charges/amenities-payment">Paid & Due Hotel Wise</Link></li>
+              <li className={`${activePath.search("/admin/amenities-charges/overall-date-wise") >= 0 ? 'active__link' : ''}`}>
+                <Link to="/admin/amenities-charges/overall-date-wise">Overall Date Wise</Link>
+              </li>
+              <li className={`${activePath.search("/admin/amenities-charges/hotel-wise/today") >= 0 ? 'active__link' : ''}`}>
+                <Link to="/admin/amenities-charges/hotel-wise/today">Total Till Today Hotel Wise</Link>
+              </li>
+              <li className={`${activePath.search("/admin/amenities-charges/hotel-wise") >= 0 ? 'active__link' : ''}`}>
+                <Link to="/admin/amenities-charges/hotel-wise">Today Hotel Wise</Link>
+              </li>
+              <li className={`${activePath.search("/admin/amenities-charges/amenities-payment") >= 0 ? 'active__link' : ''}`}>
+                <Link to="/admin/amenities-charges/amenities-payment">Paid & Due Hotel Wise</Link>
+              </li>
             </ul>
           </li>
           <Link to={"/admin/other-payment"} data-tooltip-id="sideBarItemToolTip">

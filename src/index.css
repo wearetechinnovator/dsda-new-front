@@ -159,6 +159,7 @@ nav {
   color: white;
   text-decoration: none;
   display: block;
+  line-height: normal;
 }
 
 .side__nav__links a:hover,
@@ -171,6 +172,12 @@ nav {
   background-color: #003254;
   color: white;
   font-weight: 600;
+  border-radius: 3px;
+}
+
+
+.side__nav .active__link a{
+  color: #fff;
 }
 
 .side__nav .active__link svg {
@@ -191,8 +198,14 @@ nav {
   color: #003628;
 }
 
-.side__nav__links li:hover .sidebar__sub__menu li::before {
+.side__nav__links li:hover .sidebar__sub__menu li::before{
   color: #003628;
+}
+.side__nav__links li:hover .sidebar__sub__menu li.active__link{
+  color: #fff
+}
+.side__nav .side__nav__links li:hover li.active__link::before{
+  color: #fff;
 }
 
 .side__nav__links li:hover svg {
@@ -226,14 +239,13 @@ nav {
 }
 
 .sidebar__sub__menu li {
-  padding-top: 3px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 20px;
+  padding-right: 0;
   font-size: 11px;
   border: none;
   position: relative;
-  padding-left: 20px;
-  margin-bottom: 5px;
-  padding-bottom: 0;
-  padding-right: 0;
 }
 
 .sidebar__sub__menu li::before {
@@ -246,7 +258,7 @@ nav {
   font-size: 8px;
 }
 
-.side__nav__links li:hover .sidebar__sub__menu li a {
+.side__nav__links li:hover .sidebar__sub__menu li a:not(.side__nav .active__link a) {
   color: #003628 !important;
 }
 
@@ -616,9 +628,9 @@ select:hover {
 
 .list__table tr,
 .list__table td {
-  border: 1px solid white;
-  padding: 2px;
-  font-size: 13px;
+  border: 1px solid #efeeee;
+  padding: 2px 8px;
+  font-size: 12px;
 }
 
 .list__table td:nth-child(2) {
@@ -905,7 +917,10 @@ input[type="checkbox"]:checked::before {
 }
 
 .form__btn__grp button {
-  @apply flex rounded text-white items-center px-3 py-2 gap-1 text-sm;
+  @apply inline-flex items-center justify-center rounded text-white gap-1 border-0;
+  padding: 5px 16px;
+  font-size: 12px;
+  width: 9%;
 }
 
 .form__btn__grp button:active {
@@ -1092,6 +1107,7 @@ input[type="checkbox"]:checked::before {
 }
 .total__card__data p{
   text-align: end;
+  text-shadow: 1px 2px #040404;
 }
 
 .blue__grad {
@@ -1219,13 +1235,13 @@ input[type="checkbox"]:checked::before {
   box-shadow: none;
 }
 
-.list__table td:not(.list__table td:nth-child(1)) {
-  padding: 6px 10px;
-  min-width: 150px;
+.list__table td:not(.list__table td:nth-child(1)):not(.list__table thead td) {
+  padding: 0 8px;
+  /* min-width: 150px; */
 }
 
-.list__table__checkin td {
-  padding: 3px 4px !important;
+.list__table__checkin td:not(.list__table thead td) {
+  padding: 2px 4px !important;
   min-width: 0 !important;
 }
 
@@ -1290,4 +1306,11 @@ input[type="checkbox"]:checked::before {
 }
 .chip__red{
   @apply bg-[#ED6B75] hover:bg-[#dd5964];
+}
+.paginate__parent{
+  margin-top: 8px;
+}
+.form-label{
+  color: #003254;
+  font-weight: 500;
 }

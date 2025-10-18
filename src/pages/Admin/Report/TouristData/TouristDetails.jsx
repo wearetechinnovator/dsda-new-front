@@ -358,7 +358,7 @@ const TouristData = () => {
                                     </div>
                                     <p className='my-2 flex items-center gap-2'>
                                         <Icons.STAR className='text-red-500 text-md' />
-                                        Indicates as Head Guest
+                                        <span className='italic text-red-600'>Indicates as Head Guest</span>
                                     </p>
                                     {/* Table start */}
                                     <div className='overflow-x-auto list__table list__table__checkin'>

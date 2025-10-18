@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import Nav from '../../../components/Admin/Nav';
 import SideNav from '../../../components/Admin/SideNav';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useExportTable from '../../../hooks/useExportTable';
 import Cookies from 'js-cookie';
 import downloadPdf from '../../../helper/downloadPdf';
@@ -16,6 +16,8 @@ import NoData from '../../../components/Admin/NoData';
 
 
 const Hotelmaster = ({ mode }) => {
+    const location = useLocation();
+    const filterData = location.state;
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
     const { getFilterState, setFilterState } = useSetTableFilter();
     const savedFilter = getFilterState("Hotelmaster");
@@ -51,13 +53,16 @@ const Hotelmaster = ({ mode }) => {
 
     // Get data;
     const get = async () => {
+       
         try {
             let data = {
                 token: Cookies.get("token"),
                 trash: isTrash,
                 page: activePage,
-                limit: dataLimit
+                limit: dataLimit,
+                hotelStatus: filterData
             };
+             console.log(JSON.stringify(data));
             setFilterState("Hotelmaster", dataLimit, activePage);
             const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
             const req = await fetch(url, {
@@ -82,7 +87,7 @@ const Hotelmaster = ({ mode }) => {
     }
     useEffect(() => {
         get();
-    }, [isTrash, dataLimit, activePage])
+    }, [isTrash, dataLimit, activePage, location])
 
     const searchTableDatabase = (e) => {
         const txt = e.target.value;
@@ -275,13 +280,13 @@ const Hotelmaster = ({ mode }) => {
                                             <td>Zone</td>
                                             <td>Sector</td>
                                             <td>Proprietor Name</td>
-                                            <td className='w-8%]'>Username</td>
-                                            <td className='w-10%]' align='center'>Restaurant</td>
-                                            <td className='w-10%]' align='center'>Confarence Hall</td>
-                                            <td className='w-10%]' align='center'>AC</td>
-                                            <td className='w-10%]' align='center'>Swimming Pool</td>
-                                            <td className='w-10%]' align='center'>Parking</td>
-                                            <td className='w-10%]' align='center'>Status</td>
+                                            <td className='w-[8%]'>Username</td>
+                                            <td className='w-[10%]' align='center'>Restaurant</td>
+                                            <td className='w-[10%]' align='center'>Confarence Hall</td>
+                                            <td className='w-[10%]' align='center'>AC</td>
+                                            <td className='w-[10%]' align='center'>Swimming Pool</td>
+                                            <td className='w-[10%]' align='center'>Parking</td>
+                                            <td className='w-[15%]' align='center'>Status</td>
                                             <td align='center'>Action</td>
                                         </tr>
                                     </thead>
@@ -320,9 +325,9 @@ const Hotelmaster = ({ mode }) => {
                                                         <span className='chip chip__green'> Yes </span> :
                                                         <span className='chip chip__red'> No </span>
                                                     }</td>
-                                                    <td>{d?.hotel_status === "1" ?
+                                                    <td >{d?.hotel_status === "1" ?
                                                         <span className='chip chip__green'> Operative </span> :
-                                                        <span className='chip chip__red'> In Operative </span>
+                                                        <span className='chip chip__red'> In operative </span>
                                                     }</td>
                                                     <td align='center'>
                                                         <Whisper

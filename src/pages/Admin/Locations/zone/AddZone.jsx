@@ -1,22 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import Nav from '../../../../components/Admin/Nav';
 import SideNav from '../../../../components/Admin/SideNav'
-import { FaRegCheckCircle } from "react-icons/fa";
-import { LuFileX2, LuRefreshCcw } from "react-icons/lu";
-import { CgPlayListAdd } from "react-icons/cg";
 import useMyToaster from '../../../../hooks/useMyToaster';
-import { SelectPicker } from 'rsuite';
 import Cookies from 'js-cookie';
-import { useNavigate, useParams } from 'react-router-dom';
-import { RiDeleteBin6Line } from 'react-icons/ri';
-import MySelect2 from '../../../../components/Admin/MySelect2';
+import {useParams } from 'react-router-dom';
 import { Icons } from '../../../../helper/icons';
-import { MdUploadFile } from 'react-icons/md';
 
 
 
 const AddZone = ({ mode, save }) => {
-
     return (
         <>
             <Nav title={mode ? "Update Zone " : "Add New Zone"} />
@@ -50,7 +42,7 @@ const ZoneComponent = ({ mode, save }) => {
                     body: JSON.stringify({ token: cookie, id: id })
                 })
                 const res = await req.json();
-                const data = res.data;
+                console.log(res);
                 setData({ ...res });
             }
 

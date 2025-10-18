@@ -251,7 +251,7 @@ const Zone = () => {
 								<table className='min-w-full bg-white' id='table' ref={tableRef}>
 									<thead className='bg-gray-100 list__table__head'>
 										<tr>
-											<td className='w-[50px]'>
+											<td className='w-[50px]' align='center'>
 												<input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
 											</td>
 											<td>Name</td>
@@ -276,7 +276,7 @@ const Zone = () => {
 																	className='table__list__action__icon'
 																	onClick={(e) => {
 																		e.stopPropagation()
-																		navigate("/admin/block/edit/" + d._id)
+																		navigate("/admin/zone/edit/" + d._id)
 																	}}
 																>
 																	<Icons.EDIT className='text-[16px]' />

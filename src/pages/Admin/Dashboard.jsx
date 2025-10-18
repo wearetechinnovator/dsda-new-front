@@ -16,10 +16,12 @@ import { HiUserAdd } from 'react-icons/hi';
 import useMyToaster from '../../hooks/useMyToaster';
 import CardLoading from '../../components/Admin/CardLoader';
 import NoData from '../../components/Admin/NoData';
+import { useNavigate } from 'react-router-dom';
 
 
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const toast = useMyToaster();
   const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
   const { getFilterState, setFilterState } = useSetTableFilter();
@@ -77,7 +79,7 @@ const Dashboard = () => {
       const res = await req.json();
 
       if (req.status === 200) {
-        console.log(res);
+        console.log(res.data);
         setTotalData(res.total)
         setData([...res.data])
         setLoading(false);
@@ -225,42 +227,46 @@ const Dashboard = () => {
           {/* // statsLoading ? */}
           <div className='w-full'>
             <div className="total__data_cards dashboard">
-              <div className='total__card blue__grad'>
+              <div className='total__card blue__grad' onClick={() => navigate("/admin/hotel")}>
                 <div className='total__card__data'>
                   <p>{statsData.allHotels ?? <CardLoading />}</p>
                   <p>{"Total Hotels"}</p>
                 </div>
                 <BsBuildings className='card__icon' />
               </div>
-              <div className='total__card blue__grad'>
+              <div className='total__card blue__grad' onClick={() => navigate("/admin/hotel", {
+                state: "1"
+              })}>
                 <div className='total__card__data'>
                   <p>{statsData.totalOperativeHotel ?? <CardLoading />}</p>
                   <p>Operative Hotels</p>
                 </div>
                 <BsBuildings className='card__icon' />
               </div>
-              <div className='total__card blue__grad'>
+              <div className='total__card blue__grad' onClick={() => navigate("/admin/hotel", {
+                state: '0'
+              })}>
                 <div className='total__card__data'>
                   <p>{statsData.totalInOperativeHotel ?? <CardLoading />}</p>
                   <p>Inoperative Hotels</p>
                 </div>
                 <BsBuildings className='card__icon' />
               </div>
-              <div className='total__card blue__grad'>
+              <div className='total__card blue__grad' onClick={() => navigate("/admin/amenities-charges/overall-date-wise")}>
                 <div className='total__card__data'>
                   <p>{statsData.todayActive ?? <CardLoading />}</p>
                   <p>Day Wise Active Hotels</p>
                 </div>
                 <BsBuildings className='card__icon' />
               </div>
-              <div className='total__card blue__grad'>
+              <div className='total__card blue__grad' onClick={() => navigate("/admin/amenities-charges/hotel-wise")}>
                 <div className='total__card__data'>
                   <p>{statsData.todayActive ?? <CardLoading />}</p>
                   <p>Today Active Hotels</p>
                 </div>
                 <BsBuildings className='card__icon' />
               </div>
-              <div className='total__card green__grad'>
+              <div className='total__card green__grad' onClick={() => navigate("/admin/report/bed-availablity")}>
                 <div className='total__card__data'>
                   <p>{statsData.totalBeds ?? <CardLoading />}</p>
                   <p>Total Beds</p>
@@ -268,42 +274,42 @@ const Dashboard = () => {
                 <FaBed className='card__icon' />
               </div>
 
-              <div className='total__card green__grad'>
+              <div className='total__card green__grad' onClick={() => navigate("/admin/report/bed-availablity")}>
                 <div className='total__card__data'>
                   <p>{statsData.occupiedBeds ?? <CardLoading />}</p>
                   <p>Occupied Beds</p>
                 </div>
                 <FaBed className='card__icon' />
               </div>
-              <div className='total__card green__grad'>
+              <div className='total__card green__grad' onClick={() => navigate("/admin/report/bed-availablity")}>
                 <div className='total__card__data'>
                   <p>{statsData.vacantsBeds ?? <CardLoading />}</p>
                   <p>Vacant Beds</p>
                 </div>
                 <FaBed className='card__icon' />
               </div>
-              <div className='total__card red__grad'>
+              <div className='total__card red__grad' onClick={() => navigate("/admin/report/bed-availablity")}>
                 <div className='total__card__data'>
                   <p>{statsData.extraOccupency ?? <CardLoading />}</p>
                   <p>Extra Occupancy</p>
                 </div>
                 <HiUserAdd className='card__icon' />
               </div>
-              <div className='total__card purple__grad'>
+              <div className='total__card purple__grad' onClick={() => navigate("/admin/report/tourist-data/footfall-hotel/today")}>
                 <div className='total__card__data'>
                   <p>{statsData.toDayFtFls ?? <CardLoading />}</p>
                   <p>Today Footfalls</p>
                 </div>
                 <Icons.USERS className='card__icon' />
               </div>
-              <div className='total__card purple__grad'>
+              <div className='total__card purple__grad' onClick={() => navigate("/admin/report/tourist-data/footfall")}>
                 <div className='total__card__data'>
                   <p>{statsData.tillTodayFtFls ?? <CardLoading />}</p>
                   <p>Till Today Footfalls</p>
                 </div>
                 <Icons.USERS className='card__icon' />
               </div>
-              <div className='total__card purple__grad'>
+              <div className='total__card purple__grad' onClick={() => navigate("/admin/report/tourist-data/footfall-hotel/today")}>
                 <div className='total__card__data'>
                   <p>{statsData.toDayChild ?? <CardLoading />}</p>
                   <p>Today Child</p>
@@ -311,42 +317,42 @@ const Dashboard = () => {
                 <Icons.CHILD className='card__icon' />
               </div>
 
-              <div className='total__card purple__grad'>
+              <div className='total__card purple__grad' onClick={() => navigate("/admin/report/tourist-data/footfall")}>
                 <div className='total__card__data'>
                   <p>{statsData.tillTodyChild ?? <CardLoading />}</p>
                   <p>Till Today Child</p>
                 </div>
                 <Icons.CHILD className='card__icon' />
               </div>
-              <div className='total__card purple__grad'>
+              <div className='total__card purple__grad' onClick={() => navigate("/admin/report/tourist-data/footfall-hotel/today")}>
                 <div className='total__card__data'>
                   <p>{statsData.toDayAdult ?? <CardLoading />}</p>
                   <p>Today Adult</p>
                 </div>
                 <Icons.USER_FILL className='card__icon' />
               </div>
-              <div className='total__card purple__grad'>
+              <div className='total__card purple__grad' onClick={() => navigate("/admin/report/tourist-data/footfall")}>
                 <div className='total__card__data'>
                   <p>{statsData.tillTodayAdult ?? <CardLoading />}</p>
                   <p>Till Today Adult</p>
                 </div>
                 <Icons.USER_FILL className='card__icon' />
               </div>
-              <div className='total__card yellow__grad'>
+              <div className='total__card yellow__grad' onClick={() => navigate("/admin/amenities-charges/hotel-wise")}>
                 <div className='total__card__data'>
                   <p>{statsData.toDayAmicharges ?? <CardLoading />}</p>
                   <p>Today Aminity Charges</p>
                 </div>
                 <Icons.RUPES className='card__icon' />
               </div>
-              <div className='total__card yellow__grad'>
+              <div className='total__card yellow__grad' onClick={() => navigate("/admin/amenities-charges/hotel-wise/today")}>
                 <div className='total__card__data'>
                   <p>{statsData.totalAmiCharges ?? <CardLoading />}</p>
                   <p>Total Aminity Charges</p>
                 </div>
                 <Icons.RUPES className='card__icon' />
               </div>
-              <div className='total__card yellow__grad'>
+              <div className='total__card yellow__grad' onClick={() => navigate("/admin/amenities-charges/amenities-payment")}>
                 <div className='total__card__data'>
                   <p>{0 ?? <CardLoading />}</p>
                   <p>Aminity Charges Due</p>
@@ -354,42 +360,42 @@ const Dashboard = () => {
                 <Icons.RUPES className='card__icon' />
               </div>
 
-              <div className='total__card yellow__grad'>
+              <div className='total__card yellow__grad' onClick={() => navigate("/admin/amenities-charges/amenities-payment")}>
                 <div className='total__card__data'>
                   <p>{0 ?? <CardLoading />}</p>
                   <p>Aminity Charges Paid</p>
                 </div>
                 <Icons.RUPES className='card__icon' />
               </div>
-              <div className='total__card male__grad'>
+              <div className='total__card male__grad' onClick={() => navigate("/admin/report/tourist-data/footfall")}>
                 <div className='total__card__data'>
                   <p>{statsData.tillTodayMale ?? <CardLoading />}</p>
                   <p>Till Today Male</p>
                 </div>
                 <Icons.GENDER_MALE className='card__icon' />
               </div>
-              <div className='total__card pink__grad'>
+              <div className='total__card pink__grad' onClick={() => navigate("/admin/report/tourist-data/footfall")}>
                 <div className='total__card__data'>
                   <p>{statsData.tillTodayFemale ?? <CardLoading />}</p>
                   <p>Till Today Female</p>
                 </div>
                 <Icons.GENDER_FEMALE className='card__icon' />
               </div>
-              <div className='total__card rainbow__grad'>
+              <div className='total__card rainbow__grad' onClick={() => navigate("/admin/report/tourist-data/footfall")}>
                 <div className='total__card__data'>
                   <p>{statsData.tillTodayOtherGender ?? <CardLoading />}</p>
                   <p>Till Today Other Gender</p>
                 </div>
                 <Icons.GENDER_TRANS className='card__icon' />
               </div>
-              <div className='total__card flag__grad'>
+              <div className='total__card flag__grad' onClick={() => navigate("/admin/report/tourist-data/footfall")}>
                 <div className='total__card__data'>
                   <p>{statsData.tillTodayIndian ?? <CardLoading />}</p>
                   <p>Till Today Indians</p>
                 </div>
                 <Icons.USER_FILL className='card__icon' />
               </div>
-              <div className='total__card red__chilli'>
+              <div className='total__card red__chilli' onClick={() => navigate("/admin/report/tourist-data/footfall")}>
                 <div className='total__card__data'>
                   <p>{statsData.tillTodayForeigner ?? <CardLoading />}</p>
                   <p>Till Today Foreigner</p>
@@ -403,7 +409,7 @@ const Dashboard = () => {
           {/* Current Stay In Guest List */}
           {/* ============================================================== */}
           {
-            !loading ? <div className='content__body__main mt-4'>
+            !loading ? <div className='content__body__main mt-8'>
               <div className='w-full flex gap-1 border-b pb-1'>
                 <Icons.USERS />
                 <p className='font-semibold uppercase'>Current Status</p>
