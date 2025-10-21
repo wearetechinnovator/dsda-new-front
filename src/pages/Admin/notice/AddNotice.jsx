@@ -143,7 +143,9 @@ const AddNotice = ({ mode }) => {
                 return toast(res.err, 'error');
             }
 
-            if (!mode) clearData();
+            if (!mode) {
+                navigate('/admin/notice');
+            };
             toast(!mode ? "Notice create success" : "Notice update success", 'success');
 
 

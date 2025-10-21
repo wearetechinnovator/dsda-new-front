@@ -250,7 +250,7 @@ const Sector = ({ mode }) => {
 								<table className='min-w-full bg-white' id='table' ref={tableRef}>
 									<thead className='bg-gray-100 list__table__head'>
 										<tr>
-											<td align='center'>
+											<td className='w-[50px]' align='center'>
 												<input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
 											</td>
 											<td>Name</td>

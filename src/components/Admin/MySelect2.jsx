@@ -34,11 +34,11 @@ const MySelect2 = ({ model, onType, value }) => {
     block: 'Add Block'
   }
   const pageComponent = {
-    zone: <ZoneComponent/>,
-    district: <AddDisctrictComponent/>,
-    'police-station': <PoliceStationComponent/>,
-    sector: <SectorComponent/>,
-    block: <BlockComponent/>
+    zone: <ZoneComponent />,
+    district: <AddDisctrictComponent />,
+    'police-station': <PoliceStationComponent />,
+    sector: <SectorComponent />,
+    block: <BlockComponent />
   }
 
 
@@ -194,7 +194,7 @@ const MySelect2 = ({ model, onType, value }) => {
           onKeyDown={keyUp}
         />
         {selectedValue ? <IoClose
-          className='absolute right-2 top-[5px] text-[16px] cursor-pointer'
+          className='absolute right-2 top-[9px] text-[16px] cursor-pointer'
           onClick={() => {
             setKeyCount(0);
             setSelectedValue("")
@@ -203,7 +203,7 @@ const MySelect2 = ({ model, onType, value }) => {
             setSearchList([]);
             onType('');
           }}
-        /> : <IoIosSearch className='absolute right-2 top-[5px] text-[16px] cursor-pointer' />}
+        /> : <IoIosSearch className='absolute right-2 top-[9px] text-[16px] cursor-pointer' />}
 
         {/* List dropdown */}
         {showDropDown && <div
@@ -225,7 +225,7 @@ const MySelect2 = ({ model, onType, value }) => {
           </ul>
           <button
             onMouseDown={() => {
-                setDrawer(true)
+              setDrawer(true)
             }}
             className='select__add__button z-50'>
             <IoAddCircleSharp />

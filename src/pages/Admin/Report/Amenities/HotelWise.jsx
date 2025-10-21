@@ -368,6 +368,7 @@ const HotelWise = () => {
                                 <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
                                     <thead className='bg-gray-100 list__table__head'>
                                         <tr>
+                                            <td>Sl.</td>
                                             <td className=''>Name</td>
                                             <td className=''>Zone</td>
                                             <td className=' '>Sector</td>
@@ -382,6 +383,7 @@ const HotelWise = () => {
                                         {
                                             data?.map((d, i) => {
                                                 return <tr key={i} className='hover:bg-gray-100'>
+                                                    <td align='center'>{i + 1}</td>
                                                     <td>{d.hotel_name}</td>
                                                     <td>{d.hotel_zone_id?.name || "--"}</td>
                                                     <td>{d.hotel_sector_id?.name || "--"}</td>

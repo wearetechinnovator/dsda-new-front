@@ -19,7 +19,6 @@ const Payments = () => {
     const [activePage, setActivePage] = useState(1);
     const [dataLimit, setDataLimit] = useState(10);
     const [totalData, setTotalData] = useState()
-    const [selected, setSelected] = useState([]);
     const navigate = useNavigate();
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
@@ -30,7 +29,6 @@ const Payments = () => {
     }, [data]);
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
-    const { deleteData, restoreData } = useApi()
     const months = [
         { label: 'January', value: 'january' },
         { label: 'February', value: 'february' },
@@ -50,6 +48,8 @@ const Payments = () => {
         const year = 2000 + i;
         return { label: year.toString(), value: year.toString() };
     });
+    const [selectedMonth, setSelectedMonth] = useState(null);
+    const [selectedYear, setSelectedYear] = useState(null);
 
 
 
@@ -70,6 +70,10 @@ const Payments = () => {
         }
     }
 
+    const handleReset=()=>{
+        setSelectedMonth(null);
+        setSelectedYear(null);
+    }
 
     return (
         <>
@@ -78,9 +82,9 @@ const Payments = () => {
                 <SideNav />
                 <div className='content__body'>
                     <div className='content__body__main'>
-                        <div className='w-full  flex justify-between items-center border-b pb-1'>
-                            <p className='font-semibold text-lg'>Filter by Month & Year</p>
+                        <div className='w-full flex gap-1 items-center border-b pb-1'>
                             <Icons.SEARCH />
+                            <p className='font-semibold uppercase'>Filter by Month & Year</p>
                         </div>
                         <div className='w-full flex flex-col md:flex-row justify-between gap-4 items-center mt-4'>
                             <div className='w-full mt-3'>
@@ -89,6 +93,8 @@ const Payments = () => {
                                     block
                                     className='w-full'
                                     data={months}
+                                    value={selectedMonth}
+                                    onChange={(v)=>setSelectedMonth(v)}
                                 />
                             </div>
                             <div className='w-full mt-3'>
@@ -97,12 +103,14 @@ const Payments = () => {
                                     block
                                     className='w-full'
                                     data={years}
+                                    value={selectedYear}
+                                    onChange={(v)=>setSelectedYear(v)}
                                 />
                             </div>
                         </div>
 
                         <div className='form__btn__grp'>
-                            <button className='reset__btn'>
+                            <button className='reset__btn' onClick={handleReset}>
                                 <Icons.RESET />
                                 Reset
                             </button>
@@ -117,6 +125,11 @@ const Payments = () => {
 
                     {/* Table Content */}
                     <div className='content__body__main mt-4'>
+                        <div className='w-full flex gap-1 items-center border-b pb-1'>
+                            <Icons.TABLE />
+                            <p className='font-semibold uppercase'>Booking Table</p>
+                        </div>
+
                         {/* Option Bar */}
                         <div className="add_new_compnent">
                             <div className='flex justify-between items-center'>
@@ -165,6 +178,7 @@ const Payments = () => {
                                 </div>
                             </div>
                         </div>
+                        
                         <div className='overflow-x-auto list__table'>
                             <table className='min-w-full bg-white' id='table' ref={tableRef}>
                                 <thead className='bg-gray-100 list__table__head'>

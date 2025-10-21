@@ -49,7 +49,7 @@ const PaidAndDueHotel = React.lazy(() => import("./pages/Admin/Report/Amenities/
 
 
 // Hotel Dashboard
-const HotelDashboard = React.lazy(() => import('./pages/Hotel/Statistics'));
+const HotelDashboard = React.lazy(() => import('./pages/Hotel/Dashboard'));
 const HotelLogin = React.lazy(() => import("./pages/Hotel/Auth/Login"));
 const HotelForgot = React.lazy(() => import("./pages/Hotel/Auth/Forgot"));
 const HotelOtp = React.lazy(() => import("./pages/Hotel/Auth/Otp"));

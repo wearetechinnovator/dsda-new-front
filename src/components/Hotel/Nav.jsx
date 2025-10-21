@@ -15,7 +15,7 @@ const Nav = ({ title }) => {
   const navigate = useNavigate();
   const { getHotelData } = useGetHotelData();
   const { getSetting } = useGetUserData(); // Get user info api call
-  
+
   const hotelDetails = useSelector((store) => store.hotelDetails);
   const settingDetails = useSelector((store) => store.settingSlice)
   const [dateTime, setDateTime] = useState("");
@@ -54,7 +54,7 @@ const Nav = ({ title }) => {
               ? "rd"
               : "th";
 
-      const month = now.toLocaleString("en-US", { month: "long" });
+      const month = now.toLocaleString("en-US", { month: "short" });
       const year = now.getFullYear();
 
       // Time with AM/PM
@@ -65,7 +65,7 @@ const Nav = ({ title }) => {
         hour12: true,
       });
 
-      setDateTime(`${day}${suffix} ${month}, ${year} - ${time}`);
+      setDateTime(`${day} ${month}, ${year} - ${time}`);
     }
 
     // Update immediately + every second
@@ -83,17 +83,18 @@ const Nav = ({ title }) => {
         </div>
         <div className='flex items-center h-[100%] justify-between w-[calc(100%-175px)]'>
           <h6 className='text-black ml-5'>{title}</h6>
-          <div className="admin__area  h-[100%] flex items-center cursor-pointer gap-3">
+          <div className="admin__area  h-[100%] flex items-center cursor-pointer">
             <div className='navbar__tools'>
-              <p className='nav__tool__time'>
-                {dateTime}
-              </p>
               <button className='nav__tool__back' onClick={() => navigate(-1)}>
                 <Icons.BACK />
               </button>
               <button className='nav__tool__reset' onClick={() => window.location.reload()}>
                 <Icons.RESET />
               </button>
+              <p className='nav__tool__time'>
+                <span>{dateTime.split(" - ")[1]}</span>
+                <span>{dateTime.split(" - ")[0]}</span>
+              </p>
             </div>
             <div className='nav__profile__area'>
               <Whisper className='flex items-center' trigger={'click'} placement='bottomEnd' speaker={

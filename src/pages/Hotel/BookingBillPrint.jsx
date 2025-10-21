@@ -30,7 +30,7 @@ const BookingBillPrint = () => {
                         </tr>
                         <tr>
                             <td>Check-out:</td>
-                            <td>Not yet checked out</td>
+                            <td>{state?.checkOut || "Not yet checked out"}</td>
                         </tr>
                         <tr>
                             <td>Guests:</td>

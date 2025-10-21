@@ -24,7 +24,7 @@ const BookingBillDetails = () => {
             }
         })
         setTotalFees(totalFee);
-    }, [settingDetails, finalData])
+    }, [settingDetails, finalData]);
 
     const handleFinalSubmit = async () => {
         try {
@@ -46,6 +46,7 @@ const BookingBillDetails = () => {
                         hotelName: hotelDetails?.hotel_name,
                         headGuest: `${finalData.guestList[0].guestName} (${finalData.guestList[0].age} Years | ${finalData.guestList[0].gender})`,
                         checkIn: `${finalData.checkInDate}, ${finalData.checkInTime}`,
+                        checkOut: `${finalData.checkoutDate}, ${finalData.checkoutTime}`,
                         guests: finalData.guestList.length,
                         totalAmount: totalFees,
                     }
@@ -101,6 +102,10 @@ const BookingBillDetails = () => {
                                 <div className='booking__details__table__row'>
                                     <div className='booking__details__table__title'>Check In Date-Time</div>
                                     <div className='w-full p-2'>{finalData.checkInDate}, {finalData.checkInTime}</div>
+                                </div>
+                                <div className='booking__details__table__row'>
+                                    <div className='booking__details__table__title'>Check Out Date-Time</div>
+                                    <div className='w-full p-2'>{finalData.checkoutDate}, {finalData.checkoutTime}</div>
                                 </div>
                             </div>
                         </div>

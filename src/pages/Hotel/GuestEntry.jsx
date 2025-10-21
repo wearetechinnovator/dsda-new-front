@@ -20,7 +20,8 @@ const GuestEntry = () => {
     const [country, setCountry] = useState([]);
     const { guestMobile, numberOfGuests, verificationBy } = location.state || {};
     const [checkInDetails, setCheckInDetails] = useState({
-        mobileNumbe: '', NumberOfGuest: '', checkInDate: '', checkInTime: ''
+        mobileNumbe: '', NumberOfGuest: '', checkInDate: '', checkInTime: '',
+        checkoutDate: '', checkoutTime: ''
     });
     const guestListSet = {
         guestName: '', gender: '', age: "", nationality: '', address: '', idType: '',
@@ -79,7 +80,9 @@ const GuestEntry = () => {
 
     const handleSubmit = async () => {
         // Basic Check-In details validation
-        if ([checkInDetails.mobileNumbe, checkInDetails.NumberOfGuest, checkInDetails.checkInDate, checkInDetails.checkInTime].some(field => field === '')) {
+        if ([checkInDetails.mobileNumbe, checkInDetails.NumberOfGuest, checkInDetails.checkInDate,
+        checkInDetails.checkInTime, checkInDetails.checkoutDate, checkInDetails.checkoutTime]
+            .some(field => field === '')) {
             return toast("All check-in fields are required", "error");
         }
 
@@ -114,10 +117,9 @@ const GuestEntry = () => {
 
         // Check if any guest has missing fields
         const hasError = newGuestErrors.some(e => Object.keys(e).length > 0);
-        // if (hasError) {
-        //     return toast("Please fill all required fields", "error");
-        // }
-
+        if (hasError) {
+            return toast("Please fill all required fields", "error");
+        }
 
         // Goto Final submit.......
         const hotelId = Cookies.get('hotelId');
@@ -125,7 +127,6 @@ const GuestEntry = () => {
         navigate('/hotel/check-in/guest-entry/bill-details', {
             state: { ...checkInDetails, guestList, hotelId, token }
         });
-
 
     }
 
@@ -166,14 +167,13 @@ const GuestEntry = () => {
                                     type="date"
                                     placeholder="Enter Check In Date"
                                     value={checkInDetails.checkInDate}
-                                    min={minDate?.toISOString().split("T")[0]} // 2 days before today
-                                    max={today.toISOString().split("T")[0]}   // today
+                                    min={minDate?.toISOString().split("T")[0]} 
+                                    max={today.toISOString().split("T")[0]}
                                     onChange={(e) => {
                                         const selectedDate = e.target.value;
 
-                                        // extra safeguard: prevent manual typing of invalid date
                                         if (selectedDate < minDate?.toISOString().split("T")[0] || selectedDate > today.toISOString().split("T")[0]) {
-                                            alert("Please select a valid date between 2 days ago and today.");
+                                            toast("Please select a valid date between 2 days ago and today.", "error");
                                             return;
                                         }
 
@@ -192,6 +192,49 @@ const GuestEntry = () => {
                                     onChange={(e) => setCheckInDetails({
                                         ...checkInDetails, checkInTime: e.target.value
                                     })}
+                                />
+                            </div>
+
+                            <div className='w-full'>
+                                <p>Check Out Date<span className='required__text'>*</span></p>
+                                <input
+                                    type="date"
+                                    placeholder="Enter Date"
+                                    value={checkInDetails.checkoutDate}
+                                    min={checkInDetails.checkInDate || minDate?.toISOString().split("T")[0]} // minimum date (e.g., 2 days before today)
+                                    onChange={(e) => {
+                                        const selectedDate = e.target.value;
+                                        const min = minDate?.toISOString().split("T")[0];
+
+                                        if (!checkInDetails.checkInDate) {
+                                            toast("Please select a check-in date first.", "error");
+                                            return;
+                                        }
+
+                                        // prevent manual typing of invalid (too early) dates
+                                        if (selectedDate < checkInDetails.checkInDate) {
+                                            toast(`Checkout date cannot be before check-in date (${checkInDetails.checkInDate}).`, "error");
+                                            return;
+                                        }
+
+                                        setCheckInDetails({
+                                            ...checkInDetails,
+                                            checkoutDate: selectedDate,
+                                        });
+                                    }}
+                                />
+                            </div>
+                            <div className='w-full'>
+                                <p>Check Out Time<span className='required__text'>*</span></p>
+                                <input type='time'
+                                    placeholder='Enter Time'
+                                    value={checkInDetails.checkoutTime}
+                                    onChange={(e) => {
+                                        setCheckInDetails({
+                                            ...checkInDetails,
+                                            checkoutTime: e.target.value
+                                        });
+                                    }}
                                 />
                             </div>
                         </div>
@@ -488,12 +531,12 @@ const GuestEntry = () => {
                         </div>
                         {/* ============================== TABLE END HERE ====================== */}
                         <div className='form__btn__grp mt-5'>
-                            <button className='save__btn' onClick={handleSubmit}>
-                                <Icons.CHECK /> Submit
-                            </button>
                             <button className='reset__btn' onClick={clearData}>
                                 <Icons.RESET />
                                 Reset
+                            </button>
+                            <button className='save__btn' onClick={handleSubmit}>
+                                <Icons.CHECK /> Submit
                             </button>
                         </div>
                     </div>

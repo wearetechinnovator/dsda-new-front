@@ -100,9 +100,9 @@ const CheckOutDetails = () => {
                 <SideNav />
                 <div className='content__body'>
                     <div className="content__body__main">
-                        <div className='w-full bg-[#32C5D2] p-2 rounded text-white flex justify-between items-center'>
-                            <p className='font-bold'>Check Out Entry</p>
+                        <div className='w-full bg-[#32C5D2] p-2 rounded text-white flex gap-1 items-center'>
                             <Icons.INFO_DETAILS className='text-xl' />
+                            <p className='font-bold'>Check Out Entry</p>
                         </div>
                         <div className='mt-4 w-full flex justify-between items-center gap-4'>
                             <div className='w-full'>
@@ -112,13 +112,13 @@ const CheckOutDetails = () => {
                                     placeholder="Enter Date"
                                     value={checkoutDate}
                                     min={minDate?.toISOString().split("T")[0]} // 2 days before today
-                                    max={today.toISOString().split("T")[0]}   // today
                                     onChange={(e) => {
                                         const selectedDate = e.target.value;
+                                        const min = minDate?.toISOString().split("T")[0];
 
                                         // extra safeguard: prevent manual typing of invalid date
-                                        if (selectedDate < minDate?.toISOString().split("T")[0] || selectedDate > today.toISOString().split("T")[0]) {
-                                            alert("Please select a valid date between 2 days ago and today.");
+                                        if (selectedDate < min) {
+                                            alert(`Please select a valid date after ${min}.`);
                                             return;
                                         }
                                         setCheckoutDate(selectedDate)

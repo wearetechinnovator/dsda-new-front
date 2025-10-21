@@ -431,7 +431,7 @@ const Profile = () => {
             </div>
 
             {/* ::::::::::::::::::::::::::::::::: HOTEL AND ROOM data ::::::::::::::::::::::::::: */}
-            <div className='my-8'>
+            <div className='my-8' id='roomAndBedCapacity'>
               <h6 className='my-4'>Room & Bed Capacity*</h6>
               <div class="overflow-x-auto">
                 <table class="min-w-full border border-gray-200 text-left">
@@ -456,9 +456,10 @@ const Profile = () => {
                       <td className="px-2 py-2 border">
                         <input
                           type="number"
+                          disabled={true}
                           placeholder="One Bed"
                           value={bedCapacity.oneBed}
-                          onChange={(e) => handleBedCapacityChange(e, "oneBed")}
+                          // onChange={(e) => handleBedCapacityChange(e, "oneBed")}
                           className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
@@ -466,9 +467,10 @@ const Profile = () => {
                       <td className="px-2 py-2 border">
                         <input
                           type="number"
+                          disabled={true}
                           placeholder="Two Bed"
                           value={bedCapacity.twoBed}
-                          onChange={(e) => handleBedCapacityChange(e, "twoBed")}
+                          // onChange={(e) => handleBedCapacityChange(e, "twoBed")}
                           className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
@@ -476,9 +478,10 @@ const Profile = () => {
                       <td className="px-2 py-2 border">
                         <input
                           type="number"
+                          disabled={true}
                           placeholder="Three Bed"
                           value={bedCapacity.threeBed}
-                          onChange={(e) => handleBedCapacityChange(e, "threeBed")}
+                          // onChange={(e) => handleBedCapacityChange(e, "threeBed")}
                           className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
@@ -486,9 +489,10 @@ const Profile = () => {
                       <td className="px-2 py-2 border">
                         <input
                           type="number"
+                          disabled={true}
                           placeholder="Four Bed"
                           value={bedCapacity.fourBed}
-                          onChange={(e) => handleBedCapacityChange(e, "fourBed")}
+                          // onChange={(e) => handleBedCapacityChange(e, "fourBed")}
                           className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
@@ -496,9 +500,10 @@ const Profile = () => {
                       <td className="px-2 py-2 border">
                         <input
                           type="number"
+                          disabled={true}
                           placeholder="Five Bed"
                           value={bedCapacity.fiveBed}
-                          onChange={(e) => handleBedCapacityChange(e, "fiveBed")}
+                          // onChange={(e) => handleBedCapacityChange(e, "fiveBed")}
                           className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
@@ -506,9 +511,10 @@ const Profile = () => {
                       <td className="px-2 py-2 border">
                         <input
                           type="number"
+                          disabled={true}
                           placeholder="Six Bed"
                           value={bedCapacity.sixBed}
-                          onChange={(e) => handleBedCapacityChange(e, "sixBed")}
+                          // onChange={(e) => handleBedCapacityChange(e, "sixBed")}
                           className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
@@ -516,9 +522,10 @@ const Profile = () => {
                       <td className="px-2 py-2 border">
                         <input
                           type="number"
+                          disabled={true}
                           placeholder="Seven Bed"
                           value={bedCapacity.sevenBed}
-                          onChange={(e) => handleBedCapacityChange(e, "sevenBed")}
+                          // onChange={(e) => handleBedCapacityChange(e, "sevenBed")}
                           className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
@@ -526,9 +533,10 @@ const Profile = () => {
                       <td className="px-2 py-2 border">
                         <input
                           type="number"
+                          disabled={true}
                           placeholder="Eight Bed"
                           value={bedCapacity.eightBed}
-                          onChange={(e) => handleBedCapacityChange(e, "eightBed")}
+                          // onChange={(e) => handleBedCapacityChange(e, "eightBed")}
                           className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
@@ -536,9 +544,10 @@ const Profile = () => {
                       <td className="px-2 py-2 border">
                         <input
                           type="number"
+                          disabled={true}
                           placeholder="Nine Bed"
                           value={bedCapacity.nineBed}
-                          onChange={(e) => handleBedCapacityChange(e, "nineBed")}
+                          // onChange={(e) => handleBedCapacityChange(e, "nineBed")}
                           className="w-20 p-2 border rounded text-xs"
                         />
                       </td>
@@ -546,9 +555,10 @@ const Profile = () => {
                       <td className="px-2 py-2 border">
                         <input
                           type="number"
+                          disabled={true}
                           placeholder="Ten Bed"
                           value={bedCapacity.tenBed}
-                          onChange={(e) => handleBedCapacityChange(e, "tenBed")}
+                          // onChange={(e) => handleBedCapacityChange(e, "tenBed")}
                           className="w-20 p-2 border rounded text-xs"
                         />
                       </td>

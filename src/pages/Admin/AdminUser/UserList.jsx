@@ -252,18 +252,18 @@ const UserList = ({ mode }) => {
 							</div>
 
 							{/* Table start */}
-							<div className='overflow-x-auto list__table'>
+							<div className='overflow-x-auto list__table list__table__checkin'>
 								<table className='min-w-full bg-white' id='table' ref={tableRef}>
 									<thead className='bg-gray-100 list__table__head'>
 										<tr>
-											<td align='center'>
+											<td className='w-[3%]' align='center'>
 												<input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
 											</td>
 											<td>Name</td>
 											<td>Role</td>
 											<td>Contact</td>
 											<td>Designation</td>
-											<td align='center'>Action</td>
+											<td className='w-[10%]' align='center'>Action</td>
 										</tr>
 									</thead>
 									<tbody>

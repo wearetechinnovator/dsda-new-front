@@ -9,6 +9,11 @@
   --second__color: #024f83;
 }
 
+@font-face {
+  font-family: 'digital-7';
+  src: url('/public/fonts/digital-7.ttf') format('truetype');
+}
+
 * {
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
@@ -80,12 +85,17 @@ h6 {
 }
 
 nav {
-  @apply w-full h-[50px] border-b bg-white shadow-lg flex justify-between;
+  @apply w-full h-[50px] bg-white shadow-lg flex justify-between;
 }
- nav h6{
+
+nav {
+  outline: 1px solid #f3f3f3;
+}
+
+nav h6 {
   font-weight: 400;
   text-transform: uppercase;
- }
+}
 
 .nav__profile__area {
   background-color: var(--second__color) !important;
@@ -104,6 +114,7 @@ nav {
 
 .navbar__tools button {
   @apply w-[30px] h-[30px] rounded-full grid place-items-center cursor-pointer bg-[#045f9c] text-white p-1;
+  @apply hover:bg-[#003e62];
 }
 
 .menu-link {
@@ -116,6 +127,28 @@ nav {
   background-color: rgb(247, 247, 247) !important;
   color: #003628 !important;
   border-right: 4px solid #003628;
+}
+
+
+.nav__tool__time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #024F83;
+  color: white;
+  border-right: 1px solid #0367aa;
+  padding: 10px;
+}
+
+.nav__tool__time span {
+  font-family: 'digital-7', monospace;
+  font-weight: 500;
+}
+.nav__tool__time span:first-child{
+  font-size: 22px;
+}
+.nav__tool__time span:last-child{
+  font-size: 16.5px;
 }
 
 /* Sidenav */
@@ -136,6 +169,7 @@ nav {
   background-color: white !important;
   text-transform: uppercase;
 }
+
 
 .side__nav::-webkit-scrollbar {
   width: 5px;
@@ -176,7 +210,7 @@ nav {
 }
 
 
-.side__nav .active__link a{
+.side__nav .active__link a {
   color: #fff;
 }
 
@@ -198,13 +232,15 @@ nav {
   color: #003628;
 }
 
-.side__nav__links li:hover .sidebar__sub__menu li::before{
+.side__nav__links li:hover .sidebar__sub__menu li::before {
   color: #003628;
 }
-.side__nav__links li:hover .sidebar__sub__menu li.active__link{
+
+.side__nav__links li:hover .sidebar__sub__menu li.active__link {
   color: #fff
 }
-.side__nav .side__nav__links li:hover li.active__link::before{
+
+.side__nav .side__nav__links li:hover li.active__link::before {
   color: #fff;
 }
 
@@ -540,7 +576,7 @@ select:hover {
   @apply px-3 py-1 rounded flex items-center gap-1 text-[13px] border;
 }
 
-.add_new_compnent input[type='search']{
+.add_new_compnent input[type='search'] {
   padding: 5px !important;
 }
 
@@ -920,7 +956,7 @@ input[type="checkbox"]:checked::before {
   @apply inline-flex items-center justify-center rounded text-white gap-1 border-0;
   padding: 5px 16px;
   font-size: 12px;
-  width: 9%;
+  /* width: 9%; */
 }
 
 .form__btn__grp button:active {
@@ -1033,7 +1069,7 @@ input[type="checkbox"]:checked::before {
   @apply grid grid-cols-2 lg:grid-cols-5 gap-8;
 }
 
-.total__data_cards.dashboard{
+.total__data_cards.dashboard {
   @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5
 }
 
@@ -1105,7 +1141,8 @@ input[type="checkbox"]:checked::before {
 .total__card__data p:first-child {
   @apply text-right text-3xl;
 }
-.total__card__data p{
+
+.total__card__data p {
   text-align: end;
   text-shadow: 1px 2px #040404;
 }
@@ -1126,25 +1163,28 @@ input[type="checkbox"]:checked::before {
   background: linear-gradient(to bottom, rgb(247, 213, 20), rgb(97, 65, 7));
 }
 
-.purple__grad{
+.purple__grad {
   background: linear-gradient(180deg, rgba(142, 68, 173, 1) 0%, rgba(61, 0, 87, 1) 100%);
 }
 
-.pink__grad{
+.pink__grad {
   background: linear-gradient(180deg, rgba(246, 58, 117, 1) 0%, rgba(245, 199, 199, 1) 100%);
 }
 
-.rainbow__grad{
+.rainbow__grad {
   background: linear-gradient(to bottom right, #FF0018, #FFA52C, #FFFF41, #008018, #0000F9, #86007D);
 }
-.flag__grad{
-    background: linear-gradient(143deg, rgba(255, 100, 0, 1) 0%, rgba(255, 255, 255, 1) 50%, rgba(0, 100, 57, 1) 100%);
+
+.flag__grad {
+  background: linear-gradient(143deg, rgba(255, 100, 0, 1) 0%, rgba(255, 255, 255, 1) 50%, rgba(0, 100, 57, 1) 100%);
 }
-.red__chilli{
-    background: linear-gradient(90deg, rgba(131, 58, 180, 1) 0%, rgba(253, 29, 29, 1) 50%, rgba(252, 176, 69, 1) 100%);
+
+.red__chilli {
+  background: linear-gradient(90deg, rgba(131, 58, 180, 1) 0%, rgba(253, 29, 29, 1) 50%, rgba(252, 176, 69, 1) 100%);
 }
-.male__grad{
-      background: linear-gradient(134deg, rgba(54, 30, 18, 1) 0%, rgba(90, 47, 30, 1) 100%);
+
+.male__grad {
+  background: linear-gradient(134deg, rgba(54, 30, 18, 1) 0%, rgba(90, 47, 30, 1) 100%);
 }
 
 .chip__green {
@@ -1224,7 +1264,10 @@ input[type="checkbox"]:checked::before {
   font-weight: 500;
   box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
 }
-.active__page:hover{color: #000;}
+
+.active__page:hover {
+  color: #000;
+}
 
 /* Disabled state for arrows (optional if you want to gray them out) */
 .paginate__button__disabled {
@@ -1295,22 +1338,28 @@ input[type="checkbox"]:checked::before {
   padding: 4px 7px;
   border-radius: 15px;
 }
+
 .chip__green {
   @apply bg-[green] hover:bg-[#09a809];
 }
+
 .chip__blue {
   @apply bg-[#659BE0] hover:bg-[#79adf1];
 }
+
 .chip__black {
   @apply bg-[#364336] hover:bg-[#4d5e4d];
 }
-.chip__red{
+
+.chip__red {
   @apply bg-[#ED6B75] hover:bg-[#dd5964];
 }
-.paginate__parent{
+
+.paginate__parent {
   margin-top: 8px;
 }
-.form-label{
+
+.form-label {
   color: #003254;
   font-weight: 500;
 }

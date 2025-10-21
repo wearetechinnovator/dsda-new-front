@@ -31,6 +31,7 @@ const CheckOut = () => {
         return bookingHeadList && bookingHeadList?.map((b, _) => ({
             'Guest Details': b.booking_details_guest_name,
             'Check In Date & Time': b.booking_details_checkin_date_time,
+            'Check Out Date & Time': b.booking_details_checkout_date_time,
             'ID Card': b.booking_details_guest_id_type,
             'Mobile': b.booking_details_guest_phone,
             "Room No.": b.booking_details_room_no
@@ -70,7 +71,7 @@ const CheckOut = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-
+            console.log(res);
             setTotalData(res.total)
             setBookingHeadList([...res.data])
             setLoading(false);
@@ -139,6 +140,7 @@ const CheckOut = () => {
                 hotelName: hotelDetails?.hotel_name,
                 headGuest: res.booking_head_guest_name,
                 checkIn: res.booking_checkin_date_time,
+                checkOut: res.booking_checkout_date_time,
                 guests: res.booking_number_of_guest,
                 totalAmount: res.booking_bill_amount,
             }
@@ -156,9 +158,9 @@ const CheckOut = () => {
                     {/* =============================================================== */}
 
                     <div className='content__body__main'>
-                        <div className='w-full  flex justify-between items-center border-b pb-1'>
-                            <p className='font-semibold text-lg'>Quick Search</p>
+                        <div className='w-full flex gap-1 items-center border-b pb-1'>
                             <Icons.SEARCH />
+                            <p className='font-semibold uppercase'>Quick Search</p>
                         </div>
                         <div className='w-full mt-4'>
                             <p>Search By</p>
@@ -280,30 +282,32 @@ const CheckOut = () => {
                         </div>
 
                         {/* Table start */}
-                        <div className='overflow-x-auto list__table'>
+                        <div className='overflow-x-auto list__table list__table__checkin'>
                             <table className='min-w-full bg-white' id='table' ref={tableRef}>
                                 <thead className='bg-gray-100 list__table__head'>
                                     <tr>
-                                        <td className='py-2 '>SL No.</td>
-                                        <td className='py-2 '>Head Guest Details</td>
-                                        <td className='py-2 '>Check In Date & Time</td>
-                                        <td className='py-2 '>ID Card</td>
-                                        <td className='py-2 '>Mobile</td>
-                                        <td className='py-2 '>Room No.</td>
-                                        <td className='py-2 w-[10%]'>Action</td>
+                                        <td className='w-[5%]' align='center'>SL No.</td>
+                                        <td>Head Guest Details</td>
+                                        <td>Check In Date & Time</td>
+                                        <td>Check Out Date & Time</td>
+                                        <td>ID Card</td>
+                                        <td>Mobile</td>
+                                        <td>Room No.</td>
+                                        <td className='w-[10%]' align='center'>Action</td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         bookingHeadList.map((d, i) => {
                                             return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                <td>{i + 1}</td>
-                                                <td className='px-4 border-b'>{d.booking_details_guest_name}</td>
+                                                <td align='center'>{i + 1}</td>
+                                                <td>{d.booking_details_guest_name}</td>
                                                 <td>{d.booking_details_checkin_date_time}</td>
+                                                <td>{d.booking_details_checkout_date_time}</td>
                                                 <td>{d.booking_details_guest_id_type}</td>
                                                 <td>{d.booking_details_guest_phone}</td>
                                                 <td>{d.booking_details_room_no}</td>
-                                                <td className='px-4 text-center'>
+                                                <td align='center'>
                                                     <div className='flex items-center gap-2'>
                                                         <button className='notice__view__btn' onClick={() => printSlip(d.booking_details_booking_id)}>
                                                             <Icons.PRINTER />

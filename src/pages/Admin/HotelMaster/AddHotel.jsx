@@ -166,6 +166,11 @@ const AddHotel = ({ mode }) => {
       }
     }
 
+    // Validate bed capacity;
+    if (bedCapacity.totalRoom <= 0) {
+      return toast("Total room can't be zero", 'error');
+    }
+
     const allData = { ...data, ...bedCapacity, photoGallery, documentData, roomTypeData };
 
     try {
@@ -527,7 +532,7 @@ const AddHotel = ({ mode }) => {
 
             {/* ::::::::::::::::::::::::::::::::: HOTEL AND ROOM data ::::::::::::::::::::::::::: */}
             <div className='my-8'>
-              <h6 className='my-4'>Room & Bed Capacity*</h6>
+              <p className='mt-2 mb-1 font-semibold text-[15px] uppercase'>Room & Bed Capacity*</p>
               <div class="overflow-x-auto">
                 <table class="min-w-full border border-gray-200 text-left">
                   <thead class="bg-gray-100 text-xs">
@@ -661,7 +666,7 @@ const AddHotel = ({ mode }) => {
 
             {/* ::::::::::::::::::::::::::::::::: Photo Gallery ::::::::::::::::::::::::::: */}
             <div className="mb-8 overflow-x-auto">
-              <h6 className='my-4'>Photo Gallery*</h6>
+              <p className='mt-2 mb-1 font-semibold text-[15px] uppercase'>Photo Gallery*</p>
               <table className="min-w-full border border-gray-200 rounded-lg shadow-sm">
                 <thead className="bg-gray-100 text-xs">
                   <tr>
@@ -755,7 +760,7 @@ const AddHotel = ({ mode }) => {
 
             {/* ::::::::::::::::::::::::::::::::::::: Documents :::::::::::::::::::::::::::::: */}
             <div className="mb-8 overflow-x-auto">
-              <h6 className='my-4'>Documents*</h6>
+              <p className='mt-2 mb-1 font-semibold text-[15px] uppercase'>Documents*</p>
               <table className="min-w-full border border-gray-200 rounded-lg shadow-sm">
                 <thead className="bg-gray-100 text-xs">
                   <tr>
@@ -863,7 +868,7 @@ const AddHotel = ({ mode }) => {
 
             {/* ::::::::::::::::::::::::::::::::::::: Room Type :::::::::::::::::::::::::::::: */}
             <div className="mb-8 overflow-x-auto">
-              <h6 className='my-4'>Room Type*</h6>
+              <p className='mt-2 mb-1 font-semibold text-[15px] uppercase'>Room Type*</p>
               <table className="min-w-full border border-gray-200 rounded-lg shadow-sm">
                 <thead className="bg-gray-100 text-xs">
                   <tr>

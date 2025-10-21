@@ -476,9 +476,7 @@ const Dashboard = () => {
                 <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
                   <thead className='bg-gray-100 list__table__head'>
                     <tr>
-                      <td className='w-[5%]' align='center'>
-                        <input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
-                      </td>
+                      <td>Sl.</td>
                       <td className=''>Name</td>
                       <td className=''>Zone</td>
                       <td className=' '>Sector</td>
@@ -493,9 +491,7 @@ const Dashboard = () => {
                     {
                       data?.map((d, i) => {
                         return <tr key={i} className='hover:bg-gray-100'>
-                          <td align='center'>
-                            <input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
-                          </td>
+                          <td align='center'>{i+1}</td>
                           <td>{d.hotel_name}</td>
                           <td>{d.hotel_zone_id?.name || "--"}</td>
                           <td>{d.hotel_sector_id?.name || "--"}</td>
