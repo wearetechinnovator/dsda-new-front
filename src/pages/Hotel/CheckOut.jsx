@@ -1,10 +1,10 @@
 import Nav from '../../components/Hotel/Nav';
 import SideNav from '../../components/Hotel/HotelSideNav';
 import { Icons } from '../../helper/icons';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { use, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSearchTable from '../../hooks/useSearchTable';
-import { Popover, Whisper } from 'rsuite';
+import { Modal, Popover, Whisper } from 'rsuite';
 import downloadPdf from '../../helper/downloadPdf';
 import useExportTable from '../../hooks/useExportTable';
 import useMyToaster from '../../hooks/useMyToaster';
@@ -43,6 +43,12 @@ const CheckOut = () => {
         roomNo: '', mobileNo: '', fromDate: '', toDate: ''
     })
     const hotelDetails = useSelector((store) => store.hotelDetails);
+    const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+    const [bookingId, setBookingId] = useState(null);
+    const [checkInDate, setCheckInDate] = useState(null);
+    const [defaultCheckOutDate, setDefaultCheckOutDate] = useState(null);
+    const [checkOutIndex, setCheckOutIndex] = useState(null);
+
 
 
 
@@ -147,6 +153,46 @@ const CheckOut = () => {
         })
     }
 
+
+    // Handle Edit Checkout Date Save
+    const handleEditCheckoutDateSave = async () => {
+        if (defaultCheckOutDate === '') {
+            toast("Please select a date & time", "error");
+            return;
+        }
+
+        console.log(bookingId);
+
+        // Save the new checkout date
+        const url = process.env.REACT_APP_BOOKING_API + "/check-out/update-checkout-datetime";
+        const dateFormat = defaultCheckOutDate.replace("T", " ");
+        const req = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                token: Cookies.get("token"),
+                bookingId: bookingId,
+                checkoutDateTime: dateFormat
+            })
+        });
+
+        const res = await req.json();
+        if (req.status === 200) {
+            toast("Checkout date updated successfully", "success");
+            setIsCheckoutModalOpen(false);
+
+            setBookingHeadList((prevList) => {
+                const updatedList = [...prevList];
+                if (checkOutIndex !== null && updatedList[checkOutIndex]) {
+                    updatedList[checkOutIndex].booking_details_checkout_date_time = dateFormat;
+                }
+                return updatedList;
+            });
+            return;
+        } else {
+            toast("Failed to update checkout date", "error");
+        }
+    }
 
     return (
         <>
@@ -308,28 +354,50 @@ const CheckOut = () => {
                                                 <td>{d.booking_details_guest_phone}</td>
                                                 <td>{d.booking_details_room_no}</td>
                                                 <td align='center'>
-                                                    <div className='flex items-center gap-2'>
-                                                        <button className='notice__view__btn' onClick={() => printSlip(d.booking_details_booking_id)}>
-                                                            <Icons.PRINTER />
-                                                            Print
-                                                        </button>
-                                                        <button className='notice__view__btn' onClick={() => {
-                                                            navigate("/hotel/check-out/details", {
-                                                                state: { bookingId: d.booking_details_booking_id }
-                                                            })
-                                                        }}>
-                                                            <Icons.CHECK2 />
-                                                            Checkout
-                                                        </button>
+                                                    <div className='flex justify-end items-center'>
+                                                        <Whisper
+                                                            placement='leftStart'
+                                                            trigger={"click"}
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            speaker={
+                                                                <Popover full>
+                                                                    <div className='download__menu' onClick={() => printSlip(d.booking_details_booking_id)}>
+                                                                        <Icons.EYE className='text-[13px]' />
+                                                                        View Bill
+                                                                    </div>
+                                                                    <div className='download__menu' onClick={() => {
+                                                                        navigate("/hotel/check-out/details", {
+                                                                            state: { bookingId: d.booking_details_booking_id }
+                                                                        })
+                                                                    }}>
+                                                                        <Icons.USER className='text-[12px]' />
+                                                                        Checkout Users
+                                                                    </div>
+                                                                    <div className='download__menu' onClick={() => {
+                                                                        setIsCheckoutModalOpen(true);
+                                                                        setBookingId(d.booking_details_booking_id._id);
+                                                                        setCheckInDate(d.booking_details_checkin_date_time);
+                                                                        setDefaultCheckOutDate(d.booking_details_checkout_date_time);
+                                                                        setCheckOutIndex(i);
+                                                                    }}>
+                                                                        <Icons.EDIT className='text-[13px]' />
+                                                                        Edit Checkout Date
+                                                                    </div>
+                                                                </Popover>
+                                                            }
+                                                        >
+                                                            <div className='table__list__action' >
+                                                                <Icons.HORIZONTAL_MORE />
+                                                            </div>
+                                                        </Whisper>
                                                     </div>
                                                 </td>
-
                                             </tr>
                                         })
                                     }
                                 </tbody>
                             </table>
-                            <div className='paginate__parent'>
+                            {bookingHeadList.length > 0 && <div className='paginate__parent'>
                                 <p>Showing {bookingHeadList.length} of {totalData} entries</p>
                                 <Pagination
                                     activePage={activePage}
@@ -337,14 +405,47 @@ const CheckOut = () => {
                                     totalData={totalData}
                                     dataLimit={dataLimit}
                                 />
-                            </div>
+                            </div>}
                         </div>
                     </div>
                 </div>
+
+                {/* ============================== [Checkout Modal] ============================== */}
+                <Modal size='sm' open={isCheckoutModalOpen} onClose={() => setIsCheckoutModalOpen(false)} backdrop="static">
+                    <Modal.Header>
+                        <Modal.Title>Edit Checkout Date & Time</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <div className='w-full flex flex-col gap-3'>
+                            <div className='w-full'>
+                                <p className='text-sm pb-1'>New Checkout Date & Time*</p>
+                                <input
+                                    type="datetime-local"
+                                    min={
+                                        checkInDate
+                                            ? new Date(checkInDate).toISOString().slice(0, 16)
+                                            : ""
+                                    }
+                                    value={defaultCheckOutDate || (checkInDate ? new Date(checkInDate).toISOString().slice(0, 16) : "")}
+                                    onChange={(e) => setDefaultCheckOutDate(e.target.value)}
+                                />
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <div className='form__btn__grp'>
+                            <button className='save__btn' onClick={handleEditCheckoutDateSave}>
+                                <Icons.CHECK /> Save Changes
+                            </button>
+                        </div>
+                    </Modal.Footer>
+                </Modal>
+
             </main>
         </>
     )
 }
 
 export default CheckOut;
+
 

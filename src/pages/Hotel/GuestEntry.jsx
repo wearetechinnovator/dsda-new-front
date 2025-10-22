@@ -9,6 +9,9 @@ import Cookies from 'js-cookie';
 import { SelectPicker, TimePicker } from 'rsuite';
 import { useSelector } from 'react-redux';
 import GuestEntryDocUpload from '../../components/Hotel/GuestEntryDocUpload';
+import checkfile from '../../helper/checkfile';
+import FlatPicker from 'react-flatpickr'
+import "flatpickr/dist/flatpickr.min.css";
 
 
 const GuestEntry = () => {
@@ -24,8 +27,9 @@ const GuestEntry = () => {
         checkoutDate: '', checkoutTime: ''
     });
     const guestListSet = {
-        guestName: '', gender: '', age: "", nationality: '', address: '', idType: '',
-        idNumber: '', idProof: '', mobileNumber: '', roomNumber: '', country: "", state: '', city: ''
+        guestName: '', gender: '', age: "", dob: '', nationality: '', address: '', idType: '',
+        idNumber: '', idProof: '', mobileNumber: '', roomNumber: '', country: "", state: '', city: '',
+        photo: ''
     }
     const [guestList, setGuestList] = useState([]);
     const [minDate, setMinDate] = useState(null);
@@ -167,7 +171,7 @@ const GuestEntry = () => {
                                     type="date"
                                     placeholder="Enter Check In Date"
                                     value={checkInDetails.checkInDate}
-                                    min={minDate?.toISOString().split("T")[0]} 
+                                    min={minDate?.toISOString().split("T")[0]}
                                     max={today.toISOString().split("T")[0]}
                                     onChange={(e) => {
                                         const selectedDate = e.target.value;
@@ -246,8 +250,9 @@ const GuestEntry = () => {
                                     <tr>
                                         <td align='center' className='w-[2%]'>#</td>
                                         <td className='w-[16%]'>Guest Name*</td>
+                                        <td className='w-[7%]'>Guest Photo*</td>
                                         <td className='w-[7%]'>Gender*</td>
-                                        <td className='w-[5%]'>Age*</td>
+                                        <td className='w-[3%]'>DOB/Age*</td>
                                         <td className='w-[6%]'>Nationality*</td>
                                         <td className='w-[8%]'>ID Type/No.*</td>
                                         <td className='w-[7%]'>ID Proof*</td>
@@ -281,6 +286,35 @@ const GuestEntry = () => {
                                                         <span className="required">*This fields is required</span>
                                                     )}
                                                 </td>
+
+                                                <td valign='top'>
+                                                    <input type="file" id={`photo-${index}`} className='hidden'
+                                                        onChange={async (e) => {
+                                                            const file = e.target.files[0];
+
+                                                            const check = await checkfile(file);
+                                                            if (check !== true) {
+                                                                toast(check, "error");
+                                                                return;
+                                                            }
+                                                            const fileBinary = await base64Data(file);
+
+                                                            const updatedList = [...guestList];
+                                                            updatedList[index].photo = fileBinary
+                                                            setGuestList(updatedList);
+                                                        }}
+                                                    />
+                                                    <GuestEntryDocUpload
+                                                        forId={`photo-${index}`}
+                                                        idProof={gl.photo}
+                                                        onRemove={() => {
+                                                            const updatedList = [...guestList];
+                                                            updatedList[index].photo = ""
+                                                            setGuestList(updatedList);
+                                                        }}
+                                                    />
+                                                </td>
+
                                                 <td valign='top'>
                                                     <select value={gl.gender}
                                                         onChange={(e) => {
@@ -305,6 +339,32 @@ const GuestEntry = () => {
                                                     )}
                                                 </td>
                                                 <td valign='top'>
+                                                    <input type="date"
+                                                        placeholder='DOB'
+                                                        value={gl.dob}
+                                                        max={today.toISOString().split("T")[0]}
+                                                        onChange={(e) => {
+                                                            const selectedDate = e.target.value;
+                                                            const updatedList = [...guestList];
+                                                            updatedList[index].dob = selectedDate;
+
+                                                            // --- Calculate age ---
+                                                            const today = new Date();
+                                                            const birthDate = new Date(selectedDate);
+                                                            let age = today.getFullYear() - birthDate.getFullYear();
+                                                            const monthDiff = today.getMonth() - birthDate.getMonth();
+
+                                                            if (
+                                                                monthDiff < 0 ||
+                                                                (monthDiff === 0 && today.getDate() < birthDate.getDate())
+                                                            ) {
+                                                                age--;
+                                                            }
+
+                                                            updatedList[index].age = age;
+                                                            setGuestList(updatedList);
+                                                        }}
+                                                    />
                                                     <input type="number"
                                                         placeholder='Age'
                                                         value={gl.age}
@@ -442,6 +502,12 @@ const GuestEntry = () => {
                                                     <input type="file" id={`idProof-${index}`} className='hidden'
                                                         onChange={async (e) => {
                                                             const file = e.target.files[0];
+                                                            const check = await checkfile(file);
+                                                            if (check !== true) {
+                                                                toast(check, "error");
+                                                                return;
+                                                            }
+
                                                             const fileBinary = await base64Data(file);
 
                                                             const updatedList = [...guestList];

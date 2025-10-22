@@ -441,7 +441,7 @@ const Dashboard = () => {
                                     {
                                         recentNotice?.map((d, i) => {
                                             return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                <td align='center'>{i + 1}</td>
+                                                <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                 <td>{new Date(d?.notice_date).toLocaleDateString()}</td>
                                                 <td>{d.notice_title}</td>
                                                 <td>

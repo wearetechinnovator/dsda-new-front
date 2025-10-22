@@ -18,7 +18,7 @@ const AddZone = React.lazy(() => import("./pages/Admin/Locations/zone/AddZone"))
 const Zone = React.lazy(() => import("./pages/Admin/Locations/zone/Zone"));
 const AddSector = React.lazy(() => import("./pages/Admin/Locations/sector/AddSector"));
 const Sector = React.lazy(() => import("./pages/Admin/Locations/sector/Sector"));
-const AddPayment = React.lazy(() => import("./pages/Admin/payment/AddPayment"));
+const EditPayment = React.lazy(() => import("./pages/Admin/payment/EditPayment"));
 const Notice = React.lazy(() => import("./pages/Admin/notice/Notice"));
 const AddNotice = React.lazy(() => import("./pages/Admin/notice/AddNotice"));
 const Payment = React.lazy(() => import("./pages/Admin/payment/Payment"));
@@ -33,7 +33,6 @@ const Forgot = React.lazy(() => import("./pages/Admin/Auth/Forgot"));
 const Otp = React.lazy(() => import("./pages/Admin/Auth/Otp"));
 const ChangePassword = React.lazy(() => import("./pages/Admin/Auth/ChangePassword"));
 const NotFound = React.lazy(() => import("./pages/Admin/NotFound"));
-// const Invoice = React.lazy(() => import("./pages/Admin/details/Invoice"));
 const ItemDetails = React.lazy(() => import("./pages/Admin/AdminUser/Details"));
 const ManageHotel = React.lazy(() => import("./pages/Admin/ManageHotel"));
 const HotelList = React.lazy(() => import("./pages/Admin/Report/HotelList"));
@@ -154,8 +153,7 @@ const App = () => {
 
           {/* Amenities */}
           <Route path="amenities" element={<Payment />} />
-          <Route path="amenities/add" element={<AddPayment />} />
-          <Route path="amenities/edit/:id" element={<AddPayment mode="edit" />} />
+          <Route path="amenities/edit/:id" element={<EditPayment />} />
 
           {/* Notice */}
           <Route path="notice" element={<Notice />} />

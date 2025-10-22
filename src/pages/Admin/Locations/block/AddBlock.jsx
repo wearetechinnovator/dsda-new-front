@@ -16,7 +16,6 @@ import { MdUploadFile } from 'react-icons/md';
 
 
 const AddBlock = ({ mode, save }) => {
-
     return (
         <>
             <Nav title={mode ? "Update Block " : "Add New Block"} />

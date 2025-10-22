@@ -12,39 +12,54 @@ import { Popover, Whisper } from 'rsuite';
 import { Icons } from '../../../helper/icons';
 import Pagination from '../../../components/Admin/Pagination';
 import MySelect2 from '../../../components/Admin/MySelect2';
+import useSearchTable from '../../../hooks/useSearchTable';
+import useSetTableFilter from '../../../hooks/useSetTableFilter';
 
 
 const Payment = ({ mode }) => {
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
-    const [activePage, setActivePage] = useState(1);
-    const [dataLimit, setDataLimit] = useState(10);
+    const { getFilterState, setFilterState } = useSetTableFilter();
+    const savedFilter = getFilterState("payment-management");
+    const [activePage, setActivePage] = useState(savedFilter?.activePage || 1);
+    const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
     const [totalData, setTotalData] = useState()
-    const [selected, setSelected] = useState([]);
     const navigate = useNavigate();
-    const [tableStatusData, setTableStatusData] = useState('active');
-    const [itemData, setItemData] = useState([]);
+    const [data, setData] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return itemData && itemData.map(({ title, category }, _) => ({
-            Title: title,
-            HSN: category?.hsn
+        return data && data.map((n, _) => ({
+            Hotel: n.amenities_hotel_id.hotel_name,
+            Year: n.amenities_year,
+            Month: n.amenities_month,
+            Amount: n.amenities_amount,
+            Payment_Date: n.amenities_payment_date,
+            Payment_Mode: n.amenities_payment_mode == "1" ? "Online" : "Offline",
+            Payment_Status: n.amenities_payment_status,
+            Transaction_ID: n.amenities_payment_transaction_id,
         }));
-    }, [itemData]);
+    }, [data]);
     const [loading, setLoading] = useState(true);
+    const searchTable = useSearchTable();
+    const monthList = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
 
 
 
     // Get data;
     useEffect(() => {
-        const getCategory = async () => {
+        (async () => {
             try {
                 const data = {
                     token: Cookies.get("token"),
-                    trash: tableStatusData === "trash" ? true : false,
-                    all: tableStatusData === "all" ? true : false
+                    page: activePage,
+                    limit: dataLimit
                 }
-                const url = process.env.REACT_APP_API_URL + `/item/get?page=${activePage}&limit=${dataLimit}`;
+
+                setFilterState("payment-management", dataLimit, activePage);
+                const url = process.env.REACT_APP_MASTER_API + `/amenities/get-amenities`;
                 const req = await fetch(url, {
                     method: "POST",
                     headers: {
@@ -53,55 +68,16 @@ const Payment = ({ mode }) => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
-                setTotalData(res.totalData)
-                setItemData([...res.data])
+                console.log(res);
+                setTotalData(res.total)
+                setData([...res.data])
                 setLoading(false);
 
             } catch (error) {
                 console.log(error)
             }
-        }
-        getCategory();
-    }, [tableStatusData, dataLimit, activePage])
-
-
-    const searchTable = (e) => {
-        const value = e.target.value.toLowerCase();
-        const rows = document.querySelectorAll('.list__table tbody tr');
-
-        rows.forEach(row => {
-            const cols = row.querySelectorAll('td');
-            let found = false;
-            cols.forEach((col, index) => {
-                if (index !== 0 && col.innerHTML.toLowerCase().includes(value)) {
-                    found = true;
-                }
-            });
-            if (found) {
-                row.style.display = "";
-            } else {
-                row.style.display = "none";
-            }
-        });
-    }
-
-    const selectAll = (e) => {
-        if (e.target.checked) {
-            setSelected(itemData.map((item, _) => item._id));
-        } else {
-            setSelected([]);
-        }
-    };
-
-    const handleCheckboxChange = (id) => {
-        setSelected((prevSelected) => {
-            if (prevSelected.includes(id)) {
-                return prevSelected.filter((previd, _) => previd !== id);
-            } else {
-                return [...prevSelected, id];
-            }
-        });
-    };
+        })()
+    }, [dataLimit, activePage])
 
 
     const exportTable = async (whichType) => {
@@ -132,10 +108,16 @@ const Payment = ({ mode }) => {
                         <div className='flex justify-between items-center'>
                             <div className='flex flex-col'>
                                 <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                    <option value={5}>5</option>
                                     <option value={10}>10</option>
-                                    <option value={25}>25</option>
                                     <option value={50}>50</option>
                                     <option value={100}>100</option>
+                                    <option value={500}>500</option>
+                                    <option value={1000}>1000</option>
+                                    <option value={5000}>5000</option>
+                                    <option value={10000}>10000</option>
+                                    <option value={50000}>50000</option>
+                                    <option value={totalData}>All</option>
                                 </select>
                             </div>
                             <div className='flex items-center gap-2'>
@@ -146,17 +128,6 @@ const Payment = ({ mode }) => {
                                         className='p-[6px]'
                                     />
                                 </div>
-                                <button
-                                    className={`${selected.length > 0 ? 'bg-red-400 text-white' : 'bg-gray-100'} border`}>
-                                    <Icons.DELETE className='text-lg' />
-                                    Delete
-                                </button>
-                                <button
-                                    onClick={() => navigate("/admin/amenities/add")}
-                                    className='bg-[#003E32] text-white'>
-                                    <Icons.ADD className='text-xl text-white' />
-                                    Add New
-                                </button>
                                 <div className='flex justify-end'>
                                     <Whisper placement='leftStart' enterable
                                         speaker={<Popover full>
@@ -224,147 +195,99 @@ const Payment = ({ mode }) => {
                             </div>
                         </div>
                     </div>
-                    {
-                        <div className='content__body__main mt-4'>
-                            {/* Table start */}
-                            <div className='overflow-x-auto list__table list__table__checkin'>
+
+                    <div className='content__body__main mt-4'>
+                        {/* Table start */}
+                        {
+                            data.length > 0 ? <div className='overflow-x-auto list__table list__table__checkin'>
                                 <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
                                     <thead className='bg-gray-100 list__table__head'>
                                         <tr>
-                                            <td align='center'>
-                                                <input type='checkbox' onChange={selectAll} checked={itemData.length > 0 && selected.length === itemData.length} />
-                                            </td>
-                                            <td>SL No.</td>
-                                            <td>Date</td>
+                                            <td className='w-[5%]' align='center'>SL No.</td>
                                             <td>Hotel</td>
-                                            <td>Amount</td>
                                             <td>Year</td>
                                             <td>Month</td>
+                                            <td>Amount</td>
+                                            <td>Payment Date</td>
                                             <td>Payment Mode</td>
+                                            <td>Payment Status</td>
                                             <td>Transaction ID</td>
                                             <td>Action</td>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr>
-                                            <td></td>
-                                            <td>1</td>
-                                            <td>10-5-6</td>
-                                            <td>Demo</td>
-                                            <td>2500</td>
-                                            <td>2025</td>
-                                            <td>february</td>
-                                            <td>adfss</td>
-                                            <td>ad</td>
-                                            <td className='px-4 text-center'>
-                                                <Whisper
-                                                    placement='leftStart'
-                                                    trigger={"click"}
-                                                    onClick={(e) => e.stopPropagation()}
-                                                    speaker={<Popover full>
-                                                        <div
-                                                            className='table__list__action__icon'
-                                                            onClick={(e) => {
-                                                                e.stopPropagation()
-
-                                                            }}
+                                        {
+                                            data && data.map((n, i) => {
+                                                return <tr key={i} className='hover:bg-gray-100'>
+                                                    <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
+                                                    <td>{n.amenities_hotel_id.hotel_name}</td>
+                                                    <td>{n.amenities_year}</td>
+                                                    <td>{monthList[n.amenities_month]}</td>
+                                                    <td>{n.amenities_amount}</td>
+                                                    <td>{n.amenities_payment_date}</td>
+                                                    <td>
+                                                        {
+                                                            n.amenities_payment_mode == "0" ?
+                                                                <span className='chip chip__green'>Offline</span> :
+                                                                <span className='chip chip__blue'>Online</span>
+                                                        }
+                                                    </td>
+                                                    <td>{n.amenities_payment_status}</td>
+                                                    <td>{n.amenities_payment_transaction_id}</td>
+                                                    <td align='center'>
+                                                        <Whisper
+                                                            placement='leftStart'
+                                                            trigger={"click"}
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            speaker={<Popover full>
+                                                                <div
+                                                                    className='table__list__action__icon'
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        navigate("/admin/amenities/edit/" + n._id, {
+                                                                            state: n
+                                                                        })
+                                                                    }}
+                                                                >
+                                                                    <Icons.EDIT className='text-[16px]' />
+                                                                    Edit
+                                                                </div>
+                                                                <div
+                                                                    className='table__list__action__icon'
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation()
+                                                                        navigate("/admin/notice/edit/" + n._id)
+                                                                    }}
+                                                                >
+                                                                    <Icons.PRINTER className='text-[16px]' />
+                                                                    Print Receipt
+                                                                </div>
+                                                            </Popover>}
                                                         >
-                                                            <Icons.EDIT className='text-[16px]' />
-                                                            Edit
-                                                        </div>
-                                                    </Popover>}
-                                                >
-                                                    <div className='table__list__action' >
-                                                        <Icons.HORIZONTAL_MORE />
-                                                    </div>
-                                                </Whisper>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>1</td>
-                                            <td>10-5-6</td>
-                                            <td>Demo</td>
-                                            <td>2500</td>
-                                            <td>2025</td>
-                                            <td>february</td>
-                                            <td>adfss</td>
-                                            <td>ad</td>
-                                            <td className='px-4 text-center'>
-                                                <Whisper
-                                                    placement='leftStart'
-                                                    trigger={"click"}
-                                                    onClick={(e) => e.stopPropagation()}
-                                                    speaker={<Popover full>
-                                                        <div
-                                                            className='table__list__action__icon'
-                                                            onClick={(e) => {
-                                                                e.stopPropagation()
+                                                            <div className='table__list__action' >
+                                                                <Icons.HORIZONTAL_MORE />
+                                                            </div>
+                                                        </Whisper>
+                                                    </td>
+                                                </tr>
+                                            })
 
-                                                            }}
-                                                        >
-                                                            <Icons.EDIT className='text-[16px]' />
-                                                            Edit
-                                                        </div>
-                                                    </Popover>}
-                                                >
-                                                    <div className='table__list__action' >
-                                                        <Icons.HORIZONTAL_MORE />
-                                                    </div>
-                                                </Whisper>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>1</td>
-                                            <td>10-5-6</td>
-                                            <td>Demo</td>
-                                            <td>2500</td>
-                                            <td>2025</td>
-                                            <td>february</td>
-                                            <td>adfss</td>
-                                            <td>ad</td>
-                                            <td className='px-4 text-center'>
-                                                <Whisper
-                                                    placement='leftStart'
-                                                    trigger={"click"}
-                                                    onClick={(e) => e.stopPropagation()}
-                                                    speaker={<Popover full>
-                                                        <div
-                                                            className='table__list__action__icon'
-                                                            onClick={(e) => {
-                                                                e.stopPropagation()
-
-                                                            }}
-                                                        >
-                                                            <Icons.EDIT className='text-[16px]' />
-                                                            Edit
-                                                        </div>
-                                                    </Popover>}
-                                                >
-                                                    <div className='table__list__action' >
-                                                        <Icons.HORIZONTAL_MORE />
-                                                    </div>
-                                                </Whisper>
-                                            </td>
-                                        </tr>
-
+                                        }
                                     </tbody>
                                 </table>
-                                <div className='paginate__parent'>
-                                    <p>Showing {itemData.length} of {totalData} entries</p>
+                                {data.length > 0 && <div className='paginate__parent'>
+                                    <p>Showing {data.length} of {totalData} entries</p>
                                     <Pagination
                                         activePage={activePage}
                                         totalData={totalData}
                                         dataLimit={dataLimit}
                                         setActivePage={setActivePage}
                                     />
-                                </div>
+                                </div>}
                             </div>
-                        </div>
-                        // : <AddNew title={"Item"} link={"/admin/item/add"} />
-                        // : <DataShimmer />
-                    }
+                                : <DataShimmer />
+                        }
+                    </div>
                 </div>
             </main>
         </>
