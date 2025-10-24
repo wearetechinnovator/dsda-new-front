@@ -144,10 +144,12 @@ nav h6 {
   font-family: 'digital-7', monospace;
   font-weight: 500;
 }
-.nav__tool__time span:first-child{
+
+.nav__tool__time span:first-child {
   font-size: 22px;
 }
-.nav__tool__time span:last-child{
+
+.nav__tool__time span:last-child {
   font-size: 16.5px;
 }
 
@@ -1353,6 +1355,14 @@ input[type="checkbox"]:checked::before {
 
 .chip__red {
   @apply bg-[#ED6B75] hover:bg-[#dd5964];
+}
+
+.chip__grey {
+  @apply bg-gray-300 hover:bg-gray-300;
+}
+
+.chip__yellow {
+  @apply bg-yellow-300 hover:bg-yellow-300;
 }
 
 .paginate__parent {

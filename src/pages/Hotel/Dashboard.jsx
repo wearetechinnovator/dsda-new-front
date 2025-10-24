@@ -21,6 +21,7 @@ import downloadBase64 from '../../helper/downloadBase64'
 import { useSelector } from 'react-redux';
 import useMyToaster from '../../hooks/useMyToaster';
 import useSetTableFilter from '../../hooks/useSetTableFilter';
+import NoData from '../../components/Admin/NoData';
 
 
 
@@ -130,6 +131,7 @@ const Dashboard = () => {
                 body: JSON.stringify({ hotelId })
             })
             const res = await req.json();
+            console.log(res);
             if (req.status === 200) setStaticticsData(res);
         })()
     }, [])
@@ -403,7 +405,8 @@ const Dashboard = () => {
                                     }
                                 </tbody>
                             </table>
-                            <div className='paginate__parent'>
+                            {bookingHeadList.length < 1 && <NoData />}
+                            {bookingHeadList.length > 0 && <div className='paginate__parent'>
                                 <p>Showing {bookingHeadList.length} of {totalData} entries</p>
                                 <Pagination
                                     activePage={activePage}
@@ -411,7 +414,7 @@ const Dashboard = () => {
                                     totalData={totalData}
                                     dataLimit={dataLimit}
                                 />
-                            </div>
+                            </div>}
                         </div>
                     </div>
 
@@ -420,7 +423,7 @@ const Dashboard = () => {
                     {/* RECENT NOTICE */}
                     {/* =============================================================== */}
 
-                    <div className='content__body__main mt-6'>
+                    {<div className='content__body__main mt-6'>
                         <div className='w-full flex gap-3 items-center mb-3 pb-2 border-b'>
                             <Icons.NOTICE className='text-xl' />
                             <p className='font-semibold text-md uppercase'>Recent Notice</p>
@@ -475,7 +478,7 @@ const Dashboard = () => {
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </div>}
                 </div>
             </main>
             <Modal open={modalData.isOpen} onClose={() => setModalData({

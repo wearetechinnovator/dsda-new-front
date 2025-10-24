@@ -13,6 +13,7 @@ import { Icons } from '../../../helper/icons';
 import Pagination from '../../../components/Admin/Pagination';
 import useSearchTable from '../../../hooks/useSearchTable';
 import useSetTableFilter from '../../../hooks/useSetTableFilter';
+import NoData from '../../../components/Admin/NoData';
 
 
 const Payment = ({ mode }) => {
@@ -47,11 +48,13 @@ const Payment = ({ mode }) => {
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [allHotels, setAllHotels] = useState([]);
     const timeRef = useRef(null);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
 
 
     // Get Hotel List for
-    const get = async () => {
+    const getHotelList = async () => {
         try {
             const data = {
                 token: Cookies.get("token")
@@ -73,7 +76,7 @@ const Payment = ({ mode }) => {
     }
 
     useEffect(() => {
-        get();
+        getHotelList();
     }, [])
 
     const searchTableDatabase = (txt) => {
@@ -105,17 +108,49 @@ const Payment = ({ mode }) => {
 
 
 
-    // Get data;
+
+
+    // Get Amenities data;
+    const get = async () => {
+        setLoading(true);
+        try {
+            const data = {
+                token: Cookies.get("token"),
+                page: activePage,
+                limit: dataLimit
+            }
+
+            setFilterState("payment-management", dataLimit, activePage);
+            const url = process.env.REACT_APP_MASTER_API + `/amenities/get-amenities`;
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const res = await req.json();
+            setTotalData(res.total)
+            setData([...res.data])
+            setLoading(false);
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
     useEffect(() => {
-        (async () => {
+        get();
+    }, [dataLimit, activePage])
+    const AmenitiesHotelSearch = (txt) => {
+        if (txt === "") return;
+        if (timeRef.current) clearTimeout(timeRef.current);
+
+        timeRef.current = setTimeout(async () => {
             try {
                 const data = {
                     token: Cookies.get("token"),
-                    page: activePage,
-                    limit: dataLimit
+                    search: txt
                 }
-
-                setFilterState("payment-management", dataLimit, activePage);
                 const url = process.env.REACT_APP_MASTER_API + `/amenities/get-amenities`;
                 const req = await fetch(url, {
                     method: "POST",
@@ -125,16 +160,19 @@ const Payment = ({ mode }) => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
+                if (req.status !== 200) {
+                    return toast(res.err, 'error');
+                }
                 console.log(res);
-                setTotalData(res.total)
-                setData([...res.data])
-                setLoading(false);
-
+                setData(res);
+                return;
             } catch (error) {
                 console.log(error)
             }
-        })()
-    }, [dataLimit, activePage])
+
+        }, 350)
+    }
+
 
 
     const exportTable = async (whichType) => {
@@ -153,6 +191,52 @@ const Payment = ({ mode }) => {
         }
     }
 
+
+
+    const handleFilter = async () => {
+        setLoading(true);
+        (async () => {
+            try {
+                const data = {
+                    token: Cookies.get("token"),
+                    page: activePage,
+                    limit: dataLimit,
+                    startDate: startDate,
+                    endDate: endDate,
+                    hotelId: selectedHotel
+                }
+
+                setFilterState("payment-management", dataLimit, activePage);
+                const url = process.env.REACT_APP_MASTER_API + `/amenities/get-amenities`;
+                const req = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                const res = await req.json();
+
+                if (req.status !== 200) {
+                    setLoading(false);
+                    return toast(res.err, 'error');
+                }
+                setData([...res.data])
+                setTotalData(res.total)
+                setLoading(false);
+
+            } catch (error) {
+                console.log(error)
+            }
+        })()
+    }
+
+    const handleResetFilter = () => {
+        setStartDate('');
+        setEndDate('');
+        setSelectedHotel(null);
+        get();
+    }
 
     return (
         <>
@@ -180,8 +264,8 @@ const Payment = ({ mode }) => {
                             <div className='flex items-center gap-2'>
                                 <div className='flex w-full flex-col lg:w-[300px]'>
                                     <input type='text'
-                                        placeholder='Search...'
-                                        onChange={searchTable}
+                                        placeholder='Search Hotel name or Transaction ID'
+                                        onChange={(e) => AmenitiesHotelSearch(e.target.value)}
                                         className='p-[6px]'
                                     />
                                 </div>
@@ -235,29 +319,31 @@ const Payment = ({ mode }) => {
                                         cleanable={true}
                                         placement='bottomEnd'
                                         onSearch={(serachTxt) => searchTableDatabase(serachTxt)}
-                                        onClean={get}
+                                        onClean={getHotelList}
                                     />
                                 </div>
                                 <div className='w-full'>
                                     <p className='mb-1'>Start Date<span className='required__text'>*</span></p>
                                     <input type='date'
-                                        onChange={() => { }}
-                                        value={''} />
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        value={startDate}
+                                    />
                                 </div>
 
                                 <div className='w-full'>
                                     <p className='mb-1'>End Date<span className='required__text'>*</span></p>
                                     <input type='date'
-                                        onChange={() => { }}
-                                        value={''} />
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                        value={endDate}
+                                    />
                                 </div>
                             </div>
                             <div className='form__btn__grp filter'>
-                                <button className='save__btn'>
+                                <button className='save__btn' onClick={handleFilter}>
                                     <Icons.SEARCH />
                                     Search
                                 </button>
-                                <button className='reset__btn'>
+                                <button className='reset__btn' onClick={handleResetFilter}>
                                     <Icons.RESET />
                                     Reset
                                 </button>
@@ -268,7 +354,7 @@ const Payment = ({ mode }) => {
                     <div className='content__body__main mt-4'>
                         {/* Table start */}
                         {
-                            data.length > 0 ? <div className='overflow-x-auto list__table list__table__checkin'>
+                            loading === false ? <div className='overflow-x-auto list__table list__table__checkin'>
                                 <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
                                     <thead className='bg-gray-100 list__table__head'>
                                         <tr>
@@ -296,12 +382,23 @@ const Payment = ({ mode }) => {
                                                     <td>{n.amenities_payment_date}</td>
                                                     <td>
                                                         {
-                                                            n.amenities_payment_mode == "0" ?
+                                                            n.amenities_payment_init === "1" ? (n.amenities_payment_mode == "0" ?
                                                                 <span className='chip chip__green'>Offline</span> :
-                                                                <span className='chip chip__blue'>Online</span>
+                                                                <span className='chip chip__blue'>Online</span>) :
+                                                                <span className='chip chip__grey'>Payment Not initiated</span>
                                                         }
                                                     </td>
-                                                    <td>{n.amenities_payment_status}</td>
+                                                    <td>
+                                                        {
+                                                            n.amenities_payment_init === "1" ? (n.amenities_payment_status == "0" ?
+                                                                <span className='chip chip__red'>Failed</span> :
+                                                                (n.amenities_payment_status == "1" ?
+                                                                <span className='chip chip__green'>Success</span> :
+                                                                <span className='chip chip__yellow'>Processing</span>)) :
+                                                                <span className='chip chip__grey'>Payment Not initiated</span>
+
+                                                        }
+                                                    </td>
                                                     <td>{n.amenities_payment_transaction_id}</td>
                                                     <td align='center'>
                                                         <Whisper
@@ -319,7 +416,7 @@ const Payment = ({ mode }) => {
                                                                     <Icons.EDIT className='text-[16px]' />
                                                                     Edit
                                                                 </div>
-                                                                <div
+                                                                {n.amenities_receipt_number && <div
                                                                     className='table__list__action__icon'
                                                                     onClick={(e) => {
                                                                         e.stopPropagation()
@@ -328,7 +425,7 @@ const Payment = ({ mode }) => {
                                                                 >
                                                                     <Icons.PRINTER className='text-[16px]' />
                                                                     Print Receipt
-                                                                </div>
+                                                                </div>}
                                                             </Popover>}
                                                         >
                                                             <div className='table__list__action' >
@@ -342,6 +439,7 @@ const Payment = ({ mode }) => {
                                         }
                                     </tbody>
                                 </table>
+                                {data.length < 1 && <NoData />}
                                 {data.length > 0 && <div className='paginate__parent'>
                                     <p>Showing {data.length} of {totalData} entries</p>
                                     <Pagination

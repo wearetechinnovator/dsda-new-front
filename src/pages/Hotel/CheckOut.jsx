@@ -12,6 +12,7 @@ import Pagination from '../../components/Admin/Pagination';
 import Cookies from 'js-cookie';
 import useSetTableFilter from '../../hooks/useSetTableFilter';
 import { useSelector } from 'react-redux';
+import NoData from '../../components/Admin/NoData';
 
 
 
@@ -397,6 +398,7 @@ const CheckOut = () => {
                                     }
                                 </tbody>
                             </table>
+                            {bookingHeadList.length < 1 && <NoData />}
                             {bookingHeadList.length > 0 && <div className='paginate__parent'>
                                 <p>Showing {bookingHeadList.length} of {totalData} entries</p>
                                 <Pagination

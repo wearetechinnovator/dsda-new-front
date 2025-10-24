@@ -193,6 +193,7 @@ const GuestEntry = () => {
                                 <input type='time'
                                     placeholder='Enter Check In Time'
                                     value={checkInDetails.checkInTime}
+                                    step="1"
                                     onChange={(e) => setCheckInDetails({
                                         ...checkInDetails, checkInTime: e.target.value
                                     })}
@@ -232,6 +233,7 @@ const GuestEntry = () => {
                                 <p>Check Out Time<span className='required__text'>*</span></p>
                                 <input type='time'
                                     placeholder='Enter Time'
+                                    step="1"
                                     value={checkInDetails.checkoutTime}
                                     onChange={(e) => {
                                         setCheckInDetails({

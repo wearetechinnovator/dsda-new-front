@@ -28,32 +28,34 @@ const DateWise = () => {
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return data && data?.map((h, i) => ({
-            "Sl No.": i + 1,
-            "Hotel Name": h.hotel_details?.hotel_name,
-            Zone: h.hotel_details?.hotel_zone_id?.name,
-            Sector: h.hotel_details?.hotel_sector_id?.name,
-            Block: h.hotel_details?.hotel_block_id?.name,
-            "Police Station": h.hotel_details?.hotel_police_station_id?.name,
-            District: h.hotel_details?.hotel_district_id?.name,
-            Footfall: "--",
-            "Male": h.totalMale,
-            "Female": h.totalFemale,
-            "Other Gender": h.totalOtherGender,
-            "Adult": h.totalAdult,
-            "Child": h.totalChild,
-            "Indian": h.totalIndian,
-            "Foreigner": h.totalForeigner,
-            "Amenity Charge": "--",
+        return data && data?.map((d, i) => ({
+            'Sl No.': i + 1,
+            'Date': d.date,
+            'Active Hotels': d.activeHotelCount,
+            'Total Guest(s) Enrolled': d.totalGuests,
+            'Total Charges': d.totalAmount
         }));
     }, [data]);
     const [loading, setLoading] = useState(true);
     const timeRef = useRef(null);
     const [selectedHotel, setSelectedHotel] = useState(null);
+
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const lastDayOfMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const formatDate = (date) => {
+        const d = date.getDate().toString().padStart(2, '0');
+        const m = (date.getMonth() + 1).toString().padStart(2, '0');
+        const y = date.getFullYear();
+        return `${y}-${m}-${d}`;
+    };
+    const startDate = formatDate(firstDayOfMonth); // e.g., "2025-10-01"
+    const endDate = formatDate(lastDayOfMonth);
+
     const [selectedFilters, setSelectedFilters] = useState({
         hotel: '', zone: '', block: '', district: '', policeStation: '', sector: '',
-        startDate: new Date().toISOString().split("T")[0],
-        endDate: new Date().toISOString().split("T")[0],
+        startDate: startDate,
+        endDate: endDate,
         month: '', year: ''
     })
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -61,15 +63,15 @@ const DateWise = () => {
 
 
     // Page wise data change, `Overall` or `Todaywise`
-    useEffect(() => {
-        setSelectedFilters({
-            ...selectedFilters,
-            startDate: new Date().toISOString().split("T")[0],
-            endDate: new Date().toISOString().split("T")[0]
-        })
-        setNavTitle(`Footfall Stats of Today(${new Date().getDate()} ${monthNames[new Date().getMonth()]}, ${new Date().getFullYear()})`)
+    // useEffect(() => {
+    //     setSelectedFilters({
+    //         ...selectedFilters,
+    //         startDate: new Date().toISOString().split("T")[0],
+    //         endDate: new Date().toISOString().split("T")[0]
+    //     })
+    //     setNavTitle(`Footfall Stats of Today(${new Date().getDate()} ${monthNames[new Date().getMonth()]}, ${new Date().getFullYear()})`)
 
-    }, [])
+    // }, [])
 
     // :::::::::::::::::::::: [GET ALL HOTEL] ::::::::::::::::::::
     const get = async () => {
@@ -83,9 +85,8 @@ const DateWise = () => {
                 startDate: selectedFilters.startDate,
                 endDate: selectedFilters.endDate
             }
-            console.log(data);
             setFilterState("amenities-date-wise", dataLimit, activePage);
-            const url = process.env.REACT_APP_BOOKING_API + `/check-in/tourist-data/footfall-daywise`;
+            const url = process.env.REACT_APP_BOOKING_API + `/check-in/get-booking-summary-by-daterange`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -100,7 +101,7 @@ const DateWise = () => {
                 setLoading(false);
 
             } else {
-                // setLoading(false); 
+                setLoading(false);
                 return toast("Hotel data not load", 'error')
             }
 
@@ -172,16 +173,16 @@ const DateWise = () => {
     // Export table
     const exportTable = async (whichType) => {
         if (whichType === "copy") {
-            copyTable("itemTable"); // Pass tableid
+            copyTable("amenitiesTable"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'item-list.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'amenities-list.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Item List"); // Pass table ref and title
+            printTable(tableRef, "Amenities List"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Item List', exportData);
+            let document = exportPdf('Amenities List', exportData);
             downloadPdf(document)
         }
     }
@@ -196,7 +197,7 @@ const DateWise = () => {
 
     return (
         <>
-            <Nav title={"Amenities Stats of 01 Oct, 2025 to 31 Oct, 2025"} />
+            <Nav title={navTitle} />
             <main id='main'>
                 <SideNav />
                 <div className='content__body'>
@@ -310,7 +311,7 @@ const DateWise = () => {
                     <div className='content__body__main mt-4'>
                         {/* Table start */}
                         {loading === false ? <div className='overflow-x-auto list__table list__table__checkin'>
-                            <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
+                            <table className='min-w-full bg-white' id='amenitiesTable' ref={tableRef}>
                                 <thead className='bg-gray-100 list__table__head'>
                                     <tr>
                                         <td className='w-[5%]' align='center'>SL No.</td>
@@ -318,7 +319,7 @@ const DateWise = () => {
                                         <td className=''>Active Hotels</td>
                                         <td>Total Guest(s) Enrolled</td>
                                         <td>Total Charges (₹)</td>
-                                        <td>Details</td>
+                                        <td align="center">Details</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -326,11 +327,16 @@ const DateWise = () => {
                                         data?.map((d, i) => {
                                             return <tr key={i}>
                                                 <td align='center'>{i + 1}</td>
-                                                <td>{d.hotel_details?.hotel_name}</td>
-                                                <td>{d?.hotel_details?.hotel_zone_id?.name}</td>
-                                                <td>{d?.hotel_details?.hotel_sector_id?.name}</td>
-                                                <td>{d?.hotel_details?.hotel_block_id?.name}</td>
-                                                <td>{d?.hotel_details?.hotel_police_station_id?.name}</td>
+                                                <td>{d.date}</td>
+                                                <td>{d.activeHotelCount}</td>
+                                                <td>{d.totalGuests}</td>
+                                                <td>{d.totalAmount}</td>
+                                                <td align="center">
+                                                    <button className="flex items-center gap-1 bg-[#93C5FD] hover:bg-[#80b6f3] text-white px-2 py-1 rounded">
+                                                        <Icons.EYE />
+                                                        View
+                                                    </button>
+                                                </td>
                                             </tr>
                                         })
                                     }

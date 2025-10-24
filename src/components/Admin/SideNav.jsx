@@ -68,7 +68,7 @@ const SideNav = () => {
             </li>
           </Link>
           <Link to={"/admin/amenities"} data-tooltip-id="sideBarItemToolTip">
-            <li className={`flex items-center ${activePath.search("/admin/amenities") >= 0 ? 'active__link' : ''}`}>
+            <li className={`flex items-center ${activePath.endsWith("/admin/amenities") ? 'active__link' : ''}`}>
               <span className='mr-3'><Icons.RUPES /></span>
               <span>Payment Managment</span>
             </li>
@@ -138,7 +138,7 @@ const SideNav = () => {
             </div>
 
             <ul className='sidebar__sub__menu sidebar__sub__menu__amenities'>
-              <li className={`${activePath.search("/admin/amenities-charges/overall-date-wise") >= 0 ? 'active__link' : ''}`}>
+              <li className={`${activePath.search("/admin/amenities-charges/overall-date-wise") == 0 ? 'active__link' : ''}`}>
                 <Link to="/admin/amenities-charges/overall-date-wise">Overall Date Wise</Link>
               </li>
               <li className={`${activePath.search("/admin/amenities-charges/hotel-wise/today") >= 0 ? 'active__link' : ''}`}>

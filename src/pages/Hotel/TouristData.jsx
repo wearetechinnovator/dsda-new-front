@@ -13,6 +13,7 @@ import useSetTableFilter from '../../hooks/useSetTableFilter';
 import Cookies from 'js-cookie'
 import { useSelector } from 'react-redux';
 import DataShimmer from '../../components/Admin/DataShimmer';
+import NoData from '../../components/Admin/NoData';
 
 
 const TouristData = () => {
@@ -382,9 +383,10 @@ const TouristData = () => {
                                                 }
                                             </tbody>
                                         </table>
+                                        {data.length < 1 && <NoData />}
                                     </div>
 
-                                    {totalData && <div className='paginate__parent'>
+                                    {data.length > 0 && <div className='paginate__parent'>
                                         <p>Showing {data.length} of {totalData} entries</p>
                                         <Pagination
                                             activePage={activePage}

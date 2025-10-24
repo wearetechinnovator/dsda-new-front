@@ -57,8 +57,6 @@ const EditPayment = () => {
 
 
     const saveData = async (e) => {
-        console.log(paymentData?.amenities_payment_mode)
-        console.log(form.mode, form.status, form.transactionId, form.receiptNo, id);
         try {
             const url = process.env.REACT_APP_MASTER_API + "/amenities/update-amenities";
             const token = Cookies.get("token");
@@ -96,19 +94,19 @@ const EditPayment = () => {
                             <div className='w-full flex flex-col gap-3'>
                                 <div>
                                     <p className='ml-1'>Hotel Name</p>
-                                    <input type="text" value={form.hotel} />
+                                    <input type="text" value={form.hotel} disabled/>
                                 </div>
                                 <div>
                                     <p className='ml-1'>Payment Year</p>
-                                    <input type="text" value={form.year} />
+                                    <input type="text" value={form.year} disabled/>
                                 </div>
                                 <div>
                                     <p className='ml-1'>Payment Month</p>
-                                    <input type="text" value={form.month} />
+                                    <input type="text" value={form.month} disabled/>
                                 </div>
                                 <div>
                                     <p>Amount</p>
-                                    <input type="text" value={form.amount} />
+                                    <input type="text" value={form.amount} disabled/>
                                 </div>
                                 <div>
                                     <p>Receipt No.</p>
@@ -122,7 +120,7 @@ const EditPayment = () => {
                             <div className='w-full flex flex-col gap-3'>
                                 <div>
                                     <p>Payment Date</p>
-                                    <input type="text" value={form.date} />
+                                    <input type="text" value={form.date} disabled/>
                                 </div>
                                 <div>
                                     <p>Payment Mode</p>
