@@ -18,22 +18,41 @@ const EditPayment = () => {
         hotel: '', year: '', month: '', amount: '', date: '', mode: '',
         transactionId: '', details: "", status: '', receiptNo: '',
     });
-    
-    useEffect(() => {
-        setForm({
-            hotel: paymentData?.amenities_hotel_id?.hotel_name,
-            year: paymentData?.amenities_year,
-            month: paymentData?.amenities_month,
-            amount: paymentData?.amenities_amount,
-            date: paymentData?.amenities_payment_date,
-            mode: paymentData?.amenities_payment_mode,
-            transactionId: paymentData?.amenities_payment_transaction_id,
-            details: paymentData?.amenities_details,
-            status: paymentData?.amenities_payment_status,
-            receiptNo: paymentData?.amenities_receipt_no,
-        })
 
-    }, [location, paymentData])
+    
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const url = process.env.REACT_APP_MASTER_API + `/amenities/get-amenities`;
+                const req = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify({ id })
+                });
+                const res = await req.json();
+                setForm({
+                    hotel: res?.amenities_hotel_id?.hotel_name,
+                    year: res?.amenities_year,
+                    month: res?.amenities_month,
+                    amount: res?.amenities_amount,
+                    date: res?.amenities_payment_date,
+                    mode: res?.amenities_payment_mode,
+                    transactionId: res?.amenities_payment_transaction_id,
+                    details: res?.amenities_details,
+                    status: res?.amenities_payment_status,
+                    receiptNo: res?.amenities_receipt_no,
+                })
+                console.log(res);
+
+            } catch (error) {
+                console.log(error);
+                return toast('Payment data not fetch', 'error')
+            }
+        })()
+    }, [])
 
 
 

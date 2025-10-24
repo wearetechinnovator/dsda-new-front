@@ -8,10 +8,9 @@ import Cookies from 'js-cookie';
 import downloadPdf from '../../../helper/downloadPdf';
 import DataShimmer from '../../../components/Admin/DataShimmer';
 import { Tooltip } from 'react-tooltip';
-import { Popover, Whisper } from 'rsuite';
+import { Popover, Whisper, SelectPicker } from 'rsuite';
 import { Icons } from '../../../helper/icons';
 import Pagination from '../../../components/Admin/Pagination';
-import MySelect2 from '../../../components/Admin/MySelect2';
 import useSearchTable from '../../../hooks/useSearchTable';
 import useSetTableFilter from '../../../hooks/useSetTableFilter';
 
@@ -45,6 +44,64 @@ const Payment = ({ mode }) => {
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
+    const [selectedHotel, setSelectedHotel] = useState(null);
+    const [allHotels, setAllHotels] = useState([]);
+    const timeRef = useRef(null);
+
+
+
+    // Get Hotel List for
+    const get = async () => {
+        try {
+            const data = {
+                token: Cookies.get("token")
+            }
+            const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const res = await req.json();
+            setAllHotels([...res.data])
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    useEffect(() => {
+        get();
+    }, [])
+
+    const searchTableDatabase = (txt) => {
+        if (txt === "") return;
+        if (timeRef.current) clearTimeout(timeRef.current);
+
+        timeRef.current = setTimeout(async () => {
+            try {
+                const data = {
+                    token: Cookies.get("token"),
+                    search: txt
+                }
+                const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
+                const req = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                const res = await req.json();
+                setAllHotels([...res])
+            } catch (error) {
+                console.log(error)
+            }
+
+        }, 350)
+    }
 
 
 
@@ -85,13 +142,13 @@ const Payment = ({ mode }) => {
             copyTable("itemTable"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'item-list.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'amenities.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Item List"); // Pass table ref and title
+            printTable(tableRef, "Amenities"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Item List', exportData);
+            let document = exportPdf('Amenities', exportData);
             downloadPdf(document)
         }
     }
@@ -162,11 +219,23 @@ const Payment = ({ mode }) => {
                             <div className='flex flex-col md:flex-row md:gap-4 w-full mt-3 text-[13px]'>
                                 <div className='w-full'>
                                     <p className='mb-1'>Hotel List</p>
-                                    <MySelect2
-                                        model={"hotel"}
-                                        onType={(v) => {
-                                        }}
-                                        value={""}
+                                    <SelectPicker
+                                        block
+                                        data={[
+                                            ...allHotels.map((item) => ({
+                                                label: item.hotel_name,
+                                                value: item._id
+                                            }))
+                                        ]}
+                                        style={{ width: '100%' }}
+                                        onChange={(v) => setSelectedHotel(v)}
+                                        value={selectedHotel}
+                                        placeholder="Select"
+                                        searchable={true}
+                                        cleanable={true}
+                                        placement='bottomEnd'
+                                        onSearch={(serachTxt) => searchTableDatabase(serachTxt)}
+                                        onClean={get}
                                     />
                                 </div>
                                 <div className='w-full'>
@@ -244,9 +313,7 @@ const Payment = ({ mode }) => {
                                                                     className='table__list__action__icon'
                                                                     onClick={(e) => {
                                                                         e.stopPropagation()
-                                                                        navigate("/admin/amenities/edit/" + n._id, {
-                                                                            state: n
-                                                                        })
+                                                                        navigate("/admin/amenities/edit/" + n._id)
                                                                     }}
                                                                 >
                                                                     <Icons.EDIT className='text-[16px]' />

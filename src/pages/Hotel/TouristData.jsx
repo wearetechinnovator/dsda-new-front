@@ -38,8 +38,8 @@ const TouristData = () => {
             "Identity Card": `${d.booking_details_guest_id_type} - ${d.booking_details_guest_id_number}`,
             Mobile: d.booking_details_guest_phone,
             "Checkin Date & Time": d.booking_details_checkin_date_time,
-            "Verifyed By": d.booking_details_booking_id?.booking_verified_by == "0" ? 'Manager' : 'Admin',
-            "Added By": d.booking_details_booking_id?.booking_added_by == "0" ? 'Admin' : 'Hotel',
+            "Verifyed By": d.booking_details_booking_id?.booking_verified_by === "0" ? 'Manager' : 'Admin',
+            "Added By": d.booking_details_booking_id?.booking_added_by === "0" ? 'Admin' : 'Hotel',
         }));
     }, [data]);
     const [loading, setLoading] = useState(true);
@@ -346,7 +346,7 @@ const TouristData = () => {
                                                             <td>{d.booking_details_checkin_date_time}</td>
                                                             <td>
                                                                 {
-                                                                    d.booking_details_booking_id?.booking_verified_by == "0" ?
+                                                                    d.booking_details_booking_id?.booking_verified_by === "0" ?
                                                                         <span className='chip chip__green'>
                                                                             <Icons.USER />
                                                                             Manager
@@ -359,7 +359,7 @@ const TouristData = () => {
                                                             </td>
                                                             <td>
                                                                 {
-                                                                    d.booking_details_booking_id?.booking_added_by == "0" ?
+                                                                    d.booking_details_booking_id?.booking_added_by === "0" ?
                                                                         <span className='chip chip__blue'>
                                                                             <Icons.ADMIN_USER />
                                                                             Admin
