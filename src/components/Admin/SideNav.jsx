@@ -125,8 +125,7 @@ const SideNav = () => {
             </ul>
           </li>
 
-          <li className={`drp__dwn__menu flex flex-col w-full items-center 
-            ${activePath.search("/admin/amenities-charges") >= 0 ? 'active__link' : ''}`}>
+          <li className={`drp__dwn__menu flex flex-col w-full items-center `}>
             <div className='flex cursor-pointer w-full relative'
               onClick={() => {
                 document.querySelector(".sidebar__sub__menu__amenities")
@@ -141,13 +140,13 @@ const SideNav = () => {
               <li className={`${activePath.search("/admin/amenities-charges/overall-date-wise") == 0 ? 'active__link' : ''}`}>
                 <Link to="/admin/amenities-charges/overall-date-wise">Overall Date Wise</Link>
               </li>
-              <li className={`${activePath.search("/admin/amenities-charges/hotel-wise/today") >= 0 ? 'active__link' : ''}`}>
-                <Link to="/admin/amenities-charges/hotel-wise/today">Total Till Today Hotel Wise</Link>
+              <li className={`${activePath.search("/admin/amenities-charges/hotel-wise") == 0 ? 'active__link' : ''}`}>
+                <Link to="/admin/amenities-charges/hotel-wise">Total Till Today Hotel Wise</Link>
               </li>
-              <li className={`${activePath.search("/admin/amenities-charges/hotel-wise") >= 0 ? 'active__link' : ''}`}>
-                <Link to="/admin/amenities-charges/hotel-wise">Today Hotel Wise</Link>
+              <li className={`${activePath.search("/admin/amenities-charges/hotel-wise/today") == 0 ? 'active__link' : ''}`}>
+                <Link to="/admin/amenities-charges/hotel-wise/today">Today Hotel Wise</Link>
               </li>
-              <li className={`${activePath.search("/admin/amenities-charges/amenities-payment") >= 0 ? 'active__link' : ''}`}>
+              <li className={`${activePath.search("/admin/amenities-charges/amenities-payment") == 0 ? 'active__link' : ''}`}>
                 <Link to="/admin/amenities-charges/amenities-payment">Paid & Due Hotel Wise</Link>
               </li>
             </ul>

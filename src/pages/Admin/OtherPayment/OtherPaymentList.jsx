@@ -195,14 +195,14 @@ const OtherPaymentList = ({ mode }) => {
 											/>
 										</div>
 										{!isTrash && <button
-											onClick={() => deleteData(selected, "admin", true)}
+											onClick={() => deleteData(selected, "other-payments", true)}
 											className={`${selected.length > 0 ? 'bg-red-400 text-white' : 'bg-gray-100'}`}>
 											<Icons.DELETE className='text-lg' />
 											Trash
 										</button>}
 										{
 											isTrash && <button
-												onClick={() => restoreData(selected, "admin")}
+												onClick={() => restoreData(selected, "other-payments")}
 												className={`${selected.length > 0 ? 'bg-[#003E32] text-white' : 'bg-gray-100'}`}>
 												<Icons.RESTORE className='text-lg' />
 												Restore
@@ -326,7 +326,7 @@ const OtherPaymentList = ({ mode }) => {
 																	className='table__list__action__icon'
 																	onClick={(e) => {
 																		e.stopPropagation()
-																		deleteData(d._id, "admin");
+																		deleteData(d._id, "other-payments");
 																	}}
 																>
 																	<Icons.DELETE className='text-[16px]' />
@@ -336,7 +336,7 @@ const OtherPaymentList = ({ mode }) => {
 																	className='table__list__action__icon'
 																	onClick={(e) => {
 																		e.stopPropagation()
-																		deleteData(d._id, "admin", true);
+																		deleteData(d._id, "other-payments", true);
 																	}}
 																>
 																	<Icons.DELETE className='text-[16px]' />

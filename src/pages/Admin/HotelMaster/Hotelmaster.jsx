@@ -274,7 +274,7 @@ const Hotelmaster = ({ mode }) => {
                                             <td className='w-[3%]' align='center'>
                                                 <input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
                                             </td>
-                                            <td>Hotel Name</td>
+                                            <td className='w-[10%]'>Hotel Name</td>
                                             <td>Category</td>
                                             <td>Establish</td>
                                             <td>Zone</td>

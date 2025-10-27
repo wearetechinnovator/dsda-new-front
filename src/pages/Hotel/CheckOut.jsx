@@ -334,13 +334,13 @@ const CheckOut = () => {
                                 <thead className='bg-gray-100 list__table__head'>
                                     <tr>
                                         <td className='w-[5%]' align='center'>SL No.</td>
-                                        <td>Head Guest Details</td>
-                                        <td>Check In Date & Time</td>
-                                        <td>Check Out Date & Time</td>
-                                        <td>ID Card</td>
-                                        <td>Mobile</td>
-                                        <td>Room No.</td>
-                                        <td className='w-[10%]' align='center'>Action</td>
+                                        <td className='w-[*]'>Head Guest Details</td>
+                                        <td className='w-[12%]'>Check In Date & Time</td>
+                                        <td className='w-[13%]'>Check Out Date & Time</td>
+                                        <td className='w-[10%]'>ID Card</td>
+                                        <td className='w-[5%]'>Mobile</td>
+                                        <td className='w-[7%]'>Room No.</td>
+                                        <td className='w-[3%]' align='center'>Action</td>
                                     </tr>
                                 </thead>
                                 <tbody>

@@ -364,13 +364,13 @@ const Dashboard = () => {
                             <table className='min-w-full bg-white' id='table' ref={tableRef}>
                                 <thead className='bg-gray-100 list__table__head'>
                                     <tr>
-                                        <td className='py-2 '>SL No.</td>
-                                        <td className='py-2 '>Head Guest Details</td>
-                                        <td className='py-2 '>Check In Date & Time</td>
-                                        <td className='py-2 '>ID Card</td>
-                                        <td className='py-2 '>Mobile</td>
-                                        <td className='py-2 '>Room No.</td>
-                                        <td className='py-2 w-[10%]' align='center'>Action</td>
+                                        <td className='w-[5%]'>SL No.</td>
+                                        <td className='w-[*]'>Head Guest Details</td>
+                                        <td className='w-[12%]'>Check In Date & Time</td>
+                                        <td className='w-[10%]'>ID Card</td>
+                                        <td className='w-[6%]'>Mobile</td>
+                                        <td className='w-[7%]'>Room No.</td>
+                                        <td className='w-[3%]' align='center'>Action</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -433,11 +433,11 @@ const Dashboard = () => {
                             <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
                                 <thead className='bg-gray-100 list__table__head'>
                                     <tr>
-                                        <td align='center'>Sl.</td>
-                                        <td>Date</td>
-                                        <td align='left'>Title</td>
-                                        <td>Status</td>
-                                        <td align='center'>Action</td>
+                                        <td align='center' className='w-[5%]'>SL No.</td>
+                                        <td className='w-[8%]'>Date</td>
+                                        <td align='left' className='w-[*]'>Title</td>
+                                        <td className='w-[8%]'>Status</td>
+                                        <td align='center' className='w-[11%]'>Action</td>
                                     </tr>
                                 </thead>
                                 <tbody>

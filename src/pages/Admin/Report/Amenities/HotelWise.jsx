@@ -18,6 +18,7 @@ import NoData from "../../../../components/Admin/NoData";
 
 const HotelWise = () => {
     const currentLocation = useLocation();
+    const overallDate = currentLocation.state;
     const isTodayFootFallPage = currentLocation.pathname?.endsWith("/today");
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
@@ -41,46 +42,95 @@ const HotelWise = () => {
     }, [data]);
     const [loading, setLoading] = useState(true);
     const timeRef = useRef(null);
-    const [selectedHotel, setSelectedHotel] = useState(null);
     const [selectedFilters, setSelectedFilters] = useState({
-        hotel: '', zone: '', block: '', district: '', policeStation: '', sector: '',
-        startDate: isTodayFootFallPage ? new Date().toISOString().split("T")[0] : "",
-        endDate: isTodayFootFallPage ? new Date().toISOString().split("T")[0] : "",
-        month: '', year: ''
+        hotel: '', startDate: isTodayFootFallPage ? new Date().toISOString().split("T")[0] : "",
+        endDate: isTodayFootFallPage ? new Date().toISOString().split("T")[0] : ""
     })
+    const [isFilterDateSet, setIsFilterDateSet] = useState(null)
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    const [navTitle, setNavTitle] = useState("")
+    const [navTitle, setNavTitle] = useState("");
+    const [allHotel, setAllHotel] = useState([]);
 
 
     // Page wise data change, `Overall` or `Todaywise`
     useEffect(() => {
         if (isTodayFootFallPage) {
-            setSelectedFilters({
-                ...selectedFilters,
-                startDate: new Date().toISOString().split("T")[0],
-                endDate: new Date().toISOString().split("T")[0]
+            setSelectedFilters(pv => {
+                return {
+                    ...pv,
+                    startDate: new Date().toISOString().split("T")[0],
+                    endDate: new Date().toISOString().split("T")[0]
+                }
             })
             setNavTitle(`Amenities Stats of Today(${new Date().getDate()} ${monthNames[new Date().getMonth()]}, ${new Date().getFullYear()})`)
-        } else {
-            setSelectedFilters({
-                ...selectedFilters,
-                startDate: '',
-                endDate: ''
-            })
-            setNavTitle('Amenities Stats')
         }
+        else if (overallDate) {
+            setSelectedFilters(pv => {
+                return {
+                    ...pv,
+                    startDate: overallDate,
+                    endDate: overallDate
+                }
+            })
+            setNavTitle(`Amenities Stats of (${overallDate})`)
+
+        }
+        else {
+            setSelectedFilters(pv => {
+                return {
+                    ...pv,
+                    startDate: '',
+                    endDate: ''
+                }
+            })
+            setNavTitle('Amenities Stats');
+        }
+
+        setIsFilterDateSet(!isFilterDateSet);
+
     }, [currentLocation])
 
-    // :::::::::::::::::::::: [GET ALL HOTEL] ::::::::::::::::::::
+
+    // Get All Hotels;
+    useEffect(() => {
+        (async () => {
+            try {
+                const data = {
+                    token: Cookies.get("token"),
+                    all: true
+                }
+                const req = await fetch(process.env.REACT_APP_MASTER_API + `/hotel/get`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                const res = await req.json();
+                setAllHotel(res);
+            } catch (error) {
+                console.log(error);
+                return toast("Hotel list not get", "error");
+            }
+        })()
+    }, [])
+
+    // :::::::::::::::::::::: [GET ENROLLED DATA] ::::::::::::::::::::
     const get = async () => {
+        console.log({
+            startDate: selectedFilters.startDate,
+            endDate: selectedFilters.endDate,
+        })
         try {
             const data = {
                 token: Cookies.get("token"),
                 page: activePage,
                 limit: dataLimit,
-                enrolled: true
+                startDate: selectedFilters.startDate,
+                endDate: selectedFilters.endDate,
+                hotelId: selectedFilters.hotel
             }
-            const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
+            const url = process.env.REACT_APP_BOOKING_API + `/check-in/get-hotel-enrolled-data`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -91,7 +141,6 @@ const HotelWise = () => {
             const res = await req.json();
 
             if (req.status === 200) {
-                console.log(res);
                 setTotalData(res.total)
                 setData([...res.data])
                 setLoading(false);
@@ -104,7 +153,7 @@ const HotelWise = () => {
     }
     useEffect(() => {
         get();
-    }, [dataLimit, activePage, currentLocation])
+    }, [dataLimit, activePage, isFilterDateSet])
 
 
     // ::::::::::::::::::: [ ALL SEARCH FILTER CODE HERE ] :::::::::::::
@@ -259,8 +308,10 @@ const HotelWise = () => {
                                             }))
                                         ]}
                                         style={{ width: '100%' }}
-                                        onChange={(v) => setSelectedHotel(v)}
-                                        value={selectedHotel}
+                                        onChange={(v) => setSelectedFilters({
+                                            ...selectedFilters, hotel: v
+                                        })}
+                                        value={selectedFilters.hotel}
                                         placeholder="Select"
                                         searchable={true}
                                         cleanable={true}
@@ -381,17 +432,18 @@ const HotelWise = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            data?.map((d, i) => {
+                                            allHotel.length > 0 && data?.map((d, i) => {
+                                                const currentHotel = allHotel?.find((h, i) => d.hotelId === h._id);
                                                 return <tr key={i} className='hover:bg-gray-100'>
                                                     <td align='center'>{i + 1}</td>
-                                                    <td>{d.hotel_name}</td>
-                                                    <td>{d.hotel_zone_id?.name || "--"}</td>
-                                                    <td>{d.hotel_sector_id?.name || "--"}</td>
-                                                    <td>{d.hotel_block_id?.name || "--"}</td>
-                                                    <td>{d.hotel_police_station_id?.name || "--"}</td>
-                                                    <td>{d.hotel_district_id?.name || "--"}</td>
-                                                    <td>{d.hotel_total_guest}</td>
-                                                    <td>{d.hotel_total_charges}</td>
+                                                    <td>{currentHotel.hotel_name}</td>
+                                                    <td>{currentHotel.hotel_zone_id?.name || "--"}</td>
+                                                    <td>{currentHotel.hotel_sector_id?.name || "--"}</td>
+                                                    <td>{currentHotel.hotel_block_id?.name || "--"}</td>
+                                                    <td>{currentHotel.hotel_police_station_id?.name || "--"}</td>
+                                                    <td>{currentHotel.hotel_district_id?.name || "--"}</td>
+                                                    <td>{d.totalEnrolled}</td>
+                                                    <td>{d.totalCharges}</td>
                                                 </tr>
                                             })
                                         }

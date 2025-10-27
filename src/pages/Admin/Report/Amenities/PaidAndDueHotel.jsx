@@ -51,10 +51,7 @@ const PaidAndDueHotel = () => {
     const timeRef = useRef(null);
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [selectedFilters, setSelectedFilters] = useState({
-        hotel: '', zone: '', block: '', district: '', policeStation: '', sector: '',
-        startDate: new Date().toISOString().split("T")[0],
-        endDate: new Date().toISOString().split("T")[0],
-        month: '', year: ''
+        hotel: '', month: '', year: ''
     })
     const months = [
         { label: 'January', value: 'january' },
@@ -75,24 +72,74 @@ const PaidAndDueHotel = () => {
         const year = 2000 + i;
         return { label: year.toString(), value: year.toString() };
     });
+    const [allAmenitiesWithHotel, setAllAmenitesWithHotel] = useState([]);
+    const [allHotel, setAllHotel] = useState([]);
 
 
 
-    // :::::::::::::::::::::: [GET ALL HOTEL] ::::::::::::::::::::
+    // Get All Amenites with hotel populate;
+    useEffect(() => {
+        (async () => {
+            try {
+                const url = process.env.REACT_APP_MASTER_API + `/amenities/get-amenities`;
+                const req = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify({ all: true })
+                });
+                const res = await req.json();
+
+                if (req.status !== 200) {
+                    return toast(res.err, 'error')
+                }
+                setAllAmenitesWithHotel(res);
+
+            } catch (error) {
+                return toast("Amenities data not load", 'error')
+            }
+        })()
+    }, [])
+
+
+    // Get All Hotels;
+    useEffect(() => {
+        (async () => {
+            try {
+                const data = {
+                    token: Cookies.get("token"),
+                    all: true
+                }
+                const req = await fetch(process.env.REACT_APP_MASTER_API + `/hotel/get`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                const res = await req.json();
+                setAllHotel(res);
+            } catch (error) {
+                console.log(error);
+                return toast("Hotel list not get", "error");
+            }
+        })()
+    }, [])
+
+
+
+
+    // :::::::::::::::::::::: [GET ENROLLED DATA] ::::::::::::::::::::
     const get = async () => {
-        setLoading(true);
         try {
             const data = {
                 token: Cookies.get("token"),
                 page: activePage,
                 limit: dataLimit,
-                hotelId: selectedHotel,
-                startDate: selectedFilters.startDate,
-                endDate: selectedFilters.endDate
+                hotelId: selectedFilters.hotel
             }
-            console.log(data);
-            setFilterState("amenities-paid-due", dataLimit, activePage);
-            const url = process.env.REACT_APP_BOOKING_API + `/check-in/tourist-data/footfall-daywise`;
+            const url = process.env.REACT_APP_BOOKING_API + `/check-in/get-hotel-enrolled-data`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -101,19 +148,16 @@ const PaidAndDueHotel = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
+
             if (req.status === 200) {
                 setTotalData(res.total)
                 setData([...res.data])
                 setLoading(false);
-
-            } else {
-                // setLoading(false); 
-                return toast("Hotel data not load", 'error')
             }
+            setLoading(false);
 
         } catch (error) {
             console.log(error)
-            return toast("Hotel data not load", 'error')
         }
     }
     useEffect(() => {
@@ -337,14 +381,20 @@ const PaidAndDueHotel = () => {
                                 </thead>
                                 <tbody>
                                     {
-                                        data?.map((d, i) => {
+                                      allHotel.length > 0 && data?.map((d, i) => {
+                                            const currentHotel = allHotel?.find((h, i) => d.hotelId === h._id);
                                             return <tr key={i}>
                                                 <td align='center'>{i + 1}</td>
-                                                <td>{d.hotel_details?.hotel_name}</td>
-                                                <td>{d?.hotel_details?.hotel_zone_id?.name}</td>
-                                                <td>{d?.hotel_details?.hotel_sector_id?.name}</td>
-                                                <td>{d?.hotel_details?.hotel_block_id?.name}</td>
-                                                <td>{d?.hotel_details?.hotel_police_station_id?.name}</td>
+                                                <td>{currentHotel.hotel_name}</td>
+                                                <td>{currentHotel.hotel_zone_id?.name || "--"}</td>
+                                                <td>{currentHotel.hotel_sector_id?.name || "--"}</td>
+                                                <td>{currentHotel.hotel_block_id?.name || "--"}</td>
+                                                <td>{currentHotel.hotel_police_station_id?.name || "--"}</td>
+                                                <td>{currentHotel.hotel_district_id?.name || "--"}</td>
+                                                <td>{d.totalEnrolled}</td>
+                                                <td>{d.totalCharges}</td>
+                                                <td></td>
+                                                <td></td>
                                             </tr>
                                         })
                                     }

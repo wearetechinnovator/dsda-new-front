@@ -10,13 +10,14 @@ import downloadPdf from '../../../../helper/downloadPdf';
 import Pagination from '../../../../components/Admin/Pagination';
 import DataShimmer from "../../../../components/Admin/DataShimmer";
 import useMyToaster from "../../../../hooks/useMyToaster";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import NoData from "../../../../components/Admin/NoData";
 
 
 
 
 const DateWise = () => {
+    const navigate = useNavigate();
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
     const { getFilterState, setFilterState } = useSetTableFilter();
@@ -332,7 +333,11 @@ const DateWise = () => {
                                                 <td>{d.totalGuests}</td>
                                                 <td>{d.totalAmount}</td>
                                                 <td align="center">
-                                                    <button className="flex items-center gap-1 bg-[#93C5FD] hover:bg-[#80b6f3] text-white px-2 py-1 rounded">
+                                                    <button
+                                                        onClick={() => navigate("/admin/amenities-charges/hotel-wise", {
+                                                            state: d.date
+                                                        })}
+                                                        className="flex items-center gap-1 bg-[#93C5FD] hover:bg-[#80b6f3] text-white px-2 py-1 rounded">
                                                         <Icons.EYE />
                                                         View
                                                     </button>

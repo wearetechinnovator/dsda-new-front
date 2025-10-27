@@ -311,15 +311,15 @@ const Amenities = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className='overflow-x-auto list__table'>
+                        <div className='overflow-x-auto list__table list__table__checkin'>
                             <table className='min-w-full bg-white' id='table' ref={tableRef}>
                                 <thead className='bg-gray-100 list__table__head'>
                                     <tr>
-                                        <td align='center'>SL No.</td>
-                                        <td >Date</td>
-                                        <td >Total Guest(s) Enrolled</td>
-                                        <td >Total Amenities Charge Payable (Rs)</td>
-                                        <td align='center'>Remark</td>
+                                        <td align='center' className='w-[2%]'>SL No.</td>
+                                        <td className='w-[4%]'>Date</td>
+                                        <td className='w-[15%]'>Total Guest(s) Enrolled</td>
+                                        <td className='w-[10%]'>Total Amenities Charge Payable (Rs)</td>
+                                        <td align='center' className='w-[4%]'>Remark</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -327,7 +327,7 @@ const Amenities = () => {
                                         currentMonthDateList.map((d, i) => {
                                             let allData = data.find((ad, _) => ad.date === d);
 
-                                            return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
+                                            return <tr key={i} className='hover:bg-gray-100'>
                                                 <td align='center'>{i + 1}</td>
                                                 <td>{d}</td>
                                                 <td className='px-4 border-b'>{allData?.total_guest || 0}</td>

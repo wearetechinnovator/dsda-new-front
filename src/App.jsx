@@ -175,8 +175,8 @@ const App = () => {
 
           {/* Amenities */}
           <Route path="amenities-charges/overall-date-wise" element={<OverallDateWise />} />
-          <Route path="amenities-charges/hotel-wise" element={<HotelWise />} />
           <Route path="amenities-charges/hotel-wise/today" element={<HotelWise />} />
+          <Route path="amenities-charges/hotel-wise" element={<HotelWise />} />
           <Route path="amenities-charges/amenities-payment" element={<PaidAndDueHotel />} />
         </Route>
 

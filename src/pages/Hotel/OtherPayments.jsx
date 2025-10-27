@@ -1,15 +1,15 @@
 import Nav from '../../components/Hotel/Nav';
 import SideNav from '../../components/Hotel/HotelSideNav'
 import { Icons } from '../../helper/icons';
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSearchTable from '../../hooks/useSearchTable';
-import useApi from '../../hooks/useApi';
 import { Popover, Whisper } from 'rsuite';
 import downloadPdf from '../../helper/downloadPdf';
 import useExportTable from '../../hooks/useExportTable';
 import useMyToaster from '../../hooks/useMyToaster';
 import Pagination from '../../components/Admin/Pagination';
+import Cookies from 'js-cookie';
 
 
 
@@ -20,6 +20,7 @@ const OtherPayments = () => {
     const [dataLimit, setDataLimit] = useState(10);
     const [totalData, setTotalData] = useState()
     const [selected, setSelected] = useState([]);
+    const [isTrash, setIsTrash] = useState(false);
     const navigate = useNavigate();
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
@@ -30,6 +31,40 @@ const OtherPayments = () => {
     }, [data]);
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
+
+
+    // Get data;
+    const get = async () => {
+        try {
+            const data = {
+                token: Cookies.get("token"),
+                trash: isTrash,
+                page: activePage,
+                limit: dataLimit,
+                hotelId:Cookies.get('hotelId')
+            }
+            const url = process.env.REACT_APP_MASTER_API + `/other-payments/get-payment`;
+            const req = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const res = await req.json();
+            console.log(res.data)
+            setTotalData(res.total)
+            setData([...res.data])
+            setLoading(false);
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    useEffect(() => {
+        get();
+    }, [isTrash, dataLimit, activePage])
+
 
 
 
@@ -94,10 +129,16 @@ const OtherPayments = () => {
                             <div className='flex justify-between items-center'>
                                 <div className='flex flex-col'>
                                     <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                        <option value={5}>5</option>
                                         <option value={10}>10</option>
-                                        <option value={25}>25</option>
                                         <option value={50}>50</option>
                                         <option value={100}>100</option>
+                                        <option value={500}>500</option>
+                                        <option value={1000}>1000</option>
+                                        <option value={5000}>5000</option>
+                                        <option value={10000}>10000</option>
+                                        <option value={50000}>50000</option>
+                                        <option value={totalData}>All</option>
                                     </select>
                                 </div>
                                 <div className='flex items-center gap-2'>
@@ -142,7 +183,7 @@ const OtherPayments = () => {
                                 <thead className='list__table__head'>
                                     <tr>
                                         <td className='py-2 '>SL No.</td>
-                                        <td className='py-2 '>Hotel</td>
+                                        <td className='py-2 '>Hotel Name</td>
                                         <td className='py-2 '>Date</td>
                                         <td className='py-2 '>Amount</td>
                                         <td className='py-2 '>Purpose</td>

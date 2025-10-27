@@ -79,6 +79,7 @@ const TouristData = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
+            console.log(res)
             if (req.status === 200) {
                 setTotalData(res.total)
                 setData([...res.data])
@@ -179,7 +180,7 @@ const TouristData = () => {
                             <Icons.SEARCH />
                             <p className='font-semibold uppercase'>Filter Guest Entry</p>
                         </div>
-                        <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+                        <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[12px]'>
                             <div className='w-full mt-3'>
                                 <p>Mobile Number</p>
                                 <input type="text" placeholder='Mobile Number'
@@ -201,14 +202,14 @@ const TouristData = () => {
                                     value={quickSearchFields.guestName}
                                 />
                             </div>
-                            <div className='w-full mt-3'>
+                            <div className='w-full mt-2'>
                                 <p>Start Date</p>
                                 <input type="date"
                                     onChange={(e) => setQuickSearchFields({ ...quickSearchFields, fromDate: e.target.value })}
                                     value={quickSearchFields.fromDate}
                                 />
                             </div>
-                            <div className='w-full mt-3'>
+                            <div className='w-full mt-2'>
                                 <p>End Date</p>
                                 <input type="date"
                                     onChange={(e) => setQuickSearchFields({ ...quickSearchFields, toDate: e.target.value })}
@@ -295,8 +296,8 @@ const TouristData = () => {
                                             </div>
                                         </div>
                                     </div>
-                                    <p className='my-2 flex items-center gap-2'>
-                                        <Icons.STAR className='text-red-500 text-md' />
+                                    <p className='my-2 flex items-center gap-2 italic'>
+                                        <Icons.STAR className='text-red-500 text-md'/>
                                         Indicates as Head Guest
                                     </p>
                                     {/* Table start */}
@@ -305,16 +306,16 @@ const TouristData = () => {
                                             <thead className='bg-gray-100 list__table__head'>
                                                 <tr>
                                                     <td align='center' className='w-[5%]'>SL No.</td>
-                                                    <td>Guest Name</td>
-                                                    <td>Gender</td>
-                                                    <td>Age</td>
-                                                    <td>Register Guest Details</td>
-                                                    <td className='w-[5%]'>Identity Card</td>
-                                                    <td>Mobile</td>
-                                                    <td>Check In Date & Time</td>
-                                                    <td align='center'>Verified By</td>
-                                                    <td align='center'>Added By</td>
-                                                    <td align='center'>Action</td>
+                                                    <td className='w-[15%]'>Guest Name</td>
+                                                    <td className='w-[4%]'>Gender</td>
+                                                    <td className='w-[4%]'>Age</td>
+                                                    <td className='w-[12%]'>Register Guest Details</td>
+                                                    <td className='w-[8%]'>ID Card</td>
+                                                    <td className='w-[5%]'>Mobile</td>
+                                                    <td className='w-[12%]'>Check In Date & Time</td>
+                                                    <td align='center' className='w-[8%]'>Verified By</td>
+                                                    <td align='center' className='w-[4%]'>Added By</td>
+                                                    <td align='center' className='w-[3%]'>Action</td>
                                                 </tr>
                                             </thead>
                                             <tbody>
