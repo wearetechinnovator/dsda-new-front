@@ -1,13 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import Nav from '../../../components/Admin/Nav';
 import SideNav from '../../../components/Admin/SideNav'
-import { LuFileX2 } from "react-icons/lu";
 import useMyToaster from '../../../hooks/useMyToaster';
 import Cookies from 'js-cookie';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Icons } from '../../../helper/icons';
-import { MdUploadFile } from 'react-icons/md';
-import checkfile from '../../../helper/checkfile';
 import { SelectPicker } from 'rsuite';
 
 
@@ -79,8 +76,8 @@ const OtherPaymentAdd = ({ mode }) => {
 
     useEffect(() => {
         if (mode) {
-            const get = async () => {
-                const url = process.env.REACT_APP_MASTER_API + "/admin/get-users";
+            (async () => {
+                const url = process.env.REACT_APP_MASTER_API + "/other-payments/get-payment";
                 const cookie = Cookies.get("token");
 
                 const req = await fetch(url, {
@@ -88,13 +85,18 @@ const OtherPaymentAdd = ({ mode }) => {
                     headers: {
                         "Content-Type": 'application/json'
                     },
-                    body: JSON.stringify({ token: cookie, userId: id })
+                    body: JSON.stringify({ token: cookie, id: id })
                 })
                 const res = await req.json();
-                setData({ ...res, profile: res.profile_picture })
-            }
-
-            get();
+                setData({
+                    hotel: res.other_payment_hotel_id,
+                    amount: res.other_payment_amount,
+                    purpose: res.other_payment_purpose,
+                    paymentDate: res.other_payment_payment_date,
+                    refId: res.other_payment_payment_ref_no,
+                    status: res.other_payment_payment_status
+                })
+            })()
         }
     }, [mode])
 
@@ -103,7 +105,6 @@ const OtherPaymentAdd = ({ mode }) => {
         const requiredKeys = [
             'hotel', 'purpose', 'amount', 'refId', 'paymentDate', 'status'
         ];
-        if (!mode) requiredKeys.push('password');
 
         for (const key of requiredKeys) {
             if (!data[key] || data[key].trim() === "") {
@@ -113,7 +114,7 @@ const OtherPaymentAdd = ({ mode }) => {
 
 
         try {
-            let url = mode ? process.env.REACT_APP_MASTER_API + "/admin/update-users" : process.env.REACT_APP_MASTER_API + "/admin/create-users";
+            let url = mode ? process.env.REACT_APP_MASTER_API + "/other-payments/update-payment" : process.env.REACT_APP_MASTER_API + "/other-payments/add-payment";
             const token = Cookies.get("token");
             const req = await fetch(url, {
                 method: "POST",
@@ -121,7 +122,7 @@ const OtherPaymentAdd = ({ mode }) => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(
-                    !mode ? { ...data, token } : { ...data, token, userId: id }
+                    !mode ? { ...data, token } : { ...data, token, id: id }
                 )
             })
             const res = await req.json();
@@ -131,7 +132,8 @@ const OtherPaymentAdd = ({ mode }) => {
 
             if (!mode) clearData();
 
-            toast(!mode ? "User create success" : "User update success", 'success');
+            toast(!mode ? "Payment added success" : "Payment update success", 'success');
+            navigate('/admin/other-payment')
 
         } catch (error) {
             console.log(error);
@@ -166,7 +168,7 @@ const OtherPaymentAdd = ({ mode }) => {
                                             }))
                                         ]}
                                         style={{ width: '100%' }}
-                                        onChange={(v) => setData({...data, hotel: v})}
+                                        onChange={(v) => setData({ ...data, hotel: v })}
                                         value={data.hotel}
                                         placeholder="Select"
                                         searchable={true}
@@ -199,9 +201,9 @@ const OtherPaymentAdd = ({ mode }) => {
                                     <p className='ml-1'>Payment Status</p>
                                     <select onChange={(e) => setData({ ...data, status: e.target.value })} value={data.status}>
                                         <option value={""}>--select--</option>
-                                        <option value="failed">Failed</option>
-                                        <option value="success">Success</option>
-                                        <option value="pending">Pending</option>
+                                        <option value="0">Failed</option>
+                                        <option value="1">Success</option>
+                                        <option value="2">Pending</option>
                                     </select>
                                 </div>
                             </div>

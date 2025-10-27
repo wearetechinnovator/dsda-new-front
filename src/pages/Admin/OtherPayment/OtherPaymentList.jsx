@@ -21,7 +21,7 @@ const OtherPaymentList = ({ mode }) => {
 	const toast = useMyToaster();
 	const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
 	const { getFilterState, setFilterState } = useSetTableFilter();
-	const savedFilter = getFilterState("extraPayment");
+	const savedFilter = getFilterState("other-payment");
 	const [activePage, setActivePage] = useState(savedFilter?.activePage || 1);
 	const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
 	const [totalData, setTotalData] = useState()
@@ -30,11 +30,18 @@ const OtherPaymentList = ({ mode }) => {
 	const [data, setData] = useState([]);
 	const tableRef = useRef(null);
 	const exportData = useMemo(() => {
-		return data && data.map(({ name, role, contact, designation }, _) => ({
-			Name: name,
-			Role: role,
-			Contact: contact,
-			Designation: designation
+		return data && data.map((d, _) => ({
+			"Hotel Name": d.other_payment_hotel_id.hotel_name,
+			"Payment Date": d.other_payment_date,
+			"Amount": d.other_payment_amount,
+			"Purpose": d.other_payment_purpose,
+			"Status": d.other_payment_payment_init === "1" ? (d.other_payment_payment_status == "0" ?
+				<span className='chip chip__red'>Failed</span> :
+				(d.other_payment_payment_status == "1" ?
+					<span className='chip chip__green'>Success</span> :
+					<span className='chip chip__yellow'>Processing</span>)) :
+				<span className='chip chip__grey'>Payment Not initiated</span>,
+			"Ref. ID": d.other_payment_payment_ref_no,
 		}));
 	}, [data]);
 	const [loading, setLoading] = useState(true);
@@ -56,8 +63,8 @@ const OtherPaymentList = ({ mode }) => {
 				page: activePage,
 				limit: dataLimit
 			}
-			setFilterState("extraPayment", dataLimit, activePage);
-			const url = process.env.REACT_APP_MASTER_API + `/admin/get-users`;
+			setFilterState("other-payment", dataLimit, activePage);
+			const url = process.env.REACT_APP_MASTER_API + `/other-payments/get-payment`;
 			const req = await fetch(url, {
 				method: "POST",
 				headers: {
@@ -67,7 +74,7 @@ const OtherPaymentList = ({ mode }) => {
 			});
 			const res = await req.json();
 			setTotalData(res.total)
-			// setData([...res.data])
+			setData([...res.data])
 			setLoading(false);
 
 		} catch (error) {
@@ -93,7 +100,7 @@ const OtherPaymentList = ({ mode }) => {
 					token: Cookies.get("token"),
 					search: txt
 				}
-				const url = process.env.REACT_APP_MASTER_API + `/admin/get-users`;
+				const url = process.env.REACT_APP_MASTER_API + `/other-payments/get-payment`;
 				const req = await fetch(url, {
 					method: "POST",
 					headers: {
@@ -138,13 +145,13 @@ const OtherPaymentList = ({ mode }) => {
 			copyTable("table"); // Pass tableid
 		}
 		else if (whichType === "excel") {
-			downloadExcel(exportData, 'data-list.xlsx') // Pass data and filename
+			downloadExcel(exportData, 'other-payments.xlsx') // Pass data and filename
 		}
 		else if (whichType === "print") {
-			printTable(tableRef, "Data"); // Pass table ref and title
+			printTable(tableRef, "Payment List"); // Pass table ref and title
 		}
 		else if (whichType === "pdf") {
-			let document = exportPdf('Item List', exportData);
+			let document = exportPdf('Other Payment List', exportData);
 			downloadPdf(document);
 		}
 	}
@@ -183,7 +190,7 @@ const OtherPaymentList = ({ mode }) => {
 									<div className='flex items-center gap-2'>
 										<div className='flex w-full flex-col lg:w-[300px]'>
 											<input type='search'
-												placeholder='Search...'
+												placeholder='Search Ref ID...'
 												onChange={searchTableDatabase}
 											/>
 										</div>
@@ -275,17 +282,29 @@ const OtherPaymentList = ({ mode }) => {
 									</thead>
 									<tbody>
 										{
-											data.map((d, i) => {
+											data?.map((d, i) => {
 												return <tr key={i} className='hover:bg-gray-100'>
 													<td align='center'>
 														<input type='checkbox' checked={selected.includes(d._id)} onChange={() => handleCheckboxChange(d._id)} />
 													</td>
 													<td>
-														{d.name}
+														{d.other_payment_hotel_id.hotel_name}
 													</td>
-													<td>{d.role}</td>
-													<td>{d.contact}</td>
-													<td>{d.designation}</td>
+													<td>{d.other_payment_payment_date}</td>
+													<td>{d.other_payment_amount}</td>
+													<td>{d.other_payment_purpose}</td>
+													<td>
+														{
+															d.other_payment_payment_init === "1" ? (d.other_payment_payment_status == "0" ?
+																<span className='chip chip__red'>Failed</span> :
+																(d.other_payment_payment_status == "1" ?
+																	<span className='chip chip__green'>Success</span> :
+																	<span className='chip chip__yellow'>Processing</span>)) :
+																<span className='chip chip__grey'>Payment Not initiated</span>
+
+														}
+													</td>
+													<td>{d.other_payment_payment_ref_no}</td>
 
 													<td className='px-4 text-center'>
 														<Whisper
@@ -297,7 +316,7 @@ const OtherPaymentList = ({ mode }) => {
 																	className='table__list__action__icon'
 																	onClick={(e) => {
 																		e.stopPropagation()
-																		navigate("/admin/user/edit/" + d._id)
+																		navigate("/admin/other-payment/edit/" + d._id)
 																	}}
 																>
 																	<Icons.EDIT className='text-[16px]' />
@@ -336,7 +355,7 @@ const OtherPaymentList = ({ mode }) => {
 										}
 									</tbody>
 								</table>
-								{data.length < 1 && <NoData/> }
+								{data.length < 1 && <NoData />}
 							</div>
 							{data.length > 0 && <div className='paginate__parent'>
 								<p>Showing {data.length} of {totalData} entries</p>
