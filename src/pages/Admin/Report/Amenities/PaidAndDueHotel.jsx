@@ -90,7 +90,6 @@ const PaidAndDueHotel = () => {
                     body: JSON.stringify({ all: true })
                 });
                 const res = await req.json();
-
                 if (req.status !== 200) {
                     return toast(res.err, 'error')
                 }
@@ -119,6 +118,7 @@ const PaidAndDueHotel = () => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
+                console.log(res);
                 setAllHotel(res);
             } catch (error) {
                 console.log(error);
@@ -381,7 +381,7 @@ const PaidAndDueHotel = () => {
                                 </thead>
                                 <tbody>
                                     {
-                                      allHotel.length > 0 && data?.map((d, i) => {
+                                        allHotel.length > 0 && data?.map((d, i) => {
                                             const currentHotel = allHotel?.find((h, i) => d.hotelId === h._id);
                                             return <tr key={i}>
                                                 <td align='center'>{i + 1}</td>
@@ -393,8 +393,12 @@ const PaidAndDueHotel = () => {
                                                 <td>{currentHotel.hotel_district_id?.name || "--"}</td>
                                                 <td>{d.totalEnrolled}</td>
                                                 <td>{d.totalCharges}</td>
-                                                <td></td>
-                                                <td></td>
+                                                <td>{currentHotel.totalAmenitiesAmount}</td>
+                                                <td>{
+                                                    currentHotel.totalAmenitiesAmount > d.totalCharges ?
+                                                        currentHotel.totalAmenitiesAmount - d.totalCharges :
+                                                        d.totalCharges - currentHotel.totalAmenitiesAmount
+                                                }</td>
                                             </tr>
                                         })
                                     }

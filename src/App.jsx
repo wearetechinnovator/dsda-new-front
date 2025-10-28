@@ -189,8 +189,8 @@ const App = () => {
         <Route path="/hotel/otp" element={<UnProtectHotelRoute login={true}><HotelOtp /></UnProtectHotelRoute>} />
         <Route path="/hotel/change-password" element={<ProtectCP><HotelChangePassword /></ProtectCP>} />
         <Route path="/hotel" element={<ProtectHotelRoute />}>
-          <Route path="dashboard" element={<HotelDashboard />} />
           {/* <Route path="statistics" element={<Statistics />} /> */}
+          <Route path="dashboard" element={<HotelDashboard />} />
           <Route path="profile" element={<HotelProfile />} />
           <Route path="profile/change-password" element={<ChangeProfilePassword />} />
           <Route path="check-in" element={<CheckIn />} />

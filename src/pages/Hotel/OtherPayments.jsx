@@ -10,6 +10,8 @@ import useExportTable from '../../hooks/useExportTable';
 import useMyToaster from '../../hooks/useMyToaster';
 import Pagination from '../../components/Admin/Pagination';
 import Cookies from 'js-cookie';
+import NoData from '../../components/Admin/NoData';
+import DataShimmer from '../../components/Admin/DataShimmer';
 
 
 
@@ -19,29 +21,40 @@ const OtherPayments = () => {
     const [activePage, setActivePage] = useState(1);
     const [dataLimit, setDataLimit] = useState(10);
     const [totalData, setTotalData] = useState()
-    const [selected, setSelected] = useState([]);
-    const [isTrash, setIsTrash] = useState(false);
     const navigate = useNavigate();
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return data && data.map(({ name }, _) => ({
-            Name: name,
+        return data && data.map((d, _) => ({
+            "SL. No.": _ + 1,
+            "Hotel Name": d.other_payment_hotel_id.hotel_name,
+            "Date": d.other_payment_payment_date,
+            "Amount": d.other_payment_amount,
+            "Purpose": d.other_payment_purpose,
+            "Status": d.other_payment_payment_init === "1" ? (d.other_payment_payment_status === "0" ? 'Failed' :
+                (d.other_payment_payment_status === "1" ? 'Success' : 'Processing')) :
+                'Payment Not initiated',
+            "Transaction ID": d.other_payment_payment_transaction_id
         }));
     }, [data]);
     const [loading, setLoading] = useState(true);
-    const searchTable = useSearchTable();
+    const [filterData, setFilterData] = useState({ amount: '', purpose: '' });
+    const timeRef = useRef(null);
+
+
 
 
     // Get data;
-    const get = async () => {
+    const get = async ({ amount, purpose }) => {
+        setLoading(true);
         try {
             const data = {
                 token: Cookies.get("token"),
-                trash: isTrash,
                 page: activePage,
                 limit: dataLimit,
-                hotelId:Cookies.get('hotelId')
+                hotelId: Cookies.get('hotelId'),
+                amount: amount,
+                purpose: purpose
             }
             const url = process.env.REACT_APP_MASTER_API + `/other-payments/get-payment`;
             const req = await fetch(url, {
@@ -52,7 +65,11 @@ const OtherPayments = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            console.log(res.data)
+            if (req.status !== 200) {
+                setLoading(false);
+                return toast(res.err, 'error');
+            }
+
             setTotalData(res.total)
             setData([...res.data])
             setLoading(false);
@@ -62,10 +79,45 @@ const OtherPayments = () => {
         }
     }
     useEffect(() => {
-        get();
-    }, [isTrash, dataLimit, activePage])
+        get(filterData);
+    }, [dataLimit, activePage])
 
+    const searchTableDatabase = (e) => {
+        const txt = e.target.value;
+        if (timeRef.current) clearTimeout(timeRef.current);
 
+        timeRef.current = setTimeout(async () => {
+            if (!txt) {
+                get(filterData);
+                return;
+            }
+
+            try {
+                const data = {
+                    token: Cookies.get("token"),
+                    hotelId: Cookies.get('hotelId'),
+                    transactionid: true,
+                    search: txt
+                }
+                const url = process.env.REACT_APP_MASTER_API + `/other-payments/get-payment`;
+                const req = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                const res = await req.json();
+                setTotalData(res.length)
+                setData([...res])
+
+            } catch (error) {
+                console.log(error)
+            }
+
+        }, 300)
+
+    }
 
 
     // Table functionality ---------
@@ -74,15 +126,25 @@ const OtherPayments = () => {
             copyTable("table"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'tourist-data.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'other-payments.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Tourist Data"); // Pass table ref and title
+            printTable(tableRef, "Other Payments"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Tourist Data', exportData);
+            let document = exportPdf('Other Payments', exportData);
             downloadPdf(document)
         }
+    }
+
+
+    const handleFilter = async () => get(filterData);
+
+    const resetFilter = async () => {
+        setFilterData(p => {
+            return { ...p, purpose: '', amount: '' }
+        });
+        get({ amount: '', purpose: '' });
     }
 
 
@@ -93,27 +155,33 @@ const OtherPayments = () => {
                 <SideNav />
                 <div className='content__body'>
                     <div className='content__body__main'>
-                        <div className='w-full  flex justify-between items-center border-b pb-1'>
-                            <p className='font-semibold text-lg'>Make Payment</p>
+                        <div className='w-full flex gap-1 items-center border-b pb-1'>
                             <Icons.SEARCH />
+                            <p className='font-semibold text-md'>Search Payment</p>
                         </div>
                         <div className='w-full flex flex-col md:flex-row justify-between gap-4 items-center mt-4'>
                             <div className='w-full mt-3'>
-                                <p>Amount *</p>
-                                <input type="text" />
+                                <p>Amount </p>
+                                <input type="text"
+                                    value={filterData.amount}
+                                    onChange={(e) => setFilterData({ ...filterData, amount: e.target.value })}
+                                />
                             </div>
                             <div className='w-full mt-3'>
-                                <p>Purpose</p>
-                                <input type="text" />
+                                <p>Purpose </p>
+                                <input type="text"
+                                    value={filterData.purpose}
+                                    onChange={(e) => setFilterData({ ...filterData, purpose: e.target.value })}
+                                />
                             </div>
                         </div>
 
                         <div className='form__btn__grp'>
-                            <button className='reset__btn'>
+                            <button className='reset__btn' onClick={resetFilter}>
                                 <Icons.RESET />
                                 Reset
                             </button>
-                            <button className='save__btn'>
+                            <button className='save__btn' onClick={handleFilter}>
                                 <Icons.SEARCH /> Search
                             </button>
                         </div>
@@ -123,95 +191,121 @@ const OtherPayments = () => {
                     {/* ================================================================================== */}
 
                     {/* Table Content */}
-                    <div className='content__body__main mt-4'>
-                        {/* Option Bar */}
-                        <div className="add_new_compnent">
-                            <div className='flex justify-between items-center'>
-                                <div className='flex flex-col'>
-                                    <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
-                                        <option value={5}>5</option>
-                                        <option value={10}>10</option>
-                                        <option value={50}>50</option>
-                                        <option value={100}>100</option>
-                                        <option value={500}>500</option>
-                                        <option value={1000}>1000</option>
-                                        <option value={5000}>5000</option>
-                                        <option value={10000}>10000</option>
-                                        <option value={50000}>50000</option>
-                                        <option value={totalData}>All</option>
-                                    </select>
-                                </div>
-                                <div className='flex items-center gap-2'>
-                                    <div className='flex w-full flex-col lg:w-[300px]'>
-                                        <input type='text'
-                                            placeholder='Search...'
-                                            onChange={searchTable}
-                                            className='p-[6px]'
-                                        />
+                    {!loading ?
+                        <div className='content__body__main mt-4'>
+                            {/* Option Bar */}
+                            <div className="add_new_compnent">
+                                <div className='flex justify-between items-center'>
+                                    <div className='flex flex-col'>
+                                        <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                            <option value={5}>5</option>
+                                            <option value={10}>10</option>
+                                            <option value={50}>50</option>
+                                            <option value={100}>100</option>
+                                            <option value={500}>500</option>
+                                            <option value={1000}>1000</option>
+                                            <option value={5000}>5000</option>
+                                            <option value={10000}>10000</option>
+                                            <option value={50000}>50000</option>
+                                            <option value={totalData}>All</option>
+                                        </select>
                                     </div>
-                                    <div className='flex justify-end'>
-                                        <Whisper placement='leftStart' enterable
-                                            speaker={<Popover full>
-                                                <div className='download__menu' onClick={() => exportTable('print')} >
-                                                    <Icons.PRINTER className='text-[16px]' />
-                                                    Print Table
+                                    <div className='flex items-center gap-2'>
+                                        <div className='flex w-full flex-col lg:w-[300px]'>
+                                            <input
+                                                type='search'
+                                                placeholder='Search Transaction ID...'
+                                                onChange={searchTableDatabase}
+                                                className='p-[6px]'
+                                            />
+                                        </div>
+                                        <div className='flex justify-end'>
+                                            <Whisper placement='leftStart' enterable
+                                                speaker={<Popover full>
+                                                    <div className='download__menu' onClick={() => exportTable('print')} >
+                                                        <Icons.PRINTER className='text-[16px]' />
+                                                        Print Table
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('copy')}>
+                                                        <Icons.COPY className='text-[16px]' />
+                                                        Copy Table
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('pdf')}>
+                                                        <Icons.PDF className="text-[16px]" />
+                                                        Download Pdf
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('excel')} >
+                                                        <Icons.EXCEL className='text-[16px]' />
+                                                        Download Excel
+                                                    </div>
+                                                </Popover>}
+                                            >
+                                                <div className='record__download' >
+                                                    <Icons.MORE />
                                                 </div>
-                                                <div className='download__menu' onClick={() => exportTable('copy')}>
-                                                    <Icons.COPY className='text-[16px]' />
-                                                    Copy Table
-                                                </div>
-                                                <div className='download__menu' onClick={() => exportTable('pdf')}>
-                                                    <Icons.PDF className="text-[16px]" />
-                                                    Download Pdf
-                                                </div>
-                                                <div className='download__menu' onClick={() => exportTable('excel')} >
-                                                    <Icons.EXCEL className='text-[16px]' />
-                                                    Download Excel
-                                                </div>
-                                            </Popover>}
-                                        >
-                                            <div className='record__download' >
-                                                <Icons.MORE />
-                                            </div>
-                                        </Whisper>
+                                            </Whisper>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div className='overflow-x-auto list__table'>
-                            <table className='min-w-full bg-white' id='table' ref={tableRef}>
-                                <thead className='list__table__head'>
-                                    <tr>
-                                        <td className='py-2 '>SL No.</td>
-                                        <td className='py-2 '>Hotel Name</td>
-                                        <td className='py-2 '>Date</td>
-                                        <td className='py-2 '>Amount</td>
-                                        <td className='py-2 '>Purpose</td>
-                                        <td className='py-2 '>Status</td>
-                                        <td className='py-2 '>Transaction Id</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        data.map((d, i) => {
-                                            return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                <td className='px-4 border-b'>{d.name}</td>
-                                            </tr>
-                                        })
-                                    }
-                                </tbody>
-                            </table>
-                            <div className='paginate__parent'>
-                                <p>Showing {data.length} of {totalData} entries</p>
-                                <Pagination
-                                    activePage={activePage}
-                                    setActivePage={setActivePage}
-                                    totalData={totalData}
-                                    dataLimit={dataLimit}
-                                />
+                            <div className='overflow-x-auto list__table list__table__checkin'>
+                                <table className='min-w-full bg-white' id='table' ref={tableRef}>
+                                    <thead className='list__table__head'>
+                                        <tr>
+                                            <td align='center'>SL No.</td>
+                                            <td>Hotel Name</td>
+                                            <td>Date</td>
+                                            <td>Amount</td>
+                                            <td>Purpose</td>
+                                            <td>Status</td>
+                                            <td>Transaction Id</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            data.map((d, i) => {
+                                                return <tr key={i} className='hover:bg-gray-100'>
+                                                    <td align='center'>{i + 1}</td>
+                                                    <td>
+                                                        {d.other_payment_hotel_id.hotel_name}
+                                                    </td>
+                                                    <td>{d.other_payment_payment_date}</td>
+                                                    <td>{d.other_payment_amount}</td>
+                                                    <td>{d.other_payment_purpose}</td>
+                                                    <td>
+                                                        {
+                                                            d.other_payment_payment_init === "1" ? (d.other_payment_payment_status === "0" ?
+                                                                <span className='chip chip__red'>Failed</span> :
+                                                                (d.other_payment_payment_status === "1" ?
+                                                                    <span className='chip chip__green'>Success</span> :
+                                                                    <span className='chip chip__yellow'>Processing</span>)) :
+                                                                <span className='chip chip__grey'>Payment Not initiated</span>
+
+                                                        }
+                                                    </td>
+                                                    <td>{d.other_payment_payment_transaction_id}</td>
+                                                </tr>
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
+                                {data.length < 1 && <NoData />}
+                                {data.length > 0 && <div className='paginate__parent'>
+                                    <p>Showing {data.length} of {totalData} entries</p>
+                                    <Pagination
+                                        activePage={activePage}
+                                        totalData={totalData}
+                                        dataLimit={dataLimit}
+                                        setActivePage={setActivePage}
+                                    />
+                                </div>}
                             </div>
                         </div>
-                    </div>
+                        : <>
+                            <br />
+                            <DataShimmer />
+                        </>
+                    }
                 </div>
             </main>
         </>

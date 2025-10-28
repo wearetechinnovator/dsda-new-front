@@ -160,11 +160,13 @@ const Payment = ({ mode }) => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
+
                 if (req.status !== 200) {
-                    return toast(res.err, 'error');
+                    setData([]);
+                    return;
                 }
-                console.log(res);
-                setData(res);
+                setTotalData(res.length);
+                setData([...res])
                 return;
             } catch (error) {
                 console.log(error)
@@ -393,8 +395,8 @@ const Payment = ({ mode }) => {
                                                             n.amenities_payment_init === "1" ? (n.amenities_payment_status == "0" ?
                                                                 <span className='chip chip__red'>Failed</span> :
                                                                 (n.amenities_payment_status == "1" ?
-                                                                <span className='chip chip__green'>Success</span> :
-                                                                <span className='chip chip__yellow'>Processing</span>)) :
+                                                                    <span className='chip chip__green'>Success</span> :
+                                                                    <span className='chip chip__yellow'>Processing</span>)) :
                                                                 <span className='chip chip__grey'>Payment Not initiated</span>
 
                                                         }

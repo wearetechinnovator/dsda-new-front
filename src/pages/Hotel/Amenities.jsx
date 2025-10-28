@@ -11,6 +11,8 @@ import useMyToaster from '../../hooks/useMyToaster';
 import Pagination from '../../components/Admin/Pagination';
 import useSetTableFilter from '../../hooks/useSetTableFilter';
 import Cookies from 'js-cookie';
+import NoData from '../../components/Admin/NoData';
+import DataShimmer from '../../components/Admin/DataShimmer';
 
 
 const Amenities = () => {
@@ -32,18 +34,18 @@ const Amenities = () => {
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
     const months = [
-        { label: 'January', value: '1' },
-        { label: 'February', value: '2' },
-        { label: 'March', value: '3' },
-        { label: 'April', value: '4' },
-        { label: 'May', value: '5' },
-        { label: 'June', value: '6' },
-        { label: 'July', value: '7' },
-        { label: 'August', value: '8' },
-        { label: 'September', value: '9' },
-        { label: 'October', value: '10' },
-        { label: 'November', value: '11' },
-        { label: 'December', value: '12' }
+        { label: 'January', value: '0' },
+        { label: 'February', value: '1' },
+        { label: 'March', value: '2' },
+        { label: 'April', value: '3' },
+        { label: 'May', value: '4' },
+        { label: 'June', value: '5' },
+        { label: 'July', value: '6' },
+        { label: 'August', value: '7' },
+        { label: 'September', value: '8' },
+        { label: 'October', value: '9' },
+        { label: 'November', value: '10' },
+        { label: 'December', value: '11' }
     ];
     const currentYear = new Date().getFullYear();
     const currentMonthIndex = new Date().getMonth(); // 0-11
@@ -51,25 +53,25 @@ const Amenities = () => {
         const year = 2000 + i;
         return { label: year.toString(), value: year.toString() };
     });
-    const [filterData, setFilterData] = useState({ month: '', year: '' })
+    const now = new Date()
+    const [filterData, setFilterData] = useState({
+        month: months[now.getMonth()].value, year: now.getFullYear().toString(),
+    })
     const [currentMonthDateList, setCurrentMonthDateList] = useState([]);
-    const [staticticData, setStaticticsData] = useState(null);
+    const [staticticData, setStaticticsData] = useState({
+        todayAminity: '', totalAminity: '', totalPayment: '',
+    });
+    const timeRef = useRef(null);
+    const hotelId = Cookies.get('hotelId');
+    const token = Cookies.get('hotel-token');
 
 
-    // Set current year and month
-    useEffect(() => {
-        setFilterData({
-            year: currentYear.toString(),
-            month: months[currentMonthIndex].value
-        })
-    }, [])
 
     // Get Statictics Data;
     useEffect(() => {
         (async () => {
             const url = process.env.REACT_APP_BOOKING_API + "/check-in/get-stats";
-            const hotelId = Cookies.get('hotelId');
-            const token = Cookies.get('hotel-token');
+            const url2 = process.env.REACT_APP_MASTER_API + "/amenities/get-total-amenities-pay";
 
             const req = await fetch(url, {
                 method: "POST",
@@ -78,29 +80,51 @@ const Amenities = () => {
                 },
                 body: JSON.stringify({ hotelId })
             })
+            const req2 = await fetch(url2, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify({ hotelId })
+            })
+
             const res = await req.json();
-            if (req.status === 200) setStaticticsData(res);
+            const res2 = await req2.json();
+            console.log(res2);
+
+            if (req.status === 200) {
+                setStaticticsData({
+                    ...staticticData,
+                    totalAminity: res.totalAminity,
+                    todayAminity: res.todayAminity,
+                    totalPayment: res2[0]?.totalAmount || 0,
+                })
+            }
+
         })()
     }, [])
 
 
-    // Get Guest Data
-    const get = async (y, m) => {
+    // :::::::::::::::::::::: [GET ALL HOTEL] ::::::::::::::::::::
+    const get = async ({ year, month }) => {
+        setLoading(true);
+
+        const y = Number(year);
+        const m = Number(month) + 1;
+        const startDate = new Date(y, m - 1, 1).toLocaleDateString('en-CA');
+        const endDate = new Date(y, m, 0).toLocaleDateString('en-CA');
+
         try {
-            const hotelId = Cookies.get('hotelId');
-            const token = Cookies.get('hotel-token');
             const data = {
                 token: Cookies.get("token"),
                 page: activePage,
                 limit: dataLimit,
-                year: filterData.year || y,
-                month: filterData.month || m,
-                hotel_id: hotelId
+                startDate,
+                endDate,
+                // hotelId: Cookies.get("hotelId")
             }
-
             setFilterState("amenities", dataLimit, activePage);
-
-            const url = process.env.REACT_APP_BOOKING_API + `/check-out/get-booking-head`;
+            const url = process.env.REACT_APP_BOOKING_API + `/check-in/get-booking-summary-by-daterange`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -109,32 +133,71 @@ const Amenities = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            console.log(res)
             if (req.status === 200) {
                 setTotalData(res.total)
                 setData([...res.data])
                 setLoading(false);
+
+            } else {
+                setLoading(false);
+                return toast("Hotel data not load", 'error')
             }
-            setLoading(false);
 
         } catch (error) {
-            toast("Something went wrong", "error")
             console.log(error)
+            return toast("Hotel data not load", 'error')
         }
     }
     useEffect(() => {
-        get(currentYear.toString(), months[currentMonthIndex].value)
+        get(filterData);
     }, [dataLimit, activePage])
 
 
-    const handleFilterData = () => get();
+    // ::::::::::::::::::: [ ALL SEARCH FILTER CODE HERE ] :::::::::::::
+    const searchTableDatabase = (txt, model) => {
+        if (timeRef.current) clearTimeout(timeRef.current);
+
+        timeRef.current = setTimeout(async () => {
+            if (!txt && model === "hotel") {
+                get(filterData);
+                return;
+            }
+
+            try {
+                const data = {
+                    token: Cookies.get("token"),
+                    search: txt
+                }
+                const url = process.env.REACT_APP_MASTER_API + `/${model}/get`;
+                const req = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                const res = await req.json();
+                if (model === "hotel") {
+                    setTotalData(res.length)
+                }
+
+            } catch (error) {
+                console.log(error)
+            }
+
+        }, 300)
+
+    }
+
+
+    const handleFilterData = () => get(filterData);
 
     const handleResetFilterData = () => {
         setFilterData({
             year: currentYear.toString(),
             month: months[currentMonthIndex].value
         })
-        get(currentYear.toString(), months[currentMonthIndex].value)
+        get({ year: currentYear.toString(), month: months[currentMonthIndex].value })
     }
 
 
@@ -183,7 +246,7 @@ const Amenities = () => {
                         <div className='content__body__main w-full '>
                             <div className='w-full  flex gap-1 items-center border-b pb-1'>
                                 <Icons.SEARCH />
-                                <p className='font-semibold text-[16px]'>Filter Guest Entry</p>
+                                <p className='font-semibold text-md uppercase'>Filter Guest Entry</p>
                             </div>
                             <div className='w-full flex flex-col md:flex-row justify-between gap-4 items-center mt-4'>
                                 <div className='w-full mt-3'>
@@ -222,7 +285,7 @@ const Amenities = () => {
                         <div className='content__body__main charges__card w-full'>
                             <div className='w-full flex gap-1 items-center border-b pb-1'>
                                 <Icons.RUPES />
-                                <p className='font-semibold text-[16px]'>Aminity Charges</p>
+                                <p className='font-semibold text-md uppercase'>Aminity Charges</p>
                             </div>
                             <div className='w-full grid grid-cols-2 md:grid-cols-4 gap-4 mt-4'>
                                 <div className='hotel__amemities__card'>
@@ -236,18 +299,20 @@ const Amenities = () => {
                                     <Icons.RUPES className='card__icon2' />
                                 </div>
                                 <div className='hotel__amemities__card'>
-                                    <p className='text-2xl'>0</p>
+                                    <p className='text-2xl'>{staticticData?.totalPayment}</p>
                                     <p className='text-[12px]'>Total Payment</p>
                                     <Icons.RUPES className='card__icon2' />
                                 </div>
                                 <div className='hotel__amemities__card red__card'>
-                                    <p className='text-2xl'>0</p>
+                                    <p className='text-2xl'>{
+                                        staticticData?.totalAminity - staticticData?.totalPayment 
+                                    }</p>
                                     <p className='text-[12px]'>Total Due</p>
                                     <Icons.RUPES className='card__icon2' />
                                 </div>
                             </div>
 
-                            <div className='form__btn__grp'>
+                            <div className='form__btn__grp filter'>
                                 <button className='reset__btn'>
                                     <Icons.RUPES />
                                     Previous Payments
@@ -263,22 +328,27 @@ const Amenities = () => {
                     {/* ================================================================================== */}
                     {/* Table Content */}
                     <div className='content__body__main mt-4'>
-                        {/* Option Bar */}
-                        <div className="add_new_compnent">
+                        <div className='add_new_compnent'>
                             <div className='flex justify-between items-center'>
                                 <div className='flex flex-col'>
                                     <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                        <option value={5}>5</option>
                                         <option value={10}>10</option>
-                                        <option value={25}>25</option>
                                         <option value={50}>50</option>
                                         <option value={100}>100</option>
+                                        <option value={500}>500</option>
+                                        <option value={1000}>1000</option>
+                                        <option value={5000}>5000</option>
+                                        <option value={10000}>10000</option>
+                                        <option value={50000}>50000</option>
+                                        <option value={totalData}>All</option>
                                     </select>
                                 </div>
                                 <div className='flex items-center gap-2'>
                                     <div className='flex w-full flex-col lg:w-[300px]'>
-                                        <input type='text'
-                                            placeholder='Search...'
-                                            onChange={searchTable}
+                                        <input type='search'
+                                            placeholder='Search Transaction ID'
+                                            onChange={(e) => searchTableDatabase(e.target.value, "hotel")}
                                             className='p-[6px]'
                                         />
                                     </div>
@@ -311,34 +381,34 @@ const Amenities = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className='overflow-x-auto list__table list__table__checkin'>
-                            <table className='min-w-full bg-white' id='table' ref={tableRef}>
+                        {/* Table start */}
+                        {loading === false ? <div className='overflow-x-auto list__table list__table__checkin'>
+                            <table className='min-w-full bg-white' id='amenitiesTable' ref={tableRef}>
                                 <thead className='bg-gray-100 list__table__head'>
                                     <tr>
-                                        <td align='center' className='w-[2%]'>SL No.</td>
-                                        <td className='w-[4%]'>Date</td>
-                                        <td className='w-[15%]'>Total Guest(s) Enrolled</td>
-                                        <td className='w-[10%]'>Total Amenities Charge Payable (Rs)</td>
-                                        <td align='center' className='w-[4%]'>Remark</td>
+                                        <td className='w-[5%]' align='center'>SL No.</td>
+                                        <td className='w-[15%]'>Date</td>
+                                        <td>Total Guest(s) Enrolled</td>
+                                        <td>Total Charges (₹)</td>
+                                        <td align="center">Details</td>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
-                                        currentMonthDateList.map((d, i) => {
-                                            let allData = data.find((ad, _) => ad.date === d);
-
-                                            return <tr key={i} className='hover:bg-gray-100'>
+                                        data?.map((d, i) => {
+                                            return <tr key={i}>
                                                 <td align='center'>{i + 1}</td>
-                                                <td>{d}</td>
-                                                <td className='px-4 border-b'>{allData?.total_guest || 0}</td>
-                                                <td className='px-4 border-b'>{allData?.total_bill || 0}</td>
-                                                <td className='px-4' align='center'>
+                                                <td>{d.date}</td>
+                                                <td>{d.totalGuests}</td>
+                                                <td>{d.totalAmount}</td>
+                                                <td align="center">
                                                     <button
-                                                        onClick={() => navigate("/hotel/tourist-data", {
-                                                            state: { date: d }
+                                                        onClick={() => navigate("/admin/amenities-charges/hotel-wise", {
+                                                            state: d.date
                                                         })}
-                                                        className='rounded px-3 py-1 bg-blue-300 text-white'>
-                                                        Booking
+                                                        className="flex items-center gap-1 bg-[#93C5FD] hover:bg-[#80b6f3] text-white px-2 py-1 rounded">
+                                                        <Icons.EYE />
+                                                        View
                                                     </button>
                                                 </td>
                                             </tr>
@@ -346,10 +416,17 @@ const Amenities = () => {
                                     }
                                 </tbody>
                             </table>
-                            {totalData < 1 && <div className='w-full bg-gray-100 text-md text-center py-6'>
-                                NO DATA FOUND
-                            </div>}
-                        </div>
+                            {data.length < 1 && <NoData />}
+                        </div> : <DataShimmer />}
+                        {data.length > 0 && <div className='paginate__parent'>
+                            <p>Showing {data.length} of {totalData} entries</p>
+                            <Pagination
+                                activePage={activePage}
+                                totalData={totalData}
+                                dataLimit={dataLimit}
+                                setActivePage={setActivePage}
+                            />
+                        </div>}
                     </div>
                 </div>
             </main>
