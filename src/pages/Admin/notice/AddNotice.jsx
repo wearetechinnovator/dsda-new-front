@@ -104,7 +104,7 @@ const AddNotice = ({ mode }) => {
                 const res = await req.json();
                 setData({
                     hotel: res.notice_hotel,
-                    date: res.notice_date,
+                    date: res.notice_date.split("T")[0],
                     details: res.notice_details,
                     file: res.notice_file,
                     status: res.notice_status,

@@ -12,6 +12,7 @@ import Pagination from '../../components/Admin/Pagination';
 import Cookies from 'js-cookie';
 import NoData from '../../components/Admin/NoData';
 import DataShimmer from '../../components/Admin/DataShimmer';
+import usePayment from '../../hooks/usePayment';
 
 
 
@@ -40,6 +41,8 @@ const OtherPayments = () => {
     const [loading, setLoading] = useState(true);
     const [filterData, setFilterData] = useState({ amount: '', purpose: '' });
     const timeRef = useRef(null);
+    const {payment} = usePayment();
+
 
 
 
@@ -252,13 +255,13 @@ const OtherPayments = () => {
                                 <table className='min-w-full bg-white' id='table' ref={tableRef}>
                                     <thead className='list__table__head'>
                                         <tr>
-                                            <td align='center'>SL No.</td>
-                                            <td>Hotel Name</td>
+                                            <td align='center' className='w-[5%]'>SL No.</td>
                                             <td>Date</td>
                                             <td>Amount</td>
                                             <td>Purpose</td>
-                                            <td>Status</td>
+                                            <td className='w-[15%]'>Status</td>
                                             <td>Transaction Id</td>
+                                            <td className='w-[12%]'>Action</td>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -266,24 +269,44 @@ const OtherPayments = () => {
                                             data.map((d, i) => {
                                                 return <tr key={i} className='hover:bg-gray-100'>
                                                     <td align='center'>{i + 1}</td>
-                                                    <td>
-                                                        {d.other_payment_hotel_id.hotel_name}
-                                                    </td>
                                                     <td>{d.other_payment_payment_date}</td>
                                                     <td>{d.other_payment_amount}</td>
                                                     <td>{d.other_payment_purpose}</td>
                                                     <td>
                                                         {
-                                                            d.other_payment_payment_init === "1" ? (d.other_payment_payment_status === "0" ?
-                                                                <span className='chip chip__red'>Failed</span> :
-                                                                (d.other_payment_payment_status === "1" ?
-                                                                    <span className='chip chip__green'>Success</span> :
-                                                                    <span className='chip chip__yellow'>Processing</span>)) :
+                                                            d.other_payment_payment_init === "1" ?
+                                                                (d.other_payment_payment_status === "0" ?
+                                                                    <span className='chip chip__red'>Failed</span> :
+                                                                    (d.other_payment_payment_status === "1" ?
+                                                                        <span className='chip chip__green'>Success</span> :
+                                                                        <span className='chip chip__yellow'>Processing</span>)) :
                                                                 <span className='chip chip__grey'>Payment Not initiated</span>
 
                                                         }
                                                     </td>
                                                     <td>{d.other_payment_payment_transaction_id}</td>
+                                                    <td align='center'>
+                                                        {
+                                                            d.other_payment_payment_status === "0" && (
+                                                                <button
+                                                                    className='flex rounded px-2 py-1 bg-green-400 text-white items-center hover:bg-green-500'
+                                                                    onClick={() => payment(d._id, "other")}
+                                                                >
+                                                                    <Icons.RUPES />
+                                                                    <span>Pay Now</span>
+                                                                </button>
+                                                            )
+                                                        }
+                                                        {(d.other_payment_receipt_number && d.other_payment_payment_status === '1') && <button
+                                                            className='flex rounded px-2 py-1 gap-1 bg-blue-400 text-white items-center hover:bg-blue-500'
+                                                            onClick={(e) => {
+
+                                                            }}
+                                                        >
+                                                            <Icons.PRINTER className='text-[16px]' />
+                                                            Print Receipt
+                                                        </button>}
+                                                    </td>
                                                 </tr>
                                             })
                                         }

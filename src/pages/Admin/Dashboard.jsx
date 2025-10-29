@@ -29,7 +29,6 @@ const Dashboard = () => {
   const [activePage, setActivePage] = useState(savedFilter?.activePage || 1);
   const [dataLimit, setDataLimit] = useState(savedFilter?.limit || 10);
   const [totalData, setTotalData] = useState()
-  const [selected, setSelected] = useState([]);
   const [data, setData] = useState([]);
   const tableRef = useRef(null);
   const exportData = useMemo(() => {
@@ -53,7 +52,6 @@ const Dashboard = () => {
     toDayAmicharges: null, totalAmiCharges: null, dueAmiCharge: null, amiChargePaid: null, tillTodayMale: null,
     tillTodayFemale: null, tillTodayOtherGender: null, tillTodayIndian: null, tillTodayForeigner: null
   })
-  const [statsLoading, setStatsLoading] = useState(false);
 
 
 
@@ -134,7 +132,6 @@ const Dashboard = () => {
 
   // ================== [Get Statictics] =============
   useEffect(() => {
-    setStatsLoading(true);
     (async () => {
       const [resAdmin, resHotel] = await Promise.all([
         fetch(process.env.REACT_APP_MASTER_API + "/admin/statictics", {
@@ -169,32 +166,14 @@ const Dashboard = () => {
         tillTodayFemale: resHotel.total_female,
         tillTodayOtherGender: resHotel.total_other_gender,
         tillTodayIndian: resHotel.total_indian,
-        tillTodayForeigner: resHotel.total_foreigner
+        tillTodayForeigner: resHotel.total_foreigner,
+        amiChargePaid: resAdmin.total_amenities_paid,
+        dueAmiCharge: resHotel.total_aminity_charge - resAdmin.total_amenities_paid,
       }));
 
-      setStatsLoading(false);
     })();
   }, []);
 
-
-
-  const selectAll = (e) => {
-    if (e.target.checked) {
-      setSelected(data.map((item, _) => item._id));
-    } else {
-      setSelected([]);
-    }
-  };
-
-  const handleCheckboxChange = (id) => {
-    setSelected((prevSelected) => {
-      if (prevSelected.includes(id)) {
-        return prevSelected.filter((previd, _) => previd !== id);
-      } else {
-        return [...prevSelected, id];
-      }
-    });
-  };
 
 
   const exportTable = async (whichType) => {
@@ -354,7 +333,7 @@ const Dashboard = () => {
               </div>
               <div className='total__card yellow__grad' onClick={() => navigate("/admin/amenities-charges/amenities-payment")}>
                 <div className='total__card__data'>
-                  <p>{0 ?? <CardLoading />}</p>
+                  <p>{statsData.dueAmiCharge ?? <CardLoading />}</p>
                   <p>Aminity Charges Due</p>
                 </div>
                 <Icons.RUPES className='card__icon' />
@@ -362,7 +341,7 @@ const Dashboard = () => {
 
               <div className='total__card yellow__grad' onClick={() => navigate("/admin/amenities-charges/amenities-payment")}>
                 <div className='total__card__data'>
-                  <p>{0 ?? <CardLoading />}</p>
+                  <p>{statsData.amiChargePaid ?? <CardLoading />}</p>
                   <p>Aminity Charges Paid</p>
                 </div>
                 <Icons.RUPES className='card__icon' />

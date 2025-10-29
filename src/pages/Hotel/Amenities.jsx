@@ -15,6 +15,7 @@ import NoData from '../../components/Admin/NoData';
 import DataShimmer from '../../components/Admin/DataShimmer';
 
 
+
 const Amenities = () => {
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
@@ -64,6 +65,7 @@ const Amenities = () => {
     const timeRef = useRef(null);
     const hotelId = Cookies.get('hotelId');
     const token = Cookies.get('hotel-token');
+    
 
 
 
@@ -73,33 +75,28 @@ const Amenities = () => {
             const url = process.env.REACT_APP_BOOKING_API + "/check-in/get-stats";
             const url2 = process.env.REACT_APP_MASTER_API + "/amenities/get-total-amenities-pay";
 
-            const req = await fetch(url, {
-                method: "POST",
-                headers: {
-                    "Content-Type": 'application/json'
-                },
-                body: JSON.stringify({ hotelId })
-            })
-            const req2 = await fetch(url2, {
-                method: "POST",
-                headers: {
-                    "Content-Type": 'application/json'
-                },
-                body: JSON.stringify({ hotelId })
-            })
+            const [res, res2] = await Promise.all([
+                fetch(url, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ hotelId })
+                }).then(res => res.json()),
 
-            const res = await req.json();
-            const res2 = await req2.json();
-            console.log(res2);
+                fetch(url2, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ hotelId })
+                }).then(res => res.json())
+            ])
 
-            if (req.status === 200) {
+            // if (req.status === 200) {
                 setStaticticsData({
                     ...staticticData,
                     totalAminity: res.totalAminity,
                     todayAminity: res.todayAminity,
                     totalPayment: res2[0]?.totalAmount || 0,
                 })
-            }
+            // }
 
         })()
     }, [])
@@ -238,7 +235,7 @@ const Amenities = () => {
 
     return (
         <>
-            <Nav title={"Manage Guest Entry"} />
+            <Nav title={"Manage Payments"} />
             <main id='main'>
                 <SideNav />
                 <div className='content__body'>
@@ -305,7 +302,7 @@ const Amenities = () => {
                                 </div>
                                 <div className='hotel__amemities__card red__card'>
                                     <p className='text-2xl'>{
-                                        staticticData?.totalAminity - staticticData?.totalPayment 
+                                        staticticData?.totalAminity - staticticData?.totalPayment
                                     }</p>
                                     <p className='text-[12px]'>Total Due</p>
                                     <Icons.RUPES className='card__icon2' />
@@ -313,11 +310,15 @@ const Amenities = () => {
                             </div>
 
                             <div className='form__btn__grp filter'>
-                                <button className='reset__btn'>
+                                <button className='reset__btn' onClick={() => navigate('/hotel/payments', {
+                                    state: '1'
+                                })}>
                                     <Icons.RUPES />
                                     Previous Payments
                                 </button>
-                                <button className='reset__btn'>
+                                <button className='reset__btn' onClick={() => navigate('/hotel/payments', {
+                                    state: 'without__success'
+                                })}>
                                     <Icons.RUPES /> Pay Now
                                 </button>
                             </div>
@@ -403,12 +404,12 @@ const Amenities = () => {
                                                 <td>{d.totalAmount}</td>
                                                 <td align="center">
                                                     <button
-                                                        onClick={() => navigate("/admin/amenities-charges/hotel-wise", {
+                                                        onClick={() => navigate("/hotel/tourist-data", {
                                                             state: d.date
                                                         })}
                                                         className="flex items-center gap-1 bg-[#93C5FD] hover:bg-[#80b6f3] text-white px-2 py-1 rounded">
                                                         <Icons.EYE />
-                                                        View
+                                                        Booking
                                                     </button>
                                                 </td>
                                             </tr>

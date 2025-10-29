@@ -141,60 +141,12 @@ const BedAvailablity = () => {
                 <SideNav />
                 <Tooltip id='itemTooltip' />
                 <div className='content__body'>
-                    <div className='add_new_compnent border rounded mb-4'>
-                        <div className='flex justify-between items-center'>
-                            <div className='flex flex-col'>
-                                <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
-                                    <option value={5}>5</option>
-                                    <option value={10}>10</option>
-                                    <option value={50}>50</option>
-                                    <option value={100}>100</option>
-                                    <option value={500}>500</option>
-                                    <option value={1000}>1000</option>
-                                    <option value={5000}>5000</option>
-                                    <option value={10000}>10000</option>
-                                    <option value={50000}>50000</option>
-                                    <option value={totalData}>All</option>
-                                </select>
-                            </div>
-                            <div className='flex items-center gap-2'>
-                                <div className='flex w-full flex-col lg:w-[300px]'>
-                                    <input type='search'
-                                        placeholder='Search...'
-                                        onChange={(e) => searchTableDatabase(e.target.value)}
-                                        className='p-[6px]'
-                                    />
-                                </div>
-                                <div className='flex justify-end'>
-                                    <Whisper placement='leftStart' enterable
-                                        speaker={<Popover full>
-                                            <div className='download__menu' onClick={() => exportTable('print')} >
-                                                <Icons.PRINTER className='text-[16px]' />
-                                                Print Table
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('copy')}>
-                                                <Icons.COPY className='text-[16px]' />
-                                                Copy Table
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('pdf')}>
-                                                <Icons.PDF className="text-[16px]" />
-                                                Download Pdf
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('excel')} >
-                                                <Icons.EXCEL className='text-[16px]' />
-                                                Download Excel
-                                            </div>
-                                        </Popover>}
-                                    >
-                                        <div className='record__download' >
-                                            <Icons.MORE />
-                                        </div>
-                                    </Whisper>
-                                </div>
-                            </div>
+                    <div className='content__body__main border rounded mb-4'>
+                        <div className='w-full flex gap-1 items-center border-b pb-1'>
+                            <Icons.SEARCH />
+                            <p className='font-semibold uppercase'>Filter</p>
                         </div>
-
-                        <div id='itemFilter' className='mt-5 w-full border-t pt-2'>
+                        <div id='itemFilter' className='mt-5 w-full'>
                             <div className='w-full mt-3 text-[13px] flex items-center gap-4'>
                                 <div className='w-full'>
                                     <p className='mb-1'>Hotel List</p>
@@ -244,8 +196,66 @@ const BedAvailablity = () => {
                             </div>
                         </div>
                     </div>
+
                     {!loading ?
                         <div className='content__body__main '>
+                            <div className='w-full flex gap-1 items-center border-b pb-1'>
+                                <Icons.BED />
+                                <p className='font-semibold uppercase'>Hotel Table</p>
+                            </div>
+                            <div className="add_new_compnent">
+                                <div className='flex justify-between items-center'>
+                                    <div className='flex flex-col'>
+                                        <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                            <option value={5}>5</option>
+                                            <option value={10}>10</option>
+                                            <option value={50}>50</option>
+                                            <option value={100}>100</option>
+                                            <option value={500}>500</option>
+                                            <option value={1000}>1000</option>
+                                            <option value={5000}>5000</option>
+                                            <option value={10000}>10000</option>
+                                            <option value={50000}>50000</option>
+                                            <option value={totalData}>All</option>
+                                        </select>
+                                    </div>
+                                    <div className='flex items-center gap-2'>
+                                        <div className='flex w-full flex-col lg:w-[300px]'>
+                                            <input type='search'
+                                                placeholder='Search...'
+                                                onChange={(e) => searchTableDatabase(e.target.value)}
+                                                className='p-[6px]'
+                                            />
+                                        </div>
+                                        <div className='flex justify-end'>
+                                            <Whisper placement='leftStart' enterable
+                                                speaker={<Popover full>
+                                                    <div className='download__menu' onClick={() => exportTable('print')} >
+                                                        <Icons.PRINTER className='text-[16px]' />
+                                                        Print Table
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('copy')}>
+                                                        <Icons.COPY className='text-[16px]' />
+                                                        Copy Table
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('pdf')}>
+                                                        <Icons.PDF className="text-[16px]" />
+                                                        Download Pdf
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('excel')} >
+                                                        <Icons.EXCEL className='text-[16px]' />
+                                                        Download Excel
+                                                    </div>
+                                                </Popover>}
+                                            >
+                                                <div className='record__download' >
+                                                    <Icons.MORE />
+                                                </div>
+                                            </Whisper>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             {/* Table start */}
                             <div className='overflow-x-auto list__table list__table__checkin'>
                                 <table className='min-w-full bg-white' id='ReportTable' ref={tableRef}>

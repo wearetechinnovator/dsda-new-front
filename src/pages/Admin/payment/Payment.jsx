@@ -341,13 +341,13 @@ const Payment = ({ mode }) => {
                                 </div>
                             </div>
                             <div className='form__btn__grp filter'>
-                                <button className='save__btn' onClick={handleFilter}>
-                                    <Icons.SEARCH />
-                                    Search
-                                </button>
                                 <button className='reset__btn' onClick={handleResetFilter}>
                                     <Icons.RESET />
                                     Reset
+                                </button>
+                                <button className='save__btn' onClick={handleFilter}>
+                                    <Icons.SEARCH />
+                                    Search
                                 </button>
                             </div>
                         </div>

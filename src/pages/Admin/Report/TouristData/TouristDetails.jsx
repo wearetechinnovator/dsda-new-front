@@ -322,7 +322,7 @@ const TouristData = () => {
                                             <div className='flex items-center gap-2'>
                                                 <div className='flex w-full flex-col lg:w-[300px]'>
                                                     <input type='search'
-                                                        placeholder='Search...'
+                                                        placeholder='Search Hotel Name or Guest Name...'
                                                         onChange={searchTable}
                                                         className='p-[6px]'
                                                     />

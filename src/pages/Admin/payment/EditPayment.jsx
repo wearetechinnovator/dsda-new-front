@@ -21,6 +21,7 @@ const EditPayment = () => {
 
     
 
+    // Get Amenities Data
     useEffect(() => {
         (async () => {
             try {
@@ -43,7 +44,7 @@ const EditPayment = () => {
                     transactionId: res?.amenities_payment_transaction_id,
                     details: res?.amenities_details,
                     status: res?.amenities_payment_status,
-                    receiptNo: res?.amenities_receipt_no,
+                    receiptNo: res?.amenities_receipt_number,
                 })
                 console.log(res);
 
@@ -57,6 +58,7 @@ const EditPayment = () => {
 
 
     const saveData = async (e) => {
+        console.log(form)
         try {
             const url = process.env.REACT_APP_MASTER_API + "/amenities/update-amenities";
             const token = Cookies.get("token");
@@ -68,7 +70,6 @@ const EditPayment = () => {
                 body: JSON.stringify({ ...form, token, id: id })
             })
             const res = await req.json();
-            console.log(res);
             if (req.status !== 200 || res.err) {
                 return toast(res.err, 'error');
             }

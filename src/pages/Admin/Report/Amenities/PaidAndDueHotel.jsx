@@ -395,9 +395,7 @@ const PaidAndDueHotel = () => {
                                                 <td>{d.totalCharges}</td>
                                                 <td>{currentHotel.totalAmenitiesAmount}</td>
                                                 <td>{
-                                                    currentHotel.totalAmenitiesAmount > d.totalCharges ?
-                                                        currentHotel.totalAmenitiesAmount - d.totalCharges :
-                                                        d.totalCharges - currentHotel.totalAmenitiesAmount
+                                                    currentHotel.totalAmenitiesAmount - d.totalCharges 
                                                 }</td>
                                             </tr>
                                         })

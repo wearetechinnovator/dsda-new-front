@@ -248,9 +248,12 @@ const AddHotel = ({ mode }) => {
 
   const clearData = () => {
     setData({
-      zone: '', sector: '', block: '', category: '', district: '', policeStation: "", name: '',
-      address: "", email: '', establishment: '', miniumRate: '', maximumRate: '', website: '', gmbUrl: '', distanceFromRoad: '', distanceFromSeaBeach: '', ac: '0', swimmingPool: '0',
-      parkingAvailable: '0', username: '', password: '', receptionPhone: '', proprietorName: "", proprietorPhone: "", managerName: '', managerPhone: '', alternateManagerPhone: '', restaurantAvailable: '0', conferanceHallAvailable: '0', status: '1',
+      zone: '', sector: '', block: '', category: '', district: '', policeStation: '', name: '',
+      address: '', email: '', establishment: '', miniumRate: '', maximumRate: '', website: '',
+      gmbUrl: '', distanceFromRoad: '', distanceFromSeaBeach: '', ac: '0', swimmingPool: '0',
+      parkingAvailable: '0', username: '', password: '', receptionPhone: '', proprietorName: '',
+      proprietorPhone: '', managerName: '', managerPhone: '', alternateManagerPhone: '',
+      restaurantAvailable: '0', conferanceHallAvailable: '0', status: '1',
     });
 
     setBedCapacity({
@@ -286,16 +289,6 @@ const AddHotel = ({ mode }) => {
                 </div>
                 <div>
                   <p>Category</p>
-                  {/* <select onChange={(e) => setData({ ...data, category: e.target.value })}
-                    value={data.category}>
-                    <option value="">--Select--</option>
-                    {
-                      hotelCategories.map((hc, _) => {
-                        return <option key={_} value={hc._id}>{hc.hotel_category_name}</option>
-                      })
-                    }
-                  </select> */}
-
                   <SelectPicker
                     block
                     data={hotelCategories?.map(hc => ({ label: hc.hotel_category_name, value: hc._id })) || []}
@@ -352,7 +345,7 @@ const AddHotel = ({ mode }) => {
                   />
                 </div>
                 <div>
-                  <p>Name<span className='required__text'>*</span></p>
+                  <p>Hotel Name<span className='required__text'>*</span></p>
                   <input type='text' onChange={(e) => setData({ ...data, name: e.target.value })} value={data.name} />
                 </div>
                 <div>
@@ -367,17 +360,23 @@ const AddHotel = ({ mode }) => {
                 <div>
                   <p>Email</p>
                   <input type='email' onChange={(e) => setData({ ...data, email: e.target.value })}
-                    value={data.email} />
+                    value={data.email}
+
+                  />
                 </div>
                 <div>
                   <p>Username<span className='required__text'>*</span></p>
                   <input type='text' onChange={(e) => setData({ ...data, username: e.target.value })}
-                    value={data.username} />
+                    value={data.username}
+                    autoComplete='off'
+                  />
                 </div>
                 <div>
                   <p>Password<span className='required__text'>*</span></p>
                   <input type='password' onChange={(e) => setData({ ...data, password: e.target.value })}
-                    value={data.password} />
+                    value={data.password}
+                    autoComplete='off'
+                  />
                 </div>
               </div>
 

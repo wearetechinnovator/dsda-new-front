@@ -25,14 +25,14 @@ const HotelList = () => {
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
         return data && data?.map((h, _) => ({
-            Name: h.hotel_name,
-            Zone: h.hotel_zone_id?.name,
-            Sector: h.hotel_sector_id?.name,
-            Proprietor: h.hotel_block_id?.name,
-            PoliceStation: h.hotel_police_station_id?.name,
-            District: h.hotel_district_id?.name,
-            Address: h.hotel_address,
-            Email: h.hotel_email,
+            "Name": h.hotel_name,
+            "Zone": h.hotel_zone_id?.name,
+            "Sector": h.hotel_sector_id?.name,
+            "Proprietor": h.hotel_block_id?.name,
+            "Police Station": h.hotel_police_station_id?.name,
+            "District": h.hotel_district_id?.name,
+            "Address": h.hotel_address,
+            "Email": h.hotel_email,
             "Reception Phone": h.hotel_reception_phone,
             "Proprietor Name": h.hotel_proprietor_name,
             "Proprietor Phone": h.hotel_proprietor_phone,
@@ -42,7 +42,10 @@ const HotelList = () => {
             "Total Room": h.hotel_total_room,
             "Total Bed": h.hotel_total_bed,
             "Restaurant": h.hotel_has_restaurant === "1" ? "Available" : "Not Available",
-            "Confarence Hall": h.hotel_has_conference_hall === "1" ? "Available" : "Not Available"
+            "Confarence Hall": h.hotel_has_conference_hall === "1" ? "Available" : "Not Available",
+            "AC": h.hotel_has_ac === "1" ? 'Yes' : 'No',
+            "Swimming Pool": h.hotel_has_swimming_pool === "1" ? 'Yes' : 'No',
+            "Parking": h.hotel_has_parking === "1" ? 'Yes' : 'No'
         }));
     }, [data]);
     const [loading, setLoading] = useState(true);
@@ -83,7 +86,6 @@ const HotelList = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            console.log(res.data);
             setTotalData(res.total)
             setData([...res.data])
             setLoading(false);
@@ -176,16 +178,16 @@ const HotelList = () => {
     // Export table
     const exportTable = async (whichType) => {
         if (whichType === "copy") {
-            copyTable("itemTable"); // Pass tableid
+            copyTable("hotelTable"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'item-list.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'hotel-details.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Item List"); // Pass table ref and title
+            printTable(tableRef, "Hotel Details List"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Item List', exportData);
+            let document = exportPdf('Hotel Details List', exportData);
             downloadPdf(document)
         }
     }
@@ -204,62 +206,12 @@ const HotelList = () => {
                 <SideNav />
                 <Tooltip id='itemTooltip' />
                 <div className='content__body'>
-                    <div className='add_new_compnent border rounded'>
-                        <div className='flex justify-between items-center'>
-                            <div className='flex flex-col'>
-                                <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
-                                    <option value={5}>5</option>
-                                    <option value={10}>10</option>
-                                    <option value={50}>50</option>
-                                    <option value={100}>100</option>
-                                    <option value={500}>500</option>
-                                    <option value={1000}>1000</option>
-                                    <option value={5000}>5000</option>
-                                    <option value={10000}>10000</option>
-                                    <option value={50000}>50000</option>
-                                    <option value={totalData}>All</option>
-                                </select>
-                            </div>
-                            <div className='flex items-center gap-2'>
-                                <div className='flex w-full flex-col lg:w-[300px]'>
-                                    <input type='search'
-                                        placeholder='Search...'
-                                        onChange={(e) => searchTableDatabase(e.target.value, "hotel")}
-                                        className='p-[6px]'
-                                    />
-                                </div>
-                                <div className='flex justify-end'>
-                                    <Whisper placement='leftStart' enterable
-                                        speaker={<Popover full>
-                                            <div className='download__menu' onClick={() => exportTable('print')} >
-                                                <Icons.PRINTER className='text-[16px]' />
-                                                Print Table
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('copy')}>
-                                                <Icons.COPY className='text-[16px]' />
-                                                Copy Table
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('pdf')}>
-                                                <Icons.PDF className="text-[16px]" />
-                                                Download Pdf
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('excel')} >
-                                                <Icons.EXCEL className='text-[16px]' />
-                                                Download Excel
-                                            </div>
-                                        </Popover>}
-                                    >
-                                        <div className='record__download' >
-                                            <Icons.MORE />
-                                        </div>
-                                    </Whisper>
-                                </div>
-                            </div>
+                    <div className='content__body__main'>
+                        <div className='w-full flex gap-1 items-center border-b pb-1'>
+                            <Icons.SEARCH />
+                            <p className='font-bold uppercase'>Filter</p>
                         </div>
-
-                        <div id='itemFilter' className='mt-5 w-full border-t pt-2'>
-                            <p className='font-bold'>Filter</p>
-
+                        <div id='itemFilter' className='mt-5 w-full'>
                             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mt-3 text-[13px]'>
                                 <div className='w-full'>
                                     <p className='mb-1'>Hotel List</p>
@@ -394,11 +346,69 @@ const HotelList = () => {
                             </div>
                         </div>
                     </div>
+
                     {!loading ?
                         <div className='content__body__main mt-4'>
+                            <div className='w-full flex gap-1 items-center border-b pb-1'>
+                                <Icons.HOTEL />
+                                <p className='font-semibold uppercase'>Hotel Table</p>
+                            </div>
+                            <div className="add_new_compnent">
+                                <div className='flex justify-between items-center'>
+                                    <div className='flex flex-col'>
+                                        <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                            <option value={5}>5</option>
+                                            <option value={10}>10</option>
+                                            <option value={50}>50</option>
+                                            <option value={100}>100</option>
+                                            <option value={500}>500</option>
+                                            <option value={1000}>1000</option>
+                                            <option value={5000}>5000</option>
+                                            <option value={10000}>10000</option>
+                                            <option value={50000}>50000</option>
+                                            <option value={totalData}>All</option>
+                                        </select>
+                                    </div>
+                                    <div className='flex items-center gap-2'>
+                                        <div className='flex w-full flex-col lg:w-[300px]'>
+                                            <input type='search'
+                                                placeholder='Search...'
+                                                onChange={(e) => searchTableDatabase(e.target.value, "hotel")}
+                                                className='p-[6px]'
+                                            />
+                                        </div>
+                                        <div className='flex justify-end'>
+                                            <Whisper placement='leftStart' enterable
+                                                speaker={<Popover full>
+                                                    <div className='download__menu' onClick={() => exportTable('print')} >
+                                                        <Icons.PRINTER className='text-[16px]' />
+                                                        Print Table
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('copy')}>
+                                                        <Icons.COPY className='text-[16px]' />
+                                                        Copy Table
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('pdf')}>
+                                                        <Icons.PDF className="text-[16px]" />
+                                                        Download Pdf
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('excel')} >
+                                                        <Icons.EXCEL className='text-[16px]' />
+                                                        Download Excel
+                                                    </div>
+                                                </Popover>}
+                                            >
+                                                <div className='record__download' >
+                                                    <Icons.MORE />
+                                                </div>
+                                            </Whisper>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             {/* Table start */}
                             <div className='overflow-x-auto list__table'>
-                                <table className='min-w-full bg-white' id='itemTable' ref={tableRef}>
+                                <table className='min-w-full bg-white' id='hotelTable' ref={tableRef}>
                                     <thead className='bg-gray-100 list__table__head'>
                                         <tr>
                                             <td className='w-[5%]' align='center'>SL No.</td>
@@ -485,7 +495,10 @@ const HotelList = () => {
                                 />
                             </div>}
                         </div>
-                        : <DataShimmer />
+                        : <>
+                            <br />
+                            <DataShimmer />
+                        </>
                     }
                 </div>
             </main>

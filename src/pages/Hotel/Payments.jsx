@@ -2,7 +2,7 @@ import Nav from '../../components/Hotel/Nav';
 import SideNav from '../../components/Hotel/HotelSideNav'
 import { Icons } from '../../helper/icons';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Popover, SelectPicker, Whisper } from 'rsuite';
 import downloadPdf from '../../helper/downloadPdf';
 import useExportTable from '../../hooks/useExportTable';
@@ -11,11 +11,16 @@ import Pagination from '../../components/Admin/Pagination';
 import Cookies from 'js-cookie';
 import NoData from '../../components/Admin/NoData';
 import DataShimmer from '../../components/Admin/DataShimmer';
+import { useSelector } from 'react-redux';
+import getDateRangeAminity from '../../helper/getDateRangeAminity';
+import usePayment from '../../hooks/usePayment';
 
 
 
 
 const Payments = () => {
+    const location = useLocation();
+    const payStatus = location.state;
     const navigate = useNavigate();
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
@@ -57,6 +62,24 @@ const Payments = () => {
     const [selectedMonth, setSelectedMonth] = useState(null);
     const [selectedYear, setSelectedYear] = useState(null);
     const timeRef = useRef(null);
+    const [dateRangeAminity, setDateRangeAminity] = useState()
+    const settingDetails = useSelector((store) => store.settingSlice);
+    const { payment } = usePayment();
+
+
+
+
+    // GET LAST MONTH AND YEAR FROM ADMIN SETTING;
+    useEffect(() => {
+        (async () => {
+            const data = await getDateRangeAminity(
+                settingDetails.bill_generate_last_month,
+                settingDetails.bill_generate_last_year,
+            );
+
+            setDateRangeAminity(data)
+        })()
+    }, [settingDetails])
 
 
     // Get data;
@@ -69,7 +92,8 @@ const Payments = () => {
                 limit: dataLimit,
                 hotelId: Cookies.get('hotelId'),
                 month,
-                year
+                year,
+                payStatus: payStatus || null
             }
             const url = process.env.REACT_APP_MASTER_API + `/amenities/get-amenities`;
             const req = await fetch(url, {
@@ -171,50 +195,92 @@ const Payments = () => {
             <main id='main'>
                 <SideNav />
                 <div className='content__body'>
-                    <div className='content__body__main'>
-                        <div className='w-full flex gap-1 items-center border-b pb-1'>
-                            <Icons.SEARCH />
-                            <p className='font-semibold uppercase'>Filter by Month & Year</p>
-                        </div>
-                        <div className='w-full flex flex-col md:flex-row justify-between gap-4 items-center mt-4'>
-                            <div className='w-full mt-3'>
-                                <p>Select Month *</p>
-                                <SelectPicker
-                                    block
-                                    className='w-full'
-                                    data={months}
-                                    value={selectedMonth}
-                                    onChange={(v) => setSelectedMonth(v)}
-                                />
+                    {payStatus !== "without__success" &&
+                        (<div className='content__body__main'>
+                            <div className='w-full flex gap-1 items-center border-b pb-1'>
+                                <Icons.SEARCH />
+                                <p className='font-semibold uppercase'>Filter by Month & Year</p>
                             </div>
-                            <div className='w-full mt-3'>
-                                <p>Select Year*</p>
-                                <SelectPicker
-                                    block
-                                    className='w-full'
-                                    data={years}
-                                    value={selectedYear}
-                                    onChange={(v) => setSelectedYear(v)}
-                                />
+                            <div className='w-full flex flex-col md:flex-row justify-between gap-4 items-center mt-4'>
+                                <div className='w-full mt-3'>
+                                    <p>Select Month *</p>
+                                    <SelectPicker
+                                        block
+                                        className='w-full'
+                                        data={months}
+                                        value={selectedMonth}
+                                        onChange={(v) => setSelectedMonth(v)}
+                                    />
+                                </div>
+                                <div className='w-full mt-3'>
+                                    <p>Select Year*</p>
+                                    <SelectPicker
+                                        block
+                                        className='w-full'
+                                        data={years}
+                                        value={selectedYear}
+                                        onChange={(v) => setSelectedYear(v)}
+                                    />
+                                </div>
                             </div>
-                        </div>
 
-                        <div className='form__btn__grp'>
-                            <button className='reset__btn' onClick={handleReset}>
-                                <Icons.RESET />
-                                Reset
-                            </button>
-                            <button className='save__btn' onClick={handleFilter}>
-                                <Icons.SEARCH /> Search
-                            </button>
-                        </div>
-                    </div>
+                            <div className='form__btn__grp'>
+                                <button className='reset__btn' onClick={handleReset}>
+                                    <Icons.RESET />
+                                    Reset
+                                </button>
+                                <button className='save__btn' onClick={handleFilter}>
+                                    <Icons.SEARCH /> Search
+                                </button>
+                            </div>
+                        </div>)}
 
+
+                    {/* ============================== [CURRENT MONTH DATA] ============================== */}
+                    {/* ================================================================================== */}
+                    {payStatus === "without__success" &&
+                        (<div className='content__body__main mt-4'>
+                            <div className='w-full flex gap-1 items-center border-b pb-1'>
+                                <Icons.RUPES />
+                                <p className='font-semibold uppercase'>Bill Not Generated</p>
+                            </div>
+                            <div className='overflow-x-auto list__table list__table__checkin'>
+                                <table className='min-w-full bg-white'>
+                                    <thead className='bg-gray-100 list__table__head'>
+                                        <tr>
+                                            <td>Year</td>
+                                            <td>Month</td>
+                                            <td>Amount</td>
+                                            <td className='w-[15%]' align='center'>Payment Status</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            dateRangeAminity && dateRangeAminity?.map((n, i) => {
+                                                return <tr key={i} className='hover:bg-gray-100'>
+                                                    <td>{n.year}</td>
+                                                    <td>{months[n.month - 1].label}</td>
+                                                    <td>{n.totalAmount}</td>
+                                                    <td><span className='chip chip__grey'>Bill Not Generated</span> </td>
+                                                </tr>
+                                            })
+
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>)
+                    }
                     {/* ================================== Table start here ============================== */}
                     {/* ================================================================================== */}
 
                     {/* Table Content */}
                     <div className='content__body__main mt-4'>
+                        <div className='w-full flex gap-1 items-center border-b pb-1'>
+                            <Icons.RUPES />
+                            <p className='font-semibold uppercase'>Pay These Bills</p>
+                        </div>
                         <div className='add_new_compnent'>
                             <div className='flex justify-between items-center'>
                                 <div className='flex flex-col'>
@@ -291,7 +357,7 @@ const Payments = () => {
                                                 return <tr key={i} className='hover:bg-gray-100'>
                                                     <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                     <td>{n.amenities_year}</td>
-                                                    <td>{months[n.amenities_month].label}</td>
+                                                    <td>{months[n.amenities_month - 1].label}</td>
                                                     <td>{n.amenities_amount}</td>
                                                     <td>{n.amenities_payment_date}</td>
                                                     <td>
@@ -317,17 +383,19 @@ const Payments = () => {
                                                     <td align='center'>
                                                         {
                                                             n.amenities_payment_status === "0" && (
-                                                                <button className='flex rounded px-2 py-1 bg-green-400 text-white items-center hover:bg-green-500'>
+                                                                <button
+                                                                    className='flex rounded px-2 py-1 bg-green-400 text-white items-center hover:bg-green-500'
+                                                                    onClick={() => payment(n._id, "monthly")}
+                                                                >
                                                                     <Icons.RUPES />
                                                                     <span>Pay Now</span>
                                                                 </button>
                                                             )
                                                         }
-                                                        {(n.amenities_receipt_number && n.amenities_payment_status === 1) && <button
+                                                        {(n.amenities_receipt_number && n.amenities_payment_status === '1') && <button
                                                             className='flex rounded px-2 py-1 bg-blue-400 text-white items-center hover:bg-blue-500'
                                                             onClick={(e) => {
-                                                                e.stopPropagation()
-                                                                navigate("/admin/notice/edit/" + n._id)
+
                                                             }}
                                                         >
                                                             <Icons.PRINTER className='text-[16px]' />

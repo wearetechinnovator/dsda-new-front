@@ -13,6 +13,7 @@ import Cookies from 'js-cookie';
 import useSetTableFilter from '../../hooks/useSetTableFilter';
 import { useSelector } from 'react-redux';
 import NoData from '../../components/Admin/NoData';
+import DataShimmer from '../../components/Admin/DataShimmer'
 
 
 
@@ -53,7 +54,6 @@ const CheckOut = () => {
 
 
 
-
     // Get all Head List
     const getHeadList = async () => {
         try {
@@ -78,7 +78,6 @@ const CheckOut = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            console.log(res);
             setTotalData(res.total)
             setBookingHeadList([...res.data])
             setLoading(false);
@@ -161,8 +160,6 @@ const CheckOut = () => {
             toast("Please select a date & time", "error");
             return;
         }
-
-        console.log(bookingId);
 
         // Save the new checkout date
         const url = process.env.REACT_APP_BOOKING_API + "/check-out/update-checkout-datetime";
@@ -272,147 +269,154 @@ const CheckOut = () => {
                     {/* ================================== Table start here ============================== */}
                     {/* ================================================================================== */}
 
-                    <div className='content__body__main mt-4'>
-                        {/* Option Bar */}
-                        <div className="add_new_compnent">
-                            <div className='flex justify-between items-center'>
-                                <div className='flex flex-col'>
-                                    <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
-                                        <option value={5}>5</option>
-                                        <option value={10}>10</option>
-                                        <option value={50}>50</option>
-                                        <option value={100}>100</option>
-                                        <option value={500}>500</option>
-                                        <option value={1000}>1000</option>
-                                        <option value={5000}>5000</option>
-                                        <option value={10000}>10000</option>
-                                        <option value={50000}>50000</option>
-                                        <option value={totalData}>All</option>
-                                    </select>
-                                </div>
-                                <div className='flex items-center gap-2'>
-                                    <div className='flex w-full flex-col lg:w-[300px]'>
-                                        <input type='text'
-                                            placeholder='Search...'
-                                            onChange={searchTable}
-                                            className='p-[6px]'
-                                        />
+                    {
+                        !loading ? <div className='content__body__main mt-4'>
+                            {/* Option Bar */}
+                            <div className="add_new_compnent">
+                                <div className='flex justify-between items-center'>
+                                    <div className='flex flex-col'>
+                                        <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                            <option value={5}>5</option>
+                                            <option value={10}>10</option>
+                                            <option value={50}>50</option>
+                                            <option value={100}>100</option>
+                                            <option value={500}>500</option>
+                                            <option value={1000}>1000</option>
+                                            <option value={5000}>5000</option>
+                                            <option value={10000}>10000</option>
+                                            <option value={50000}>50000</option>
+                                            <option value={totalData}>All</option>
+                                        </select>
                                     </div>
-                                    <div className='flex justify-end'>
-                                        <Whisper placement='leftStart' enterable
-                                            speaker={<Popover full>
-                                                <div className='download__menu' onClick={() => exportTable('print')} >
-                                                    <Icons.PRINTER className='text-[16px]' />
-                                                    Print Table
+                                    <div className='flex items-center gap-2'>
+                                        <div className='flex w-full flex-col lg:w-[300px]'>
+                                            <input type='text'
+                                                placeholder='Search...'
+                                                onChange={searchTable}
+                                                className='p-[6px]'
+                                            />
+                                        </div>
+                                        <div className='flex justify-end'>
+                                            <Whisper placement='leftStart' enterable
+                                                speaker={<Popover full>
+                                                    <div className='download__menu' onClick={() => exportTable('print')} >
+                                                        <Icons.PRINTER className='text-[16px]' />
+                                                        Print Table
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('copy')}>
+                                                        <Icons.COPY className='text-[16px]' />
+                                                        Copy Table
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('pdf')}>
+                                                        <Icons.PDF className="text-[16px]" />
+                                                        Download Pdf
+                                                    </div>
+                                                    <div className='download__menu' onClick={() => exportTable('excel')} >
+                                                        <Icons.EXCEL className='text-[16px]' />
+                                                        Download Excel
+                                                    </div>
+                                                </Popover>}
+                                            >
+                                                <div className='record__download' >
+                                                    <Icons.MORE />
                                                 </div>
-                                                <div className='download__menu' onClick={() => exportTable('copy')}>
-                                                    <Icons.COPY className='text-[16px]' />
-                                                    Copy Table
-                                                </div>
-                                                <div className='download__menu' onClick={() => exportTable('pdf')}>
-                                                    <Icons.PDF className="text-[16px]" />
-                                                    Download Pdf
-                                                </div>
-                                                <div className='download__menu' onClick={() => exportTable('excel')} >
-                                                    <Icons.EXCEL className='text-[16px]' />
-                                                    Download Excel
-                                                </div>
-                                            </Popover>}
-                                        >
-                                            <div className='record__download' >
-                                                <Icons.MORE />
-                                            </div>
-                                        </Whisper>
+                                            </Whisper>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Table start */}
-                        <div className='overflow-x-auto list__table list__table__checkin'>
-                            <table className='min-w-full bg-white' id='table' ref={tableRef}>
-                                <thead className='bg-gray-100 list__table__head'>
-                                    <tr>
-                                        <td className='w-[5%]' align='center'>SL No.</td>
-                                        <td className='w-[*]'>Head Guest Details</td>
-                                        <td className='w-[12%]'>Check In Date & Time</td>
-                                        <td className='w-[13%]'>Check Out Date & Time</td>
-                                        <td className='w-[10%]'>ID Card</td>
-                                        <td className='w-[5%]'>Mobile</td>
-                                        <td className='w-[7%]'>Room No.</td>
-                                        <td className='w-[3%]' align='center'>Action</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        bookingHeadList.map((d, i) => {
-                                            return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                <td align='center'>{i + 1}</td>
-                                                <td>{d.booking_details_guest_name}</td>
-                                                <td>{d.booking_details_checkin_date_time}</td>
-                                                <td>{d.booking_details_checkout_date_time}</td>
-                                                <td>{d.booking_details_guest_id_type}</td>
-                                                <td>{d.booking_details_guest_phone}</td>
-                                                <td>{d.booking_details_room_no}</td>
-                                                <td align='center'>
-                                                    <div className='flex justify-end items-center'>
-                                                        <Whisper
-                                                            placement='leftStart'
-                                                            trigger={"click"}
-                                                            onClick={(e) => e.stopPropagation()}
-                                                            speaker={
-                                                                <Popover full>
-                                                                    <div className='download__menu' onClick={() => printSlip(d.booking_details_booking_id)}>
-                                                                        <Icons.EYE className='text-[13px]' />
-                                                                        View Bill
-                                                                    </div>
-                                                                    <div className='download__menu' onClick={() => {
-                                                                        navigate("/hotel/check-out/details", {
-                                                                            state: { bookingId: d.booking_details_booking_id }
-                                                                        })
-                                                                    }}>
-                                                                        <Icons.USER className='text-[12px]' />
-                                                                        Checkout Users
-                                                                    </div>
-                                                                    <div className='download__menu' onClick={() => {
-                                                                        setIsCheckoutModalOpen(true);
-                                                                        setBookingId(d.booking_details_booking_id._id);
-                                                                        setCheckInDate(d.booking_details_checkin_date_time);
-                                                                        setDefaultCheckOutDate(d.booking_details_checkout_date_time);
-                                                                        setCheckOutIndex(i);
-                                                                    }}>
-                                                                        <Icons.EDIT className='text-[13px]' />
-                                                                        Edit Checkout Date
-                                                                    </div>
-                                                                </Popover>
-                                                            }
-                                                        >
-                                                            <div className='table__list__action' >
-                                                                <Icons.HORIZONTAL_MORE />
-                                                            </div>
-                                                        </Whisper>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        })
-                                    }
-                                </tbody>
-                            </table>
-                            {bookingHeadList.length < 1 && <NoData />}
-                            {bookingHeadList.length > 0 && <div className='paginate__parent'>
-                                <p>Showing {bookingHeadList.length} of {totalData} entries</p>
-                                <Pagination
-                                    activePage={activePage}
-                                    setActivePage={setActivePage}
-                                    totalData={totalData}
-                                    dataLimit={dataLimit}
-                                />
-                            </div>}
+                            {/* Table start */}
+                            <div className='overflow-x-auto list__table list__table__checkin'>
+                                <table className='min-w-full bg-white' id='table' ref={tableRef}>
+                                    <thead className='bg-gray-100 list__table__head'>
+                                        <tr>
+                                            <td className='w-[5%]' align='center'>SL No.</td>
+                                            <td className='w-[*]'>Head Guest Details</td>
+                                            <td className='w-[12%]'>Check In Date & Time</td>
+                                            <td className='w-[13%]'>Check Out Date & Time</td>
+                                            <td className='w-[10%]'>ID Card</td>
+                                            <td className='w-[5%]'>Mobile</td>
+                                            <td className='w-[7%]'>Room No.</td>
+                                            <td className='w-[3%]' align='center'>Action</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {
+                                            bookingHeadList?.map((d, i) => {
+                                                return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
+                                                    <td align='center'>{i + 1}</td>
+                                                    <td>{d.booking_details_guest_name}</td>
+                                                    <td>{d.booking_details_checkin_date_time}</td>
+                                                    <td>{d.booking_details_checkout_date_time}</td>
+                                                    <td>{d.booking_details_guest_id_type}</td>
+                                                    <td>{d.booking_details_guest_phone}</td>
+                                                    <td>{d.booking_details_room_no}</td>
+                                                    <td align='center'>
+                                                        <div className='flex justify-end items-center'>
+                                                            <Whisper
+                                                                placement='leftStart'
+                                                                trigger={"click"}
+                                                                onClick={(e) => e.stopPropagation()}
+                                                                speaker={
+                                                                    <Popover full>
+                                                                        <div className='download__menu' onClick={() => printSlip(d.booking_details_booking_id)}>
+                                                                            <Icons.EYE className='text-[13px]' />
+                                                                            View Bill
+                                                                        </div>
+                                                                        <div className='download__menu' onClick={() => {
+                                                                            navigate("/hotel/check-out/details", {
+                                                                                state: { bookingId: d.booking_details_booking_id }
+                                                                            })
+                                                                        }}>
+                                                                            <Icons.USER className='text-[12px]' />
+                                                                            Checkout Users
+                                                                        </div>
+                                                                        <div className='download__menu' onClick={() => {
+                                                                            setIsCheckoutModalOpen(true);
+                                                                            setBookingId(d.booking_details_booking_id._id);
+                                                                            setCheckInDate(d.booking_details_checkin_date_time);
+                                                                            setDefaultCheckOutDate(d.booking_details_checkout_date_time);
+                                                                            setCheckOutIndex(i);
+                                                                        }}>
+                                                                            <Icons.EDIT className='text-[13px]' />
+                                                                            Edit Checkout Date
+                                                                        </div>
+                                                                    </Popover>
+                                                                }
+                                                            >
+                                                                <div className='table__list__action' >
+                                                                    <Icons.HORIZONTAL_MORE />
+                                                                </div>
+                                                            </Whisper>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            })
+                                        }
+                                    </tbody>
+                                </table>
+                                {bookingHeadList.length < 1 && <NoData />}
+                                {bookingHeadList.length > 0 && <div className='paginate__parent'>
+                                    <p>Showing {bookingHeadList.length} of {totalData} entries</p>
+                                    <Pagination
+                                        activePage={activePage}
+                                        setActivePage={setActivePage}
+                                        totalData={totalData}
+                                        dataLimit={dataLimit}
+                                    />
+                                </div>}
+                            </div>
                         </div>
-                    </div>
+                            : <>
+                                <br />
+                                <DataShimmer />
+                            </>
+                    }
                 </div>
 
-                {/* ============================== [Checkout Modal] ============================== */}
+                {/* ================================= [Checkout Modal] =========================== */}
+                {/* ============================================================================== */}
                 <Modal size='sm' open={isCheckoutModalOpen} onClose={() => setIsCheckoutModalOpen(false)} backdrop="static">
                     <Modal.Header>
                         <Modal.Title>Edit Checkout Date & Time</Modal.Title>

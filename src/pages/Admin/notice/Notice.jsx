@@ -224,7 +224,7 @@ const Notice = ({ mode }) => {
                                             </td>
                                             <td>Date</td>
                                             <td>Title</td>
-                                            <td>Status</td>
+                                            <td align='center'>Status</td>
                                             <td align='center'>Action</td>
                                         </tr>
                                     </thead>
@@ -237,7 +237,7 @@ const Notice = ({ mode }) => {
                                                     </td>
                                                     <td>{new Date(d.notice_date).toLocaleDateString()}</td>
                                                     <td>{d.notice_title}</td>
-                                                    <td>
+                                                    <td align='center'>
                                                         <span className='chip__green'>
                                                             {d.notice_status === '1' ? "New" : "Expired"}
                                                         </span>

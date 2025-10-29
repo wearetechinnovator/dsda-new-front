@@ -46,8 +46,8 @@ const TouristData = () => {
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
     const [quickSearchFields, setQuickSearchFields] = useState({
-        idCardNumber: '', mobileNo: '', fromDate: dateFromAminities?.date || '',
-        toDate: dateFromAminities?.date || '', guestName: ''
+        idCardNumber: '', mobileNo: '', fromDate: '',
+        toDate: '', guestName: ''
     })
     const hotelDetails = useSelector((store) => store.hotelDetails);
 
@@ -79,7 +79,6 @@ const TouristData = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            console.log(res)
             if (req.status === 200) {
                 setTotalData(res.total)
                 setData([...res.data])
@@ -107,12 +106,12 @@ const TouristData = () => {
 
         setQuickSearchFields((prev) => ({
             ...prev,
-            fromDate: dateFromAminities?.date || formatDate(firstDay),
-            toDate: dateFromAminities?.date || formatDate(lastDay),
+            fromDate: dateFromAminities || formatDate(firstDay),
+            toDate: dateFromAminities || formatDate(lastDay),
         }));
 
+        get(dateFromAminities || formatDate(firstDay), dateFromAminities || formatDate(lastDay));
 
-        get(formatDate(firstDay), formatDate(lastDay));
     }, [dataLimit, activePage])
 
 
@@ -158,6 +157,7 @@ const TouristData = () => {
             }
         })
     }
+
 
     // Handle quick serach button;
     const handleQuickSearch = () => get();
@@ -238,7 +238,7 @@ const TouristData = () => {
                         {
                             !loading ?
                                 <div>
-                                    <div className='w-full  flex gap-1 items-center'>
+                                    <div className='w-full flex gap-1 items-cente border-b pb-1'>
                                         <Icons.TABLE />
                                         <p className='font-semibold uppercase'>Booking Table</p>
                                     </div>
@@ -297,7 +297,7 @@ const TouristData = () => {
                                         </div>
                                     </div>
                                     <p className='my-2 flex items-center gap-2 italic'>
-                                        <Icons.STAR className='text-red-500 text-md'/>
+                                        <Icons.STAR className='text-red-500 text-md' />
                                         Indicates as Head Guest
                                     </p>
                                     {/* Table start */}
@@ -321,7 +321,7 @@ const TouristData = () => {
                                             <tbody>
                                                 {
                                                     data?.map((d, i) => {
-                                                        return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
+                                                        return <tr key={i} className='hover:bg-gray-100'>
                                                             <td align='center'>{i + 1}</td>
                                                             <td>
                                                                 <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
@@ -353,10 +353,17 @@ const TouristData = () => {
                                                                             <Icons.USER />
                                                                             Manager
                                                                         </span> :
-                                                                        <span className='chip chip__green'>
-                                                                            <Icons.ADMIN_USER />
-                                                                            Admin
-                                                                        </span>
+                                                                        (
+                                                                            d.booking_details_booking_id?.booking_verified_by === "1" ?
+                                                                                <span className='chip chip__green'>
+                                                                                    <Icons.PASSWORD />
+                                                                                    OTP
+                                                                                </span> :
+                                                                                <span className='chip chip__green'>
+                                                                                    <Icons.ADMIN_USER />
+                                                                                    Admin
+                                                                                </span>
+                                                                        )
                                                                 }
                                                             </td>
                                                             <td>
@@ -373,7 +380,8 @@ const TouristData = () => {
                                                                 }
                                                             </td>
                                                             <td>
-                                                                <button className='chip chip__black' onClick={() => printSlip(d.booking_details_booking_id)}>
+                                                                <button className='chip chip__black cursor-pointer'
+                                                                    onClick={() => printSlip(d.booking_details_booking_id)}>
                                                                     <Icons.PRINTER />
                                                                     Print
                                                                 </button>

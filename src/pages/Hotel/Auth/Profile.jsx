@@ -355,6 +355,7 @@ const Profile = () => {
               </div>
             </div>
 
+            {/* ::::::::::::::::::::::::::::::::: Availablity Inputs ::::::::::::::::::::::::::: */}
             <div className='my-8'>
               <div class="overflow-x-auto">
                 <table class="min-w-full border border-gray-200 text-left">
@@ -432,7 +433,7 @@ const Profile = () => {
 
             {/* ::::::::::::::::::::::::::::::::: HOTEL AND ROOM data ::::::::::::::::::::::::::: */}
             <div className='my-8' id='roomAndBedCapacity'>
-              <h6 className='my-4'>Room & Bed Capacity*</h6>
+              <h6 className='mb-4 font-semibold text-[15px] uppercase'>Room & Bed Capacity*</h6>
               <div class="overflow-x-auto">
                 <table class="min-w-full border border-gray-200 text-left">
                   <thead class="bg-gray-100 text-xs">
@@ -576,7 +577,7 @@ const Profile = () => {
 
             {/* ::::::::::::::::::::::::::::::::: Photo Gallery ::::::::::::::::::::::::::: */}
             <div className="mb-8 overflow-x-auto">
-              <h6 className='my-4'>Photo Gallery*</h6>
+              <h6 className='mt-2 mb-1 font-semibold text-[15px] uppercase'>Photo Gallery*</h6>
               <table className="min-w-full border border-gray-200 rounded-lg shadow-sm">
                 <thead className="bg-gray-100 text-xs">
                   <tr>
@@ -670,7 +671,7 @@ const Profile = () => {
 
             {/* ::::::::::::::::::::::::::::::::::::: Documents :::::::::::::::::::::::::::::: */}
             <div className="mb-8 overflow-x-auto">
-              <h6 className='my-4'>Documents*</h6>
+              <h6 className='mt-2 mb-1 font-semibold text-[15px] uppercase'>Documents*</h6>
               <table className="min-w-full border border-gray-200 rounded-lg shadow-sm">
                 <thead className="bg-gray-100 text-xs">
                   <tr>
@@ -788,7 +789,7 @@ const Profile = () => {
 
             {/* ::::::::::::::::::::::::::::::::::::: Room Type :::::::::::::::::::::::::::::: */}
             <div className="mb-8 overflow-x-auto">
-              <h6 className='my-4'>Room Type*</h6>
+              <h6 className='mt-2 mb-1 font-semibold text-[15px] uppercase'>Room Type*</h6>
               <table className="min-w-full border border-gray-200 rounded-lg shadow-sm">
                 <thead className="bg-gray-100 text-xs">
                   <tr>

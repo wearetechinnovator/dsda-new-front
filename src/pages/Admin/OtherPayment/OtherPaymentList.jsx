@@ -268,16 +268,16 @@ const OtherPaymentList = ({ mode }) => {
 								<table className='min-w-full bg-white' id='table' ref={tableRef}>
 									<thead className='bg-gray-100 list__table__head'>
 										<tr>
-											<td align='center'>
+											<td align='center' className='w-[5%]'>
 												<input type='checkbox' onChange={selectAll} checked={data.length > 0 && selected.length === data.length} />
 											</td>
 											<td>Hotel</td>
-											<td>Date</td>
-											<td>Amount</td>
-											<td>Purpose</td>
-											<td>Status</td>
-											<td>Ref. ID</td>
-											<td align='center'>Action</td>
+											<td className='w-[8%]'>Date</td>
+											<td className='w-[10%]'>Amount</td>
+											<td className='w-[10%]'>Purpose</td>
+											<td className='w-[14%]'>Status</td>
+											<td className='w-[14%]'>Ref. ID</td>
+											<td align='center' className='w-[5%]'>Action</td>
 										</tr>
 									</thead>
 									<tbody>
