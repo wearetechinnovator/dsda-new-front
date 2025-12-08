@@ -58,7 +58,7 @@ const CheckOut = () => {
     const getHeadList = async () => {
         try {
             const data = {
-                token: Cookies.get("token"),
+                token: Cookies.get("hotel-token"),
                 page: activePage,
                 limit: dataLimit,
                 head: true, // Get head guest,
@@ -78,6 +78,7 @@ const CheckOut = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
+            console.log(res);
             setTotalData(res.total)
             setBookingHeadList([...res.data])
             setLoading(false);
@@ -345,7 +346,7 @@ const CheckOut = () => {
                                         {
                                             bookingHeadList?.map((d, i) => {
                                                 return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                    <td align='center'>{i + 1}</td>
+                                                    <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                     <td>{d.booking_details_guest_name}</td>
                                                     <td>{d.booking_details_checkin_date_time}</td>
                                                     <td>{d.booking_details_checkout_date_time}</td>

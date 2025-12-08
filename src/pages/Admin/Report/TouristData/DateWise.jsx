@@ -312,7 +312,7 @@ const DateWise = () => {
                                     {
                                         enrolledData?.map((d, i) => {
                                             return <tr key={i}>
-                                                <td align='center'>{i + 1}</td>
+                                                <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                 <td>{d.booking_checkin_date_time.split(" ")[0]}</td>
                                                 <td>{d.booking_number_of_guest}</td>
                                             </tr>

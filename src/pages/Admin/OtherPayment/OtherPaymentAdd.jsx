@@ -13,8 +13,8 @@ const OtherPaymentAdd = ({ mode }) => {
     const toast = useMyToaster();
     const { id } = useParams();
     const [data, setData] = useState({
-        hotel: '', purpose: '', amount: '', refId: '',
-        paymentDate: '', status: ''
+        hotel: '', purpose: '', amount: '', transactionId: '',
+        paymentDate: '', status: 'ni', receiptNo:''
     })
     const [allHotels, setAllHotels] = useState([]);
     const timeRef = useRef(null);
@@ -93,7 +93,8 @@ const OtherPaymentAdd = ({ mode }) => {
                     amount: res.other_payment_amount,
                     purpose: res.other_payment_purpose,
                     paymentDate: res.other_payment_payment_date,
-                    refId: res.other_payment_payment_ref_no,
+                    transactionId: res.other_payment_payment_transaction_id,
+                    receiptNo: res.other_payment_receipt_number,
                     status: res.other_payment_payment_status
                 })
             })()
@@ -103,7 +104,7 @@ const OtherPaymentAdd = ({ mode }) => {
 
     const saveData = async (e) => {
         const requiredKeys = [
-            'hotel', 'purpose', 'amount', 'refId', 'paymentDate', 'status'
+            'hotel', 'purpose', 'amount', 'transactionId', 'paymentDate', 'status'
         ];
 
         for (const key of requiredKeys) {
@@ -144,8 +145,8 @@ const OtherPaymentAdd = ({ mode }) => {
 
     const clearData = () => {
         setData({
-            hotel: '', purpose: '', amount: '', refId: '',
-            paymentDate: '', status: ''
+            hotel: '', purpose: '', amount: '', transactionId: '',
+            paymentDate: '', status: '', receiptNo: ''
         })
     }
     return (
@@ -186,21 +187,29 @@ const OtherPaymentAdd = ({ mode }) => {
                                     <p>Amount<span className='required__text'>*</span></p>
                                     <input type='text' onChange={(e) => setData({ ...data, amount: e.target.value })} value={data.amount} />
                                 </div>
+                                <div >
+                                    <p>Payment Date <span className='required__text'>*</span></p>
+                                    <input type='date' onChange={(e) => setData({ ...data, paymentDate: e.target.value })} value={data.paymentDate} />
+                                </div>
                             </div>
 
                             <div className='w-full flex flex-col gap-3'>
                                 <div >
-                                    <p>Ref. ID <span className='required__text'>*</span></p>
-                                    <input type='text' onChange={(e) => setData({ ...data, refId: e.target.value })} value={data.refId} />
+                                    <p>Transaction. ID <span className='required__text'>*</span></p>
+                                    <input type='text' onChange={(e) => setData({ ...data, transactionId: e.target.value })} value={data.transactionId} />
                                 </div>
-                                <div >
-                                    <p>Payment Date <span className='required__text'>*</span></p>
-                                    <input type='date' onChange={(e) => setData({ ...data, paymentDate: e.target.value })} value={data.paymentDate} />
+                                <div>
+                                    <p>Receipt No.</p>
+                                    <input type='text'
+                                        onChange={(e) => setData({ ...data, receiptNo: e.target.value })}
+                                        value={data.receiptNo}
+                                    />
                                 </div>
                                 <div className='w-full'>
                                     <p className='ml-1'>Payment Status</p>
                                     <select onChange={(e) => setData({ ...data, status: e.target.value })} value={data.status}>
                                         <option value={""}>--select--</option>
+                                        <option value="ni">No initiated</option>
                                         <option value="0">Failed</option>
                                         <option value="1">Success</option>
                                         <option value="2">Pending</option>

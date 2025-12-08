@@ -19,7 +19,7 @@ const EditPayment = () => {
         transactionId: '', details: "", status: '', receiptNo: '',
     });
 
-    
+
 
     // Get Amenities Data
     useEffect(() => {
@@ -58,7 +58,6 @@ const EditPayment = () => {
 
 
     const saveData = async (e) => {
-        console.log(form)
         try {
             const url = process.env.REACT_APP_MASTER_API + "/amenities/update-amenities";
             const token = Cookies.get("token");
@@ -95,19 +94,19 @@ const EditPayment = () => {
                             <div className='w-full flex flex-col gap-3'>
                                 <div>
                                     <p className='ml-1'>Hotel Name</p>
-                                    <input type="text" value={form.hotel} disabled/>
+                                    <input type="text" value={form.hotel} disabled />
                                 </div>
                                 <div>
                                     <p className='ml-1'>Payment Year</p>
-                                    <input type="text" value={form.year} disabled/>
+                                    <input type="text" value={form.year} disabled />
                                 </div>
                                 <div>
                                     <p className='ml-1'>Payment Month</p>
-                                    <input type="text" value={form.month} disabled/>
+                                    <input type="text" value={form.month} disabled />
                                 </div>
                                 <div>
                                     <p>Amount</p>
-                                    <input type="text" value={form.amount} disabled/>
+                                    <input type="text" value={form.amount} disabled />
                                 </div>
                                 <div>
                                     <p>Receipt No.</p>
@@ -121,7 +120,7 @@ const EditPayment = () => {
                             <div className='w-full flex flex-col gap-3'>
                                 <div>
                                     <p>Payment Date</p>
-                                    <input type="text" value={form.date} disabled/>
+                                    <input type="text" value={form.date} disabled />
                                 </div>
                                 <div>
                                     <p>Payment Mode</p>
@@ -135,6 +134,7 @@ const EditPayment = () => {
                                     <p>Payment Status</p>
                                     <select onChange={(e) => setForm({ ...form, status: e.target.value })}
                                         value={form.status}>
+                                        <option value="ni">Not initiated</option>
                                         <option value="0">Failed</option>
                                         <option value="1">Success</option>
                                         <option value="2">Processing</option>

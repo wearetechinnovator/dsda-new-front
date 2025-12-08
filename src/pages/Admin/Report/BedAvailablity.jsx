@@ -39,6 +39,8 @@ const BedAvailablity = () => {
     const timeRef = useRef(null);
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [hotelList, setHotelList] = useState([]);
+    const [bedStatus, setBedStatus] = useState('all')
+
 
 
     // :::::::::::::::::::::: [GET ALL HOTEL] :::::::::::::::::;
@@ -48,7 +50,8 @@ const BedAvailablity = () => {
                 token: Cookies.get("token"),
                 page: activePage,
                 limit: dataLimit,
-                occupied: true // Get Occupied field also;
+                occupied: true, // Get Occupied field also;
+                bedStatus: bedStatus
             }
             setFilterState("bed-availablity", dataLimit, activePage);
             const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
@@ -168,21 +171,23 @@ const BedAvailablity = () => {
                                         onSearch={(serachTxt) => searchTableDatabase(serachTxt, "picker")}
                                     />
                                 </div>
-                                {/* <div className="w-full">
+                                <div className="w-full">
                                     <p className='mb-1'>Status</p>
-                                    <select className='' value={"all"}>
-                                        <option value="total">Total</option>
+                                    <select className=''
+                                        value={bedStatus}
+                                        onChange={(e) => setBedStatus(e.target.value)}>
+                                        <option value="all">All</option>
                                         <option value="occupied">Occupied</option>
                                         <option value="vacant">Vacant</option>
-                                        <option value="extra_occupancy">Extra Occupancy</option>
-                                        <option value="all">All</option>
+                                        <option value="extra">Extra Occupancy</option>
                                     </select>
-                                </div> */}
+                                </div>
                             </div>
                             <div className='form__btn__grp filter'>
                                 <button className='reset__btn' onClick={() => {
-                                    get();
                                     setSelectedHotel('');
+                                    setBedStatus('all');
+                                    get();
                                 }}>
                                     <Icons.RESET />
                                     Reset
@@ -278,7 +283,7 @@ const BedAvailablity = () => {
                                         {
                                             data?.map((d, i) => {
                                                 return <tr key={i}>
-                                                    <td align='center'>{i + 1}</td>
+                                                    <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                     <td>{d.hotel_name}</td>
                                                     <td>{d.hotel_zone_id?.name}</td>
                                                     <td>{d.hotel_sector_id?.name}</td>

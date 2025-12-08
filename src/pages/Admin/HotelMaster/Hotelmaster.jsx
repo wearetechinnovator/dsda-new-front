@@ -72,7 +72,6 @@ const Hotelmaster = ({ mode }) => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            console.log(res.data)
             if (req.status === 200) {
                 setTotalData(res.total)
                 setData([...res.data])
@@ -172,9 +171,9 @@ const Hotelmaster = ({ mode }) => {
                                 <Icons.HOTEL />
                                 <p className='font-semibold uppercase'>Hotel Table</p>
                             </div>
-                            <div className={`add_new_compnent`}>
-                                <div className='flex justify-between items-center'>
-                                    <div className='flex flex-col'>
+                            <div className="add_new_compnent">
+                                <div className='flex flex-col md:flex-row justify-between items-center'>
+                                    <div className=''>
                                         <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
                                             <option value={5}>5</option>
                                             <option value={10}>10</option>
@@ -188,7 +187,7 @@ const Hotelmaster = ({ mode }) => {
                                             <option value={totalData}>All</option>
                                         </select>
                                     </div>
-                                    <div className='flex items-center gap-2'>
+                                    <div className='flex flex-col md:flex-row items-center gap-2'>
                                         <div className='flex w-full flex-col lg:w-[300px]'>
                                             <input type='search'
                                                 placeholder='Search Hotel Names..'

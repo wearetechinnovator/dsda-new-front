@@ -81,7 +81,7 @@ const Nav = ({ title }) => {
         <div className="logo__area">
           <img src={settingDetails.logo} alt="" width={120} className='shadow-lg' id='NavLogo' />
         </div>
-        <div className='flex items-center h-[100%] justify-between w-[calc(100%-175px)]'>
+        <div className='widget__area flex items-center h-[100%] justify-end md:justify-between w-[calc(100%-175px)]'>
           <h6 className='text-black ml-5'>{title}</h6>
           <div className="admin__area  h-[100%] flex items-center cursor-pointer">
             <div className='navbar__tools'>
@@ -123,6 +123,14 @@ const Nav = ({ title }) => {
               </Whisper>
             </div>
           </div>
+        </div>
+        <div className='mobile__hamburger' onClick={()=>{
+          document.querySelector("#sideBar").classList.toggle('active');
+          document.querySelector(".mobile__hamburger").classList.toggle('active');
+        }}>
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
       </nav>
     </>

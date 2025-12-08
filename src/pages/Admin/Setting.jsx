@@ -28,7 +28,7 @@ const Setting = () => {
   const url = userData.err ?
     process.env.REACT_APP_MASTER_API + "/site-setting/create" :
     process.env.REACT_APP_MASTER_API + "/site-setting/update";
-  const cookie = Cookies.get("token");
+  const token = Cookies.get("token");
 
 
 
@@ -50,7 +50,7 @@ const Setting = () => {
       headers: {
         "Content-Type": 'application/json'
       },
-      body: JSON.stringify({ ...data })
+      body: JSON.stringify({ ...data, token: token })
     })
     const res = await req.json();
     if (req.status !== 200) {
@@ -77,7 +77,10 @@ const Setting = () => {
         headers: {
           "Content-Type": 'application/json'
         },
-        body: JSON.stringify({ ...updateData, isLogo: true, logo: reader.result })
+        body: JSON.stringify({ 
+          ...updateData, isLogo: true, logo: reader.result,
+          token: token
+        })
       })
       const res = await req.json();
       if (req.status !== 200) {

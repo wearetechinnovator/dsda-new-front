@@ -327,7 +327,7 @@ const DateWise = () => {
                                     {
                                         data?.map((d, i) => {
                                             return <tr key={i}>
-                                                <td align='center'>{i + 1}</td>
+                                                <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                 <td>{d.date}</td>
                                                 <td>{d.activeHotelCount}</td>
                                                 <td>{d.totalGuests}</td>

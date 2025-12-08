@@ -84,13 +84,14 @@ const ManageHotel = () => {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ username: getHotel.hotel_username, adminToken: token })
+                body: JSON.stringify({ username: getHotel.hotel_username, token })
             });
             const res = await req.json();
 
             if (req.status !== 200 || res.err) {
                 return toast(res.err, "error")
             }
+            console.log(res);
 
             Cookies.set("hotel-token", res.token, { secure: true });
             Cookies.set("hotelId", res.hotel._id, { secure: true });

@@ -116,7 +116,12 @@ const Profile = () => {
   // get types
   useEffect(() => {
     const get = async (which) => {
-      const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/${which}`)
+      const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/${which}`, {
+        method: 'GET',
+        headers: {
+          'x-hotel-token': `Bearer ${Cookies.get("hotel-token")}`
+        }
+      })
       const res = await req.json();
 
       if (which === "document") {
@@ -164,7 +169,7 @@ const Profile = () => {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({ ...allData, token, id: hotelId })
+        body: JSON.stringify({ ...allData, hotelToken: token, id: hotelId })
       })
       const res = await req.json();
       if (req.status !== 200 || res.err) {

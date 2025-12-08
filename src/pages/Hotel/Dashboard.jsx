@@ -22,6 +22,7 @@ import { useSelector } from 'react-redux';
 import useMyToaster from '../../hooks/useMyToaster';
 import useSetTableFilter from '../../hooks/useSetTableFilter';
 import NoData from '../../components/Admin/NoData';
+import CardLoading from '../../components/Admin/CardLoader';
 
 
 
@@ -65,7 +66,7 @@ const Dashboard = () => {
         (async () => {
             try {
                 const data = {
-                    token: Cookies.get("token"),
+                    token: token,
                     page: activePage,
                     limit: dataLimit,
                     head: true, // Get head guest,
@@ -101,14 +102,13 @@ const Dashboard = () => {
     useEffect(() => {
         (async () => {
             const url = process.env.REACT_APP_MASTER_API + "/notice/get-hotel-notice";
-            const cookie = Cookies.get("token");
 
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
-                    "Content-Type": 'application/json'
+                    "Content-Type": 'application/json',
                 },
-                body: JSON.stringify({ hotelId })
+                body: JSON.stringify({ hotelId, hotelToken: token })
             })
             const res = await req.json();
             if (req.status === 200) setRecentNotice([...res]);
@@ -121,17 +121,15 @@ const Dashboard = () => {
         (async () => {
             const url = process.env.REACT_APP_BOOKING_API + "/check-in/get-stats";
             const hotelId = Cookies.get('hotelId');
-            const token = Cookies.get('hotel-token');
 
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": 'application/json'
                 },
-                body: JSON.stringify({ hotelId })
+                body: JSON.stringify({ hotelId, token: token })
             })
             const res = await req.json();
-            console.log(res);
             if (req.status === 200) setStaticticsData(res);
         })()
     }, [])
@@ -215,21 +213,21 @@ const Dashboard = () => {
                             <div className="total__data_cards">
                                 <div className='total__card blue__grad' onClick={() => navigate('/hotel/profile/#roomAndBedCapacity')}>
                                     <div className='total__card__data'>
-                                        <p>{hotelDetails?.hotel_total_room}</p>
+                                        <p>{hotelDetails?.hotel_total_room ?? <CardLoading />}</p>
                                         <p>Total Rooms</p>
                                     </div>
                                     <BsBuildings className='card__icon' />
                                 </div>
                                 <div className='total__card green__grad' onClick={() => navigate('/hotel/profile/#roomAndBedCapacity')}>
                                     <div className='total__card__data'>
-                                        <p>{hotelDetails?.hotel_total_bed}</p>
+                                        <p>{hotelDetails?.hotel_total_bed ?? <CardLoading />}</p>
                                         <p>Total Beds</p>
                                     </div>
                                     <FaBed className='card__icon' />
                                 </div>
                                 <div className='total__card green__grad' onClick={() => navigate("/hotel/check-out")}>
                                     <div className='total__card__data'>
-                                        <p>{staticticData?.occupied}</p>
+                                        <p>{staticticData?.occupied ?? <CardLoading />}</p>
                                         <p>Occupied Beds</p>
                                     </div>
                                     <FaBed className='card__icon' />
@@ -265,28 +263,28 @@ const Dashboard = () => {
                             <div className="total__data_cards__bottom">
                                 <div className='total__card purple__grad'>
                                     <div className='total__card__data'>
-                                        <p>{staticticData?.todayFootFall}</p>
+                                        <p>{staticticData?.todayFootFall ?? <CardLoading />}</p>
                                         <p>Today Footfals</p>
                                     </div>
                                     <FaUsers className='card__icon' />
                                 </div>
                                 <div className='total__card purple__grad'>
                                     <div className='total__card__data'>
-                                        <p>{staticticData?.totalFootFall}</p>
+                                        <p>{staticticData?.totalFootFall ?? <CardLoading />}</p>
                                         <p>Total Footfals</p>
                                     </div>
                                     <FaUsers className='card__icon' />
                                 </div>
                                 <div className='total__card yellow__grad'>
                                     <div className='total__card__data'>
-                                        <p>{staticticData?.todayAminity}</p>
+                                        <p>{staticticData?.todayAminity ?? <CardLoading />}</p>
                                         <p>Today Aminity Charges</p>
                                     </div>
                                     <FaRupeeSign className='card__icon' />
                                 </div>
                                 <div className='total__card yellow__grad'>
                                     <div className='total__card__data'>
-                                        <p>{staticticData?.totalAminity}</p>
+                                        <p>{staticticData?.totalAminity ?? <CardLoading />}</p>
                                         <p>Total Aminity Charges</p>
                                     </div>
                                     <FaRupeeSign className='card__icon' />
@@ -377,7 +375,7 @@ const Dashboard = () => {
                                     {
                                         bookingHeadList.map((d, i) => {
                                             return <tr key={i} className='cursor-pointer hover:bg-gray-100'>
-                                                <td align='center'>{i + 1}</td>
+                                                <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                 <td className='px-4 border-b'>{d.booking_details_guest_name}</td>
                                                 <td>{d.booking_details_checkin_date_time}</td>
                                                 <td>{d.booking_details_guest_id_type}</td>

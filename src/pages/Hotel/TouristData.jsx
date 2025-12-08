@@ -59,7 +59,7 @@ const TouristData = () => {
         setLoading(true);
         try {
             const data = {
-                token: Cookies.get("token"),
+                token: Cookies.get("hotel-token"),
                 page: activePage,
                 limit: dataLimit,
                 idCardNumber: quickSearchFields.idCardNumber,
@@ -322,7 +322,7 @@ const TouristData = () => {
                                                 {
                                                     data?.map((d, i) => {
                                                         return <tr key={i} className='hover:bg-gray-100'>
-                                                            <td align='center'>{i + 1}</td>
+                                                            <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                             <td>
                                                                 <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
                                                                     {d.booking_details_guest_name}

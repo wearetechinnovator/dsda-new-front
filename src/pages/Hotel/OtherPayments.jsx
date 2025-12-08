@@ -41,7 +41,7 @@ const OtherPayments = () => {
     const [loading, setLoading] = useState(true);
     const [filterData, setFilterData] = useState({ amount: '', purpose: '' });
     const timeRef = useRef(null);
-    const {payment} = usePayment();
+    const { payment } = usePayment();
 
 
 
@@ -268,7 +268,7 @@ const OtherPayments = () => {
                                         {
                                             data.map((d, i) => {
                                                 return <tr key={i} className='hover:bg-gray-100'>
-                                                    <td align='center'>{i + 1}</td>
+                                                    <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                     <td>{d.other_payment_payment_date}</td>
                                                     <td>{d.other_payment_amount}</td>
                                                     <td>{d.other_payment_purpose}</td>
@@ -290,7 +290,13 @@ const OtherPayments = () => {
                                                             d.other_payment_payment_status === "0" && (
                                                                 <button
                                                                     className='flex rounded px-2 py-1 bg-green-400 text-white items-center hover:bg-green-500'
-                                                                    onClick={() => payment(d._id, "other")}
+                                                                    onClick={async () => await payment(d._id, "others")}
+                                                                // onClick={() => navigate("/hotel/payment/process", {
+                                                                //     state: {
+                                                                //         id: d._id,
+                                                                //         type: "others"
+                                                                //     }
+                                                                // })}
                                                                 >
                                                                     <Icons.RUPES />
                                                                     <span>Pay Now</span>
@@ -299,9 +305,11 @@ const OtherPayments = () => {
                                                         }
                                                         {(d.other_payment_receipt_number && d.other_payment_payment_status === '1') && <button
                                                             className='flex rounded px-2 py-1 gap-1 bg-blue-400 text-white items-center hover:bg-blue-500'
-                                                            onClick={(e) => {
-
-                                                            }}
+                                                            onClick={() => navigate("check-in/guest-entry/bill-details/print", {
+                                                                state: {
+                                                                    payment: true
+                                                                }
+                                                            })}
                                                         >
                                                             <Icons.PRINTER className='text-[16px]' />
                                                             Print Receipt

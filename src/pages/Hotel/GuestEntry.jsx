@@ -14,6 +14,7 @@ import FlatPicker from 'react-flatpickr'
 import "flatpickr/dist/flatpickr.min.css";
 
 
+
 const GuestEntry = () => {
     const navigate = useNavigate();
     const toast = useMyToaster();
@@ -66,7 +67,12 @@ const GuestEntry = () => {
     // Get Country and State
     useEffect(() => {
         const get = async (which) => {
-            const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/${which}`)
+            const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/${which}`, {
+                method: 'GET',
+                headers: {
+                    'x-hotel-token': `Bearer ${Cookies.get("hotel-token")}`
+                }
+            })
             const res = await req.json();
 
             if (which === "country") {
@@ -77,18 +83,23 @@ const GuestEntry = () => {
             }
         }
 
-        get("country");
+        // get("country");
         get("state");
     }, [])
 
 
     const handleSubmit = async () => {
         // Basic Check-In details validation
-        if ([checkInDetails.mobileNumbe, checkInDetails.NumberOfGuest, checkInDetails.checkInDate,
-        checkInDetails.checkInTime, checkInDetails.checkoutDate, checkInDetails.checkoutTime]
-            .some(field => field === '')) {
-            return toast("All check-in fields are required", "error");
+        const checkInKeys = {
+            "mobileNumbe": "Mobile Number", "NumberOfGuest": "Number of Guest",
+            "checkInDate": "Check in Date", "checkInTime": "Check in Time",
+            "checkoutDate": " Check out Date", "checkoutTime": " Check out Time"
         }
+        // for (const [key, label] of Object.entries(checkInKeys)) {
+        //     if (!checkInDetails[key] || checkInDetails[key].trim() === "") {
+        //         return toast(`${label} is required`, "error");
+        //     }
+        // }
 
         let newGuestErrors = [];
         for (let i = 0; i < guestList.length; i++) {
@@ -104,6 +115,14 @@ const GuestEntry = () => {
                 if (!guest.address) errors.address = true;
                 if (!guest.idType) errors.idType = true;
                 if (!guest.idNumber) errors.idNumber = true;
+                if (guest.nationality === "india") {
+                    if (!guest.state) errors.state = true;
+                    if (!guest.city) errors.city = true;
+                    if (!guest.address) errors.address = true;
+                } else {
+                    if (!guest.address) errors.address = true;
+                }
+
                 // if (!guest.idProof) errors.idProof = true;
                 // if (!guest.mobileNumbe) errors.mobileNumbe = true;
                 if (!guest.roomNumber) errors.roomNumber = true;
@@ -387,17 +406,26 @@ const GuestEntry = () => {
                                                     )}
                                                 </td>
                                                 <td valign='top'>
-                                                    <div className='flex flex-col gap-1'>
+                                                    <div className='flex flex-col'>
                                                         <select value={gl.nationality}
                                                             onChange={(e) => {
                                                                 const updatedList = [...guestList];
                                                                 updatedList[index].nationality = e.target.value;
                                                                 setGuestList(updatedList);
+
+                                                                setGuestErrors((prev) => {
+                                                                    const newErrors = [...prev];
+                                                                    if (newErrors[index]) delete newErrors[index].nationality;
+                                                                    return newErrors;
+                                                                });
                                                             }}>
                                                             <option value="">--Select--</option>
                                                             <option value="india">India</option>
                                                             <option value="foreign">Foreign</option>
                                                         </select>
+                                                        {guestErrors[index]?.nationality && (
+                                                            <span className="required">*This fields is required</span>
+                                                        )}
                                                         {
                                                             gl.nationality === "india" && (
                                                                 <>
@@ -414,12 +442,20 @@ const GuestEntry = () => {
                                                                             updatedList[index].state = v;
                                                                             setGuestList(updatedList);
 
+                                                                            setGuestErrors((prev) => {
+                                                                                const newErrors = [...prev];
+                                                                                if (newErrors[index]) delete newErrors[index].state;
+                                                                                return newErrors;
+                                                                            });
                                                                         }}
                                                                         placeholder="Select State"
                                                                         searchable
                                                                         cleanable
                                                                         placement="auto"
                                                                     />
+                                                                    {guestErrors[index]?.state && (
+                                                                        <span className="required">*This fields is required</span>
+                                                                    )}
                                                                     <input type="text"
                                                                         placeholder='Enter City'
                                                                         value={gl.city}
@@ -427,13 +463,22 @@ const GuestEntry = () => {
                                                                             const updatedList = [...guestList];
                                                                             updatedList[index].city = e.target.value;
                                                                             setGuestList(updatedList);
+
+                                                                            setGuestErrors((prev) => {
+                                                                                const newErrors = [...prev];
+                                                                                if (newErrors[index]) delete newErrors[index].city;
+                                                                                return newErrors;
+                                                                            });
                                                                         }}
                                                                     />
+                                                                    {guestErrors[index]?.city && (
+                                                                        <span className="required">*This fields is required</span>
+                                                                    )}
                                                                 </>
                                                             )
                                                         }
                                                         {
-                                                            gl.nationality === "foriegn" && (
+                                                            gl.nationality === "foriegn" && <>
                                                                 <SelectPicker
                                                                     block
                                                                     data={country?.map(t => ({
@@ -452,31 +497,50 @@ const GuestEntry = () => {
                                                                     cleanable
                                                                     placement="auto"
                                                                 />
-                                                            )
+                                                                {guestErrors[index]?.country && (
+                                                                    <span className="required">*This fields is required</span>
+                                                                )}
+
+                                                            </>
                                                         }
                                                         {
-                                                            gl.nationality && <input type="text"
-                                                                placeholder='Enter Address'
-                                                                value={gl.address}
-                                                                onChange={(e) => {
-                                                                    const updatedList = [...guestList];
-                                                                    updatedList[index].address = e.target.value;
-                                                                    setGuestList(updatedList);
-                                                                }}
-                                                            />
+                                                            gl.nationality && <>
+                                                                <input type="text"
+                                                                    placeholder='Enter Address'
+                                                                    value={gl.address}
+                                                                    onChange={(e) => {
+                                                                        const updatedList = [...guestList];
+                                                                        updatedList[index].address = e.target.value;
+                                                                        setGuestList(updatedList);
+
+                                                                        setGuestErrors((prev) => {
+                                                                            const newErrors = [...prev];
+                                                                            if (newErrors[index]) delete newErrors[index].address;
+                                                                            return newErrors;
+                                                                        });
+                                                                    }}
+                                                                />
+                                                                {guestErrors[index]?.address && (
+                                                                    <span className="required">*This fields is required</span>
+                                                                )}
+                                                            </>
+
                                                         }
                                                     </div>
-                                                    {guestErrors[index]?.nationality && (
-                                                        <span className="required">*This fields is required</span>
-                                                    )}
                                                 </td>
                                                 <td valign='top'>
-                                                    <div className='flex flex-col gap-2'>
+                                                    <div className='flex flex-col'>
                                                         <select value={gl.idType}
                                                             onChange={(e) => {
                                                                 const updatedList = [...guestList];
                                                                 updatedList[index].idType = e.target.value;
                                                                 setGuestList(updatedList);
+
+                                                                setGuestErrors((prev) => {
+                                                                    const newErrors = [...prev];
+                                                                    if (newErrors[index]) delete newErrors[index].idType;
+                                                                    return newErrors;
+                                                                });
                                                             }}>
                                                             <option value="">--Select--</option>
                                                             <option value="Aadhaar">Aadhaar</option>
@@ -486,6 +550,9 @@ const GuestEntry = () => {
                                                             <option value="Passport">Passport</option>
                                                             <option value="Others">Others</option>
                                                         </select>
+                                                        {guestErrors[index]?.idType && (
+                                                            <span className="required">*This fields is required</span>
+                                                        )}
                                                         <input type="text"
                                                             placeholder='Enter ID No.'
                                                             value={gl.idNumber}
@@ -493,12 +560,18 @@ const GuestEntry = () => {
                                                                 const updatedList = [...guestList];
                                                                 updatedList[index].idNumber = e.target.value;
                                                                 setGuestList(updatedList);
+
+                                                                setGuestErrors((prev) => {
+                                                                    const newErrors = [...prev];
+                                                                    if (newErrors[index]) delete newErrors[index].idNumber;
+                                                                    return newErrors;
+                                                                });
                                                             }}
                                                         />
+                                                        {guestErrors[index]?.idNumber && (
+                                                            <span className="required">*This fields is required</span>
+                                                        )}
                                                     </div>
-                                                    {guestErrors[index]?.idType && (
-                                                        <span className="required">*This fields is required</span>
-                                                    )}
                                                 </td>
                                                 <td valign='top'>
                                                     <input type="file" id={`idProof-${index}`} className='hidden'

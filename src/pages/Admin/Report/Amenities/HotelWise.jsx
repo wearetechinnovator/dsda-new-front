@@ -435,7 +435,7 @@ const HotelWise = () => {
                                             allHotel.length > 0 && data?.map((d, i) => {
                                                 const currentHotel = allHotel?.find((h, i) => d.hotelId === h._id);
                                                 return <tr key={i} className='hover:bg-gray-100'>
-                                                    <td align='center'>{i + 1}</td>
+                                                    <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                     <td>{currentHotel.hotel_name}</td>
                                                     <td>{currentHotel.hotel_zone_id?.name || "--"}</td>
                                                     <td>{currentHotel.hotel_sector_id?.name || "--"}</td>

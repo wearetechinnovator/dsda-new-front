@@ -371,7 +371,7 @@ const TouristData = () => {
                                                     <td>Gender</td>
                                                     <td>Age</td>
                                                     <td>Register Guest Details</td>
-                                                    <td className='w-[5%]'>Identity Card</td>
+                                                    <td className='w-[5%]'>ID Card</td>
                                                     <td>Mobile</td>
                                                     <td>Check In Date & Time</td>
                                                     <td>Check Out Date & Time</td>
@@ -383,9 +383,8 @@ const TouristData = () => {
                                                 {
                                                     data?.map((d, i) => {
                                                         const currentHotel = allHotel?.find((h, _)=>h._id === d.booking_details_hotel_id);
-                                                        console.log(currentHotel)
                                                         return <tr key={i} className='hover:bg-gray-100'>
-                                                            <td align='center'>{i + 1}</td>
+                                                            <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                             <td>{currentHotel?.hotel_name}</td>
                                                             <td>
                                                                 <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>

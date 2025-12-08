@@ -1,4 +1,5 @@
 import useMyToaster from './useMyToaster';
+import Cookies from 'js-cookie';
 
 const useApi = () => {
   const toast = useMyToaster();
@@ -10,7 +11,7 @@ const useApi = () => {
       headers: {
         "Content-Type": 'application/json'
       },
-      body: JSON.stringify({ ids: ids, trash })
+      body: JSON.stringify({ ids: ids, trash, token: Cookies.get("token"), })
     });
 
     const res = await req.json();
@@ -30,7 +31,7 @@ const useApi = () => {
       headers: {
         "Content-Type": 'application/json'
       },
-      body: JSON.stringify({ ids: ids })
+      body: JSON.stringify({ ids: ids, token: Cookies.get("token"), })
     });
 
     const res = await req.json();

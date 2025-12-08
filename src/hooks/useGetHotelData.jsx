@@ -9,7 +9,7 @@ const useGetHotelData = () => {
 
   const getHotelData = async () => {
     const url = process.env.REACT_APP_MASTER_API + "/hotel/get";
-    const cookie = Cookies.get("hotel-token");
+    const token = Cookies.get("hotel-token");
     const hotelId = Cookies.get("hotelId");
 
     const req = await fetch(url, {
@@ -17,7 +17,9 @@ const useGetHotelData = () => {
       headers: {
         "Content-Type": 'application/json'
       },
-      body: JSON.stringify({ token: cookie, id: hotelId })
+      body: JSON.stringify({
+        hotelToken: token, id: hotelId
+      })
     })
     const res = await req.json();
     dispatch(addHotelDetails(res))

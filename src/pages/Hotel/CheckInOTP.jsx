@@ -1,7 +1,7 @@
 import Nav from '../../components/Hotel/Nav';
 import SideNav from '../../components/Hotel/HotelSideNav'
 import { Icons } from '../../helper/icons';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import useMyToaster from '../../hooks/useMyToaster';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -17,6 +17,32 @@ const CheckInOTP = () => {
     const otp4 = useRef();
     const getOTP = localStorage.getItem("OTP");
 
+    const TIME = 60; //second
+    const [expireSec, setExpireSec] = useState(TIME);
+    const expireRef = useRef(null);
+
+
+    // Expire OTP code
+    // ===============
+    const expireOTP = () => {
+        if (expireRef.current) clearInterval(expireRef.current);
+        setExpireSec(TIME);
+
+        expireRef.current = setInterval(() => {
+            setExpireSec((prev) => {
+                if (prev <= 1) {
+                    clearInterval(expireRef.current);
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    };
+    useEffect(() => {
+        expireOTP();
+        return () => clearInterval(expireRef.current);
+    }, []);
+
 
     // Handle Check In..............
     const handleOTP = () => {
@@ -26,16 +52,29 @@ const CheckInOTP = () => {
         }
 
         // Proceed with OTP verification logic here
-        if(btoa(OTP) !== getOTP){
+        if (btoa(OTP) !== getOTP) {
             return toast("Invalid OTP", 'error');
         }
 
         localStorage.clear("OTP");
         toast("OTP verified successfully", "success");
-        console.log(location.state);
         navigate('/hotel/check-in/guest-entry', {
             state: location.state
         });
+    }
+
+
+    const resendOTP = async () => {
+        // Send OTP;
+        const sendotp = await fetch(process.env.REACT_APP_MASTER_API + "/admin/send-checkin-otp", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ mobile: location.state.guestMobile, otp: atob(getOTP) })
+        })
+        const res = await sendotp.json();
+        expireOTP();
     }
 
 
@@ -48,7 +87,7 @@ const CheckInOTP = () => {
                     <div className='content__body__main w-[400px] border border-gray-300'>
                         <div className='w-full flex items-center justify-between border-b pb-1'>
                             <p className='text-lg font-semibold'>Add New Booking</p>
-                            <p className='font-semibold'>Total Unreserved Bed : 50</p>
+                            <p className='font-semibold'>Total Unreserved Bed : {location.state.totalUnreserdBed}</p>
                         </div>
                         <div className='w-full flex flex-col gap-4 mt-4 justify-center items-center'>
                             <div>
@@ -64,8 +103,18 @@ const CheckInOTP = () => {
                                 </div>
                             </div>
                         </div>
+                        <div className='w-full flex justify-center items-center mt-2 gap-2'>
+                            {expireSec > 0 && <p className='text-[11px]'>You can resend after {expireSec}</p>}
+                            {expireSec === 0 &&
+                                <p
+                                    onClick={resendOTP}
+                                    className='text-blue-400 font-semibold underline cursor-pointer'>
+                                    Resend
+                                </p>}
+                        </div>
                         <div className='form__btn__grp'>
-                            <button className='save__btn' onClick={handleOTP}>
+                            <button className='save__btn'
+                                onClick={expireSec === 0 ? null : handleOTP}>
                                 <Icons.CHECK /> Submit
                             </button>
                         </div>

@@ -72,10 +72,12 @@ const Payments = () => {
     // GET LAST MONTH AND YEAR FROM ADMIN SETTING;
     useEffect(() => {
         (async () => {
-            const data = await getDateRangeAminity(
-                settingDetails.bill_generate_last_month,
-                settingDetails.bill_generate_last_year,
-            );
+            const data = await getDateRangeAminity({
+                m:settingDetails.bill_generate_last_month,
+                y: settingDetails.bill_generate_last_year,
+                token: Cookies.get("hotel-token"),
+                url: process.env.REACT_APP_BOOKING_API+"/check-in/get-hotel-id-total-amount"
+            });
 
             setDateRangeAminity(data)
         })()
@@ -269,7 +271,6 @@ const Payments = () => {
                                     </tbody>
                                 </table>
                             </div>
-
                         </div>)
                     }
                     {/* ================================== Table start here ============================== */}
@@ -385,7 +386,13 @@ const Payments = () => {
                                                             n.amenities_payment_status === "0" && (
                                                                 <button
                                                                     className='flex rounded px-2 py-1 bg-green-400 text-white items-center hover:bg-green-500'
-                                                                    onClick={() => payment(n._id, "monthly")}
+                                                                    onClick={async () => await payment(n._id, "monthly")}
+                                                                // onClick={() => navigate("/hotel/payment/process", {
+                                                                //     state: {
+                                                                //         id: n._id,
+                                                                //         type: "monthly"
+                                                                //     }
+                                                                // })}
                                                                 >
                                                                     <Icons.RUPES />
                                                                     <span>Pay Now</span>
@@ -394,9 +401,11 @@ const Payments = () => {
                                                         }
                                                         {(n.amenities_receipt_number && n.amenities_payment_status === '1') && <button
                                                             className='flex rounded px-2 py-1 bg-blue-400 text-white items-center hover:bg-blue-500'
-                                                            onClick={(e) => {
-
-                                                            }}
+                                                            onClick={() => navigate("check-in/guest-entry/bill-details/print", {
+                                                                state: {
+                                                                    payment: true
+                                                                }
+                                                            })}
                                                         >
                                                             <Icons.PRINTER className='text-[16px]' />
                                                             Print Receipt

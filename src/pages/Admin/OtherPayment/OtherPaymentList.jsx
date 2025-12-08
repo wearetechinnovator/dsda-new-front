@@ -172,8 +172,8 @@ const OtherPaymentList = ({ mode }) => {
 								<span className='font-semibold'>Extra Payment Table</span>
 							</div>
 							<div className={`add_new_compnent`}>
-								<div className='flex justify-between items-center'>
-									<div className='flex flex-col'>
+								<div className='flex flex-col md:flex-row justify-between items-center'>
+									<div>
 										<select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
 											<option value={5}>5</option>
 											<option value={10}>10</option>
@@ -187,7 +187,7 @@ const OtherPaymentList = ({ mode }) => {
 											<option value={totalData}>All</option>
 										</select>
 									</div>
-									<div className='flex items-center gap-2'>
+									<div className='flex flex-col md:flex-row items-center gap-2'>
 										<div className='flex w-full flex-col lg:w-[300px]'>
 											<input type='search'
 												placeholder='Search Ref ID...'

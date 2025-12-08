@@ -156,12 +156,11 @@ const UserList = ({ mode }) => {
 				<SideNav />
 				<Tooltip id='itemTooltip' />
 				<div className='content__body'>
-
 					{
 						!loading ? <div className='content__body__main'>
-							<div className={`add_new_compnent`}>
-								<div className='flex justify-between items-center'>
-									<div className='flex flex-col'>
+							<div className="add_new_compnent">
+								<div className='flex flex-col md:flex-row justify-between items-center'>
+									<div>
 										<select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
 											<option value={5}>5</option>
 											<option value={10}>10</option>
@@ -175,7 +174,7 @@ const UserList = ({ mode }) => {
 											<option value={totalData}>All</option>
 										</select>
 									</div>
-									<div className='flex items-center gap-2'>
+									<div className='flex flex-col md:flex-row items-center gap-2'>
 										<div className='flex w-full flex-col lg:w-[300px]'>
 											<input type='search'
 												placeholder='Search...'

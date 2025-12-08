@@ -26,7 +26,7 @@ const ProtectHotelRoute = () => {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify({ token })
+          body: JSON.stringify({ hotelToken: token })
         });
 
         const res = await req.json();

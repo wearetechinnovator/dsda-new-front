@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 
 // Get Date range hotel amenities charges;
-const getDateRangeAminity = async (m, y) => {
+const getDateRangeAminity = async ({m, y, url, token}) => {
     let bill_generate_last_month = m;  // September
     let bill_generate_last_year = y;
 
@@ -23,10 +23,11 @@ const getDateRangeAminity = async (m, y) => {
 
         
         if (month !== bill_generate_last_month || year !== bill_generate_last_year) {
-            const req = await fetch("http://localhost:8081/booking/api/v1/check-in/get-hotel-id-total-amount", {
+            const req = await fetch(url, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
+                    token,
                     hotelId: Cookies.get("hotelId"),
                     startDate: startDate.toLocaleDateString('en-CA'), // YYYY-MM-DD
                     endDate: endDate.toLocaleDateString('en-CA')

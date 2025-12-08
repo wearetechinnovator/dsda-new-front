@@ -439,7 +439,7 @@ const HotelList = () => {
                                         {
                                             data?.map((d, i) => {
                                                 return <tr key={i}>
-                                                    <td align='center'>{i + 1}</td>
+                                                    <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                     <td>{d.hotel_name}</td>
                                                     <td>{d?.hotel_zone_id?.name}</td>
                                                     <td>{d?.hotel_sector_id?.name}</td>

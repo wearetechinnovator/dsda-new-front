@@ -79,13 +79,13 @@ const Amenities = () => {
                 fetch(url, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ hotelId })
+                    body: JSON.stringify({ hotelId, token  })
                 }).then(res => res.json()),
 
                 fetch(url2, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ hotelId })
+                    body: JSON.stringify({ hotelId, hotelToken: token })
                 }).then(res => res.json())
             ])
 
@@ -113,7 +113,7 @@ const Amenities = () => {
 
         try {
             const data = {
-                token: Cookies.get("token"),
+                token: Cookies.get("hotel-token"),
                 page: activePage,
                 limit: dataLimit,
                 startDate,
@@ -398,7 +398,7 @@ const Amenities = () => {
                                     {
                                         data?.map((d, i) => {
                                             return <tr key={i}>
-                                                <td align='center'>{i + 1}</td>
+                                                <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                 <td>{d.date}</td>
                                                 <td>{d.totalGuests}</td>
                                                 <td>{d.totalAmount}</td>

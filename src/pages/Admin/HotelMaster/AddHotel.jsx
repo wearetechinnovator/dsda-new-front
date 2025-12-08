@@ -129,7 +129,12 @@ const AddHotel = ({ mode }) => {
   // get types
   useEffect(() => {
     const get = async (which) => {
-      const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/${which}`)
+      const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/${which}`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${Cookies.get("token")}`
+        }
+      })
       const res = await req.json();
 
       if (which === "document") {

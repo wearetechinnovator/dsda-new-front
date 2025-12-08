@@ -67,27 +67,10 @@ const FinalCheckOut = React.lazy(() => import('./pages/Hotel/FinalCheckOut'));
 const BookingBillDetails = React.lazy(() => import('./pages/Hotel/BookingBillDetails'));
 const BookingBillPrint = React.lazy(() => import("./pages/Hotel/BookingBillPrint"));
 const CheckOutDetails = React.lazy(() => import('./pages/Hotel/CheckOutDetails'));
+const PayGateWay = React.lazy(() => import("./pages/Hotel/PayGateWay"));
 
 
 const App = () => {
-  const navigate = useNavigate();
-  // const location = useLocation();
-
-  useEffect(() => {
-    const handleKeyDown = (event) => {
-      if (event.key === "Escape") {
-        navigate(-1);
-      }
-    };
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [navigate]);
-
-
-
 
   return (
 
@@ -107,6 +90,7 @@ const App = () => {
         <Route path="/admin/forgot-password" element={<UnProtectRoute login={true}><Forgot /></UnProtectRoute>} />
         <Route path="/admin/otp" element={<UnProtectRoute login={true}><Otp /></UnProtectRoute>} />
         <Route path="/admin/change-password" element={<ProtectCP><ChangePassword /></ProtectCP>} />
+
         <Route path="/admin" element={<ProtectRoute />}>
           <Route path="site" element={<Setting />} />
           <Route path="dashboard" element={<Dashboard />} />
@@ -189,7 +173,9 @@ const App = () => {
         <Route path="/hotel/otp" element={<UnProtectHotelRoute login={true}><HotelOtp /></UnProtectHotelRoute>} />
         <Route path="/hotel/change-password" element={<ProtectCP><HotelChangePassword /></ProtectCP>} />
         <Route path="/hotel" element={<ProtectHotelRoute />}>
-          {/* <Route path="statistics" element={<Statistics />} /> */}
+          <Route path="payment/process" element={<PayGateWay />} /> {/* Payment Gateway */}
+          <Route path="payment/confirm" element={<PayGateWay />} /> {/* Payment Gateway */}
+
           <Route path="dashboard" element={<HotelDashboard />} />
           <Route path="profile" element={<HotelProfile />} />
           <Route path="profile/change-password" element={<ChangeProfilePassword />} />
@@ -200,7 +186,7 @@ const App = () => {
           <Route path="check-in/guest-entry/bill-details/print" element={<BookingBillPrint />} />
           <Route path="check-out" element={<CheckOut />} />
           <Route path="check-out/details" element={<CheckOutDetails />} />
-          <Route path="final-check-out" element={<FinalCheckOut />} />
+          <Route path="final-check-out" element={<FinalCheckOut />} /> {/**** NOT USE ANYWHERE *****/}
           <Route path="tourist-data" element={<TouristData />} />
           <Route path="amenities" element={<Amenities />} />
           <Route path="payments" element={<Payments />} />

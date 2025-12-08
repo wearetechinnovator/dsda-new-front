@@ -52,6 +52,7 @@ const Dashboard = () => {
     toDayAmicharges: null, totalAmiCharges: null, dueAmiCharge: null, amiChargePaid: null, tillTodayMale: null,
     tillTodayFemale: null, tillTodayOtherGender: null, tillTodayIndian: null, tillTodayForeigner: null
   })
+  const token = Cookies.get("token");
 
 
 
@@ -60,7 +61,7 @@ const Dashboard = () => {
   const get = async () => {
     try {
       const data = {
-        token: Cookies.get("token"),
+        token: token,
         page: activePage,
         limit: dataLimit,
         enrolled: true
@@ -135,11 +136,19 @@ const Dashboard = () => {
     (async () => {
       const [resAdmin, resHotel] = await Promise.all([
         fetch(process.env.REACT_APP_MASTER_API + "/admin/statictics", {
-          method: "post"
+          method: "post",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ token: token })
         }).then(r => r.json()),
 
         fetch(process.env.REACT_APP_BOOKING_API + "/check-in/get-admin-stats", {
-          method: "post"
+          method: "post",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ token: token })
         }).then(r => r.json())
       ]);
 
@@ -470,7 +479,7 @@ const Dashboard = () => {
                     {
                       data?.map((d, i) => {
                         return <tr key={i} className='hover:bg-gray-100'>
-                          <td align='center'>{i+1}</td>
+                          <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                           <td>{d.hotel_name}</td>
                           <td>{d.hotel_zone_id?.name || "--"}</td>
                           <td>{d.hotel_sector_id?.name || "--"}</td>

@@ -17,6 +17,7 @@ const CheckIn = () => {
     const [data, setData] = useState({ guestMobile: '', numberOfGuests: '', verificationBy: 'manager' });
     const hotelDetails = useSelector((store) => store.hotelDetails);
     const [staticticData, setStaticticsData] = useState(null);
+    const token = Cookies.get('hotel-token');
 
 
 
@@ -25,14 +26,13 @@ const CheckIn = () => {
         (async () => {
             const url = process.env.REACT_APP_BOOKING_API + "/check-in/get-stats";
             const hotelId = Cookies.get('hotelId');
-            const token = Cookies.get('hotel-token');
 
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
                     "Content-Type": 'application/json'
                 },
-                body: JSON.stringify({ hotelId })
+                body: JSON.stringify({ hotelId, token })
             })
             const res = await req.json();
             if (req.status === 200) setStaticticsData(res);
@@ -58,7 +58,29 @@ const CheckIn = () => {
         }
 
 
+        // ================ [Check already checkin or not] =============;
 
+        const check = await fetch(`${process.env.REACT_APP_BOOKING_API}/check-in/add-booking`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                mobileNumber: data.guestMobile, existsCheck: true,
+                token: token
+            })
+        });
+        const checkRes = await check.json();
+
+        if (check.status === 200) {
+            if (checkRes.exist) {
+                return toast("Guest alredy checkin", 'error');
+            }
+        } else {
+            return toast("Something went wrong", 'error');
+        }
+
+        // ::::::::::::::::: SENDING PART :::::::::::::::::
         if (data.verificationBy === 'otp') {
             // Generate OTP;
             let newOtp = Math.floor(1000 + Math.random() * 9000);
@@ -66,19 +88,25 @@ const CheckIn = () => {
             console.log(newOtp);
 
             // Send OTP;
-            // const sendotp = await fetch(process.env.REACT_APP_MASTER_API+"/admin/send-checkin-otp", {
-            //     method: "POST",
-            //     headers:{
-            //         "Content-Type":"application/json"
-            //     },
-            //     body: JSON.stringify({mobile: data.guestMobile, otp: newOtp})
-            // })
-            // const res = await sendotp.json();
-            // console.log(res);
-
+            const sendotp = await fetch(process.env.REACT_APP_MASTER_API + "/admin/send-checkin-otp", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    mobile: data.guestMobile, otp: newOtp,
+                    token: token
+                })
+            })
+            const res = await sendotp.json();
 
             navigate('/hotel/check-in-otp', {
-                state: data
+                state: {
+                    ...data, totalUnreserdBed:
+                        (parseInt(hotelDetails?.hotel_total_bed) - parseInt(staticticData?.occupied)) > 1 ?
+                            parseInt(hotelDetails?.hotel_total_bed) - parseInt(staticticData?.occupied) :
+                            0
+                }
             });
 
         } else {
@@ -103,16 +131,14 @@ const CheckIn = () => {
             <Nav title={"Manage Guest Entry"} />
             <main id='main'>
                 <SideNav />
-                <div className='content__body grid place-items-center'>
-                    <div className='content__body__main w-[500px] border border-gray-300'>
+                <div className='content__body md:grid place-items-center'>
+                    <div className='content__body__main lg:w-[500px] border border-gray-300'>
                         <div className='w-full flex items-center justify-between border-b pb-1'>
                             <p className='text-lg font-semibold'>Add New Booking</p>
                             <p className='font-semibold'>Total Unreserved Bed : {
-
                                 (parseInt(hotelDetails?.hotel_total_bed) - parseInt(staticticData?.occupied)) > 1 ?
                                     parseInt(hotelDetails?.hotel_total_bed) - parseInt(staticticData?.occupied) :
                                     0
-
                             }</p>
                         </div>
                         <div className='w-full flex flex-col gap-4 mt-4'>
