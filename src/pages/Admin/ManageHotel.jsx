@@ -93,8 +93,8 @@ const ManageHotel = () => {
             }
             console.log(res);
 
-            Cookies.set("hotel-token", res.token, { secure: true });
-            Cookies.set("hotelId", res.hotel._id, { secure: true });
+            Cookies.set("hotel-token", res.token);
+            Cookies.set("hotelId", res.hotel._id);
             window.open("/hotel/dashboard", "_blank");
         } catch (error) {
             console.log(error)

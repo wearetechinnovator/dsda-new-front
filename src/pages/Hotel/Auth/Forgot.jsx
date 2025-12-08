@@ -45,7 +45,7 @@ const Forget = () => {
         return toast(res.err, "error")
       }
 
-      Cookies.set("user-token", res.token, { secure: true });
+      Cookies.set("user-token", res.token );
       navigate("/hotel/otp", {state:{email: loginData.email}});
 
     } catch (error) {

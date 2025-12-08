@@ -46,8 +46,8 @@ const Login = () => {
         return toast(res.err, "error")
       }
 
-      // Cookies.set("hotel-token", res.token, { secure: true });
-      // Cookies.set("hotelId", res.hotel._id, { secure: true });
+      // Cookies.set("hotel-token", res.token );
+      // Cookies.set("hotelId", res.hotel._id );
       Cookies.set("hotel-token", res.token);
       Cookies.set("hotelId", res.hotel._id);
       navigate("/hotel/dashboard")

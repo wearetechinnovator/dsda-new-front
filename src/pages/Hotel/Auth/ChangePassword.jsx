@@ -46,7 +46,7 @@ const ChangePassword = () => {
       }
 
       Cookies.remove("user-token");
-      Cookies.set("token", res.newToken, { secure: true });
+      Cookies.set("token", res.newToken );
       navigate("/admin/dashboard")
 
     } catch (error) {
