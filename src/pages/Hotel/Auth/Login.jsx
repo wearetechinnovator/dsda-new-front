@@ -46,8 +46,10 @@ const Login = () => {
         return toast(res.err, "error")
       }
 
-      Cookies.set("hotel-token", res.token, { secure: true });
-      Cookies.set("hotelId", res.hotel._id, { secure: true });
+      // Cookies.set("hotel-token", res.token, { secure: true });
+      // Cookies.set("hotelId", res.hotel._id, { secure: true });
+      Cookies.set("hotel-token", res.token);
+      Cookies.set("hotelId", res.hotel._id);
       navigate("/hotel/dashboard")
 
     } catch (error) {
@@ -61,13 +63,13 @@ const Login = () => {
 
   return (
     <main className='login__main'>
-     <video id="video-background" autoPlay loop muted className="absolute w-full h-full object-cover z-0">
-        <source src="/welcome.mp4" type="video/mp4"/>
-          Your browser does not support the video tag.
+      <video id="video-background" autoPlay loop muted className="absolute w-full h-full object-cover z-0">
+        <source src="/welcome.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
       </video>
       <img src={Logo} alt="Logo.png" className='mb-5 z-10 b__logo' />
       <div className="login__box flex flex-col z-10" id="loginBox">
-        <img src={"/swagata2-logo.png"} alt="Logo.png" className='mb-5 z-10 mx-auto' width={"350px"}/>
+        <img src={"/swagata2-logo.png"} alt="Logo.png" className='mb-5 z-10 mx-auto' width={"350px"} />
         <form onSubmit={formAction}>
           <input type="text" name="username"
             value={loginData.username}
