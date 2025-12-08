@@ -10,8 +10,6 @@ import { SelectPicker, TimePicker } from 'rsuite';
 import { useSelector } from 'react-redux';
 import GuestEntryDocUpload from '../../components/Hotel/GuestEntryDocUpload';
 import checkfile from '../../helper/checkfile';
-import FlatPicker from 'react-flatpickr'
-import "flatpickr/dist/flatpickr.min.css";
 
 
 

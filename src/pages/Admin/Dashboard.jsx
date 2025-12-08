@@ -136,7 +136,7 @@ const Dashboard = () => {
     (async () => {
       const [resAdmin, resHotel] = await Promise.all([
         fetch(process.env.REACT_APP_MASTER_API + "/admin/statictics", {
-          method: "post",
+          method: "POST",
           headers: {
             'Content-Type': 'application/json'
           },
@@ -144,7 +144,7 @@ const Dashboard = () => {
         }).then(r => r.json()),
 
         fetch(process.env.REACT_APP_BOOKING_API + "/check-in/get-admin-stats", {
-          method: "post",
+          method: "POST",
           headers: {
             'Content-Type': 'application/json'
           },
