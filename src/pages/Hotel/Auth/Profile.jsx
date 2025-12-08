@@ -124,8 +124,6 @@ const Profile = () => {
       })
       const res = await req.json();
 
-      console.log(res);
-
       if (which === "document") {
         setDocumentType([...res]);
 

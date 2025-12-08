@@ -26,7 +26,7 @@ const GuestEntry = () => {
         checkoutDate: '', checkoutTime: ''
     });
     const guestListSet = {
-        guestName: '', gender: '', age: "", dob: '', nationality: '', address: '', idType: '',
+        guestName: '', gender: '', age: '', dob: '', nationality: '', address: '', idType: '',
         idNumber: '', idProof: '', mobileNumber: '', roomNumber: '', country: "", state: '', city: '',
         photo: ''
     }
@@ -476,7 +476,7 @@ const GuestEntry = () => {
                                                             )
                                                         }
                                                         {
-                                                            gl.nationality === "foriegn" && <>
+                                                            gl.nationality === "foreign" && <>
                                                                 <SelectPicker
                                                                     block
                                                                     data={country?.map(t => ({
