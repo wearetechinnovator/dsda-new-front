@@ -10,6 +10,9 @@ import { SelectPicker, TimePicker } from 'rsuite';
 import { useSelector } from 'react-redux';
 import GuestEntryDocUpload from '../../components/Hotel/GuestEntryDocUpload';
 import checkfile from '../../helper/checkfile';
+import StatesDistrictObj from '../../helper/states-and-districts';
+import CountryList from '../../helper/countries'
+
 
 
 
@@ -27,13 +30,15 @@ const GuestEntry = () => {
     });
     const guestListSet = {
         guestName: '', gender: '', age: '', dob: '', nationality: '', address: '', idType: '',
-        idNumber: '', idProof: '', mobileNumber: '', roomNumber: '', country: "", state: '', city: '',
-        photo: ''
+        idNumber: '', idProof: '', mobileNumber: '', roomNumber: '', country: "", state: '', district: '',
+        photo: '', allDistrict: [],
     }
     const [guestList, setGuestList] = useState([]);
     const [minDate, setMinDate] = useState(null);
     const today = new Date();
     const [guestErrors, setGuestErrors] = useState([]);
+
+
 
 
 
@@ -62,28 +67,39 @@ const GuestEntry = () => {
     }, [location.state])
 
 
-    // Get Country and State
+    // Get State and Country from helper OBJECT;
     useEffect(() => {
-        const get = async (which) => {
-            const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/${which}`, {
-                method: 'GET',
-                headers: {
-                    'x-hotel-token': `Bearer ${Cookies.get("hotel-token")}`
-                }
-            })
-            const res = await req.json();
+        const allStates = StatesDistrictObj.states.reduce((acc, i) => {
+            acc.push(i.state);
+            return acc;
+        }, []);
 
-            if (which === "country") {
-                setCountry([...res]);
+        const allCountry = CountryList.map((c, _) => {
+            return { label: c.name, value: c.name }
+        });
 
-            } else if (which === "state") {
-                setState([...res]);
-            }
+
+        setCountry([...allCountry]);
+        setState([...allStates]);
+    }, [])
+
+
+    // Get District
+    const getDistrict = async (index, state) => {
+        if (state) {
+            const selectedState = StatesDistrictObj.states.find((d, _) => d.state === state);
+
+            const allGuestList = [...guestList];
+            allGuestList[index].allDistrict = [...selectedState.districts];
+            setGuestList(allGuestList);
+        } else {
+            const allGuestList = [...guestList];
+            allGuestList[index].allDistrict = [];
+            setGuestList(allGuestList);
         }
 
-        // get("country");
-        get("state");
-    }, [])
+    }
+
 
 
     const handleSubmit = async () => {
@@ -115,7 +131,7 @@ const GuestEntry = () => {
                 if (!guest.idNumber) errors.idNumber = true;
                 if (guest.nationality === "india") {
                     if (!guest.state) errors.state = true;
-                    if (!guest.city) errors.city = true;
+                    if (!guest.district) errors.district = true;
                     if (!guest.address) errors.address = true;
                 } else {
                     if (!guest.address) errors.address = true;
@@ -311,7 +327,7 @@ const GuestEntry = () => {
                                                         onChange={async (e) => {
                                                             const file = e.target.files[0];
 
-                                                            const check = await checkfile(file);
+                                                            const check = await checkfile(file, ["jpg", "png", 'jpeg'], 0.2);
                                                             if (check !== true) {
                                                                 toast(check, "error");
                                                                 return;
@@ -418,7 +434,7 @@ const GuestEntry = () => {
                                                                 });
                                                             }}>
                                                             <option value="">--Select--</option>
-                                                            <option value="india">India</option>
+                                                            <option value="india">Indian</option>
                                                             <option value="foreign">Foreign</option>
                                                         </select>
                                                         {guestErrors[index]?.nationality && (
@@ -430,8 +446,8 @@ const GuestEntry = () => {
                                                                     <SelectPicker
                                                                         block
                                                                         data={state?.map(s => ({
-                                                                            label: s.state_name,
-                                                                            value: s.state_name
+                                                                            label: s,
+                                                                            value: s
                                                                         })) || []}
                                                                         style={{ width: '100%' }}
                                                                         value={gl.state}
@@ -439,6 +455,7 @@ const GuestEntry = () => {
                                                                             const updatedList = [...guestList];
                                                                             updatedList[index].state = v;
                                                                             setGuestList(updatedList);
+                                                                            getDistrict(index, v)
 
                                                                             setGuestErrors((prev) => {
                                                                                 const newErrors = [...prev];
@@ -454,22 +471,31 @@ const GuestEntry = () => {
                                                                     {guestErrors[index]?.state && (
                                                                         <span className="required">*This fields is required</span>
                                                                     )}
-                                                                    <input type="text"
-                                                                        placeholder='Enter City'
-                                                                        value={gl.city}
-                                                                        onChange={(e) => {
+                                                                    <SelectPicker
+                                                                        block
+                                                                        data={guestList[index].allDistrict?.map(d => ({
+                                                                            label: d,
+                                                                            value: d
+                                                                        })) || []}
+                                                                        style={{ width: '100%' }}
+                                                                        value={gl.district}
+                                                                        onChange={(v) => {
                                                                             const updatedList = [...guestList];
-                                                                            updatedList[index].city = e.target.value;
+                                                                            updatedList[index].district = v;
                                                                             setGuestList(updatedList);
 
                                                                             setGuestErrors((prev) => {
                                                                                 const newErrors = [...prev];
-                                                                                if (newErrors[index]) delete newErrors[index].city;
+                                                                                if (newErrors[index]) delete newErrors[index].district;
                                                                                 return newErrors;
                                                                             });
                                                                         }}
+                                                                        placeholder="Select District"
+                                                                        searchable
+                                                                        cleanable
+                                                                        placement="auto"
                                                                     />
-                                                                    {guestErrors[index]?.city && (
+                                                                    {guestErrors[index]?.district && (
                                                                         <span className="required">*This fields is required</span>
                                                                     )}
                                                                 </>
@@ -479,10 +505,7 @@ const GuestEntry = () => {
                                                             gl.nationality === "foreign" && <>
                                                                 <SelectPicker
                                                                     block
-                                                                    data={country?.map(t => ({
-                                                                        label: t.country_name,
-                                                                        value: t._id
-                                                                    })) || []}
+                                                                    data={country || []}
                                                                     style={{ width: '100%' }}
                                                                     value={gl.country}
                                                                     onChange={(v) => {
@@ -493,7 +516,7 @@ const GuestEntry = () => {
                                                                     placeholder="Select Country"
                                                                     searchable
                                                                     cleanable
-                                                                    placement="auto"
+                                                                    placement="bottomEnd"
                                                                 />
                                                                 {guestErrors[index]?.country && (
                                                                     <span className="required">*This fields is required</span>
@@ -575,11 +598,8 @@ const GuestEntry = () => {
                                                     <input type="file" id={`idProof-${index}`} className='hidden'
                                                         onChange={async (e) => {
                                                             const file = e.target.files[0];
-                                                            const check = await checkfile(file);
-                                                            if (check !== true) {
-                                                                toast(check, "error");
-                                                                return;
-                                                            }
+                                                            const check = await checkfile(file, ["jpg", "png", 'jpeg'], 0.2);
+                                                            if (check !== true) return toast(check, "error");
 
                                                             const fileBinary = await base64Data(file);
 

@@ -5,6 +5,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import useMyToaster from '../../hooks/useMyToaster';
+import Cookies from 'js-cookie';
+
 
 
 const CheckOutDetails = () => {
@@ -20,6 +22,7 @@ const CheckOutDetails = () => {
     const [selectedCheckout, setSelectedCheckout] = useState([]);
     const [checkoutDate, setCheckoutDate] = useState();
     const [checkoutTime, setCheckoutTime] = useState();
+    const hotelToken = Cookies.get("hotel-token");
 
 
     // Get Checkin Checkout date from setting;
@@ -44,7 +47,7 @@ const CheckOutDetails = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ bookingId }),
+                body: JSON.stringify({ bookingId, token: hotelToken }),
             })
             const res = await req.json();
             if (req.status === 200) {

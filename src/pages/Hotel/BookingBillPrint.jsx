@@ -1,10 +1,27 @@
-import { useLocation, useNavigate } from "react-router-dom"
-import { Icons } from "../../helper/icons"
+import { useLocation, useNavigate } from "react-router-dom";
+import { Icons } from "../../helper/icons";
+import { useEffect, useState } from "react";
+
+
 
 const BookingBillPrint = () => {
     const { state } = useLocation();
     const navigate = useNavigate();
-    
+    const [copy, setCopy] = useState(false);
+
+
+    useEffect(() => {
+        let timer;
+
+        if (copy) {
+            timer = setTimeout(() => {
+                setCopy(false);
+            }, 1000);
+        }
+
+        return () => clearTimeout(timer);
+    }, [copy]);
+
 
     return (
         <main className="w-full min-h-full grid place-items-center">
@@ -47,7 +64,19 @@ const BookingBillPrint = () => {
                 </p>
             </div>
 
-            <div id="footer" className='mt-2 w-full fixed bottom-0 bg-[#F5F5F5] p-4 rounded-t text-white gap-4 flex items-center justify-center'>
+
+            <footer id="footer"
+                className=' text-xs mt-2 w-full fixed bottom-0 border-b border bg-[#F5F5F5] p-4 py-3 
+                rounded-t text-white gap-3 flex items-center justify-start'
+            >
+                <button
+                    onClick={() => {
+                        navigate("/hotel/check-in")
+                    }}
+                    className='bg-[#32C5D2] hover:bg-[#43e0ee] px-3 py-2 rounded flex items-center gap-1'>
+                    <Icons.BACK />
+                    Back To Checkin
+                </button>
                 <button
                     onClick={() => {
                         document.querySelector("#footer").style.display = "none";
@@ -60,13 +89,14 @@ const BookingBillPrint = () => {
                 </button>
                 <button
                     onClick={() => {
-                        navigate("/hotel/check-in")
+                        setCopy(!copy);
+                        navigator.clipboard.writeText("Hello world")
                     }}
-                    className='bg-[#32C5D2] hover:bg-[#43e0ee] px-3 py-2 rounded flex items-center gap-1'>
-                    <Icons.BACK />
-                    Back To Checkin
+                    className='bg-[#2F353B] hover:bg-[#464d53] px-3 py-2 rounded flex items-center gap-1'>
+                    {copy ? <Icons.CHECK2 /> : <Icons.COPY className='font-bold' />}
+                    {copy ? "Copied..." : "Copy link"}
                 </button>
-            </div>
+            </footer>
         </main>
     )
 }

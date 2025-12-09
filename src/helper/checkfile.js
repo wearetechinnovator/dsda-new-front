@@ -17,10 +17,15 @@ const checkfile = (file, type = ["jpg", "png", 'jpeg'], size = 3) => {
 
         const filename = FILE.name;
         if (type.some((value) => filename.endsWith(value))) {
+
             if (FILE.size <= (INIT_SIZE * size)) {
                 resolve(true);
             } else {
-                resolve("Invalid filesize");
+                resolve(
+                    "Invalid filesize. Uploaded: " +
+                    Math.round(FILE.size / 1024) + " KB, Allowed: " +
+                    (parseInt(Math.round((INIT_SIZE * size) / 1024)) - 5) + " KB"
+                );
             }
 
         } else {
@@ -28,7 +33,6 @@ const checkfile = (file, type = ["jpg", "png", 'jpeg'], size = 3) => {
         }
 
     })
-
 }
 
 export default checkfile;

@@ -66,6 +66,7 @@ const OtherPayments = React.lazy(() => import("./pages/Hotel/OtherPayments"));
 const FinalCheckOut = React.lazy(() => import('./pages/Hotel/FinalCheckOut'));
 const BookingBillDetails = React.lazy(() => import('./pages/Hotel/BookingBillDetails'));
 const BookingBillPrint = React.lazy(() => import("./pages/Hotel/BookingBillPrint"));
+const PublicBillView = React.lazy(() => import("./pages/Hotel/PublicBillView"));
 const CheckOutDetails = React.lazy(() => import('./pages/Hotel/CheckOutDetails'));
 const PayGateWay = React.lazy(() => import("./pages/Hotel/PayGateWay"));
 
@@ -172,6 +173,7 @@ const App = () => {
         <Route path="/hotel/forgot" element={<UnProtectHotelRoute login={true}><HotelForgot /></UnProtectHotelRoute>} />
         <Route path="/hotel/otp" element={<UnProtectHotelRoute login={true}><HotelOtp /></UnProtectHotelRoute>} />
         <Route path="/hotel/change-password" element={<ProtectCP><HotelChangePassword /></ProtectCP>} />
+        <Route path="/public/bill/:id" element={<PublicBillView />} />
         <Route path="/hotel" element={<ProtectHotelRoute />}>
           <Route path="payment/process" element={<PayGateWay />} /> {/* Payment Gateway */}
           <Route path="payment/confirm" element={<PayGateWay />} /> {/* Payment Gateway */}

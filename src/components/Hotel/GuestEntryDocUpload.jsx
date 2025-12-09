@@ -32,6 +32,7 @@ const GuestEntryDocUpload = ({ forId, idProof, onRemove }) => {
                 <>
                     <Icons.UPLOAD_IMAGE />
                     <span>Upload Photo</span>
+                    <span className="text-[9px] text-red-400">Max size 200kb</span>
                 </>
             )}
         </label>

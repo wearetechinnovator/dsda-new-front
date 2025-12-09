@@ -78,7 +78,7 @@ const CheckOut = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            console.log(res);
+
             setTotalData(res.total)
             setBookingHeadList([...res.data])
             setLoading(false);
