@@ -123,6 +123,7 @@ const Payments = () => {
         get(selectedMonth, selectedYear);
     }, [dataLimit, activePage])
 
+    
     const AmenitiesHotelSearch = (e) => {
         const txt = e.target.value;
         if (timeRef.current) clearTimeout(timeRef.current);
@@ -377,7 +378,6 @@ const Payments = () => {
                                                                     <span className='chip chip__green'>Success</span> :
                                                                     <span className='chip chip__yellow'>Processing</span>)) :
                                                                 <span className='chip chip__grey'>Payment Not initiated</span>
-
                                                         }
                                                     </td>
                                                     <td>{n.amenities_payment_transaction_id}</td>

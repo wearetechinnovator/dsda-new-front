@@ -171,6 +171,21 @@ const GuestEntry = () => {
 
     }
 
+    const checkCheinCheckOutSame = (inDate, outDate) => {
+        const d1 = new Date(inDate);
+        const d2 = new Date(outDate);
+
+        if (
+            d1.getFullYear() === d2.getFullYear() &&
+            d1.getMonth() === d2.getMonth() &&
+            d1.getDate() === d2.getDate()
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     return (
         <>
             <Nav title={"Manage Guest Entry"} />
@@ -269,10 +284,28 @@ const GuestEntry = () => {
                                     step="1"
                                     value={checkInDetails.checkoutTime}
                                     onChange={(e) => {
+                                        const checkinDate = new Date(checkInDetails.checkInDate);
+                                        const checkoutDate = new Date(checkInDetails.checkoutDate);
+
+                                        // Set the new checkout time the user selected
+                                        const [hours, minutes] = e.target.value.split(":");
+                                        checkoutDate.setHours(hours, minutes, 0, 0);
+
+                                        const checkinTime = new Date(checkinDate);
+                                        const [h2, m2] = checkInDetails.checkInTime.split(":");
+                                        checkinTime.setHours(h2, m2, 0, 0);
+
+                                        // ❌ If checkout <= checkin → block
+                                        if (checkoutDate.getTime() <= checkinTime.getTime()) {
+                                            return toast("You can't checkout earlier or same time", "error");
+                                        }
+
+                                        // ✅ Otherwise, save
                                         setCheckInDetails({
                                             ...checkInDetails,
                                             checkoutTime: e.target.value
                                         });
+
                                     }}
                                 />
                             </div>
