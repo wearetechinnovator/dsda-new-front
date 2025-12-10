@@ -55,16 +55,28 @@ const GuestEntry = () => {
 
     // Set Table rows;
     useEffect(() => {
-        Array.from({ length: numberOfGuests }).forEach((v, i) => {
-            setGuestList((prev) => [...prev, { ...guestListSet, mobileNumber: i === 0 ? guestMobile : '', }]);
-        });
-        setCheckInDetails({
-            ...checkInDetails,
+        // 1) Returning back via navigate(-1) → location.state has stored form
+        if (location.state?.guestList && location.state?.guestList.length > 0) {
+            setGuestList(location.state.guestList);
+            setCheckInDetails(location.state.checkInDetails);
+            return; // ❗ DO NOT run initialization
+        }
+
+        // 2) First time open → initialize guest list
+        const arr = Array.from({ length: numberOfGuests }).map((_, i) => ({
+            ...guestListSet,
+            mobileNumber: i === 0 ? guestMobile : ""
+        }));
+
+        setGuestList(arr);
+
+        setCheckInDetails(prev => ({
+            ...prev,
             NumberOfGuest: numberOfGuests,
             mobileNumbe: guestMobile,
             verificationBy
-        })
-    }, [location.state])
+        }));
+    }, []);
 
 
     // Get State and Country from helper OBJECT;
@@ -161,8 +173,16 @@ const GuestEntry = () => {
         // Goto Final submit.......
         const hotelId = Cookies.get('hotelId');
         const token = Cookies.get('hotel-token');
+
+        navigate(location.pathname, {
+            state: { checkInDetails, guestList },
+            replace: true
+        });
+
         navigate('/hotel/check-in/guest-entry/bill-details', {
-            state: { ...checkInDetails, guestList, hotelId, token }
+            state: {
+                ...checkInDetails, guestList, hotelId, token,
+            }
         });
 
     }

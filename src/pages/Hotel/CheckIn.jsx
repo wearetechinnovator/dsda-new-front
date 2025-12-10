@@ -85,7 +85,6 @@ const CheckIn = () => {
             // Generate OTP;
             let newOtp = Math.floor(1000 + Math.random() * 9000);
             localStorage.setItem("OTP", btoa(newOtp).toString());
-            console.log(newOtp);
 
             // Send OTP;
             const sendotp = await fetch(process.env.REACT_APP_MASTER_API + "/admin/send-checkin-otp", {

@@ -58,6 +58,7 @@ const CheckOutDetails = () => {
             if (req.status === 200) {
                 setLoading(false)
                 setBookingDetails([...res]);
+                console.log(res);
 
                 setCheckoutDate(res[0].booking_details_checkout_date_time.split(" ")[0])
                 setCheckoutTime(res[0].booking_details_checkout_date_time.split(" ")[1])

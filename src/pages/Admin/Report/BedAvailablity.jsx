@@ -290,16 +290,16 @@ const BedAvailablity = () => {
                                                     <td>{d.hotel_block_id?.name}</td>
                                                     <td>{d.hotel_police_station_id?.name}</td>
                                                     <td>{d.hotel_district_id?.name}</td>
-                                                    <td>{d.hotel_total_bed}</td>
-                                                    <td>{d.hotel_total_occupied}</td>
+                                                    <td>{d.hotel_total_bed || 0}</td>
+                                                    <td>{d.hotel_total_occupied || 0}</td>
                                                     <td>{
-                                                        parseInt(d.hotel_total_bed) - parseInt(d.hotel_total_occupied) < 1 ?
+                                                        parseInt(d.hotel_total_bed || 0) - parseInt(d.hotel_total_occupied || 0) < 1 ?
                                                             0 :
-                                                            parseInt(d.hotel_total_bed) - parseInt(d.hotel_total_occupied)
+                                                            parseInt(d.hotel_total_bed || 0) - parseInt(d.hotel_total_occupied || 0)
                                                     }</td>
                                                     <td>{
-                                                        parseInt(d.hotel_total_bed) - parseInt(d.hotel_total_occupied) < 1 ?
-                                                            parseInt(d.hotel_total_occupied) - parseInt(d.hotel_total_bed) :
+                                                        parseInt(d.hotel_total_bed || 0) - parseInt(d.hotel_total_occupied || 0) < 1 ?
+                                                            parseInt(d.hotel_total_occupied || 0) - parseInt(d.hotel_total_bed || 0) :
                                                             0
                                                     }</td>
                                                 </tr>
