@@ -3,7 +3,7 @@ import SideNav from '../../../../components/Admin/SideNav'
 import { Icons } from '../../../../helper/icons';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import useSearchTable from '../../../../hooks/useSearchTable';
-import { Popover, SelectPicker, Whisper } from 'rsuite';
+import { Avatar, Popover, SelectPicker, Whisper } from 'rsuite';
 import downloadPdf from '../../../../helper/downloadPdf';
 import useExportTable from '../../../../hooks/useExportTable';
 import useMyToaster from '../../../../hooks/useMyToaster';
@@ -40,8 +40,8 @@ const TouristData = () => {
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
     const [quickSearchFields, setQuickSearchFields] = useState({
-        idCardNumber: '', mobileNo: '', fromDate:'',
-        toDate:'', guestName: ''
+        idCardNumber: '', mobileNo: '', fromDate: '',
+        toDate: '', guestName: ''
     })
     const [allHotel, setAllHotel] = useState([]);
     const [selectedHotel, setSelectedHotel] = useState(null);
@@ -120,7 +120,7 @@ const TouristData = () => {
                 guestName: quickSearchFields.guestName,
                 hotelId: selectedHotel
             }
-           
+
             setFilterState("touristData", dataLimit, activePage);
 
             const url = process.env.REACT_APP_BOOKING_API + `/check-in/get-booking`;
@@ -144,7 +144,7 @@ const TouristData = () => {
                 headers: {
                     "Content-Type": 'application/json'
                 },
-                body: JSON.stringify({token: Cookies.get("token"), limit: 50000000})
+                body: JSON.stringify({ token: Cookies.get("token"), limit: 50000000 })
             });
             const hotelRes = await hoteReq.json();
             setAllHotel([...hotelRes.data])
@@ -365,13 +365,17 @@ const TouristData = () => {
                                         <table className='min-w-full bg-white' id='table' ref={tableRef}>
                                             <thead className='bg-gray-100 list__table__head'>
                                                 <tr>
-                                                    <td align='center' className='w-[5%]'>SL No.</td>
+                                                    <td align='center' className='w-[3%]'>SL No.</td>
                                                     <td>Hotel Name</td>
                                                     <td>Guest Name</td>
+                                                    <td className='w-[5%]'>Guest Photo</td>
                                                     <td>Gender</td>
+                                                    <td className='w-[5%]' align='center'>DOB</td>
                                                     <td>Age</td>
+                                                    <td className='w-[4%]'>Nationality</td>
                                                     <td>Register Guest Details</td>
                                                     <td className='w-[5%]'>ID Card</td>
+                                                    <td className='w-[3%]'>ID Proof</td>
                                                     <td>Mobile</td>
                                                     <td>Check In Date & Time</td>
                                                     <td>Check Out Date & Time</td>
@@ -382,7 +386,7 @@ const TouristData = () => {
                                             <tbody>
                                                 {
                                                     data?.map((d, i) => {
-                                                        const currentHotel = allHotel?.find((h, _)=>h._id === d.booking_details_hotel_id);
+                                                        const currentHotel = allHotel?.find((h, _) => h._id === d.booking_details_hotel_id);
                                                         return <tr key={i} className='hover:bg-gray-100'>
                                                             <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                             <td>{currentHotel?.hotel_name}</td>
@@ -397,8 +401,18 @@ const TouristData = () => {
                                                                 </span>
 
                                                             </td>
+                                                            <td align='center'>
+                                                                <Avatar
+                                                                    circle
+                                                                    bordered
+                                                                    src={process.env.REACT_APP_BOOKING_API + "/upload/" + d.booking_details_guest_photo}
+                                                                    size={'sm'}
+                                                                />
+                                                            </td>
                                                             <td>{d.booking_details_guest_gender}</td>
+                                                            <td>{d.booking_details_guest_dob || "-"}</td>
                                                             <td>{d.booking_details_guest_age}</td>
+                                                            <td>{d.booking_details_guest_nationality === "india" ? "Indian" : d.booking_details_guest_nationality === "foreign" ? "Foreigner" : ""}</td>
                                                             <td>
                                                                 {d.booking_details_guest_name}
                                                                 <br />
@@ -406,6 +420,16 @@ const TouristData = () => {
                                                             </td>
                                                             <td>
                                                                 {d.booking_details_guest_id_type} - {d.booking_details_guest_id_number}
+                                                            </td>
+                                                            <td align='center'>
+                                                                {d.booking_details_guest_id_proof ?
+                                                                    <a href={process.env.REACT_APP_BOOKING_API + "/upload/" + d.booking_details_guest_id_proof} download={''}>
+                                                                        <span className='chip chip__green cursor-pointer'>
+                                                                            <Icons.DOWNLOAD />
+                                                                        </span>
+                                                                    </a>
+                                                                    : "-"
+                                                                }
                                                             </td>
                                                             <td>{d.booking_details_guest_phone}</td>
                                                             <td>{d.booking_details_checkin_date_time}</td>
@@ -442,7 +466,7 @@ const TouristData = () => {
                                                 }
 
                                                 {
-                                                    data.length < 1&& (
+                                                    data.length < 1 && (
                                                         <tr>
                                                             <td colSpan={11} align='center' className='p-4 text-lg'>
                                                                 No Data Found

@@ -162,6 +162,29 @@ const CheckOut = () => {
             return;
         }
 
+
+        // =====================[ Check Checkout date ]===================== 
+        // =================================================================
+        const checkinDateObj = new Date(checkInDate);
+        const checkoutDateObj = new Date(defaultCheckOutDate);
+
+        // --- Extract new checkout time from user input ---
+        const newTime = defaultCheckOutDate.split("T")[1];  // "HH:MM"
+        const [newH, newM] = newTime.split(":");
+        checkoutDateObj.setHours(newH, newM, 0, 0);
+
+        // --- Build proper check-in datetime (date + time separately) ---
+        const checkinTimePart = checkInDate.split(" ")[1]; // "HH:MM"
+        const [cH, cM] = checkinTimePart.split(":");
+        checkinDateObj.setHours(cH, cM, 0, 0);
+
+        // --- Validation: checkout must be strictly greater than checkin ---
+        if (checkoutDateObj.getTime() <= checkinDateObj.getTime()) {
+            return toast("You can't checkout earlier or at the same time", "error");
+        }
+
+
+
         // Save the new checkout date
         const url = process.env.REACT_APP_BOOKING_API + "/check-out/update-checkout-datetime";
         const dateFormat = defaultCheckOutDate.replace("T", " ");
@@ -174,8 +197,8 @@ const CheckOut = () => {
                 checkoutDateTime: dateFormat
             })
         });
-
         const res = await req.json();
+
         if (req.status === 200) {
             toast("Checkout date updated successfully", "success");
             setIsCheckoutModalOpen(false);
@@ -192,6 +215,14 @@ const CheckOut = () => {
             toast("Failed to update checkout date", "error");
         }
     }
+
+    const isCheckoutExpired = (checkoutDateTime) => {
+        const now = new Date();
+        const checkout = new Date(checkoutDateTime);
+        return checkout < now; // true → expired
+    };
+
+
 
     return (
         <>
@@ -365,7 +396,9 @@ const CheckOut = () => {
                                                                             <Icons.EYE className='text-[13px]' />
                                                                             View Bill
                                                                         </div>
-                                                                        <div className='download__menu' onClick={() => {
+                                                                        <div className={`download__menu ${isCheckoutExpired(d.booking_details_checkout_date_time) ? "opacity-50 cursor-not-allowed" : ""}`} onClick={() => {
+                                                                            if (isCheckoutExpired(d.booking_details_checkout_date_time)) return;
+
                                                                             navigate("/hotel/check-out/details", {
                                                                                 state: { bookingId: d.booking_details_booking_id }
                                                                             })
@@ -373,13 +406,17 @@ const CheckOut = () => {
                                                                             <Icons.USER className='text-[12px]' />
                                                                             Checkout Users
                                                                         </div>
-                                                                        <div className='download__menu' onClick={() => {
-                                                                            setIsCheckoutModalOpen(true);
-                                                                            setBookingId(d.booking_details_booking_id._id);
-                                                                            setCheckInDate(d.booking_details_checkin_date_time);
-                                                                            setDefaultCheckOutDate(d.booking_details_checkout_date_time);
-                                                                            setCheckOutIndex(i);
-                                                                        }}>
+                                                                        <div
+                                                                            className={`download__menu ${isCheckoutExpired(d.booking_details_checkout_date_time) ? "opacity-50 cursor-not-allowed" : ""}`}
+                                                                            onClick={() => {
+                                                                                if (isCheckoutExpired(d.booking_details_checkout_date_time)) return;
+                                                                                setIsCheckoutModalOpen(true);
+                                                                                setBookingId(d.booking_details_booking_id._id);
+                                                                                setCheckInDate(d.booking_details_checkin_date_time);
+                                                                                setDefaultCheckOutDate(d.booking_details_checkout_date_time);
+                                                                                setCheckOutIndex(i);
+                                                                            }}
+                                                                        >
                                                                             <Icons.EDIT className='text-[13px]' />
                                                                             Edit Checkout Date
                                                                         </div>
@@ -434,7 +471,9 @@ const CheckOut = () => {
                                             : ""
                                     }
                                     value={defaultCheckOutDate || (checkInDate ? new Date(checkInDate).toISOString().slice(0, 16) : "")}
-                                    onChange={(e) => setDefaultCheckOutDate(e.target.value)}
+                                    onChange={(e) => {
+                                        setDefaultCheckOutDate(e.target.value);
+                                    }}
                                 />
                             </div>
                         </div>

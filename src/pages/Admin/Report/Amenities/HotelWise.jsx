@@ -50,6 +50,9 @@ const HotelWise = () => {
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const [navTitle, setNavTitle] = useState("");
     const [allHotel, setAllHotel] = useState([]);
+    const [totalEnrolled, setTotalEnrolled] = useState(0);
+    const [totalCharge, setTotalCharge] = useState(0);
+
 
 
     // Page wise data change, `Overall` or `Todaywise`
@@ -144,6 +147,17 @@ const HotelWise = () => {
                 setTotalData(res.total)
                 setData([...res.data])
                 setLoading(false);
+
+                // Set Total for table footer;
+                const { totalEnrolled, totalCharge } = res.data.reduce((acc, i) => {
+                    acc.totalEnrolled += parseInt(i.totalEnrolled);
+                    acc.totalCharge += parseInt(i.totalCharges);
+
+                    return acc;
+                }, { totalEnrolled: 0, totalCharge: 0});
+
+                setTotalEnrolled(totalEnrolled);
+                setTotalCharge(totalCharge);
             }
             setLoading(false);
 
@@ -448,6 +462,15 @@ const HotelWise = () => {
                                             })
                                         }
                                     </tbody>
+                                    {
+                                        allHotel.length > 0 && (
+                                            <tr>
+                                                <td colSpan={7} className="font-semibold text-right text-lg">Total</td>
+                                                <td className="font-semibold text-lg">{totalEnrolled}</td>
+                                                <td className="font-semibold text-lg">{totalCharge}</td>
+                                            </tr>
+                                        )
+                                    }
                                 </table>
                                 {data.length < 1 && <NoData />}
                             </div>

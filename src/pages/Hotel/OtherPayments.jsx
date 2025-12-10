@@ -164,20 +164,29 @@ const OtherPayments = () => {
                         </div>
                         <div className='w-full flex flex-col md:flex-row justify-between gap-4 items-center mt-4'>
                             <div className='w-full mt-3'>
-                                <p>Amount </p>
-                                <input type="text"
-                                    value={filterData.amount}
-                                    onChange={(e) => setFilterData({ ...filterData, amount: e.target.value })}
-                                />
-                            </div>
-                            <div className='w-full mt-3'>
                                 <p>Purpose </p>
                                 <input type="text"
                                     value={filterData.purpose}
                                     onChange={(e) => setFilterData({ ...filterData, purpose: e.target.value })}
                                 />
                             </div>
+                            <div className='w-full mt-3'>
+                                <p>Amount </p>
+                                <input type="text"
+                                    value={filterData.amount}
+                                    onChange={(e) => setFilterData({ ...filterData, amount: e.target.value })}
+                                />
+                            </div>
                         </div>
+                        <div className='flex justify-start gap-2 mt-2'>
+                            <div className='search__sug__badge' onClick={(e) => setFilterData({ ...filterData, purpose: "mismatch"})}>
+                                mismatch
+                            </div>
+                            <div className='search__sug__badge' onClick={(e) => setFilterData({ ...filterData, purpose: "fine"})}>
+                                fine
+                            </div>
+                        </div>
+
 
                         <div className='form__btn__grp'>
                             <button className='reset__btn' onClick={resetFilter}>

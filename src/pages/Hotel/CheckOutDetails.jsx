@@ -22,7 +22,10 @@ const CheckOutDetails = () => {
     const [selectedCheckout, setSelectedCheckout] = useState([]);
     const [checkoutDate, setCheckoutDate] = useState();
     const [checkoutTime, setCheckoutTime] = useState();
+    const [checkinDate, setCheckinDate] = useState();
+    const [checkinTime, setCheckinTime] = useState();
     const hotelToken = Cookies.get("hotel-token");
+    
 
 
 
@@ -51,7 +54,6 @@ const CheckOutDetails = () => {
                 body: JSON.stringify({ bookingId, token: hotelToken }),
             })
             const res = await req.json();
-            console.log(res);
 
             if (req.status === 200) {
                 setLoading(false)
@@ -59,6 +61,9 @@ const CheckOutDetails = () => {
 
                 setCheckoutDate(res[0].booking_details_checkout_date_time.split(" ")[0])
                 setCheckoutTime(res[0].booking_details_checkout_date_time.split(" ")[1])
+                
+                setCheckinDate(res[0].booking_details_checkin_date_time.split(" ")[0])
+                setCheckinTime(res[0].booking_details_checkin_date_time.split(" ")[1])
             }
         })();
     }, [bookingId])
@@ -73,6 +78,29 @@ const CheckOutDetails = () => {
         } else if (!selectedCheckout || selectedCheckout.length < 1) {
             return toast("Please Select Checkout User", "error");
         }
+
+
+        // ==========================[ Check Checkout date ]========================= 
+        // ==========================================================================
+        const checkinDateObj = new Date(checkinDate);
+        const checkoutDateObj = new Date(checkoutDate);
+
+        // --- Extract new checkout time from user input ---
+        const newTime = checkoutTime;               // "HH:MM"
+        const [newH, newM] = newTime.split(":");
+        checkoutDateObj.setHours(newH, newM, 0, 0);
+
+        // --- Build proper check-in datetime (date + time separately) ---
+        const checkinTimePart = checkinTime;          // "HH:MM"
+        const [cH, cM] = checkinTimePart.split(":");
+        checkinDateObj.setHours(cH, cM, 0, 0);
+
+        // --- Validation: checkout must be strictly greater than checkin ---
+        if (checkoutDateObj.getTime() <= checkinDateObj.getTime()) {
+            return toast("You can't checkout earlier or at the same time", "error");
+        }
+
+
 
         try {
             const Url = process.env.REACT_APP_BOOKING_API + "/check-out/guest-checkout";

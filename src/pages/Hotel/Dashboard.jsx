@@ -182,6 +182,13 @@ const Dashboard = () => {
         }
     }
 
+
+    const isCheckoutExpired = (checkoutDateTime) => {
+        const now = new Date();
+        const checkout = new Date(checkoutDateTime);
+        return checkout < now; // true → expired
+    };
+
     return (
         <>
             <Nav title={"Dashboard"} />
@@ -387,7 +394,8 @@ const Dashboard = () => {
                                                             <Icons.PRINTER />
                                                             Print
                                                         </button>
-                                                        <button className='notice__view__btn' onClick={() => {
+                                                        <button className={`notice__view__btn ${isCheckoutExpired(d.booking_details_checkout_date_time) ? "opacity-50 cursor-not-allowed" : ""}`} onClick={() => {
+                                                            if (isCheckoutExpired(d.booking_details_checkout_date_time)) return;
                                                             navigate("/hotel/check-out/details", {
                                                                 state: { bookingId: d.booking_details_booking_id }
                                                             })

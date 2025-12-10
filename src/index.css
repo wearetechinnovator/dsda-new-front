@@ -1387,6 +1387,15 @@ input[type="checkbox"]:checked::before {
   font-weight: 500;
 }
 
+.search__sug__badge{
+  border: 1px dashed lightgrey;
+  border-radius: 30px;
+  padding: 2px 7px;
+  font-size: 12px;
+  cursor: pointer;
+  @apply hover:bg-gray-100
+}
+
 
 
 /* ========================================[RESPONSIVE CODE HERE]====================================== */

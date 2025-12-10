@@ -38,6 +38,7 @@ const DateWise = () => {
     const [startDate, setStartDate] = useState();
     const [endDate, setEndDate] = useState();
     const firstRender = useRef(true); // For don't run useEffect first time;
+    const [totalGuest, setTotalGuest] = useState(0);
 
 
 
@@ -62,10 +63,19 @@ const DateWise = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            console.log(res);
-            setTotalData(res.total)
-            setEnrolledData([...res.data])
-            setLoading(false);
+
+            if (req.status === 200) {
+                setTotalData(res.total)
+                setEnrolledData([...res.data])
+                setLoading(false);
+
+                const totalGuest = res.data.reduce((acc, i) => {
+                    acc = acc + parseInt(i.booking_number_of_guest)
+                    return acc;
+                }, 0);
+                setTotalGuest(totalGuest)
+            }
+
 
         } catch (error) {
             console.log(error);
@@ -208,13 +218,6 @@ const DateWise = () => {
                                 </select>
                             </div>
                             <div className='flex items-center gap-2'>
-                                {/* <div className='flex w-full flex-col lg:w-[300px]'>
-                                    <input type='search'
-                                        placeholder='Search...'
-                                        // onChange={(e) => searchTableDatabase(e.target.value)}
-                                        className='p-[6px]'
-                                    />
-                                </div> */}
                                 <div className='flex justify-end'>
                                     <Whisper placement='leftStart' enterable
                                         speaker={<Popover full>
@@ -319,6 +322,12 @@ const DateWise = () => {
                                         })
                                     }
                                 </tbody>
+                                {enrolledData.length > 0 && <tfoot>
+                                    <tr>
+                                        <td colSpan={2} className="font-semibold text-right text-lg">Total</td>
+                                        <td className="font-semibold text-lg">{totalGuest}</td>
+                                    </tr>
+                                </tfoot>}
                             </table>
                             {enrolledData.length < 1 && <NoData />}
                         </div>

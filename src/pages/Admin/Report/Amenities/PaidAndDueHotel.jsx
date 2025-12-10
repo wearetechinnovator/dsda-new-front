@@ -15,7 +15,6 @@ import NoData from "../../../../components/Admin/NoData";
 
 
 
-
 const PaidAndDueHotel = () => {
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
@@ -74,6 +73,10 @@ const PaidAndDueHotel = () => {
     });
     const [allAmenitiesWithHotel, setAllAmenitesWithHotel] = useState([]);
     const [allHotel, setAllHotel] = useState([]);
+    const [totalEnrolled, setTotalEnrolled] = useState(0);
+    const [totalCharge, setTotalCharge] = useState(0);
+    const [totalPaid, setTotalPaid] = useState(0);
+    const [totalDue, setTotalDue] = useState(0);
 
 
 
@@ -87,12 +90,13 @@ const PaidAndDueHotel = () => {
                     headers: {
                         "Content-Type": 'application/json'
                     },
-                    body: JSON.stringify({ all: true })
+                    body: JSON.stringify({ all: true, token: Cookies.get('hotel-token') })
                 });
                 const res = await req.json();
                 if (req.status !== 200) {
                     return toast(res.err, 'error')
                 }
+
                 setAllAmenitesWithHotel(res);
 
             } catch (error) {
@@ -118,8 +122,19 @@ const PaidAndDueHotel = () => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
-                console.log(res);
-                setAllHotel(res);
+
+                if (req.status === 200) {
+                    setAllHotel(res);
+                    console.log(res);
+
+                    const totalPaid = res.reduce((acc, i) => {
+                        acc += parseInt(i.totalAmenitiesAmount);
+                        return acc;
+                    }, 0);
+
+                    setTotalPaid(totalPaid);
+                }
+
             } catch (error) {
                 console.log(error);
                 return toast("Hotel list not get", "error");
@@ -153,7 +168,19 @@ const PaidAndDueHotel = () => {
                 setTotalData(res.total)
                 setData([...res.data])
                 setLoading(false);
+
+                // Set Total for table footer;
+                const { totalEnrolled, totalCharge } = res.data.reduce((acc, i) => {
+                    acc.totalEnrolled += parseInt(i.totalEnrolled);
+                    acc.totalCharge += parseInt(i.totalCharges);
+
+                    return acc;
+                }, { totalEnrolled: 0, totalCharge: 0 });
+
+                setTotalEnrolled(totalEnrolled);
+                setTotalCharge(totalCharge);
             }
+
             setLoading(false);
 
         } catch (error) {
@@ -395,12 +422,23 @@ const PaidAndDueHotel = () => {
                                                 <td>{d.totalCharges}</td>
                                                 <td>{currentHotel.totalAmenitiesAmount}</td>
                                                 <td>{
-                                                    currentHotel.totalAmenitiesAmount - d.totalCharges 
+                                                    currentHotel.totalAmenitiesAmount - d.totalCharges
                                                 }</td>
                                             </tr>
                                         })
                                     }
                                 </tbody>
+                                {
+                                    allHotel.length > 0 && (
+                                        <tr>
+                                            <td colSpan={7} className="font-semibold text-right text-lg">Total</td>
+                                            <td className="font-semibold text-lg">{totalEnrolled}</td>
+                                            <td className="font-semibold text-lg">{totalCharge}</td>
+                                            <td className="font-semibold text-lg">{totalPaid}</td>
+                                            <td className="font-semibold text-lg">{0}</td>
+                                        </tr>
+                                    )
+                                }
                             </table>
                             {data.length < 1 && <NoData />}
                         </div> : <DataShimmer />}

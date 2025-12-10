@@ -61,6 +61,9 @@ const DateWise = () => {
     })
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const [navTitle, setNavTitle] = useState("")
+    const [totalActiveHotel, setTotalActiveHotel] = useState(0);
+    const [totalGuest, setTotalGuest] = useState(0);
+    const [totalAmount, setTotalAmount] = useState(0);
 
 
     // Page wise data change, `Overall` or `Todaywise`
@@ -100,6 +103,20 @@ const DateWise = () => {
                 setTotalData(res.total)
                 setData([...res.data])
                 setLoading(false);
+
+
+                // Set Total for table footer;
+                const { activeHotel, totalGuest, totalAmount } = res.data.reduce((acc, i) => {
+                    acc.activeHotel += parseInt(i.activeHotelCount);
+                    acc.totalGuest += parseInt(i.totalGuests);
+                    acc.totalAmount += parseInt(i.totalAmount);
+
+                    return acc;
+                }, { activeHotel: 0, totalGuest: 0, totalAmount: 0 });
+
+                setTotalActiveHotel(activeHotel);
+                setTotalGuest(totalGuest);
+                setTotalAmount(totalAmount);
 
             } else {
                 setLoading(false);
@@ -150,7 +167,7 @@ const DateWise = () => {
             }
 
         }, 300)
-        
+
     }
 
 
@@ -346,6 +363,14 @@ const DateWise = () => {
                                         })
                                     }
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colSpan={2} className="font-semibold text-right text-lg">Total</td>
+                                        <td className="font-semibold text-lg">{totalActiveHotel}</td>
+                                        <td className="font-semibold text-lg">{totalGuest}</td>
+                                        <td className="font-semibold text-lg">{totalAmount}</td>
+                                    </tr>
+                                </tfoot>
                             </table>
                             {data.length < 1 && <NoData />}
                         </div> : <DataShimmer />}

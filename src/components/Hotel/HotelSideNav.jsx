@@ -87,11 +87,10 @@ const SideNav = () => {
       {/* Contact Info */}
       <div
         className="text-[12px] w-full p-2 flex items-center gap-1 text-white cursor-pointer absolute left-0 bottom-0 border-t border-[#ffffff25]"
-        onClick={() => window.location.href = 'tel:7501295001'}
       >
         <Icons.CALL className="bg-[#003254] w-[25px] h-[25px] rounded-full p-1" />
         <span>Helpline:</span>
-        <span>7501295001</span>
+        <span onClick={() => window.location.href = 'tel:7501295001'}>7501295001</span>
       </div>
     </aside>
   );

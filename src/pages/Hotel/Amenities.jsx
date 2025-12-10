@@ -16,6 +16,8 @@ import DataShimmer from '../../components/Admin/DataShimmer';
 
 
 
+
+
 const Amenities = () => {
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
@@ -65,8 +67,11 @@ const Amenities = () => {
     const timeRef = useRef(null);
     const hotelId = Cookies.get('hotelId');
     const token = Cookies.get('hotel-token');
-    
+    const [totalGuest, setTotalGuest] = useState(0);
+    const [totalAmount, setTotalAmount] = useState(0);
 
+
+    
 
 
     // Get Statictics Data;
@@ -79,7 +84,7 @@ const Amenities = () => {
                 fetch(url, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ hotelId, token  })
+                    body: JSON.stringify({ hotelId, token })
                 }).then(res => res.json()),
 
                 fetch(url2, {
@@ -90,12 +95,12 @@ const Amenities = () => {
             ])
 
             // if (req.status === 200) {
-                setStaticticsData({
-                    ...staticticData,
-                    totalAminity: res.totalAminity,
-                    todayAminity: res.todayAminity,
-                    totalPayment: res2[0]?.totalAmount || 0,
-                })
+            setStaticticsData({
+                ...staticticData,
+                totalAminity: res.totalAminity,
+                todayAminity: res.todayAminity,
+                totalPayment: res2[0]?.totalAmount || 0,
+            })
             // }
 
         })()
@@ -135,13 +140,21 @@ const Amenities = () => {
                 setData([...res.data])
                 setLoading(false);
 
+                const { totalGuest, totalAmount } = res.data.reduce((acc, item) => {
+                    acc.totalGuest += item.totalGuests;
+                    acc.totalAmount += item.totalAmount;
+                    return acc;
+
+                }, { totalGuest: 0, totalAmount: 0 });
+
+                setTotalGuest(totalGuest);
+                setTotalAmount(totalAmount);
             } else {
                 setLoading(false);
                 return toast("Hotel data not load", 'error')
             }
 
         } catch (error) {
-            console.log(error)
             return toast("Hotel data not load", 'error')
         }
     }
@@ -179,7 +192,8 @@ const Amenities = () => {
                 }
 
             } catch (error) {
-                console.log(error)
+                console.log(error);
+                return toast("Search error", 'error')
             }
 
         }, 300)
@@ -416,6 +430,17 @@ const Amenities = () => {
                                         })
                                     }
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colSpan={2} className='font-semibold text-right'>Total</td>
+                                        <td className='text-lg font-semibold'>
+                                            {totalGuest}
+                                        </td>
+                                        <td className='text-lg font-semibold'>
+                                            {totalAmount}
+                                        </td>
+                                    </tr>
+                                </tfoot>
                             </table>
                             {data.length < 1 && <NoData />}
                         </div> : <DataShimmer />}
