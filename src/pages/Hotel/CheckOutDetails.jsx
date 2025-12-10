@@ -25,6 +25,7 @@ const CheckOutDetails = () => {
     const hotelToken = Cookies.get("hotel-token");
 
 
+
     // Get Checkin Checkout date from setting;
     useEffect(() => {
         if (settingDetails?.day_for_checkin_checkout) {
@@ -50,9 +51,14 @@ const CheckOutDetails = () => {
                 body: JSON.stringify({ bookingId, token: hotelToken }),
             })
             const res = await req.json();
+            console.log(res);
+
             if (req.status === 200) {
                 setLoading(false)
                 setBookingDetails([...res]);
+
+                setCheckoutDate(res[0].booking_details_checkout_date_time.split(" ")[0])
+                setCheckoutTime(res[0].booking_details_checkout_date_time.split(" ")[1])
             }
         })();
     }, [bookingId])
