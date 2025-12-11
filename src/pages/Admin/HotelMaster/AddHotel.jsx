@@ -47,6 +47,8 @@ const AddHotel = ({ mode }) => {
   })
   const [roomTypeData, setRoomTypeData] = useState([roomTypeSet]);
 
+  const [showPass, setShowPass] = useState(false);
+
 
 
   useEffect(() => {
@@ -166,7 +168,7 @@ const AddHotel = ({ mode }) => {
     ];
 
     for (const key of requiredKeys) {
-      if (!data[key] || data[key].trim() === "") {
+      if (!data[key] || data[key]?.trim() === "") {
         return toast(`${key.camelToWords()} can't be blank`, 'error');
       }
     }
@@ -286,7 +288,6 @@ const AddHotel = ({ mode }) => {
                   <MySelect2
                     model={"zone"}
                     onType={(v) => {
-                      console.log(v)
                       setData({ ...data, zone: v })
                     }}
                     value={data.zone}
@@ -310,7 +311,6 @@ const AddHotel = ({ mode }) => {
                   <MySelect2
                     model={"sector"}
                     onType={(v) => {
-                      console.log(v)
                       setData({ ...data, sector: v })
                     }}
                     value={data.sector}
@@ -321,7 +321,6 @@ const AddHotel = ({ mode }) => {
                   <MySelect2
                     model={"block"}
                     onType={(v) => {
-                      console.log(v)
                       setData({ ...data, block: v })
                     }}
                     value={data.block}
@@ -332,7 +331,6 @@ const AddHotel = ({ mode }) => {
                   <MySelect2
                     model={"district"}
                     onType={(v) => {
-                      console.log(v)
                       setData({ ...data, district: v })
                     }}
                     value={data.district}
@@ -343,7 +341,6 @@ const AddHotel = ({ mode }) => {
                   <MySelect2
                     model={"police-station"}
                     onType={(v) => {
-                      console.log(v)
                       setData({ ...data, policeStation: v })
                     }}
                     value={data.policeStation}
@@ -378,10 +375,25 @@ const AddHotel = ({ mode }) => {
                 </div>
                 <div>
                   <p>Password<span className='required__text'>*</span></p>
-                  <input type='password' onChange={(e) => setData({ ...data, password: e.target.value })}
-                    value={data.password}
-                    autoComplete='off'
-                  />
+                  <div className='relative'>
+                    <input type={showPass ? 'text' : 'password'}
+                      onChange={(e) => setData({ ...data, password: e.target.value })}
+                      value={data.password}
+                      autoComplete='off'
+                    />
+                    {showPass ? (
+                      <Icons.EYE
+                        onClick={() => setShowPass(false)}
+                        className='absolute right-[9px] top-[11px] cursor-pointer'
+                      />
+                    ) : (
+                      <Icons.EYE_CLOSE
+                        onClick={() => setShowPass(true)}
+                        className='absolute right-[9px] top-[11px] cursor-pointer'
+                      />
+                    )}
+
+                  </div>
                 </div>
               </div>
 

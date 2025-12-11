@@ -61,7 +61,7 @@ const Hotelmaster = ({ mode }) => {
                 limit: dataLimit,
                 hotelStatus: filterData
             };
-            console.log(JSON.stringify(data));
+            
             setFilterState("Hotelmaster", dataLimit, activePage);
             const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
             const req = await fetch(url, {
