@@ -152,6 +152,7 @@ const TouristData = () => {
                 hotelName: hotelDetails?.hotel_name,
                 headGuest: res.booking_head_guest_name,
                 checkIn: res.booking_checkin_date_time,
+                checkOut: res.booking_checkout_date_time,
                 guests: res.booking_number_of_guest,
                 totalAmount: res.booking_bill_amount,
             }

@@ -44,6 +44,8 @@ import { IoIosMale } from "react-icons/io";
 import { IoFemaleOutline } from "react-icons/io5";
 import { FaTransgender } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa6";
+import { MdOutlineBedroomParent } from "react-icons/md";
+import { RiHotelLine } from "react-icons/ri";
 
 
 
@@ -106,7 +108,9 @@ export const Icons = {
   ADMIN_USER: FaUserTie,
   TABLE: FiTable,
   CHILD: FaChildReaching,
-  USER_FILL: FaUser
+  USER_FILL: FaUser,
+  ROOM_TYPE_ICON: MdOutlineBedroomParent,
+  HOTEL_CATEGORY: RiHotelLine
   
 };
 

@@ -76,7 +76,25 @@ const SideNav = () => {
               </ul>
             </li>
 
-            <li className={activePath.includes("/admin/hotel") ? "active__link" : ""}>
+            <li className={activePath.includes("/admin/room-type") ? "active__link" : ""}>
+              <Link to="/admin/room-type" data-tooltip-id="sideBarItemToolTip">
+                <div className={`flex items-center`}>
+                  <span className="mr-1"><Icons.ROOM_TYPE_ICON /></span>
+                  <span>Room Type</span>
+                </div>
+              </Link>
+            </li>
+             <li className={activePath.includes("/admin/hotel-category") ? "active__link" : ""}>
+              <Link to="/admin/hotel-category" data-tooltip-id="sideBarItemToolTip">
+                <div className={`flex items-center`}>
+                  <span className="mr-1"><Icons.HOTEL_CATEGORY /></span>
+                  <span>Hotel Category</span>
+                </div>
+              </Link>
+            </li>
+
+
+            <li className={(activePath.includes("/admin/hotel") && !activePath.includes("/admin/hotel-category")) ? "active__link" : ""}>
               <Link to="/admin/hotel" data-tooltip-id="sideBarItemToolTip">
                 <div className={`flex items-center`}>
                   <span className="mr-1"><Icons.HOTEL /></span>

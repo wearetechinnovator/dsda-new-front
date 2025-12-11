@@ -45,6 +45,10 @@ const OtherPaymentAdd = React.lazy(() => import("./pages/Admin/OtherPayment/Othe
 const OverallDateWise = React.lazy(() => import("./pages/Admin/Report/Amenities/DateWise"));
 const HotelWise = React.lazy(() => import("./pages/Admin/Report/Amenities/HotelWise"));
 const PaidAndDueHotel = React.lazy(() => import("./pages/Admin/Report/Amenities/PaidAndDueHotel"));
+const RoomType = React.lazy(() => import("./pages/Admin/RoomType/RoomType"));
+const AddRoomType = React.lazy(() => import("./pages/Admin/RoomType/AddRoomType"));
+const HotelCategory = React.lazy(() => import("./pages/Admin/HotelCategory/HotelCategory"));
+const AddHotelCategory = React.lazy(() => import("./pages/Admin/HotelCategory/AddHotelCategory"));
 
 
 // Hotel Dashboard
@@ -110,6 +114,16 @@ const App = () => {
           <Route path="hotel" element={<Hotelmaster />} />
           <Route path="hotel/add" element={<AddHotel />} />
           <Route path="hotel/edit/:id" element={<AddHotel mode="edit" />} />
+
+          {/* Room type Routes */}
+          <Route path="room-type" element={<RoomType />} />
+          <Route path="room-type/add" element={<AddRoomType />} />
+          <Route path="room-type/edit/:id" element={<AddRoomType mode="edit" />} />
+
+          {/* hotel category Routes */}
+          <Route path="hotel-category" element={<HotelCategory />} />
+          <Route path="hotel-category/add" element={<AddHotelCategory />} />
+          <Route path="hotel-category/edit/:id" element={<AddHotelCategory mode="edit" />} />
 
           {/* District */}
           <Route path="district" element={< District />} />
