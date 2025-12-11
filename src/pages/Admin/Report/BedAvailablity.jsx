@@ -63,6 +63,9 @@ const BedAvailablity = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
+
+            console.log(res);
+            
             setTotalData(res.total)
             setData([...res.data])
             setHotelList([...res.data]);

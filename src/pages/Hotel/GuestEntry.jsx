@@ -109,7 +109,6 @@ const GuestEntry = () => {
             allGuestList[index].allDistrict = [];
             setGuestList(allGuestList);
         }
-
     }
 
 

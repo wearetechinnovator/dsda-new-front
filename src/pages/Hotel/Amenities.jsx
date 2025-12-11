@@ -1,10 +1,10 @@
 import Nav from '../../components/Hotel/Nav';
 import SideNav from '../../components/Hotel/HotelSideNav'
 import { Icons } from '../../helper/icons';
-import { use, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useSearchTable from '../../hooks/useSearchTable';
-import { Placeholder, Popover, SelectPicker, Whisper } from 'rsuite';
+import { Popover, SelectPicker, Whisper } from 'rsuite';
 import downloadPdf from '../../helper/downloadPdf';
 import useExportTable from '../../hooks/useExportTable';
 import useMyToaster from '../../hooks/useMyToaster';
@@ -30,8 +30,10 @@ const Amenities = () => {
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return data && data.map(({ name }, _) => ({
-            Name: name,
+        return data && data.map((a, _) => ({
+            Date: a.date,
+            "Total Guest(s) Enrolled": a.totalGuests,
+            "Total Charges (₹)": a.totalAmount
         }));
     }, [data]);
     const [loading, setLoading] = useState(true);
@@ -235,13 +237,13 @@ const Amenities = () => {
             copyTable("table"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'tourist-data.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'amenities-data.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Tourist Data"); // Pass table ref and title
+            printTable(tableRef, "Amenities Data"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Tourist Data', exportData);
+            let document = exportPdf('Amenities Data', exportData);
             downloadPdf(document)
         }
     }

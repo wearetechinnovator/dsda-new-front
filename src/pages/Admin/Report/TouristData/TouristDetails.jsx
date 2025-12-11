@@ -373,10 +373,11 @@ const TouristData = () => {
                                                     <td className='w-[5%]' align='center'>DOB</td>
                                                     <td>Age</td>
                                                     <td className='w-[4%]'>Nationality</td>
-                                                    <td>Register Guest Details</td>
+                                                    {/* <td>Register Guest Details</td> */}
                                                     <td className='w-[5%]'>ID Card</td>
                                                     <td className='w-[3%]'>ID Proof</td>
                                                     <td>Mobile</td>
+                                                     <td>Room No.</td>
                                                     <td>Check In Date & Time</td>
                                                     <td>Check Out Date & Time</td>
                                                     <td align='center'>Verified By</td>
@@ -404,7 +405,6 @@ const TouristData = () => {
                                                             <td align='center'>
                                                                 <Avatar
                                                                     circle
-                                                                    bordered
                                                                     src={process.env.REACT_APP_BOOKING_API + "/upload/" + d.booking_details_guest_photo}
                                                                     size={'sm'}
                                                                 />
@@ -413,18 +413,18 @@ const TouristData = () => {
                                                             <td>{d.booking_details_guest_dob || "-"}</td>
                                                             <td>{d.booking_details_guest_age}</td>
                                                             <td>{d.booking_details_guest_nationality === "india" ? "Indian" : d.booking_details_guest_nationality === "foreign" ? "Foreigner" : ""}</td>
-                                                            <td>
+                                                            {/* <td>
                                                                 {d.booking_details_guest_name}
                                                                 <br />
                                                                 (Mobile: {d.booking_details_guest_phone})
-                                                            </td>
+                                                            </td> */}
                                                             <td>
                                                                 {d.booking_details_guest_id_type} - {d.booking_details_guest_id_number}
                                                             </td>
                                                             <td align='center'>
                                                                 {d.booking_details_guest_id_proof ?
                                                                     <a href={process.env.REACT_APP_BOOKING_API + "/upload/" + d.booking_details_guest_id_proof} download={''}>
-                                                                        <span className='chip chip__green cursor-pointer'>
+                                                                        <span className='chip chip__blue cursor-pointer'>
                                                                             <Icons.DOWNLOAD />
                                                                         </span>
                                                                     </a>
@@ -432,6 +432,7 @@ const TouristData = () => {
                                                                 }
                                                             </td>
                                                             <td>{d.booking_details_guest_phone}</td>
+                                                            <td align='center'>{d.booking_details_room_no || "-"}</td>
                                                             <td>{d.booking_details_checkin_date_time}</td>
                                                             <td>{d.booking_details_checkout_date_time || '--'}</td>
                                                             <td>

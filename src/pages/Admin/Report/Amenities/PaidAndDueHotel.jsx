@@ -71,39 +71,12 @@ const PaidAndDueHotel = () => {
         const year = 2000 + i;
         return { label: year.toString(), value: year.toString() };
     });
-    const [allAmenitiesWithHotel, setAllAmenitesWithHotel] = useState([]);
     const [allHotel, setAllHotel] = useState([]);
     const [totalEnrolled, setTotalEnrolled] = useState(0);
     const [totalCharge, setTotalCharge] = useState(0);
     const [totalPaid, setTotalPaid] = useState(0);
     const [totalDue, setTotalDue] = useState(0);
 
-
-
-    // Get All Amenites with hotel populate;
-    useEffect(() => {
-        (async () => {
-            try {
-                const url = process.env.REACT_APP_MASTER_API + `/amenities/get-amenities`;
-                const req = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": 'application/json'
-                    },
-                    body: JSON.stringify({ all: true, token: Cookies.get('hotel-token') })
-                });
-                const res = await req.json();
-                if (req.status !== 200) {
-                    return toast(res.err, 'error')
-                }
-
-                setAllAmenitesWithHotel(res);
-
-            } catch (error) {
-                return toast("Amenities data not load", 'error')
-            }
-        })()
-    }, [])
 
 
     // Get All Hotels;
@@ -421,9 +394,7 @@ const PaidAndDueHotel = () => {
                                                 <td>{d.totalEnrolled}</td>
                                                 <td>{d.totalCharges}</td>
                                                 <td>{currentHotel.totalAmenitiesAmount}</td>
-                                                <td>{
-                                                    currentHotel.totalAmenitiesAmount - d.totalCharges
-                                                }</td>
+                                                <td>{currentHotel.totalAmenitiesAmount - d.totalCharges}</td>
                                             </tr>
                                         })
                                     }
