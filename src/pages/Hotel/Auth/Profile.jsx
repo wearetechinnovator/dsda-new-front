@@ -53,6 +53,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (hotelData && hotelData.hotel_gallery_image && hotelData.hotel_room_type && hotelData.hotel_document) {
+      console.log(hotelData.hotel_gallery_image);
       setPhotoGallery(hotelData.hotel_gallery_image);
       setRoomTypeData(hotelData.hotel_room_type);
       setDocumentData(hotelData.hotel_document);
@@ -644,9 +645,11 @@ const Profile = () => {
                             type="text"
                             value={photoGallery[index].caption}
                             onChange={(e) => {
-                              let temp = [...photoGallery];
-                              temp[index].caption = e.target.value;
-                              setPhotoGallery(temp);
+                              setPhotoGallery(prev => {
+                                const updated = [...prev];
+                                updated[index] = { ...prev[index], caption: e.target.value }; // deep clone object
+                                return updated;
+                              });
                             }}
                           />
                         </td>
