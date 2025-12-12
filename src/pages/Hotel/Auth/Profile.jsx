@@ -149,7 +149,7 @@ const Profile = () => {
   const saveData = async (e) => {
     const requiredKeys = [
       'zone', 'sector', 'block', 'district', 'policeStation',
-      'name', 'address', 'username', 'password', 'managerPhone'
+      'name', 'address', 'username', 'managerPhone'
     ];
 
     for (const key of requiredKeys) {
@@ -158,7 +158,14 @@ const Profile = () => {
       }
     }
 
-    const allData = { ...data, ...bedCapacity, photoGallery, documentData, roomTypeData };
+    const allData = {
+      ...data,
+      ...bedCapacity,
+      photoGallery,
+      documentData,
+      roomTypeData,
+      hotelUpdate: true
+    };
 
     try {
       const url = process.env.REACT_APP_MASTER_API + "/hotel/update";
