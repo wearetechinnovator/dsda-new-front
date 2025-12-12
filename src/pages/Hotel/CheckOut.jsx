@@ -119,13 +119,13 @@ const CheckOut = () => {
             copyTable("table"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'block-list.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'head-guest-list.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Block List"); // Pass table ref and title
+            printTable(tableRef, "Head Guest List"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Block List', exportData);
+            let document = exportPdf('Head Guest List', exportData);
             downloadPdf(document)
         }
     }

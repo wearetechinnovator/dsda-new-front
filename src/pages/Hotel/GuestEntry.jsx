@@ -120,11 +120,11 @@ const GuestEntry = () => {
             "checkInDate": "Check in Date", "checkInTime": "Check in Time",
             "checkoutDate": " Check out Date", "checkoutTime": " Check out Time"
         }
-        // for (const [key, label] of Object.entries(checkInKeys)) {
-        //     if (!checkInDetails[key] || checkInDetails[key].trim() === "") {
-        //         return toast(`${label} is required`, "error");
-        //     }
-        // }
+        for (const [key, label] of Object.entries(checkInKeys)) {
+            if (!checkInDetails[key] || checkInDetails[key].trim() === "") {
+                return toast(`${label} is required`, "error");
+            }
+        }
 
         let newGuestErrors = [];
         for (let i = 0; i < guestList.length; i++) {

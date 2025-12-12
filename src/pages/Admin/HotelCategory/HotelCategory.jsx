@@ -95,6 +95,7 @@ const HotelCategory = () => {
 					body: JSON.stringify(data)
 				});
 				const res = await req.json();
+				console.log(res);
 				setTotalData(res.length)
 				setData([...res])
 

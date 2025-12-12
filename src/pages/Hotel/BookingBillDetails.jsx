@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import useMyToaster from '../../hooks/useMyToaster';
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
+import Loading from '../../components/Admin/Loading';
 
 
 const BookingBillDetails = () => {
@@ -15,6 +16,10 @@ const BookingBillDetails = () => {
     const settingDetails = useSelector((store) => store.settingSlice);
     const hotelDetails = useSelector((store) => store.hotelDetails);
     const [totalFees, setTotalFees] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+
+
 
     useEffect(() => {
         let totalFee = 0;
@@ -28,6 +33,7 @@ const BookingBillDetails = () => {
 
     const handleFinalSubmit = async () => {
         try {
+            setLoading(true)
             const Url = process.env.REACT_APP_BOOKING_API + "/check-in/add-booking";
             const req = await fetch(Url, {
                 method: "POST",
@@ -38,6 +44,8 @@ const BookingBillDetails = () => {
             })
 
             const res = await req.json();
+            setLoading(false);
+
             if (req.status === 200) {
                 toast("Guest entry successfully", "success");
                 navigate("/hotel/check-in/guest-entry/bill-details/print", {
@@ -52,9 +60,11 @@ const BookingBillDetails = () => {
                     }
                 })
             } else {
+                setLoading(false);
                 toast(res.err, "error");
             }
         } catch (error) {
+            setLoading(false);
             console.log(error);
             toast("Something went wrong", "error");
         }
@@ -134,9 +144,10 @@ const BookingBillDetails = () => {
                                     Edit Guest List
                                 </button>
                                 <button
-                                    onClick={handleFinalSubmit}
+                                    disabled={loading ? true : false}
+                                    onClick={loading ? null : handleFinalSubmit}
                                     className='bg-[#32C5D2] hover:bg-[#43e0ee] px-3 py-2 rounded flex items-center gap-1'>
-                                    <Icons.CHECK2 />
+                                    {loading ? <Loading /> : <Icons.CHECK2 />}
                                     Final Submit
                                 </button>
                             </div>

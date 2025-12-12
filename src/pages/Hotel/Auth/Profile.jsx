@@ -53,7 +53,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (hotelData && hotelData.hotel_gallery_image && hotelData.hotel_room_type && hotelData.hotel_document) {
-      console.log(hotelData.hotel_gallery_image);
+      
       setPhotoGallery(hotelData.hotel_gallery_image);
       setRoomTypeData(hotelData.hotel_room_type);
       setDocumentData(hotelData.hotel_document);
@@ -62,7 +62,7 @@ const Profile = () => {
         zone: hotelData.hotel_zone_id?.name || "",
         sector: hotelData.hotel_sector_id?.name || "",
         block: hotelData.hotel_block_id?.name || "",
-        category: hotelData.hotel_category?.name || "",
+        category: hotelData.hotel_category?.hotel_category_name || "",
         district: hotelData.hotel_district_id?.name || "",
         policeStation: hotelData.hotel_police_station_id?.name || "",
 

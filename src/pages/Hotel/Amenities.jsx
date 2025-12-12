@@ -17,7 +17,6 @@ import DataShimmer from '../../components/Admin/DataShimmer';
 
 
 
-
 const Amenities = () => {
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
@@ -125,7 +124,7 @@ const Amenities = () => {
                 limit: dataLimit,
                 startDate,
                 endDate,
-                // hotelId: Cookies.get("hotelId")
+                hotelId: Cookies.get("hotelId")
             }
             setFilterState("amenities", dataLimit, activePage);
             const url = process.env.REACT_APP_BOOKING_API + `/check-in/get-booking-summary-by-daterange`;
@@ -364,8 +363,8 @@ const Amenities = () => {
                                 <div className='flex items-center gap-2'>
                                     <div className='flex w-full flex-col lg:w-[300px]'>
                                         <input type='search'
-                                            placeholder='Search Transaction ID'
-                                            onChange={(e) => searchTableDatabase(e.target.value, "hotel")}
+                                            placeholder='Search Date'
+                                            onChange={(e) => searchTable(e)}
                                             className='p-[6px]'
                                         />
                                     </div>
