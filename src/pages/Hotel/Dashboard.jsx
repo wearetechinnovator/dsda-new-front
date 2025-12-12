@@ -72,6 +72,7 @@ const Dashboard = () => {
                     head: true, // Get head guest,
                     room: quickSearchFields.roomNo,
                     mobile: quickSearchFields.mobileNo,
+                    hotelId: Cookies.get("hotelId")
                 }
                 setFilterState("dashboard", dataLimit, activePage);
 

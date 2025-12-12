@@ -78,7 +78,7 @@ const Dashboard = () => {
       const res = await req.json();
 
       if (req.status === 200) {
-        console.log(res.data);
+        
         setTotalData(res.total)
         setData([...res.data])
         setLoading(false);

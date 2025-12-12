@@ -175,10 +175,10 @@ const SideNav = () => {
                   <Link to="/admin/report/tourist-data/footfall-hotel">Date Wise</Link>
                 </li>
                 <li className={activePath.endsWith("/admin/report/tourist-data/footfall-hotel/today") ? "active__link" : ""}>
-                  <Link to="/admin/report/tourist-data/footfall-hotel/today">Today Hotel Wise</Link>
+                  <a href="/admin/report/tourist-data/footfall-hotel/today">Today Hotel Wise</a>
                 </li>
                 <li className={activePath.endsWith("/admin/report/tourist-data/footfall") ? "active__link" : ""}>
-                  <Link to="/admin/report/tourist-data/footfall">Overall</Link>
+                  <a href="/admin/report/tourist-data/footfall">Overall</a>
                 </li>
                 <li className={activePath.endsWith("/admin/report/tourist-data/tourist-details") ? "active__link" : ""}>
                   <Link to="/admin/report/tourist-data/tourist-details">Tourist Details</Link>

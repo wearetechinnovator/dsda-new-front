@@ -65,7 +65,8 @@ const CheckOut = () => {
                 room: quickSearchFields.roomNo,
                 mobile: quickSearchFields.mobileNo,
                 fromDate: quickSearchFields.fromDate,
-                toDate: quickSearchFields.toDate
+                toDate: quickSearchFields.toDate,
+                hotelId: Cookies.get("hotelId")
             }
             setFilterState("checkout", dataLimit, activePage);
 

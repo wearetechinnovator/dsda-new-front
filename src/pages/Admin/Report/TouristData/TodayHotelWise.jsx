@@ -107,7 +107,7 @@ const TodayHotelWise = () => {
                 startDate: selectedFilters.startDate,
                 endDate: selectedFilters.endDate
             }
-            console.log(data);
+
             setFilterState("todayhotel-wise", dataLimit, activePage);
             const url = process.env.REACT_APP_BOOKING_API + `/check-in/tourist-data/footfall-daywise`;
             const req = await fetch(url, {
@@ -118,10 +118,11 @@ const TodayHotelWise = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            console.log(res.data);
+            
             if (req.status === 200) {
                 setTotalData(res.total)
                 setData([...res.data])
+                console.log(res)
                 setLoading(false);
 
                 let totalmale = 0;

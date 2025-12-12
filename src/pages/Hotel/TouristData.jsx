@@ -66,7 +66,8 @@ const TouristData = () => {
                 mobile: quickSearchFields.mobileNo,
                 fromDate: quickSearchFields.fromDate || firstDay,
                 toDate: quickSearchFields.toDate || lastDay,
-                guestName: quickSearchFields.guestName
+                guestName: quickSearchFields.guestName,
+                hotelId: Cookies.get("hotelId")
             }
             setFilterState("touristData", dataLimit, activePage);
 
@@ -313,6 +314,10 @@ const TouristData = () => {
                                                     <td className='w-[12%]'>DOB</td>
                                                     <td className='w-[4%]'>Age</td>
                                                     <td className='w-[4%]'>Nationality</td>
+                                                    <td className='w-[4%]'>Country</td>
+                                                    <td className='w-[4%]'>State</td>
+                                                    <td className='w-[4%]'>District</td>
+                                                    <td className='w-[4%]'>Address</td>
                                                     {/* <td className='w-[12%]'>Register Guest Details</td> */}
                                                     <td className='w-[8%]'>ID Card</td>
                                                     <td className='w-[3%]'>ID Proof</td>
@@ -351,6 +356,10 @@ const TouristData = () => {
                                                             <td>{d.booking_details_guest_dob || "-"}</td>
                                                             <td>{d.booking_details_guest_age || "-"}</td>
                                                             <td>{d.booking_details_guest_nationality === "india" ? "Indian" : d.booking_details_guest_nationality === "foreign" ? "Foreigner" : ""}</td>
+                                                            <td>{d.booking_details_guest_country || "-"}</td>
+                                                            <td>{d.booking_details_guest_state || "-"}</td>
+                                                            <td>{d.booking_details_guest_district || "-"}</td>
+                                                            <td>{d.booking_details_guest_address || "-"}</td>
                                                             {/* <td>
                                                                 {d.booking_details_guest_name}
                                                                 <br />

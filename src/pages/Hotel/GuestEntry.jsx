@@ -145,17 +145,27 @@ const GuestEntry = () => {
                     if (!guest.district) errors.district = true;
                     if (!guest.address) errors.address = true;
                 } else {
+                    if (!guest.country) errors.country = true;
                     if (!guest.address) errors.address = true;
                 }
 
                 // if (!guest.idProof) errors.idProof = true;
                 // if (!guest.mobileNumbe) errors.mobileNumbe = true;
                 if (!guest.roomNumber) errors.roomNumber = true;
-            } else {
+            }
+            else {
                 // Other guests: only name, gender, and age required
                 if (!guest.guestName) errors.guestName = true;
                 if (!guest.gender) errors.gender = true;
                 if (!guest.age) errors.age = true;
+                if (guest.nationality === "india") {
+                    if (!guest.state) errors.state = true;
+                    if (!guest.district) errors.district = true;
+                    if (!guest.address) errors.address = true;
+                } else {
+                    if (!guest.country) errors.country = true;
+                    if (!guest.address) errors.address = true;
+                }
             }
 
             newGuestErrors[i] = errors;
@@ -416,10 +426,10 @@ const GuestEntry = () => {
                                                             });
                                                         }}>
                                                         <option value="">--Select--</option>
-                                                        <option value="male">Male</option>
-                                                        <option value="female">Female</option>
-                                                        <option value="transgender">Transgender</option>
-                                                        <option value="others">Others</option>
+                                                        <option value="Male">Male</option>
+                                                        <option value="Female">Female</option>
+                                                        <option value="Transgender">Transgender</option>
+                                                        <option value="Others">Others</option>
                                                     </select>
                                                     {guestErrors[index]?.gender && (
                                                         <span className="required">*This fields is required</span>
@@ -564,6 +574,13 @@ const GuestEntry = () => {
                                                                         const updatedList = [...guestList];
                                                                         updatedList[index].country = v;
                                                                         setGuestList(updatedList);
+
+
+                                                                        setGuestErrors((prev) => {
+                                                                            const newErrors = [...prev];
+                                                                            if (newErrors[index]) delete newErrors[index].country;
+                                                                            return newErrors;
+                                                                        });
                                                                     }}
                                                                     placeholder="Select Country"
                                                                     searchable
@@ -742,7 +759,7 @@ const GuestEntry = () => {
                         </div>
                         {/* ============================== TABLE END HERE ====================== */}
                         <div className='form__btn__grp mt-5'>
-                            <button className='reset__btn' onClick={clearData}>
+                            <button className='reset__btn' onClick={()=>window.location.reload()}>
                                 <Icons.RESET />
                                 Reset
                             </button>

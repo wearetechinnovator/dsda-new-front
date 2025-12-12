@@ -36,11 +36,9 @@ const OtherPaymentList = ({ mode }) => {
 			"Amount": d.other_payment_amount,
 			"Purpose": d.other_payment_purpose,
 			"Status": d.other_payment_payment_init === "1" ? (d.other_payment_payment_status == "0" ?
-				<span className='chip chip__red'>Failed</span> :
+				'Failed' :
 				(d.other_payment_payment_status == "1" ?
-					<span className='chip chip__green'>Success</span> :
-					<span className='chip chip__yellow'>Processing</span>)) :
-				<span className='chip chip__grey'>Payment Not initiated</span>,
+					'Success' : 'Processing')) : 'Payment Not initiated',
 			"Ref. ID": d.other_payment_payment_ref_no,
 		}));
 	}, [data]);
@@ -109,7 +107,7 @@ const OtherPaymentList = ({ mode }) => {
 					body: JSON.stringify(data)
 				});
 				const res = await req.json();
-				console.log(res)
+				
 				setTotalData(res.length)
 				setData([...res])
 

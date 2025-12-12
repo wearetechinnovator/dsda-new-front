@@ -434,7 +434,7 @@ const HotelWise = () => {
                                     <thead className='bg-gray-100 list__table__head'>
                                         <tr>
                                             <td>Sl.</td>
-                                            <td className=''>Name</td>
+                                            <td className=''>Hotel Name</td>
                                             <td className=''>Zone</td>
                                             <td className=' '>Sector</td>
                                             <td className=''>Block</td>

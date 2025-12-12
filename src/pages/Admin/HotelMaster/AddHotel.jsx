@@ -164,11 +164,14 @@ const AddHotel = ({ mode }) => {
   const saveData = async (e) => {
     const requiredKeys = [
       'zone', 'sector', 'block', 'district', 'policeStation',
-      'name', 'address', 'username', 'password', 'managerPhone'
+      'name', 'address', 'username', 'managerPhone'
     ];
+    if (!mode) requiredKeys.push('password');
+
 
     for (const key of requiredKeys) {
-      if (!data[key] || data[key]?.trim() === "") {
+      console.log(data[key])
+      if (!data[key] || data[key] === "") {
         return toast(`${key.camelToWords()} can't be blank`, 'error');
       }
     }
@@ -392,7 +395,6 @@ const AddHotel = ({ mode }) => {
                         className='absolute right-[9px] top-[11px] cursor-pointer'
                       />
                     )}
-
                   </div>
                 </div>
               </div>

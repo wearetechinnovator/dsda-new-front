@@ -40,6 +40,7 @@ const BedAvailablity = () => {
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [hotelList, setHotelList] = useState([]);
     const [bedStatus, setBedStatus] = useState('all')
+    const [totalBed, setTotalBed] = useState()
 
 
 
