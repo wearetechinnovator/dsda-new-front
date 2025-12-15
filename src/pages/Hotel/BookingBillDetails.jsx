@@ -65,7 +65,7 @@ const BookingBillDetails = () => {
             }
         } catch (error) {
             setLoading(false);
-            console.log(error);
+             
             toast("Something went wrong", "error");
         }
     }

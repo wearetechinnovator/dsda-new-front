@@ -50,7 +50,7 @@ const MailModal = ({ open, pdf, email }) => {
             return toast("Email sent successfully", "success");
 
         } catch (error) {
-            console.log(error)
+             
             setLoading(false)
             toast("Mail not send", 'error')
         }

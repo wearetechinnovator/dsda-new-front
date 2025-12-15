@@ -66,7 +66,7 @@ const Block = () => {
 			setLoading(false);
 
 		} catch (error) {
-			console.log(error)
+			 
 		}
 	}
 	useEffect(() => {
@@ -101,7 +101,7 @@ const Block = () => {
 				setData([...res])
 
 			} catch (error) {
-				console.log(error)
+				 
 			}
 
 		}, 300)

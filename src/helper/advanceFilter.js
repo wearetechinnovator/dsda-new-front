@@ -119,7 +119,7 @@ export const getAdvanceFilterData = async (filterUnit, model, activePage, dataLi
     }
 
   } catch (error) {
-    console.log(error)
+     
     return toast("Something went wrong", 'error')
   }
 

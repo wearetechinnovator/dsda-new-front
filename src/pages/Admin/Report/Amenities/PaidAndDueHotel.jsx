@@ -98,7 +98,6 @@ const PaidAndDueHotel = () => {
 
                 if (req.status === 200) {
                     setAllHotel(res);
-                    console.log(res);
 
                     const totalPaid = res.reduce((acc, i) => {
                         acc += parseInt(i.totalAmenitiesAmount);
@@ -109,7 +108,6 @@ const PaidAndDueHotel = () => {
                 }
 
             } catch (error) {
-                console.log(error);
                 return toast("Hotel list not get", "error");
             }
         })()
@@ -157,7 +155,7 @@ const PaidAndDueHotel = () => {
             setLoading(false);
 
         } catch (error) {
-            console.log(error)
+             
         }
     }
     useEffect(() => {
@@ -195,7 +193,7 @@ const PaidAndDueHotel = () => {
                 }
 
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 300)

@@ -193,7 +193,7 @@ const Amenities = () => {
                 }
 
             } catch (error) {
-                console.log(error);
+                 
                 return toast("Search error", 'error')
             }
 

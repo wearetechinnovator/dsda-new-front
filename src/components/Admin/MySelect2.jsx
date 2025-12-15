@@ -110,7 +110,6 @@ const MySelect2 = ({ model, onType, value }) => {
         }
 
       } catch (er) {
-        console.log('Someting went wrong', er);
       }
 
     }, 200);
@@ -142,7 +141,6 @@ const MySelect2 = ({ model, onType, value }) => {
       if (keyCount <= searchList.length - 1) {
         setKeyCount((prev) => {
           setSelectedData(searchList[keyCount]);
-          console.log(keyCount)
           return prev + 1 ? prev + 1 : 0;
         });
       }

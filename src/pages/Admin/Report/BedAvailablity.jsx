@@ -65,7 +65,6 @@ const BedAvailablity = () => {
             });
             const res = await req.json();
 
-            console.log(res);
             
             setTotalData(res.total)
             setData([...res.data])
@@ -73,7 +72,7 @@ const BedAvailablity = () => {
             setLoading(false);
 
         } catch (error) {
-            console.log(error)
+             
         }
     }
     useEffect(() => {
@@ -116,7 +115,7 @@ const BedAvailablity = () => {
 
 
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 150)

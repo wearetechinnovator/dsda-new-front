@@ -68,7 +68,7 @@ const TouristData = () => {
             setHotellList([...res.data])
 
         } catch (error) {
-            console.log(error)
+             
         }
     }
 
@@ -96,7 +96,7 @@ const TouristData = () => {
                 const res = await req.json();
                 setHotellList([...res])
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 350)
@@ -152,7 +152,7 @@ const TouristData = () => {
 
         } catch (error) {
             toast("Something went wrong", "error")
-            console.log(error)
+             
         }
     }
     // Assign current date in quick filter fromDate and toDate;

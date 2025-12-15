@@ -26,7 +26,7 @@ const PublicBillView = () => {
                     body: JSON.stringify({ id })
                 });
                 const res = await req.json();
-                console.log(res);
+                 
 
             } catch (err) {
                 return toast("Something went wrong");

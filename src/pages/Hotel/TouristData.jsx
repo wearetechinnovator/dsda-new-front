@@ -99,7 +99,7 @@ const TouristData = () => {
 
         } catch (error) {
             toast("Something went wrong", "error")
-            console.log(error)
+             
         }
     }
     useEffect(() => {

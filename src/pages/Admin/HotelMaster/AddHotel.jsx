@@ -170,7 +170,6 @@ const AddHotel = ({ mode }) => {
 
 
     for (const key of requiredKeys) {
-      console.log(data[key])
       if (!data[key] || data[key] === "") {
         return toast(`${key.camelToWords()} can't be blank`, 'error');
       }
@@ -204,7 +203,6 @@ const AddHotel = ({ mode }) => {
       navigate('/admin/hotel')
 
     } catch (error) {
-      console.log(error);
       return toast("Something went wrong", "error")
     }
 
@@ -806,7 +804,7 @@ const AddHotel = ({ mode }) => {
                                   i === index ? { ...item, selectedDocument: v } : item
                                 )
                               );
-                              console.log(v)
+                     
                             }}
                             value={documentData[index].selectedDocument}
                             placeholder="Select"

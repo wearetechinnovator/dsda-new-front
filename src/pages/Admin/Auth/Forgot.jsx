@@ -49,7 +49,7 @@ const Forgot = () => {
       navigate("/admin/otp", {state:{email: loginData.email}});
 
     } catch (error) {
-      console.log(error)
+       
       return toast("Something went wrong", "error")
     }
 

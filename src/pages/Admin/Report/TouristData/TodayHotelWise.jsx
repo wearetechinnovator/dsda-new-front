@@ -122,7 +122,7 @@ const TodayHotelWise = () => {
             if (req.status === 200) {
                 setTotalData(res.total)
                 setData([...res.data])
-                console.log(res)
+                 
                 setLoading(false);
 
                 let totalmale = 0;
@@ -158,7 +158,7 @@ const TodayHotelWise = () => {
             }
 
         } catch (error) {
-            console.log(error)
+             
             return toast("Hotel data not load", 'error')
         }
     }
@@ -197,7 +197,7 @@ const TodayHotelWise = () => {
                 }
 
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 300)

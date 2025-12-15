@@ -70,7 +70,7 @@ const UserList = ({ mode }) => {
 			setLoading(false);
 
 		} catch (error) {
-			console.log(error)
+			 
 		}
 	}
 	useEffect(() => {
@@ -101,12 +101,12 @@ const UserList = ({ mode }) => {
 					body: JSON.stringify(data)
 				});
 				const res = await req.json();
-				console.log(res)
+				 
 				setTotalData(res.length)
 				setData([...res])
 
 			} catch (error) {
-				console.log(error)
+				 
 			}
 
 		}, 300)

@@ -33,7 +33,7 @@ const ManageHotel = () => {
             setAllHotels([...res.data])
 
         } catch (error) {
-            console.log(error)
+             
         }
     }
 
@@ -62,7 +62,7 @@ const ManageHotel = () => {
                 const res = await req.json();
                 setAllHotels([...res])
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 350)
@@ -91,13 +91,12 @@ const ManageHotel = () => {
             if (req.status !== 200 || res.err) {
                 return toast(res.err, "error")
             }
-            console.log(res);
 
             Cookies.set("hotel-token", res.token);
             Cookies.set("hotelId", res.hotel._id);
             window.open("/hotel/dashboard", "_blank");
         } catch (error) {
-            console.log(error)
+             
             return toast("Something went wrong", "error")
         }
 

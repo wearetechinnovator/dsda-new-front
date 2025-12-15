@@ -15,7 +15,7 @@ const useApi = () => {
     });
 
     const res = await req.json();
-    console.log(res)
+     
     if (req.status !== 200) {
       return toast(res.err, 'error')
     }

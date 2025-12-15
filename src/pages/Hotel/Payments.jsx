@@ -116,7 +116,7 @@ const Payments = () => {
             setLoading(false);
 
         } catch (error) {
-            console.log(error)
+             
         }
     }
     useEffect(() => {
@@ -158,7 +158,7 @@ const Payments = () => {
                 setData([...res])
                 return;
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 300)

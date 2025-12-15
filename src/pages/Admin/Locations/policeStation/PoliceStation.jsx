@@ -32,7 +32,7 @@ const PoliceStation = () => {
 	const exportData = useMemo(() => {
 		return data && data.map(({ name, district }, _) => ({
 			Name: name,
-			District: district.name
+			District: district
 		}));
 	}, [data]);
 	const [loading, setLoading] = useState(true);
@@ -66,7 +66,7 @@ const PoliceStation = () => {
 			setLoading(false);
 
 		} catch (error) {
-			console.log(error)
+			 
 		}
 	}
 	useEffect(() => {
@@ -102,7 +102,7 @@ const PoliceStation = () => {
 				setData([...res])
 
 			} catch (error) {
-				console.log(error)
+				 
 			}
 
 		}, 300)

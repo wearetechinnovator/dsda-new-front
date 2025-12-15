@@ -76,7 +76,7 @@ const OtherPaymentList = ({ mode }) => {
 			setLoading(false);
 
 		} catch (error) {
-			console.log(error)
+			 
 		}
 	}
 	useEffect(() => {
@@ -112,7 +112,7 @@ const OtherPaymentList = ({ mode }) => {
 				setData([...res])
 
 			} catch (error) {
-				console.log(error)
+				 
 			}
 
 		}, 300)

@@ -65,7 +65,7 @@ const Sector = ({ mode }) => {
 			setLoading(false);
 
 		} catch (error) {
-			console.log(error)
+			 
 		}
 	}
 	useEffect(() => {
@@ -100,7 +100,7 @@ const Sector = ({ mode }) => {
 				setData([...res])
 
 			} catch (error) {
-				console.log(error)
+				 
 			}
 
 		}, 300)

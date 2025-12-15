@@ -124,7 +124,7 @@ const DateWise = () => {
             }
 
         } catch (error) {
-            console.log(error)
+             
             return toast("Hotel data not load", 'error')
         }
     }
@@ -163,7 +163,7 @@ const DateWise = () => {
                 }
 
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 300)

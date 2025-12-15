@@ -91,7 +91,7 @@ const HotelList = () => {
             setLoading(false);
 
         } catch (error) {
-            console.log(error)
+             
         }
     }
     useEffect(() => {
@@ -129,7 +129,7 @@ const HotelList = () => {
                 }
 
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 300)

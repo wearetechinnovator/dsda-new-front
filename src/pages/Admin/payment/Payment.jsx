@@ -16,6 +16,8 @@ import useSetTableFilter from '../../../hooks/useSetTableFilter';
 import NoData from '../../../components/Admin/NoData';
 
 
+
+
 const Payment = ({ mode }) => {
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
@@ -29,14 +31,14 @@ const Payment = ({ mode }) => {
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
         return data && data.map((n, _) => ({
-            Hotel: n.amenities_hotel_id.hotel_name,
-            Year: n.amenities_year,
-            Month: n.amenities_month,
-            Amount: n.amenities_amount,
-            Payment_Date: n.amenities_payment_date,
-            Payment_Mode: n.amenities_payment_mode == "1" ? "Online" : "Offline",
-            Payment_Status: n.amenities_payment_status,
-            Transaction_ID: n.amenities_payment_transaction_id,
+            "Hotel Name": n.amenities_hotel_id.hotel_name,
+            "Year": n.amenities_year,
+            "Month": n.amenities_month,
+            "Amount": n.amenities_amount,
+            "Payment Date": n.amenities_payment_date,
+            "Payment Mode": n.amenities_payment_mode == "1" ? "Online" : "Offline",
+            "Payment Status": n.amenities_payment_status,
+            "Transaction ID": n.amenities_payment_transaction_id,
         }));
     }, [data]);
     const [loading, setLoading] = useState(true);
@@ -71,7 +73,7 @@ const Payment = ({ mode }) => {
             setAllHotels([...res.data])
 
         } catch (error) {
-            console.log(error)
+             
         }
     }
 
@@ -100,7 +102,7 @@ const Payment = ({ mode }) => {
                 const res = await req.json();
                 setAllHotels([...res])
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 350)
@@ -135,7 +137,7 @@ const Payment = ({ mode }) => {
             setLoading(false);
 
         } catch (error) {
-            console.log(error)
+             
         }
     }
     useEffect(() => {
@@ -169,7 +171,7 @@ const Payment = ({ mode }) => {
                 setData([...res])
                 return;
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 350)
@@ -228,7 +230,7 @@ const Payment = ({ mode }) => {
                 setLoading(false);
 
             } catch (error) {
-                console.log(error)
+                 
             }
         })()
     }

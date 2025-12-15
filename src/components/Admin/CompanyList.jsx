@@ -48,7 +48,6 @@ const CompanyList = ({ isOpen, getCompanyName }) => {
       document.location = "/admin/dashboard";
 
     } catch (error) {
-      console.log(error);
       return toast("Something went wrong", 'error')
     }
 

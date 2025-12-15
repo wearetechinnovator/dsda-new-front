@@ -46,10 +46,8 @@ const EditPayment = () => {
                     status: res?.amenities_payment_status,
                     receiptNo: res?.amenities_receipt_number,
                 })
-                console.log(res);
 
             } catch (error) {
-                console.log(error);
                 return toast('Payment data not fetch', 'error')
             }
         })()
@@ -76,7 +74,7 @@ const EditPayment = () => {
             return toast("Amenities update success", 'success');
 
         } catch (error) {
-            console.log(error);
+           
             return toast("Something went wrong", "error")
         }
 

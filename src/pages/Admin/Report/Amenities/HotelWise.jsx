@@ -112,7 +112,6 @@ const HotelWise = () => {
                 const res = await req.json();
                 setAllHotel(res);
             } catch (error) {
-                console.log(error);
                 return toast("Hotel list not get", "error");
             }
         })()
@@ -158,7 +157,7 @@ const HotelWise = () => {
             setLoading(false);
 
         } catch (error) {
-            console.log(error)
+             
         }
     }
     useEffect(() => {
@@ -194,7 +193,7 @@ const HotelWise = () => {
                 setTotalData(res.length);
                 setHotelList([...res]);
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 300)

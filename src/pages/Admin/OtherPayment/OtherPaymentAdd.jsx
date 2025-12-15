@@ -37,7 +37,7 @@ const OtherPaymentAdd = ({ mode }) => {
             setAllHotels([...res.data])
 
         } catch (error) {
-            console.log(error)
+             
         }
     }
 
@@ -66,7 +66,7 @@ const OtherPaymentAdd = ({ mode }) => {
                 const res = await req.json();
                 setAllHotels([...res])
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 350)
@@ -137,7 +137,6 @@ const OtherPaymentAdd = ({ mode }) => {
             navigate('/admin/other-payment')
 
         } catch (error) {
-            console.log(error);
             return toast("Something went wrong", "error")
         }
 

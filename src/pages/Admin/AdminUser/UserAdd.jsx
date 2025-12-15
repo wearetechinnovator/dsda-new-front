@@ -94,7 +94,6 @@ const UserAdd = ({ mode }) => {
       toast(!mode ? "User create success" : "User update success", 'success');
 
     } catch (error) {
-      console.log(error);
       return toast("Something went wrong", "error")
     }
 

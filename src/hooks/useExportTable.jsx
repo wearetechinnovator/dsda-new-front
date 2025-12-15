@@ -50,7 +50,6 @@ const useExportTable = () => {
 
       // Using Clipboard API to copy text
       await navigator.clipboard.writeText(textArea.value);
-      console.log('Table copied to clipboard.');
 
       // Remove the temporary textarea
       document.body.removeChild(textArea);
@@ -101,7 +100,6 @@ const useExportTable = () => {
 
   // Download PDF..........
   const exportPdf = (title, data) => {
-    console.log("exprot hook", data);
     const styles = StyleSheet.create({
       page: {
         padding: 20,
@@ -178,7 +176,7 @@ const useExportTable = () => {
 
       return MyDocument;
     } catch (error) {
-      console.log(error)
+       
     }
   }
 

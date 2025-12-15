@@ -37,7 +37,6 @@ const ProtectHotelRoute = () => {
 
         setLoading(false);
       } catch (error) {
-        console.log(error);
         toast("Something went wrong", "error");
         return navigate("/hotel");
       }
@@ -77,7 +76,6 @@ const UnProtectHotelRoute = ({ children }) => {
         }
 
       } catch (error) {
-        console.log("[*Error]", error)
         // navigate("/admin");
       }
     }

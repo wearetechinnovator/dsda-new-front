@@ -47,7 +47,7 @@ const AddNotice = ({ mode }) => {
             setAllHotels([...res.data])
 
         } catch (error) {
-            console.log(error)
+             
         }
     }
     useEffect(() => {
@@ -80,7 +80,7 @@ const AddNotice = ({ mode }) => {
                 const res = await req.json();
                 setAllHotels([...res])
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 1000)
@@ -150,7 +150,6 @@ const AddNotice = ({ mode }) => {
 
 
         } catch (error) {
-            console.log(error);
             return toast("Something went wrong", "error")
         }
 

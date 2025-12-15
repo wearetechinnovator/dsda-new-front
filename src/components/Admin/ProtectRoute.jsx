@@ -49,7 +49,6 @@ const ProtectRoute = () => {
 
         setLoading(false);
       } catch (error) {
-        console.log(error);
         toast("Something went wrong", "error");
         return navigate("/admin");
       }
@@ -146,7 +145,6 @@ const UnProtectRoute = ({ children }) => {
         }
 
       } catch (error) {
-        console.log("[*Error]", error)
         // navigate("/admin");
       }
     }

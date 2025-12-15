@@ -33,7 +33,7 @@ const AddPartyModal = ({ open, get, id }) => {
         });
 
         const res = await req.json();
-        console.log(res)
+         
 
         if (req.status !== 200) {
           toast(res.error, 'error')
@@ -42,7 +42,6 @@ const AddPartyModal = ({ open, get, id }) => {
 
         setData({ name: res.name });
       } catch (error) {
-        console.log(error);
         toast('Something went wrong!', 'error')
       }
     }
@@ -96,7 +95,6 @@ const AddPartyModal = ({ open, get, id }) => {
       return;
 
     } catch (error) {
-      console.log(error);
       toast('Something went wrong!', 'error')
     }
   }

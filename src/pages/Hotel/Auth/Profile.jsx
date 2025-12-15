@@ -190,7 +190,7 @@ const Profile = () => {
       // dispatch(addHotelDetails({ ...allData }));
       return;
     } catch (error) {
-      console.log(error);
+       
       return toast("Something went wrong", "error")
     }
 

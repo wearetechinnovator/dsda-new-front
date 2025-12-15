@@ -78,7 +78,6 @@ const DateWise = () => {
 
 
         } catch (error) {
-            console.log(error);
         }
     }
     useEffect(() => {
@@ -113,7 +112,6 @@ const DateWise = () => {
             }
 
         } catch (error) {
-            console.log(error);
             return toast("Hotel list not load", 'error')
         }
     }
@@ -146,7 +144,7 @@ const DateWise = () => {
                 }
 
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 300)

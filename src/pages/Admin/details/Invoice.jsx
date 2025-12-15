@@ -101,7 +101,7 @@ const Invoice = () => {
 
         if (urlRoute) {
           const url = process.env.REACT_APP_API_URL + `/${urlRoute}/get`;
-          console.log(url)
+
           const req = await fetch(url, {
             method: "POST",
             headers: {
@@ -110,13 +110,13 @@ const Invoice = () => {
             body: JSON.stringify({ token: Cookies.get("token"), id: id })
           });
           const res = await req.json();
-          console.log(res.data)
+  
           setBillData(res.data)
           return res;
         }
 
       } catch (error) {
-        console.log(error)
+         
         return error;
       }
     }
@@ -133,12 +133,12 @@ const Invoice = () => {
           body: JSON.stringify({ token: Cookies.get("token") })
         });
         const res = await req.json();
-        console.log(res)
+         
         setCompanyDetails(res);
         return res;
 
       } catch (error) {
-        console.log(error)
+         
         return error;
       }
     }

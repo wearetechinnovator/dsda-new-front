@@ -49,7 +49,7 @@ const Signup = () => {
 
     } catch (error) {
       setLoading(false)
-      console.log(error)
+       
     }
 
 

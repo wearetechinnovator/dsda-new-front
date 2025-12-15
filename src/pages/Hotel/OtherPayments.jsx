@@ -78,7 +78,7 @@ const OtherPayments = () => {
             setLoading(false);
 
         } catch (error) {
-            console.log(error)
+             
         }
     }
     useEffect(() => {
@@ -115,7 +115,7 @@ const OtherPayments = () => {
                 setData([...res])
 
             } catch (error) {
-                console.log(error)
+                 
             }
 
         }, 300)

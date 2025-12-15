@@ -86,7 +86,7 @@ const Dashboard = () => {
       setLoading(false);
 
     } catch (error) {
-      console.log(error)
+       
     }
   }
   useEffect(() => {
@@ -122,7 +122,7 @@ const Dashboard = () => {
         setData([...res])
 
       } catch (error) {
-        console.log(error)
+         
       }
 
     }, 300)
@@ -152,7 +152,6 @@ const Dashboard = () => {
         }).then(r => r.json())
       ]);
 
-      console.log(resHotel)
       setStatsData(prev => ({
         ...prev,
         allHotels: resAdmin.total_hotel,

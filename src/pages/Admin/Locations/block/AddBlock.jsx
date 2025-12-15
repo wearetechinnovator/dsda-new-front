@@ -94,7 +94,6 @@ const BlockComponent = ({ mode, save }) => {
             }
 
         } catch (error) {
-            console.log(error);
             return toast("Something went wrong", "error")
         }
 

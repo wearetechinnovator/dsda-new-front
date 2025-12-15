@@ -64,7 +64,7 @@ const HotelCategory = () => {
 			setLoading(false);
 
 		} catch (error) {
-			console.log(error)
+			 
 		}
 	}
 	useEffect(() => {
@@ -95,12 +95,11 @@ const HotelCategory = () => {
 					body: JSON.stringify(data)
 				});
 				const res = await req.json();
-				console.log(res);
 				setTotalData(res.length)
 				setData([...res])
 
 			} catch (error) {
-				console.log(error)
+				 
 			}
 
 		}, 300)

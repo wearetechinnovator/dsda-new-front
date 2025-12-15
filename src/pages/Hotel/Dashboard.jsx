@@ -92,7 +92,7 @@ const Dashboard = () => {
 
             } catch (error) {
                 toast("Something went wrong", "error")
-                console.log(error)
+                 
             }
         })()
 

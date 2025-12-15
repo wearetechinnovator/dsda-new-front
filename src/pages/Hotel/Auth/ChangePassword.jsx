@@ -50,7 +50,7 @@ const ChangePassword = () => {
       navigate("/admin/dashboard")
 
     } catch (error) {
-      console.log(error)
+       
       return toast("Something went wrong", "error")
     }
 

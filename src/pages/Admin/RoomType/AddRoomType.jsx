@@ -42,7 +42,6 @@ const RoomTypeComponent = ({ mode, save }) => {
                     body: JSON.stringify({ token: cookie, id: id })
                 })
                 const res = await req.json();
-                console.log(res);
                 setData({ ...res });
             }
 
@@ -85,7 +84,6 @@ const RoomTypeComponent = ({ mode, save }) => {
             }
 
         } catch (error) {
-            console.log(error);
             return toast("Something went wrong", "error")
         }
 
