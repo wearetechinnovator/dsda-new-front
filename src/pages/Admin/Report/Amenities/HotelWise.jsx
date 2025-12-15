@@ -76,7 +76,6 @@ const HotelWise = () => {
                 }
             })
             setNavTitle(`Amenities Stats of (${overallDate})`)
-
         }
         else {
             setSelectedFilters(pv => {
@@ -119,6 +118,7 @@ const HotelWise = () => {
 
     // :::::::::::::::::::::: [GET ENROLLED DATA] ::::::::::::::::::::
     const get = async () => {
+        setLoading(true);
         try {
             const data = {
                 token: Cookies.get("token"),
@@ -149,7 +149,7 @@ const HotelWise = () => {
                     acc.totalCharge += parseInt(i.totalCharges);
 
                     return acc;
-                }, { totalEnrolled: 0, totalCharge: 0});
+                }, { totalEnrolled: 0, totalCharge: 0 });
 
                 setTotalEnrolled(totalEnrolled);
                 setTotalCharge(totalCharge);
@@ -157,7 +157,8 @@ const HotelWise = () => {
             setLoading(false);
 
         } catch (error) {
-             
+            setLoading(false);
+            return toast("Someting went wrong", 'error');
         }
     }
     useEffect(() => {
@@ -189,11 +190,11 @@ const HotelWise = () => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
-                
+
                 setTotalData(res.length);
                 setHotelList([...res]);
             } catch (error) {
-                 
+
             }
 
         }, 300)

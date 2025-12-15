@@ -11,9 +11,11 @@ import Pagination from '../../../../components/Admin/Pagination';
 import useSetTableFilter from '../../../../hooks/useSetTableFilter';
 import Cookies from 'js-cookie'
 import DataShimmer from '../../../../components/Admin/DataShimmer';
+import { useSelector } from 'react-redux';
 
 
 const TouristData = () => {
+    const userDetail = useSelector((store) => store.userDetail);
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
     const { getFilterState, setFilterState } = useSetTableFilter();
@@ -50,6 +52,12 @@ const TouristData = () => {
 
 
 
+    useEffect(() => {
+        console.log(userDetail)
+    }, [userDetail])
+
+
+
     // Get Hotel List
     const getHotelList = async () => {
         try {
@@ -68,7 +76,7 @@ const TouristData = () => {
             setHotellList([...res.data])
 
         } catch (error) {
-             
+
         }
     }
 
@@ -96,7 +104,7 @@ const TouristData = () => {
                 const res = await req.json();
                 setHotellList([...res])
             } catch (error) {
-                 
+
             }
 
         }, 350)
@@ -152,7 +160,7 @@ const TouristData = () => {
 
         } catch (error) {
             toast("Something went wrong", "error")
-             
+
         }
     }
     // Assign current date in quick filter fromDate and toDate;
@@ -205,8 +213,33 @@ const TouristData = () => {
     // Handle quick search reset;
     const handleResetQuickSearch = () => {
         window.location.reload();
-
     };
+
+
+    const deleteBooking = async (bookingId) => {
+        try {
+            const url = process.env.REACT_APP_BOOKING_API + `/check-in/delete-booking`
+            const req = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ bookingId, token: Cookies.get("token") })
+            })
+            const res = await req.json();
+            if (req.status !== 200) {
+                return toast(res.err, 'error');
+            }
+
+            toast(res.msg, 'success');
+            // window.location.reload();
+            get();
+            return;
+
+        } catch (error) {
+            return toast("Booking not delete", 'error')
+        }
+    }
 
     return (
         <>
@@ -386,6 +419,11 @@ const TouristData = () => {
                                                     <td>Check Out Date & Time</td>
                                                     <td align='center'>Verified By</td>
                                                     <td align='center'>Added By</td>
+                                                    {
+                                                        userDetail?.role === "Administrator" && (
+                                                            <td align='center'>Action</td>
+                                                        )
+                                                    }
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -404,7 +442,6 @@ const TouristData = () => {
                                                                         <Icons.STAR className="text-red-500 text-[10px]" />
                                                                     )}
                                                                 </span>
-
                                                             </td>
                                                             <td align='center'>
                                                                 <Avatar
@@ -469,6 +506,20 @@ const TouristData = () => {
                                                                         </span>
                                                                 }
                                                             </td>
+
+                                                            {
+                                                                userDetail?.role === "Administrator" && (
+                                                                    <td align='center'>
+                                                                        {d.booking_details_is_head_guest === "1" && (
+                                                                            <div
+                                                                                onClick={() => deleteBooking(d.booking_details_booking_id._id)}
+                                                                                className='bg-red-500 hover:bg-red-400 cursor-pointer text-white rounded-full w-[25px] h-[25px] grid place-items-center'>
+                                                                                <Icons.DELETE className='text-[18px]' />
+                                                                            </div>
+                                                                        )}
+                                                                    </td>
+                                                                )
+                                                            }
 
                                                         </tr>
                                                     })

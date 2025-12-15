@@ -121,7 +121,13 @@ const GuestEntry = () => {
             "checkoutDate": " Check out Date", "checkoutTime": " Check out Time"
         }
         for (const [key, label] of Object.entries(checkInKeys)) {
-            if (!checkInDetails[key] || checkInDetails[key].trim() === "") {
+            const value = checkInDetails[key];
+
+            if (
+                value === undefined ||
+                value === null ||
+                (typeof value === "string" && value.trim() === "")
+            ) {
                 return toast(`${label} is required`, "error");
             }
         }
@@ -196,9 +202,6 @@ const GuestEntry = () => {
 
     }
 
-    const clearData = () => {
-
-    }
 
     const checkCheinCheckOutSame = (inDate, outDate) => {
         const d1 = new Date(inDate);
@@ -759,7 +762,7 @@ const GuestEntry = () => {
                         </div>
                         {/* ============================== TABLE END HERE ====================== */}
                         <div className='form__btn__grp mt-5'>
-                            <button className='reset__btn' onClick={()=>window.location.reload()}>
+                            <button className='reset__btn' onClick={() => window.location.reload()}>
                                 <Icons.RESET />
                                 Reset
                             </button>

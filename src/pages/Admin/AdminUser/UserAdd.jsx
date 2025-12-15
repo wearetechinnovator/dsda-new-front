@@ -136,7 +136,7 @@ const UserAdd = ({ mode }) => {
                 </div>
                 <div className="flex flex-col md:flex-row gap-3 w-full items-center">
                   <div className='w-full'>
-                    <p className='ml-1'>Role</p>
+                    <p className='ml-1'>Role <span className='required__text'>*</span></p>
                     <select onChange={(e) => setData({ ...data, role: e.target.value })} value={data.role}>
                       <option value={""}>--select--</option>
                       <option value="Administrator">Administrator</option>

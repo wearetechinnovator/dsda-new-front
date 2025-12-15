@@ -12,7 +12,7 @@ const useMyToaster = () => {
 
     toaster.push(message, {
       duration: 2000,
-      placement: "bottomEnd"
+      placement: "topCenter"
     });
 
   }

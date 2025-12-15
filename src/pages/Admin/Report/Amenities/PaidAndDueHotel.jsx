@@ -118,6 +118,7 @@ const PaidAndDueHotel = () => {
 
     // :::::::::::::::::::::: [GET ENROLLED DATA] ::::::::::::::::::::
     const get = async () => {
+        setLoading(true);
         try {
             const data = {
                 token: Cookies.get("token"),
@@ -155,7 +156,8 @@ const PaidAndDueHotel = () => {
             setLoading(false);
 
         } catch (error) {
-             
+            setLoading(false);
+            return toast("Something went wrong");
         }
     }
     useEffect(() => {
@@ -193,7 +195,7 @@ const PaidAndDueHotel = () => {
                 }
 
             } catch (error) {
-                 
+
             }
 
         }, 300)

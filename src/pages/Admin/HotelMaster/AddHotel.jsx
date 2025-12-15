@@ -128,31 +128,55 @@ const AddHotel = ({ mode }) => {
   }, [mode])
 
 
-  // get types
+  // get document types
   useEffect(() => {
-    const get = async (which) => {
-      const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/${which}`, {
+    (async () => {
+      const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/document`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${Cookies.get("token")}`
         }
       })
       const res = await req.json();
-
-      if (which === "document") {
+      console.log(req.status)
+      if (req.status === 200) {
         setDocumentType([...res]);
-
-      } else if (which === "hotel-category") {
-        setHotelCategories([...res]);
-
-      } else if (which === "room") {
-        setRoomType([...res]);
+        return;
       }
-    }
 
-    get("hotel-category");
-    get("document");
-    get("room");
+      return toast("Document type not get", 'error');
+    })()
+  }, [])
+
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const token = Cookies.get("token");
+        const roomUrl = process.env.REACT_APP_MASTER_API + "/room-type/get";
+        const hotelCategoryUrl = process.env.REACT_APP_MASTER_API + "/hotel-category/get";
+
+        const [roomRes, hotelCategorRes] = await Promise.all([
+          fetch(roomUrl, {
+            method: 'POST',
+            headers: { "Content-Type": 'application/json' },
+            body: JSON.stringify({ token, limit: 900000 })
+          }).then((r) => r.json()),
+
+          fetch(hotelCategoryUrl, {
+            method: 'POST',
+            headers: { "Content-Type": 'application/json' },
+            body: JSON.stringify({ token, limit: 900000 })
+          }).then((r) => r.json()),
+        ]);
+
+        setRoomType([...roomRes.data]);
+        setHotelCategories([...hotelCategorRes.data]);
+
+      } catch (error) {
+        return toast("Something went wrong.", 'error');
+      }
+    })()
   }, [])
   useEffect(() => {
     setDocumentData([documentDataSet]);
@@ -804,7 +828,7 @@ const AddHotel = ({ mode }) => {
                                   i === index ? { ...item, selectedDocument: v } : item
                                 )
                               );
-                     
+
                             }}
                             value={documentData[index].selectedDocument}
                             placeholder="Select"

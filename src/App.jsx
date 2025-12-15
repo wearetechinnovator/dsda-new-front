@@ -1,6 +1,6 @@
 
-import React, { Suspense, useEffect } from "react";
-import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import React, { Suspense } from "react";
+import { Routes, Route } from "react-router-dom";
 import { ProtectRoute, UnProtectRoute } from "./components/Admin/ProtectRoute";
 import { ProtectHotelRoute, UnProtectHotelRoute } from "./components/Hotel/ProtectRoute";
 import ProtectCP from "./components/Admin/ProtectCP";
@@ -33,7 +33,6 @@ const Forgot = React.lazy(() => import("./pages/Admin/Auth/Forgot"));
 const Otp = React.lazy(() => import("./pages/Admin/Auth/Otp"));
 const ChangePassword = React.lazy(() => import("./pages/Admin/Auth/ChangePassword"));
 const NotFound = React.lazy(() => import("./pages/Admin/NotFound"));
-const ItemDetails = React.lazy(() => import("./pages/Admin/AdminUser/Details"));
 const ManageHotel = React.lazy(() => import("./pages/Admin/ManageHotel"));
 const HotelList = React.lazy(() => import("./pages/Admin/Report/HotelList"));
 const BedAvailablity = React.lazy(() => import("./pages/Admin/Report/BedAvailablity"));
@@ -76,9 +75,7 @@ const PayGateWay = React.lazy(() => import("./pages/Hotel/PayGateWay"));
 
 
 const App = () => {
-
   return (
-
     <Suspense fallback={<div className="grid place-items-center w-full min-h-[100vh]">
       <div className="flex flex-row gap-2">
         <div className="w-4 h-4 rounded-full bg-blue-700 animate-bounce"></div>
@@ -87,8 +84,7 @@ const App = () => {
       </div>
     </div>}>
       <Routes>
-
-        {/* ======================================== Admin Routes ==================================== */}
+        {/* ======================================== [Admin Routes] ==================================== */}
         {/* ========================================================================================== */}
         <Route path="/admin" element={<UnProtectRoute login={true}><Login /></UnProtectRoute>} />
         <Route path="/admin/signup" element={<UnProtectRoute login={true}><Signup /></UnProtectRoute>} />
@@ -108,7 +104,6 @@ const App = () => {
           <Route path="user/profile" element={<Profile />} />
           <Route path="user/add" element={<UserAdd />} />
           <Route path="user/edit/:id" element={< UserAdd mode="edit" />} />
-          <Route path="user/details/:id" element={<ItemDetails />} />
 
           {/* Hotel Routes */}
           <Route path="hotel" element={<Hotelmaster />} />
@@ -180,7 +175,7 @@ const App = () => {
         </Route>
 
 
-        {/* ======================================== Hotel Routes ==================================== */}
+        {/* ======================================== [Hotel Routes] ==================================== */}
         {/* ========================================================================================== */}
         <Route path="/" element={<UnProtectHotelRoute login={true}><HotelLogin /></UnProtectHotelRoute>} />
         <Route path="/hotel" element={<UnProtectHotelRoute login={true}><HotelLogin /></UnProtectHotelRoute>} />

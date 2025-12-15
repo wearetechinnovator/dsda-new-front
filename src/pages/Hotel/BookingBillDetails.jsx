@@ -40,7 +40,7 @@ const BookingBillDetails = () => {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(finalData),
+                body: JSON.stringify({...finalData, hotelName: hotelDetails?.hotel_name}),
             })
 
             const res = await req.json();

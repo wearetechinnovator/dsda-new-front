@@ -78,6 +78,7 @@ const DateWise = () => {
 
 
         } catch (error) {
+            setLoading(false);
         }
     }
     useEffect(() => {

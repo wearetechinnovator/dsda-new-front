@@ -64,6 +64,7 @@ const HotelList = () => {
 
     // :::::::::::::::::::::: [GET ALL HOTEL] ::::::::::::::::::::
     const get = async () => {
+        setLoading(true);
         try {
             const data = {
                 token: Cookies.get("token"),
