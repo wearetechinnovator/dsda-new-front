@@ -253,13 +253,13 @@ const TodayHotelWise = () => {
             copyTable("itemTable"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'item-list.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'data-list.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Item List"); // Pass table ref and title
+            printTable(tableRef, "Data List"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Item List', exportData);
+            let document = exportPdf('Data List', exportData);
             downloadPdf(document)
         }
     }
