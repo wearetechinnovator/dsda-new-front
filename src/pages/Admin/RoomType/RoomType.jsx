@@ -13,10 +13,12 @@ import Pagination from '../../../components/Admin/Pagination';
 import useApi from '../../../hooks/useApi';
 import useSetTableFilter from '../../../hooks/useSetTableFilter';
 import NoData from '../../../components/Admin/NoData';
+import useMyToaster from '../../../hooks/useMyToaster';
 
 
 
 const RoomType = () => {
+	const toast = useMyToaster();
 	const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
 	const { getFilterState, setFilterState } = useSetTableFilter();
 	const savedFilter = getFilterState("room-type");
@@ -42,6 +44,7 @@ const RoomType = () => {
 
 	// Get data;
 	const get = async () => {
+		setLoading(true);
 		try {
 			const data = {
 				token: Cookies.get("token"),
@@ -64,7 +67,8 @@ const RoomType = () => {
 			setLoading(false);
 
 		} catch (error) {
-			 
+			setLoading(false);
+			return toast("Room Type not get", 'error');
 		}
 	}
 	useEffect(() => {
@@ -99,7 +103,7 @@ const RoomType = () => {
 				setData([...res])
 
 			} catch (error) {
-				 
+
 			}
 
 		}, 300)

@@ -42,6 +42,7 @@ const Zone = () => {
 
 	// Get data;
 	const get = async () => {
+		setLoading(true);
 		try {
 			const data = {
 				token: Cookies.get("token"),
@@ -64,7 +65,7 @@ const Zone = () => {
 			setLoading(false);
 
 		} catch (error) {
-			 
+			setLoading(false);
 		}
 	}
 	useEffect(() => {
@@ -99,7 +100,7 @@ const Zone = () => {
 				setData([...res])
 
 			} catch (error) {
-				 
+
 			}
 
 		}, 300)

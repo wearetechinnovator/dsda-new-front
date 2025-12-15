@@ -44,6 +44,7 @@ const District = () => {
 
 	// Get data;
 	const get = async () => {
+		setLoading(true);
 		try {
 			const data = {
 				token: Cookies.get("token"),
@@ -66,7 +67,7 @@ const District = () => {
 			setLoading(false);
 
 		} catch (error) {
-			 
+			setLoading(false);
 		}
 	}
 	useEffect(() => {
@@ -101,7 +102,7 @@ const District = () => {
 				setData([...res])
 
 			} catch (error) {
-				 
+
 			}
 
 		}, 300)

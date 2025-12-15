@@ -13,9 +13,11 @@ import Pagination from '../../../components/Admin/Pagination';
 import useApi from '../../../hooks/useApi';
 import useSetTableFilter from '../../../hooks/useSetTableFilter';
 import NoData from '../../../components/Admin/NoData';
+import useMyToaster from '../../../hooks/useMyToaster';
 
 
 const Hotelmaster = ({ mode }) => {
+	const toast = useMyToaster();
     const location = useLocation();
     const filterData = location.state;
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
@@ -53,6 +55,7 @@ const Hotelmaster = ({ mode }) => {
 
     // Get data;
     const get = async () => {
+        setLoading(true);
         try {
             let data = {
                 token: Cookies.get("token"),
@@ -61,7 +64,7 @@ const Hotelmaster = ({ mode }) => {
                 limit: dataLimit,
                 hotelStatus: filterData
             };
-            
+
             setFilterState("Hotelmaster", dataLimit, activePage);
             const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
             const req = await fetch(url, {
@@ -80,7 +83,8 @@ const Hotelmaster = ({ mode }) => {
             setLoading(false);
 
         } catch (error) {
-             
+            setLoading(false);
+            return toast("Hotel data not get", 'error');
         }
     }
     useEffect(() => {
@@ -115,7 +119,7 @@ const Hotelmaster = ({ mode }) => {
                 setData([...res])
 
             } catch (error) {
-                 
+
             }
 
         }, 300)

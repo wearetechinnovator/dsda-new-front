@@ -48,6 +48,8 @@ const UserList = ({ mode }) => {
 
 	// Get data;
 	const get = async () => {
+		setLoading(true);
+
 		try {
 			const data = {
 				token: Cookies.get("token"),
@@ -70,7 +72,7 @@ const UserList = ({ mode }) => {
 			setLoading(false);
 
 		} catch (error) {
-			 
+			setLoading(false);
 		}
 	}
 	useEffect(() => {
@@ -101,12 +103,12 @@ const UserList = ({ mode }) => {
 					body: JSON.stringify(data)
 				});
 				const res = await req.json();
-				 
+
 				setTotalData(res.length)
 				setData([...res])
 
 			} catch (error) {
-				 
+
 			}
 
 		}, 300)

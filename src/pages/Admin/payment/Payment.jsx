@@ -73,7 +73,7 @@ const Payment = ({ mode }) => {
             setAllHotels([...res.data])
 
         } catch (error) {
-             
+
         }
     }
 
@@ -102,7 +102,7 @@ const Payment = ({ mode }) => {
                 const res = await req.json();
                 setAllHotels([...res])
             } catch (error) {
-                 
+
             }
 
         }, 350)
@@ -137,7 +137,7 @@ const Payment = ({ mode }) => {
             setLoading(false);
 
         } catch (error) {
-             
+            setLoading(false);
         }
     }
     useEffect(() => {
@@ -171,7 +171,7 @@ const Payment = ({ mode }) => {
                 setData([...res])
                 return;
             } catch (error) {
-                 
+
             }
 
         }, 350)
@@ -230,7 +230,7 @@ const Payment = ({ mode }) => {
                 setLoading(false);
 
             } catch (error) {
-                 
+
             }
         })()
     }

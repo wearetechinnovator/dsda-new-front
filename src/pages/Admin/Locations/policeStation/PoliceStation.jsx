@@ -44,6 +44,8 @@ const PoliceStation = () => {
 
 	// Get data;
 	const get = async () => {
+		setLoading(true);
+
 		try {
 			const data = {
 				token: Cookies.get("token"),
@@ -66,7 +68,7 @@ const PoliceStation = () => {
 			setLoading(false);
 
 		} catch (error) {
-			 
+			setLoading(false);
 		}
 	}
 	useEffect(() => {
@@ -102,7 +104,7 @@ const PoliceStation = () => {
 				setData([...res])
 
 			} catch (error) {
-				 
+
 			}
 
 		}, 300)

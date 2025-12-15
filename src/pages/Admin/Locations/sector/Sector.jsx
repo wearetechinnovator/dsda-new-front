@@ -43,6 +43,7 @@ const Sector = ({ mode }) => {
 
 	// Get data;
 	const get = async () => {
+		setLoading(true);
 		try {
 			const data = {
 				token: Cookies.get("token"),
@@ -65,7 +66,7 @@ const Sector = ({ mode }) => {
 			setLoading(false);
 
 		} catch (error) {
-			 
+			setLoading(false);
 		}
 	}
 	useEffect(() => {
@@ -100,7 +101,7 @@ const Sector = ({ mode }) => {
 				setData([...res])
 
 			} catch (error) {
-				 
+
 			}
 
 		}, 300)

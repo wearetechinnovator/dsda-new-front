@@ -59,6 +59,8 @@ const Dashboard = () => {
 
   // Get data;
   const get = async () => {
+    setLoading(true);
+    
     try {
       const data = {
         token: token,
@@ -78,7 +80,7 @@ const Dashboard = () => {
       const res = await req.json();
 
       if (req.status === 200) {
-        
+
         setTotalData(res.total)
         setData([...res.data])
         setLoading(false);
@@ -86,7 +88,7 @@ const Dashboard = () => {
       setLoading(false);
 
     } catch (error) {
-       
+      setLoading(false);
     }
   }
   useEffect(() => {
@@ -122,7 +124,7 @@ const Dashboard = () => {
         setData([...res])
 
       } catch (error) {
-         
+
       }
 
     }, 300)

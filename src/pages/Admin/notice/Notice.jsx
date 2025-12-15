@@ -47,6 +47,7 @@ const Notice = ({ mode }) => {
     // Get data;
     useEffect(() => {
         (async () => {
+            setLoading(true);
             try {
                 const data = {
                     token: Cookies.get("token"),
@@ -70,7 +71,7 @@ const Notice = ({ mode }) => {
                 setLoading(false);
 
             } catch (error) {
-                 
+                setLoading(false);
             }
         })()
     }, [isTrash, dataLimit, activePage])
