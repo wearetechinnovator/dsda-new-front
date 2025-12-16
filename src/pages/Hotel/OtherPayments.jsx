@@ -52,7 +52,7 @@ const OtherPayments = () => {
         setLoading(true);
         try {
             const data = {
-                token: Cookies.get("token"),
+                token: Cookies.get("hotel-token"),
                 page: activePage,
                 limit: dataLimit,
                 hotelId: Cookies.get('hotelId'),

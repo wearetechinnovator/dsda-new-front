@@ -51,11 +51,8 @@ const Otp = () => {
 
     } catch (error) {
       setLoading(false)
-       
       return toast("Something went wrong", "error")
     }
-
-
   }
 
 

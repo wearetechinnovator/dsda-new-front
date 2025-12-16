@@ -28,7 +28,7 @@ const useGetUserData = () => {
 
   const getSetting = async () => {
     const url = process.env.REACT_APP_MASTER_API + "/site-setting/get";
-    const cookie = Cookies.get("token");
+    const cookie = Cookies.get("token") || Cookies.get("hotel-token");
 
     const req = await fetch(url, {
       method: "POST",

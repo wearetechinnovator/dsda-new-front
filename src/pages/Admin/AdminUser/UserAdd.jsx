@@ -4,14 +4,13 @@ import SideNav from '../../../components/Admin/SideNav'
 import { LuFileX2 } from "react-icons/lu";
 import useMyToaster from '../../../hooks/useMyToaster';
 import Cookies from 'js-cookie';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Icons } from '../../../helper/icons';
 import { MdUploadFile } from 'react-icons/md';
 import checkfile from '../../../helper/checkfile';
 
 
 const UserAdd = ({ mode }) => {
-  const navigate = useNavigate();
   const toast = useMyToaster();
   const { id } = useParams();
   const [fileName, setFileName] = useState('');
@@ -26,18 +25,18 @@ const UserAdd = ({ mode }) => {
     if (mode) {
       const get = async () => {
         const url = process.env.REACT_APP_MASTER_API + "/admin/get-users";
-        const cookie = Cookies.get("token");
+        const token = Cookies.get("token");
 
         const req = await fetch(url, {
           method: "POST",
           headers: {
             "Content-Type": 'application/json'
           },
-          body: JSON.stringify({ token: cookie, userId: id })
+          body: JSON.stringify({ token, userId: id })
         })
         const res = await req.json();
         setData({ ...res, profile: res.profile_picture })
-        if(res.profile_picture){
+        if (res.profile_picture) {
           setFileName(Date.now)
         }
       }
@@ -66,15 +65,17 @@ const UserAdd = ({ mode }) => {
     if (!mode) requiredKeys.push('password');
 
     for (const key of requiredKeys) {
-      if (!data[key] || data[key].trim() === "") {
+      if (!data[key] || data[key]?.trim() === "") {
         return toast(`${key.camelToWords()} can't be blank`, 'error');
       }
     }
 
 
     try {
-      let url = mode ? process.env.REACT_APP_MASTER_API + "/admin/update-users" : process.env.REACT_APP_MASTER_API + "/admin/create-users";
+      let url = mode ? process.env.REACT_APP_MASTER_API + "/admin/update-users" :
+        process.env.REACT_APP_MASTER_API + "/admin/create-users";
       const token = Cookies.get("token");
+
       const req = await fetch(url, {
         method: "POST",
         headers: {
@@ -149,7 +150,10 @@ const UserAdd = ({ mode }) => {
                   </div>
                   <div className='w-full'>
                     <p>Designation<span className='required__text'>*</span></p>
-                    <input type='text' onChange={(e) => setData({ ...data, designation: e.target.value })} value={data.designation} />
+                    <input type='text'
+                      onChange={(e) => setData({ ...data, designation: e.target.value })}
+                      value={data.designation}
+                    />
                   </div>
                 </div>
                 <div>
@@ -162,10 +166,12 @@ const UserAdd = ({ mode }) => {
                         <MdUploadFile />
                       </label>
                       {
-                        fileName && <LuFileX2 className='remove__upload ' title='Remove upload' onClick={() => {
-                          setFileName("");
-                          setData({ ...data, profile: "" })
-                        }} />
+                        fileName && <LuFileX2
+                          className='remove__upload ' title='Remove upload'
+                          onClick={() => {
+                            setFileName("");
+                            setData({ ...data, profile: "" })
+                          }} />
                       }
                     </div>
                   </div>

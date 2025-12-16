@@ -138,7 +138,7 @@ const AddHotel = ({ mode }) => {
         }
       })
       const res = await req.json();
-      console.log(req.status)
+      
       if (req.status === 200) {
         setDocumentType([...res]);
         return;

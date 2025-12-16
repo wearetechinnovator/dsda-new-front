@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import useMyToaster from "../../../hooks/useMyToaster";
 import Cookies from 'js-cookie';
 
+
+
 const ChangePassword = () => {
   const [loginData, setLoginData] = useState({ confirPassword: '', password: '' });
   const shakeIt = useLoginShake();
@@ -50,7 +52,6 @@ const ChangePassword = () => {
       navigate("/admin/dashboard")
 
     } catch (error) {
-       
       return toast("Something went wrong", "error")
     }
 

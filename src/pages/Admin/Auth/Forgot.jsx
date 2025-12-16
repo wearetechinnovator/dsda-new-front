@@ -17,6 +17,8 @@ const Forgot = () => {
   const toast = useMyToaster();
   const [loading, setLoading] = useState(false);
 
+
+
   const formAction = async (e) => {
     e.preventDefault();
     const fields = Object.fromEntries(new FormData(e.target));
@@ -49,10 +51,8 @@ const Forgot = () => {
       navigate("/admin/otp", {state:{email: loginData.email}});
 
     } catch (error) {
-       
       return toast("Something went wrong", "error")
     }
-
 
   }
 

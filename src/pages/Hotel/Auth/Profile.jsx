@@ -53,7 +53,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (hotelData && hotelData.hotel_gallery_image && hotelData.hotel_room_type && hotelData.hotel_document) {
-      
+
       setPhotoGallery(hotelData.hotel_gallery_image);
       setRoomTypeData(hotelData.hotel_room_type);
       setDocumentData(hotelData.hotel_document);
@@ -114,31 +114,54 @@ const Profile = () => {
   }, [hotelData]);
 
 
-  // get types
+  // get document types
   useEffect(() => {
-    const get = async (which) => {
-      const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/${which}`, {
+    (async () => {
+      const req = await fetch(process.env.REACT_APP_MASTER_API + `/constant-type/get/document`, {
         method: 'GET',
         headers: {
-          'x-hotel-token': `Bearer ${Cookies.get("hotel-token")}`
+          Authorization: `Bearer ${Cookies.get("hotel-token")}`
         }
       })
       const res = await req.json();
 
-      if (which === "document") {
+      if (req.status === 200) {
         setDocumentType([...res]);
-
-      } else if (which === "hotel-category") {
-        setHotelCategories([...res]);
-
-      } else if (which === "room") {
-        setRoomType([...res]);
+        return;
       }
-    }
 
-    get("hotel-category");
-    get("document");
-    get("room");
+      return toast("Document type not get", 'error');
+    })()
+  }, [])
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const token = Cookies.get("hotel-token");
+        const roomUrl = process.env.REACT_APP_MASTER_API + "/room-type/get";
+        const hotelCategoryUrl = process.env.REACT_APP_MASTER_API + "/hotel-category/get";
+
+        const [roomRes, hotelCategorRes] = await Promise.all([
+          fetch(roomUrl, {
+            method: 'POST',
+            headers: { "Content-Type": 'application/json' },
+            body: JSON.stringify({ token, limit: 900000 })
+          }).then((r) => r.json()),
+
+          fetch(hotelCategoryUrl, {
+            method: 'POST',
+            headers: { "Content-Type": 'application/json' },
+            body: JSON.stringify({ token, limit: 900000 })
+          }).then((r) => r.json()),
+        ]);
+
+        setRoomType([...roomRes.data]);
+        setHotelCategories([...hotelCategorRes.data]);
+
+      } catch (error) {
+        return toast("Something went wrong.", 'error');
+      }
+    })()
   }, [])
   useEffect(() => {
     setDocumentData([documentDataSet]);
@@ -170,7 +193,7 @@ const Profile = () => {
 
     try {
       const url = process.env.REACT_APP_MASTER_API + "/hotel/update";
-      const token = Cookies.get("token");
+      const token = Cookies.get("hotel-token");
       const hotelId = Cookies.get("hotelId");
       const req = await fetch(url, {
         method: "POST",
@@ -190,7 +213,7 @@ const Profile = () => {
       // dispatch(addHotelDetails({ ...allData }));
       return;
     } catch (error) {
-       
+
       return toast("Something went wrong", "error")
     }
 

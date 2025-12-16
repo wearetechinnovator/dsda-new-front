@@ -43,7 +43,7 @@ const TouristData = () => {
             // "Register Guest Details": `${d.booking_details_guest_name} (Mobile: ${d.booking_details_guest_phone})`,
             "Identity Card": `${d.booking_details_guest_id_type} - ${d.booking_details_guest_id_number}`,
             Mobile: d.booking_details_guest_phone,
-            "Room No.": d.booking_details_room_no ,
+            "Room No.": d.booking_details_room_no,
             "Checkin Date & Time": d.booking_details_checkin_date_time,
             "Check Out Date & Time": d.booking_details_checkout_date_time,
             "Verifyed By": d.booking_details_booking_id?.booking_verified_by === "0" ? 'Manager' : 'Admin',
@@ -60,12 +60,6 @@ const TouristData = () => {
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [hotelList, setHotellList] = useState([]);
     const timeRef = useRef(null);
-
-
-
-    useEffect(() => {
-        console.log(userDetail)
-    }, [userDetail])
 
 
 
@@ -170,8 +164,8 @@ const TouristData = () => {
             setLoading(false);
 
         } catch (error) {
-            toast("Something went wrong", "error")
-
+            setLoading(false);
+            return toast("Something went wrong", "error")
         }
     }
     // Assign current date in quick filter fromDate and toDate;
@@ -228,28 +222,33 @@ const TouristData = () => {
 
 
     const deleteBooking = async (bookingId) => {
-        try {
-            const url = process.env.REACT_APP_BOOKING_API + `/check-in/delete-booking`
-            const req = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ bookingId, token: Cookies.get("token") })
-            })
-            const res = await req.json();
-            if (req.status !== 200) {
-                return toast(res.err, 'error');
+        const userConfirm = window.confirm("Do you realy want to delete");
+        
+        if (userConfirm) {
+            try {
+                const url = process.env.REACT_APP_BOOKING_API + `/check-in/delete-booking`
+                const req = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ bookingId, token: Cookies.get("token") })
+                })
+                const res = await req.json();
+                if (req.status !== 200) {
+                    return toast(res.err, 'error');
+                }
+
+                toast(res.msg, 'success');
+                get();
+                return;
+
+            } catch (error) {
+                return toast("Booking not delete", 'error')
             }
-
-            toast(res.msg, 'success');
-            // window.location.reload();
-            get();
-            return;
-
-        } catch (error) {
-            return toast("Booking not delete", 'error')
         }
+
+        return;
     }
 
     return (

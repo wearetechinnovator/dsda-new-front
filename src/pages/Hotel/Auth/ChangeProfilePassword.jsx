@@ -75,7 +75,7 @@ const ChangeProfilePassword = () => {
                   autoComplete='off'
                 />
 
-                <div className='absolute right-4 top-[1.5rem] cursor-pointer' onClick={() => {
+                <div className='absolute right-4 top-[1.8rem] cursor-pointer' onClick={() => {
                   setShowEye(!showEye);
                 }}>
                   {showEye ? <Icons.EYE /> : <Icons.EYE_CLOSE />}

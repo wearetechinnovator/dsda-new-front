@@ -86,7 +86,7 @@ const CheckOut = () => {
 
         } catch (error) {
             toast("Something went wrong", "error")
-             
+
         }
     }
     useEffect(() => {
@@ -170,8 +170,14 @@ const CheckOut = () => {
         const checkoutDateObj = new Date(defaultCheckOutDate);
 
         // --- Extract new checkout time from user input ---
-        const newTime = defaultCheckOutDate.split("T")[1];  // "HH:MM"
-        const [newH, newM] = newTime.split(":");
+        let newTime;
+        if (defaultCheckOutDate.search("T") > 0) {
+            newTime = defaultCheckOutDate.split("T")[1];
+        } else {
+            newTime = defaultCheckOutDate.split(" ")[1];
+        } // "HH:MM"
+        
+        const [newH, newM] = newTime?.split(":");
         checkoutDateObj.setHours(newH, newM, 0, 0);
 
         // --- Build proper check-in datetime (date + time separately) ---

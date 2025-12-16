@@ -16,6 +16,9 @@ import useApi from '../../../hooks/useApi';
 import useSetTableFilter from '../../../hooks/useSetTableFilter';
 
 
+
+
+
 const UserList = ({ mode }) => {
 	const toast = useMyToaster();
 	const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
@@ -108,7 +111,7 @@ const UserList = ({ mode }) => {
 				setData([...res])
 
 			} catch (error) {
-
+				return toast("Search data not get", 'error');
 			}
 
 		}, 300)

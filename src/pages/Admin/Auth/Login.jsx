@@ -50,12 +50,10 @@ const Login = () => {
       
       Cookies.set("userId", res.userId);
       Cookies.set("token", res.token);
-      // Cookies.set("token", res.token );
       navigate("/admin/dashboard")
 
     } catch (error) {
       setLoading(false)
-       
       return toast("Something went wrong", "error")
     }
 
