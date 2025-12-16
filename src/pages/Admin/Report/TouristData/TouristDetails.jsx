@@ -464,9 +464,9 @@ const TouristData = () => {
                                                             <td>{d.booking_details_guest_dob || "-"}</td>
                                                             <td>{d.booking_details_guest_age}</td>
                                                             <td>{d.booking_details_guest_nationality === "india" ? "Indian" : d.booking_details_guest_nationality === "foreign" ? "Foreigner" : ""}</td>
-                                                            <td>{d.booking_details_guest_country || "-"}</td>
-                                                            <td>{d.booking_details_guest_state || "-"}</td>
-                                                            <td>{d.booking_details_guest_district || "-"}</td>
+                                                            <td>{d.booking_details_country || "-"}</td>
+                                                            <td>{d.booking_details_state || "-"}</td>
+                                                            <td>{d.booking_details_district || "-"}</td>
                                                             <td>{d.booking_details_guest_address || "-"}</td>
                                                             {/* <td>
                                                                 {d.booking_details_guest_name}
