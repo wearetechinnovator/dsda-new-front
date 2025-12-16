@@ -4,18 +4,13 @@ import { Icons } from '../helper/icons';
 
 // Hook
 const useConfirmDialog = () => {
-    // const [state, setState] = useState({
-    //     isOpen: false,
-    //     title: '',
-    //     text: '',
-    //     resolve: null,
-    // });
     const [state, setState] = useState({
-        isOpen: true,
-        title: 'Confirm Action',
-        text: 'Do you want to proceed?',
+        isOpen: false,
+        title: '',
+        text: '',
         resolve: null,
     });
+   
 
     const show = (title, text) => {
         return new Promise((resolve) => {
