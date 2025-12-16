@@ -65,18 +65,6 @@ const DateWise = () => {
     const [totalGuest, setTotalGuest] = useState(0);
     const [totalAmount, setTotalAmount] = useState(0);
 
-
-    // Page wise data change, `Overall` or `Todaywise`
-    // useEffect(() => {
-    //     setSelectedFilters({
-    //         ...selectedFilters,
-    //         startDate: new Date().toISOString().split("T")[0],
-    //         endDate: new Date().toISOString().split("T")[0]
-    //     })
-    //     setNavTitle(`Footfall Stats of Today(${new Date().getDate()} ${monthNames[new Date().getMonth()]}, ${new Date().getFullYear()})`)
-
-    // }, [])
-
     // :::::::::::::::::::::: [GET ALL HOTEL] ::::::::::::::::::::
     const get = async () => {
         setLoading(true);

@@ -55,4 +55,28 @@
   };
 
 
+  Date.prototype.toISTString = function () {
+    const istOffset = 5.5 * 60 * 60 * 1000; // IST offset in ms
+    const istDate = new Date(this.getTime() + istOffset);
+
+    const pad = (n, z = 2) => String(n).padStart(z, "0");
+
+    return (
+      istDate.getUTCFullYear() +
+      "-" +
+      pad(istDate.getUTCMonth() + 1) +
+      "-" +
+      pad(istDate.getUTCDate()) +
+      "T" +
+      pad(istDate.getUTCHours()) +
+      ":" +
+      pad(istDate.getUTCMinutes()) +
+      ":" +
+      pad(istDate.getUTCSeconds()) +
+      "." +
+      pad(istDate.getUTCMilliseconds(), 3) + "Z"
+    );
+  };
+
+
 </script>

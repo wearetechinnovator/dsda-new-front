@@ -248,7 +248,7 @@ const Dashboard = () => {
                 </div>
                 <BsBuildings className='card__icon' />
               </div>
-              <div className='total__card blue__grad' onClick={() => navigate("/admin/amenities-charges/hotel-wise")}>
+              <div className='total__card blue__grad' onClick={() => navigate("/admin/amenities-charges/hotel-wise/today")}>
                 <div className='total__card__data'>
                   <p>{statsData.todayActive ?? <CardLoading />}</p>
                   <p>Today Active Hotels</p>

@@ -43,8 +43,8 @@ const HotelWise = () => {
     const [loading, setLoading] = useState(true);
     const timeRef = useRef(null);
     const [selectedFilters, setSelectedFilters] = useState({
-        hotel: '', startDate: isTodayFootFallPage ? new Date().toISOString().split("T")[0] : "",
-        endDate: isTodayFootFallPage ? new Date().toISOString().split("T")[0] : ""
+        hotel: '', startDate: isTodayFootFallPage ? new Date().toISTString().split("T")[0] : "",
+        endDate: isTodayFootFallPage ? new Date().toISTString().split("T")[0] : ""
     })
     const [isFilterDateSet, setIsFilterDateSet] = useState(null)
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -61,8 +61,8 @@ const HotelWise = () => {
             setSelectedFilters(pv => {
                 return {
                     ...pv,
-                    startDate: new Date().toISOString().split("T")[0],
-                    endDate: new Date().toISOString().split("T")[0]
+                    startDate: new Date().toISTString().split("T")[0],
+                    endDate: new Date().toISTString().split("T")[0]
                 }
             })
             setNavTitle(`Amenities Stats of Today(${new Date().getDate()} ${monthNames[new Date().getMonth()]}, ${new Date().getFullYear()})`)

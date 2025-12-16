@@ -203,21 +203,6 @@ const GuestEntry = () => {
     }
 
 
-    const checkCheinCheckOutSame = (inDate, outDate) => {
-        const d1 = new Date(inDate);
-        const d2 = new Date(outDate);
-
-        if (
-            d1.getFullYear() === d2.getFullYear() &&
-            d1.getMonth() === d2.getMonth() &&
-            d1.getDate() === d2.getDate()
-        ) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     return (
         <>
             <Nav title={"Manage Guest Entry"} />
@@ -251,12 +236,12 @@ const GuestEntry = () => {
                                     type="date"
                                     placeholder="Enter Check In Date"
                                     value={checkInDetails.checkInDate}
-                                    min={minDate?.toISOString().split("T")[0]}
-                                    max={today.toISOString().split("T")[0]}
+                                    min={minDate?.toISTString().split("T")[0]}
+                                    max={today.toISTString().split("T")[0]}
                                     onChange={(e) => {
                                         const selectedDate = e.target.value;
 
-                                        if (selectedDate < minDate?.toISOString().split("T")[0] || selectedDate > today.toISOString().split("T")[0]) {
+                                        if (selectedDate < minDate?.toISTString().split("T")[0] || selectedDate > today.toISTString().split("T")[0]) {
                                             toast("Please select a valid date between 2 days ago and today.", "error");
                                             return;
                                         }
@@ -286,10 +271,10 @@ const GuestEntry = () => {
                                     type="date"
                                     placeholder="Enter Date"
                                     value={checkInDetails.checkoutDate}
-                                    min={checkInDetails.checkInDate || minDate?.toISOString().split("T")[0]} // minimum date (e.g., 2 days before today)
+                                    min={checkInDetails.checkInDate || minDate?.toISTString().split("T")[0]} // minimum date (e.g., 2 days before today)
                                     onChange={(e) => {
                                         const selectedDate = e.target.value;
-                                        const min = minDate?.toISOString().split("T")[0];
+                                        const min = minDate?.toISTString().split("T")[0];
 
                                         if (!checkInDetails.checkInDate) {
                                             toast("Please select a check-in date first.", "error");

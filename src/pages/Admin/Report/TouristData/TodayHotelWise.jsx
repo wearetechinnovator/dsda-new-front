@@ -54,8 +54,8 @@ const TodayHotelWise = () => {
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [selectedFilters, setSelectedFilters] = useState({
         hotel: '', zone: '', block: '', district: '', policeStation: '', sector: '',
-        startDate: isTodayFootFallPage ? new Date().toISOString().split("T")[0] : "",
-        endDate: isTodayFootFallPage ? new Date().toISOString().split("T")[0] : "",
+        startDate: isTodayFootFallPage ? new Date().toISTString().split("T")[0] : "",
+        endDate: isTodayFootFallPage ? new Date().toISTString().split("T")[0] : "",
         month: '', year: ''
     })
     const [filterBlock, setFilterBlock] = useState([]);
@@ -76,8 +76,8 @@ const TodayHotelWise = () => {
         if (isTodayFootFallPage) {
             setSelectedFilters({
                 ...selectedFilters,
-                startDate: new Date().toISOString().split("T")[0],
-                endDate: new Date().toISOString().split("T")[0]
+                startDate: new Date().toISTString().split("T")[0],
+                endDate: new Date().toISTString().split("T")[0]
             })
             setNavTitle(`Footfall Stats of Today(${new Date().getDate()} ${monthNames[new Date().getMonth()]}, ${new Date().getFullYear()})`)
         } else {
@@ -107,6 +107,8 @@ const TodayHotelWise = () => {
                 startDate: selectedFilters.startDate,
                 endDate: selectedFilters.endDate
             }
+
+            console.log(data);
 
             setFilterState("todayhotel-wise", dataLimit, activePage);
             const url = process.env.REACT_APP_BOOKING_API + `/check-in/tourist-data/footfall-daywise`;
