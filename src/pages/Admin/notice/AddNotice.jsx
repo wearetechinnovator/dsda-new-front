@@ -119,8 +119,8 @@ const AddNotice = ({ mode }) => {
 
 
     const saveData = async (e) => {
-        if (data.hotel === "") {
-            return toast(`hotel can't be blank`, 'error');
+        if (data.title === "") {
+            return toast(`Title can't be blank`, 'error');
         }
 
 

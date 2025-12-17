@@ -11,10 +11,13 @@ import { Icons } from '../../../helper/icons';
 import Pagination from '../../../components/Admin/Pagination';
 import useSetTableFilter from '../../../hooks/useSetTableFilter';
 import NoData from '../../../components/Admin/NoData'
+import useMyToaster from '../../../hooks/useMyToaster';
+
 
 
 
 const BedAvailablity = () => {
+    const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
     const { getFilterState, setFilterState } = useSetTableFilter();
     const savedFilter = getFilterState("bed-availablity");
@@ -65,7 +68,6 @@ const BedAvailablity = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-
             
             setTotalData(res.total)
             setData([...res.data])
@@ -73,7 +75,7 @@ const BedAvailablity = () => {
             setLoading(false);
 
         } catch (error) {
-             
+            return toast("Something went wrong", "error");
         }
     }
     useEffect(() => {

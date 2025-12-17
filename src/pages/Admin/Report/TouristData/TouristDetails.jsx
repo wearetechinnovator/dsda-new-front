@@ -223,7 +223,7 @@ const TouristData = () => {
 
     const deleteBooking = async (bookingId) => {
         const userConfirm = window.confirm("Do you realy want to delete");
-        
+
         if (userConfirm) {
             try {
                 const url = process.env.REACT_APP_BOOKING_API + `/check-in/delete-booking`
@@ -427,6 +427,7 @@ const TouristData = () => {
                                                     <td>Room No.</td>
                                                     <td>Check In Date & Time</td>
                                                     <td>Check Out Date & Time</td>
+                                                    <td className='w-[12%]'>Status</td>
                                                     <td align='center'>Verified By</td>
                                                     <td align='center'>Added By</td>
                                                     {
@@ -490,6 +491,17 @@ const TouristData = () => {
                                                             <td align='center'>{d.booking_details_room_no || "-"}</td>
                                                             <td>{d.booking_details_checkin_date_time}</td>
                                                             <td>{d.booking_details_checkout_date_time || '--'}</td>
+                                                            <td>
+                                                                {
+                                                                    d.booking_details_status === "0" ?
+                                                                        <span className='chip chip__green'>
+                                                                            IN
+                                                                        </span> :
+                                                                        <span className='chip chip__blue'>
+                                                                            OUT
+                                                                        </span>
+                                                                }
+                                                            </td>
                                                             <td>
                                                                 {
                                                                     d.booking_details_booking_id?.booking_verified_by === "0" ?

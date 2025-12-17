@@ -46,7 +46,7 @@ const TouristData = () => {
             // "Register Guest Details": `${d.booking_details_guest_name} (Mobile: ${d.booking_details_guest_phone})`,
             "Identity Card": `${d.booking_details_guest_id_type} - ${d.booking_details_guest_id_number}`,
             Mobile: d.booking_details_guest_phone,
-            "Room No.": d.booking_details_room_no ,
+            "Room No.": d.booking_details_room_no,
             "Checkin Date & Time": d.booking_details_checkin_date_time,
             "Check Out Date & Time": d.booking_details_checkout_date_time,
             "Verifyed By": d.booking_details_booking_id?.booking_verified_by === "0" ? 'Manager' : 'Admin',
@@ -99,7 +99,7 @@ const TouristData = () => {
 
         } catch (error) {
             toast("Something went wrong", "error")
-             
+
         }
     }
     useEffect(() => {
@@ -335,6 +335,7 @@ const TouristData = () => {
                                                     <td className='w-[5%]'>Room No.</td>
                                                     <td className='w-[12%]'>Check In Date & Time</td>
                                                     <td className='w-[12%]'>Check Out Date & Time</td>
+                                                    <td className='w-[12%]'>Status</td>
                                                     <td align='center' className='w-[8%]'>Verified By</td>
                                                     <td align='center' className='w-[4%]'>Added By</td>
                                                     <td align='center' className='w-[3%]'>Action</td>
@@ -392,6 +393,17 @@ const TouristData = () => {
                                                             <td align='center'>{d.booking_details_room_no || "-"}</td>
                                                             <td>{d.booking_details_checkin_date_time}</td>
                                                             <td>{d.booking_details_checkout_date_time}</td>
+                                                            <td>
+                                                                {
+                                                                    d.booking_details_status === "0" ?
+                                                                        <span className='chip chip__green'>
+                                                                            IN
+                                                                        </span> :
+                                                                        <span className='chip chip__blue'>
+                                                                            OUT
+                                                                        </span>
+                                                                }
+                                                            </td>
                                                             <td>
                                                                 {
                                                                     d.booking_details_booking_id?.booking_verified_by === "0" ?
