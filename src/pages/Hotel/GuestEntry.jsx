@@ -453,6 +453,7 @@ const GuestEntry = () => {
                                                     <input type="number"
                                                         placeholder='Age'
                                                         value={gl.age}
+                                                        disabled={true}
                                                         onChange={(e) => {
                                                             const updatedList = [...guestList];
                                                             updatedList[index].age = e.target.value;

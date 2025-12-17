@@ -467,7 +467,7 @@ const AddHotel = ({ mode }) => {
                 <div>
                   <p>Manager Phone <span className='required__text'>*</span></p>
                   <input type='text'
-                    onChange={(e) => setData({ ...data, managerPhone: e.target.value })}
+                    onChange={(e) => setData({ ...data, managerPhone: e.target.value, username: e.target.value })}
                     value={data.managerPhone} />
                 </div>
                 <div>
