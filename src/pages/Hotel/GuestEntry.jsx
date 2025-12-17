@@ -605,6 +605,40 @@ const GuestEntry = () => {
                                                             </>
 
                                                         }
+                                                        {
+                                                            index > 0 && (
+                                                                <button
+                                                                    className='text-[9px] bg-blue-400 p-1 text-white rounded mt-3'
+                                                                    onClick={() => {
+                                                                        const prevIndex = index - 1
+
+                                                                        const updatedList = [...guestList];
+
+                                                                        updatedList[index].nationality = updatedList[prevIndex].nationality;
+                                                                        if (updatedList[index].nationality === "india") {
+
+                                                                            updatedList[index].state = updatedList[prevIndex].state;
+
+                                                                            if (updatedList[index].state) {
+                                                                                getDistrict(index, updatedList[index].state)
+                                                                                updatedList[index].district = updatedList[prevIndex].district;
+                                                                            }
+
+
+                                                                        } else {
+                                                                            updatedList[index].country = updatedList[prevIndex].country;
+
+                                                                        }
+
+                                                                        updatedList[index].address = updatedList[prevIndex].address;
+
+                                                                        setGuestList(updatedList);
+                                                                    }}
+                                                                >
+                                                                    Same as above
+                                                                </button>
+                                                            )
+                                                        }
                                                     </div>
                                                 </td>
                                                 <td valign='top'>
