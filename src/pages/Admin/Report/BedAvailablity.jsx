@@ -12,12 +12,14 @@ import Pagination from '../../../components/Admin/Pagination';
 import useSetTableFilter from '../../../hooks/useSetTableFilter';
 import NoData from '../../../components/Admin/NoData'
 import useMyToaster from '../../../hooks/useMyToaster';
+import { useLocation } from 'react-router-dom';
 
 
 
 
 const BedAvailablity = () => {
     const toast = useMyToaster();
+    const { state } = useLocation()
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
     const { getFilterState, setFilterState } = useSetTableFilter();
     const savedFilter = getFilterState("bed-availablity");
@@ -42,8 +44,8 @@ const BedAvailablity = () => {
     const timeRef = useRef(null);
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [hotelList, setHotelList] = useState([]);
-    const [bedStatus, setBedStatus] = useState('all')
-    const [totalBed, setTotalBed] = useState()
+    const [bedStatus, setBedStatus] = useState(state?.filter || 'all')
+    const [bedCount, setBedCount] = useState({})
 
 
 
@@ -55,11 +57,11 @@ const BedAvailablity = () => {
                 token: Cookies.get("token"),
                 page: activePage,
                 limit: dataLimit,
-                occupied: true, // Get Occupied field also;
-                bedStatus: bedStatus
+                bedStatus: bedStatus,
+                hotelId: selectedHotel
             }
             setFilterState("bed-availablity", dataLimit, activePage);
-            const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
+            const url = process.env.REACT_APP_MASTER_API + `/hotel/get-bed-availablity`;
             const req = await fetch(url, {
                 method: "POST",
                 headers: {
@@ -68,9 +70,11 @@ const BedAvailablity = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            
+            console.log(res);
+
             setTotalData(res.total)
             setData([...res.data])
+            setBedCount({ ...res.Bedcount })
             setHotelList([...res.data]);
             setLoading(false);
 
@@ -88,8 +92,11 @@ const BedAvailablity = () => {
         if (timeRef.current) clearTimeout(timeRef.current);
 
         timeRef.current = setTimeout(async () => {
+
+            console.log("runnnnn....")
+            console.log(txt);
             if (!txt) {
-                get();
+                // get();
                 return;
             }
             try {
@@ -118,7 +125,7 @@ const BedAvailablity = () => {
 
 
             } catch (error) {
-                 
+
             }
 
         }, 150)
@@ -164,11 +171,13 @@ const BedAvailablity = () => {
                                         data={[
                                             ...hotelList.map((item) => ({
                                                 label: item.hotel_name,
-                                                value: item.hotel_name
+                                                value: item._id
                                             }))
                                         ]}
                                         style={{ width: '100%' }}
-                                        onChange={(v) => setSelectedHotel(v)}
+                                        onChange={(v) => {
+                                            setSelectedHotel(v)
+                                        }}
                                         value={selectedHotel}
                                         placeholder="Select"
                                         searchable={true}
@@ -199,7 +208,8 @@ const BedAvailablity = () => {
                                     Reset
                                 </button>
                                 <button className='save__btn' onClick={() => {
-                                    searchTableDatabase(selectedHotel, "hotel")
+                                    // searchTableDatabase(selectedHotel, "hotel")
+                                    get();
                                 }}>
                                     <Icons.SEARCH />
                                     Search
@@ -232,11 +242,11 @@ const BedAvailablity = () => {
                                     </div>
                                     <div className='flex items-center gap-2'>
                                         <div className='flex w-full flex-col lg:w-[300px]'>
-                                            <input type='search'
+                                            {/* <input type='search'
                                                 placeholder='Search...'
                                                 onChange={(e) => searchTableDatabase(e.target.value)}
                                                 className='p-[6px]'
-                                            />
+                                            /> */}
                                         </div>
                                         <div className='flex justify-end'>
                                             <Whisper placement='leftStart' enterable
@@ -312,6 +322,17 @@ const BedAvailablity = () => {
                                             })
                                         }
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colSpan={7}>
+                                                <strong>Total</strong>
+                                            </td>
+                                            <td>{bedCount.totalBed}</td>
+                                            <td>{bedCount.occupiedBed}</td>
+                                            <td>{bedCount.vacantBed}</td>
+                                            <td>{bedCount.extraOccuBed}</td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                                 {data.length < 1 && <NoData />}
                             </div>

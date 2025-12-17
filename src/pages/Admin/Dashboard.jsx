@@ -53,6 +53,7 @@ const Dashboard = () => {
     tillTodayFemale: null, tillTodayOtherGender: null, tillTodayIndian: null, tillTodayForeigner: null
   })
   const token = Cookies.get("token");
+  const [bedCount, setBedCount] = useState({})
 
 
 
@@ -60,7 +61,7 @@ const Dashboard = () => {
   // Get data;
   const get = async () => {
     setLoading(true);
-    
+
     try {
       const data = {
         token: token,
@@ -162,8 +163,6 @@ const Dashboard = () => {
         totalBeds: resAdmin.total_beds,
         todayActive: resHotel.active_hotel,
         occupiedBeds: resHotel.total_occupied,
-        vacantsBeds: Math.max(0, parseInt(resAdmin.total_beds) - parseInt(resHotel.total_occupied)),
-        extraOccupency: Math.max(0, parseInt(resHotel.total_occupied) - parseInt(resAdmin.total_beds)),
         toDayFtFls: resHotel.today_footfall,
         tillTodayFtFls: resHotel.total_footfall,
         toDayChild: resHotel.today_child,
@@ -183,6 +182,38 @@ const Dashboard = () => {
 
     })();
   }, []);
+
+
+  // Get BedAvailablity and extra Occupancy
+  // ========================================
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = {
+          token: Cookies.get("token"),
+        }
+        const url = process.env.REACT_APP_MASTER_API + `/hotel/get-bed-availablity`;
+        const req = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
+        const res = await req.json();
+
+        setStatsData(prev => ({
+          ...prev,
+          vacantsBeds: res.Bedcount.vacantBed,
+          extraOccupency: res.Bedcount.extraOccuBed,
+        }));
+
+      } catch (error) {
+        return toast("Something went wrong", "error");
+      }
+
+    })()
+  }, [])
 
 
 
@@ -263,21 +294,27 @@ const Dashboard = () => {
                 <FaBed className='card__icon' />
               </div>
 
-              <div className='total__card green__grad' onClick={() => navigate("/admin/report/bed-availablity")}>
+              <div className='total__card green__grad' onClick={() => navigate("/admin/report/bed-availablity", {
+                state: { filter: 'occupied' }
+              })}>
                 <div className='total__card__data'>
                   <p>{statsData.occupiedBeds ?? <CardLoading />}</p>
                   <p>Occupied Beds</p>
                 </div>
                 <FaBed className='card__icon' />
               </div>
-              <div className='total__card green__grad' onClick={() => navigate("/admin/report/bed-availablity")}>
+              <div className='total__card green__grad' onClick={() => navigate("/admin/report/bed-availablity", {
+                state: { filter: 'vacant' }
+              })}>
                 <div className='total__card__data'>
                   <p>{statsData.vacantsBeds ?? <CardLoading />}</p>
                   <p>Vacant Beds</p>
                 </div>
                 <FaBed className='card__icon' />
               </div>
-              <div className='total__card red__grad' onClick={() => navigate("/admin/report/bed-availablity")}>
+              <div className='total__card red__grad' onClick={() => navigate("/admin/report/bed-availablity", {
+                state: { filter: 'extra' }
+              })}>
                 <div className='total__card__data'>
                   <p>{statsData.extraOccupency ?? <CardLoading />}</p>
                   <p>Extra Occupancy</p>
