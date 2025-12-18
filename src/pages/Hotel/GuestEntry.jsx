@@ -25,8 +25,8 @@ const GuestEntry = () => {
     const [country, setCountry] = useState([]);
     const { guestMobile, numberOfGuests, verificationBy } = location.state || {};
     const [checkInDetails, setCheckInDetails] = useState({
-        mobileNumbe: '', NumberOfGuest: '', checkInDate: '', checkInTime: '',
-        checkoutDate: '', checkoutTime: ''
+        mobileNumbe: '', NumberOfGuest: '', checkInDate: '', checkInTime: '10:00:00',
+        checkoutDate: '', checkoutTime: '10:00:00'
     });
     const guestListSet = {
         guestName: '', gender: '', age: '', dob: '', nationality: '', address: '', idType: '',
