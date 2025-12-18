@@ -36,8 +36,8 @@ const Dashboard = () => {
       Name: h.hotel_name,
       Zone: h.hotel_zone_id?.name,
       Sector: h.hotel_sector_id?.name,
-      Proprietor: h.hotel_block_id?.name,
-      PoliceStation: h.hotel_police_station_id?.name,
+      Block: h.hotel_block_id?.name,
+      "Police Station": h.hotel_police_station_id?.name,
       District: h.hotel_district_id?.name,
       "Total Guest(s) Enrolled": h.hotel_total_guest,
       "Total Charges": h.hotel_total_charges
@@ -53,7 +53,6 @@ const Dashboard = () => {
     tillTodayFemale: null, tillTodayOtherGender: null, tillTodayIndian: null, tillTodayForeigner: null
   })
   const token = Cookies.get("token");
-  const [bedCount, setBedCount] = useState({})
 
 
 

@@ -167,10 +167,10 @@ const GuestEntry = () => {
                 if (guest.nationality === "india") {
                     if (!guest.state) errors.state = true;
                     if (!guest.district) errors.district = true;
-                    if (!guest.address) errors.address = true;
+                    // if (!guest.address) errors.address = true;
                 } else {
                     if (!guest.country) errors.country = true;
-                    if (!guest.address) errors.address = true;
+                    // if (!guest.address) errors.address = true;
                 }
             }
 
@@ -453,7 +453,6 @@ const GuestEntry = () => {
                                                     <input type="number"
                                                         placeholder='Age'
                                                         value={gl.age}
-                                                        disabled={true}
                                                         onChange={(e) => {
                                                             const updatedList = [...guestList];
                                                             updatedList[index].age = e.target.value;
@@ -592,16 +591,16 @@ const GuestEntry = () => {
                                                                         updatedList[index].address = e.target.value;
                                                                         setGuestList(updatedList);
 
-                                                                        setGuestErrors((prev) => {
-                                                                            const newErrors = [...prev];
-                                                                            if (newErrors[index]) delete newErrors[index].address;
-                                                                            return newErrors;
-                                                                        });
+                                                                        // setGuestErrors((prev) => {
+                                                                        //     const newErrors = [...prev];
+                                                                        //     if (newErrors[index]) delete newErrors[index].address;
+                                                                        //     return newErrors;
+                                                                        // });
                                                                     }}
                                                                 />
-                                                                {guestErrors[index]?.address && (
+                                                                {/* {guestErrors[index]?.address && (
                                                                     <span className="required">*This fields is required</span>
-                                                                )}
+                                                                )} */}
                                                             </>
 
                                                         }
@@ -627,7 +626,6 @@ const GuestEntry = () => {
 
                                                                         } else {
                                                                             updatedList[index].country = updatedList[prevIndex].country;
-
                                                                         }
 
                                                                         updatedList[index].address = updatedList[prevIndex].address;

@@ -156,7 +156,7 @@ const AddNotice = ({ mode }) => {
     }
 
     const handleFile = async (e) => {
-        let validfile = await checkfile(e.target.files[0], ['pdf']);
+        let validfile = await checkfile(e.target.files[0], ['pdf', 'jpg', 'jpeg', 'png']);
 
         if (typeof (validfile) !== 'boolean') return toast(validfile, "error");
 

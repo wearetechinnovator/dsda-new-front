@@ -1,24 +1,45 @@
-const downloadBase64 = (data, filename="notice") => {
-    // Example: base64 data and filename
-    const base64Data = data; // your base64 string
-    const fileName = filename; 
-    const contentType = "application/pdf"; // change according to your file type
+const downloadBase64 = (base64Data, filename = "Notice") => {
+    // Handle both raw base64 and data URL
+    const isDataUrl = base64Data.startsWith("data:");
+    
+    let mimeType = "application/octet-stream";
+    let base64 = base64Data;
 
-    // Convert base64 -> Blob
-    const byteCharacters = atob(base64Data.split(",")[1]); // remove "data:*/*;base64," if exists
-    const byteNumbers = new Array(byteCharacters.length);
+    if (isDataUrl) {
+        const parts = base64Data.split(",");
+        mimeType = parts[0].match(/data:(.*);base64/)[1];
+        base64 = parts[1];
+    }
+
+    // Add file extension if missing
+    if (!filename.includes(".")) {
+        const extMap = {
+            "application/pdf": "pdf",
+            "image/png": "png",
+            "image/jpeg": "jpg",
+            "image/webp": "webp"
+        };
+        filename += "." + (extMap[mimeType] || "bin");
+    }
+
+    // Base64 → Blob
+    const byteCharacters = atob(base64);
+    const byteNumbers = new Uint8Array(byteCharacters.length);
+
     for (let i = 0; i < byteCharacters.length; i++) {
         byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
-    const byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: contentType });
 
-    // Create a temporary download link
+    const blob = new Blob([byteNumbers], { type: mimeType });
+
+    // Download
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = fileName;
+    link.download = filename;
     document.body.appendChild(link);
     link.click();
+
+    URL.revokeObjectURL(link.href);
     document.body.removeChild(link);
 };
 
