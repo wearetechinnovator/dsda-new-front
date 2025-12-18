@@ -878,6 +878,8 @@ module.exports = {
             "Bankura",
             "Birbhum",
             "Burdwan (Bardhaman)",
+            "Paschim Burdwan (Bardhaman)",
+            "Purba Burdwan (Bardhaman)",
             "Cooch Behar",
             "Dakshin Dinajpur (South Dinajpur)",
             "Darjeeling",
