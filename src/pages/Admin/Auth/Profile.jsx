@@ -71,7 +71,7 @@ const Profile = () => {
       headers: {
         "Content-Type": 'application/json'
       },
-      body: JSON.stringify({ ...data, userId })
+      body: JSON.stringify({ ...data, userId, token: cookie })
     })
     if (req.status !== 200) {
       return toast("Profile not update", "error");
@@ -99,7 +99,7 @@ const Profile = () => {
         headers: {
           "Content-Type": 'application/json'
         },
-        body: JSON.stringify({ ...updateData, userId })
+        body: JSON.stringify({ ...updateData, userId, token: cookie })
       })
       const res = await req.json();
       if (req.status !== 200) {
@@ -123,7 +123,7 @@ const Profile = () => {
           <div className='content__body__main'>
             <div className='w-full flex gap-3 items-center'>
               <p className='text-lg font-bold text-blue-500'>Personal Info</p>
-              <div className='w-[25px] h-[25px] border bg-gray-50 cursor-pointer text-blue-500 rounded-full grid place-items-center' onClick={() => {
+              {/* <div className='w-[25px] h-[25px] border bg-gray-50 cursor-pointer text-blue-500 rounded-full grid place-items-center' onClick={() => {
                 setEditMode(!editMode)
                 if (editMode) updateProfile();
               }}>
@@ -131,7 +131,7 @@ const Profile = () => {
                   editMode ? <Icons.CHECK2 className='active:scale-50 transition-all' title='Save' />
                     : <Icons.EDIT className='active:scale-50 transition-all' title='Edit' />
                 }
-              </div>
+              </div> */}
             </div>
             <hr className='profile__hr' />
             <div className='w-full flex justify-center mb-2'>

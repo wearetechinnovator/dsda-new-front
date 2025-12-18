@@ -54,7 +54,6 @@ const Login = () => {
 
     } catch (error) {
       setLoading(false)
-       
       return toast("Something went wrong", "error")
     }
 
