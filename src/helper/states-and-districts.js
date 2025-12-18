@@ -877,7 +877,6 @@ module.exports = {
             "Alipurduar",
             "Bankura",
             "Birbhum",
-            "Burdwan (Bardhaman)",
             "Paschim Burdwan (Bardhaman)",
             "Purba Burdwan (Bardhaman)",
             "Cooch Behar",
@@ -894,6 +893,7 @@ module.exports = {
             "North 24 Parganas",
             "Paschim Medinipur (West Medinipur)",
             "Purba Medinipur (East Medinipur)",
+            "Jhargram",
             "Purulia",
             "South 24 Parganas",
             "Uttar Dinajpur (North Dinajpur)"
