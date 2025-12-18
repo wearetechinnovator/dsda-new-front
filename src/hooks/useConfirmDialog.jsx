@@ -25,9 +25,6 @@ const useConfirmDialog = () => {
 
     const modal = (
         <Modal open={state.isOpen} onClose={() => handleClose('cancel')} size={'xs'}>
-            {/* <Modal.Header className='border-b'>
-                {state.title}
-            </Modal.Header> */}
             <div className='flex items-center justify-between pb-1'>
                 <p className='text-xs'>{state.title}</p>
                 <div
