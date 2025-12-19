@@ -22,7 +22,7 @@ const AddNotice = ({ mode }) => {
     const [allHotels, setAllHotels] = useState([]);
     const [data, setData] = useState({
         title: '', date: "", status: '1', details: '',
-        file: '', hotel: ''
+        file: '', hotel: []
     })
     const timeRef = useRef(null);
 
@@ -30,10 +30,11 @@ const AddNotice = ({ mode }) => {
 
 
     // =========== [GET HOTELS] =========
-    const get = async () => {
+    const getHotel = async () => {
         try {
             const data = {
-                token: Cookies.get("token")
+                token: Cookies.get("token"),
+                limit: 9000000
             }
             const url = process.env.REACT_APP_MASTER_API + `/hotel/get`;
             const req = await fetch(url, {
@@ -44,14 +45,13 @@ const AddNotice = ({ mode }) => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            setAllHotels([...res.data])
+            setAllHotels(res.data || [])
 
         } catch (error) {
-             
         }
     }
     useEffect(() => {
-        get()
+        getHotel()
     }, [])
 
 
@@ -60,7 +60,7 @@ const AddNotice = ({ mode }) => {
 
         timeRef.current = setTimeout(async () => {
             if (!txt) {
-                get();
+                getHotel();
                 return;
             }
 
@@ -78,9 +78,9 @@ const AddNotice = ({ mode }) => {
                     body: JSON.stringify(data)
                 });
                 const res = await req.json();
-                setAllHotels([...res])
+                setAllHotels(Array.isArray(res) ? res : []);
             } catch (error) {
-                 
+
             }
 
         }, 1000)
@@ -102,8 +102,12 @@ const AddNotice = ({ mode }) => {
                     body: JSON.stringify({ token: cookie, id: id })
                 })
                 const res = await req.json();
+
+                const noticeHotels = res.notice_hotel || [];
+                const hotelIds = noticeHotels.map(h => String(h._id));
+
                 setData({
-                    hotel: res.notice_hotel,
+                    hotel: hotelIds,
                     date: res.notice_date?.split("T")[0],
                     details: res.notice_details,
                     file: res.notice_file,
@@ -171,7 +175,7 @@ const AddNotice = ({ mode }) => {
     const clearData = () => {
         setData({
             title: '', date: "", status: '', details: '',
-            file: '', hotel: ''
+            file: '', hotel: []
         });
         setFileName("");
     }
@@ -189,22 +193,29 @@ const AddNotice = ({ mode }) => {
                                 <p>Select Hotel<span className='required__text'>*</span></p>
                                 <CheckPicker
                                     block
-                                    data={[
-                                        ...allHotels.map((item) => ({
-                                            label: item.hotel_name,
-                                            value: item._id
-                                        }))
-                                    ]}
+                                    data={allHotels.map(item => ({
+                                        label: item.hotel_name,
+                                        value: String(item._id)
+                                    }))}
                                     style={{ width: '100%' }}
-                                    onChange={(v) => setData({ ...data, hotel: v })}
-                                    onClean={() => setData({ ...data, hotel: '' })}
-                                    value={mode && data.hotel}
+                                    value={data.hotel || []}
                                     placeholder="Select"
-                                    searchable={true}
-                                    cleanable={true}
-                                    placement='bottomEnd'
-                                    onSearch={(serachTxt) => searchTableDatabase(serachTxt)}
-
+                                    searchable
+                                    cleanable
+                                    placement="bottomEnd"
+                                    onChange={(v) => {
+                                        setData(prev => ({
+                                            ...prev,
+                                            hotel: v
+                                        }));
+                                    }}
+                                    onClean={() => {
+                                        setData(prev => ({
+                                            ...prev,
+                                            hotel: []
+                                        }));
+                                    }}
+                                    // onSearch={(searchTxt) => searchTableDatabase(searchTxt)}
                                 />
                             </div>
                             <div className='w-full'>

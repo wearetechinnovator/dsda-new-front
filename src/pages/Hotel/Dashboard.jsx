@@ -92,7 +92,7 @@ const Dashboard = () => {
 
             } catch (error) {
                 toast("Something went wrong", "error")
-                 
+
             }
         })()
 
@@ -503,14 +503,16 @@ const Dashboard = () => {
                     <p className='text-xs'>{modalData.notice_details}</p>
                 </Modal.Body>
                 <Modal.Footer>
-                    <div className='bg-red-400 float-start'>
-                        <button className='notice__view__btn' onClick={() => {
-                            if (modalData.notice_file) downloadBase64(modalData.notice_file);
-                        }}>
-                            <Icons.DOWNLOAD />
-                            Download
-                        </button>
-                    </div>
+                    {modalData.notice_file && (
+                        <div className='bg-red-400 float-start'>
+                            <button className='notice__view__btn' onClick={() => {
+                                if (modalData.notice_file) downloadBase64(modalData.notice_file);
+                            }}>
+                                <Icons.DOWNLOAD />
+                                Download
+                            </button>
+                        </div>
+                    )}
                 </Modal.Footer>
             </Modal>
 
