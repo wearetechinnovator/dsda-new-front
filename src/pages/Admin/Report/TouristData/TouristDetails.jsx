@@ -12,6 +12,7 @@ import useSetTableFilter from '../../../../hooks/useSetTableFilter';
 import Cookies from 'js-cookie'
 import DataShimmer from '../../../../components/Admin/DataShimmer';
 import { useSelector } from 'react-redux';
+import NoData from '../../../../components/Admin/NoData';
 
 
 const TouristData = () => {
@@ -25,30 +26,39 @@ const TouristData = () => {
     const [totalData, setTotalData] = useState()
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
+    const timeRef = useRef(null);
+    const [allHotel, setAllHotel] = useState([]);
+    const [selectedHotel, setSelectedHotel] = useState(null);
+    const [hotelList, setHotellList] = useState([]);
     const exportData = useMemo(() => {
-        return data && data.map((d, i) => ({
-            "Sl No.": i + 1,
-            "Guest Name": d.booking_details_guest_name,
-            "Guest Photo": d.booking_details_guest_photo && (process.env.REACT_APP_BOOKING_API + "/upload/" + d.booking_details_guest_photo),
-            "Guest Name": d.booking_details_guest_name,
-            Gender: d.booking_details_guest_gender,
-            DOB: d.booking_details_guest_dob,
-            Age: d.booking_details_guest_age,
-            Nationality: d.booking_details_guest_nationality === "india" ? "Indian" : d.booking_details_guest_nationality === "foreign" ? "Foreigner" : "",
-            Country: d.booking_details_guest_country,
-            State: d.booking_details_guest_state,
-            District: d.booking_details_guest_district,
-            Address: d.booking_details_guest_address,
-            "ID Proof": d.booking_details_guest_id_proof && (process.env.REACT_APP_BOOKING_API + "/upload/" + d.booking_details_guest_id_proof),
-            // "Register Guest Details": `${d.booking_details_guest_name} (Mobile: ${d.booking_details_guest_phone})`,
-            "Identity Card": `${d.booking_details_guest_id_type} - ${d.booking_details_guest_id_number}`,
-            Mobile: d.booking_details_guest_phone,
-            "Room No.": d.booking_details_room_no,
-            "Checkin Date & Time": d.booking_details_checkin_date_time,
-            "Check Out Date & Time": d.booking_details_checkout_date_time,
-            "Verifyed By": d.booking_details_booking_id?.booking_verified_by === "0" ? 'Manager' : 'Admin',
-            "Added By": d.booking_details_booking_id?.booking_added_by === "0" ? 'Admin' : 'Hotel',
-        }));
+        return data && data.map((d, i) => {
+            const currentHotel = allHotel?.find((h, _) => h._id === d.booking_details_hotel_id);
+            return {
+                "Sl No.": i + 1,
+                "Hotel Name": currentHotel?.hotel_name,
+                "Guest Name": d.booking_details_guest_name,
+                "Guest Photo": d.booking_details_guest_photo && (process.env.REACT_APP_BOOKING_API + "/upload/" + d.booking_details_guest_photo),
+                "Guest Name": d.booking_details_guest_name,
+                "Gender": d.booking_details_guest_gender,
+                "DOB": d.booking_details_guest_dob,
+                "Age": d.booking_details_guest_age,
+                "Nationality": d.booking_details_guest_nationality === "india" ? "Indian" : d.booking_details_guest_nationality === "foreign" ? "Foreigner" : "",
+                "Country": d.booking_details_country,
+                "State": d.booking_details_state,
+                "District": d.booking_details_district,
+                "Address": d.booking_details_guest_address,
+                "ID Proof": d.booking_details_guest_id_proof && (process.env.REACT_APP_BOOKING_API + "/upload/" + d.booking_details_guest_id_proof),
+                "Identity Card": `${d.booking_details_guest_id_type} - ${d.booking_details_guest_id_number}`,
+                "Mobile": d.booking_details_guest_phone,
+                "Room No.": d.booking_details_room_no,
+                "Checkin Date & Time": d.booking_details_checkin_date_time,
+                "Check Out Date & Time": d.booking_details_checkout_date_time,
+                "Status": d.booking_details_status === "0" ? "IN" : "OUT",
+                "Verifyed By": d.booking_details_booking_id?.booking_verified_by === "0" ? 'Manager' : 'Admin',
+                "Added By": d.booking_details_booking_id?.booking_added_by === "0" ? 'Admin' : 'Hotel',
+
+            }
+        });
     }, [data]);
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
@@ -56,10 +66,6 @@ const TouristData = () => {
         idCardNumber: '', mobileNo: '', fromDate: '',
         toDate: '', guestName: ''
     })
-    const [allHotel, setAllHotel] = useState([]);
-    const [selectedHotel, setSelectedHotel] = useState(null);
-    const [hotelList, setHotellList] = useState([]);
-    const timeRef = useRef(null);
 
 
 
@@ -546,18 +552,9 @@ const TouristData = () => {
                                                         </tr>
                                                     })
                                                 }
-
-                                                {
-                                                    data.length < 1 && (
-                                                        <tr>
-                                                            <td colSpan={11} align='center' className='p-4 text-lg'>
-                                                                No Data Found
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                }
                                             </tbody>
                                         </table>
+                                        {data.length < 1 && <NoData />}
                                     </div>
 
                                     {totalData && <div className='paginate__parent'>

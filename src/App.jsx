@@ -200,7 +200,7 @@ const App = () => {
           <Route path="final-check-out" element={<FinalCheckOut />} /> {/**** NOT USE ANYWHERE *****/}
           <Route path="tourist-data" element={<TouristData />} />
           <Route path="amenities" element={<Amenities />} />
-          <Route path="payments" element={<Payments />} />
+          <Route path="payments/:type" element={<Payments />} />
           <Route path="other-payments" element={<OtherPayments />} />
         </Route>
 

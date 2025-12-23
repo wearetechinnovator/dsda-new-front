@@ -1,4 +1,5 @@
 import useMyToaster from "./useMyToaster";
+import Cookies from 'js-cookie'
 
 const usePayment = () => {
     const toast = useMyToaster();
@@ -9,7 +10,7 @@ const usePayment = () => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({id, type})
+            body: JSON.stringify({id, type, token: Cookies.get("token")})
         });
         const res = await req.json();
 
@@ -17,7 +18,7 @@ const usePayment = () => {
             return toast("Unable to process payment", 'error')
         }
 
-        window.location.href = res.url;
+        window.location.href = res.redirectURI;
 
     }
 

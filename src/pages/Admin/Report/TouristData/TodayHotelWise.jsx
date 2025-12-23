@@ -38,7 +38,7 @@ const TodayHotelWise = () => {
             Block: h.hotel_details?.hotel_block_id?.name,
             "Police Station": h.hotel_details?.hotel_police_station_id?.name,
             District: h.hotel_details?.hotel_district_id?.name,
-            Footfall: "--",
+            Footfall: h.totalFootFall || "--",
             "Male": h.totalMale,
             "Female": h.totalFemale,
             "Other Gender": h.totalOtherGender,
@@ -46,7 +46,7 @@ const TodayHotelWise = () => {
             "Child": h.totalChild,
             "Indian": h.totalIndian,
             "Foreigner": h.totalForeigner,
-            "Amenity Charge": "--",
+            "Amenity Charge": h.totalAmenitiesCharges || "--",
         }));
     }, [data]);
     const [loading, setLoading] = useState(true);

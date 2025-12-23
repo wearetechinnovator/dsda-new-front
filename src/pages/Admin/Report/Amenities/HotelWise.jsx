@@ -27,18 +27,23 @@ const HotelWise = () => {
     const [totalData, setTotalData] = useState()
     const [hotelList, setHotelList] = useState([]);
     const [data, setData] = useState([]);
+    const [allHotel, setAllHotel] = useState([]);
     const tableRef = useRef(null);
     const exportData = useMemo(() => {
-        return data && data.map((h, _) => ({
-            Name: h.hotel_name,
-            Zone: h.hotel_zone_id?.name,
-            Sector: h.hotel_sector_id?.name,
-            Proprietor: h.hotel_block_id?.name,
-            PoliceStation: h.hotel_police_station_id?.name,
-            District: h.hotel_district_id?.name,
-            "Total Guest(s) Enrolled": h.hotel_total_guest,
-            "Total Charges": h.hotel_total_charges
-        }));
+        return data && data.map((h, _) => {
+            const currentHotel = allHotel?.find((hh, i) => h.hotelId === hh._id);
+            console.log(currentHotel);
+            return {
+                "Hotel Name": currentHotel?.hotel_name,
+                Zone: currentHotel?.hotel_zone_id?.name,
+                Sector: currentHotel?.hotel_sector_id?.name,
+                Block: currentHotel?.hotel_block_id?.name,
+                "Police Station": currentHotel?.hotel_police_station_id?.name,
+                District: currentHotel?.hotel_district_id?.name,
+                "Total Guest(s) Enrolled": h.totalEnrolled,
+                "Total Charges": h.totalCharges
+            }
+        });
     }, [data]);
     const [loading, setLoading] = useState(true);
     const timeRef = useRef(null);
@@ -49,7 +54,6 @@ const HotelWise = () => {
     const [isFilterDateSet, setIsFilterDateSet] = useState(null)
     const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
     const [navTitle, setNavTitle] = useState("");
-    const [allHotel, setAllHotel] = useState([]);
     const [totalEnrolled, setTotalEnrolled] = useState(0);
     const [totalCharge, setTotalCharge] = useState(0);
 

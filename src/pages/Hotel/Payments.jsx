@@ -2,7 +2,7 @@ import Nav from '../../components/Hotel/Nav';
 import SideNav from '../../components/Hotel/HotelSideNav'
 import { Icons } from '../../helper/icons';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Popover, SelectPicker, Whisper } from 'rsuite';
 import downloadPdf from '../../helper/downloadPdf';
 import useExportTable from '../../hooks/useExportTable';
@@ -19,8 +19,8 @@ import usePayment from '../../hooks/usePayment';
 
 
 const Payments = () => {
-    const location = useLocation();
-    const payStatus = location.state;
+    const {type} = useParams();
+    const payStatus = type === "paid" ? "1" : type === "due" ? "without__success" : null;
     const navigate = useNavigate();
     const toast = useMyToaster();
     const { copyTable, downloadExcel, printTable, exportPdf } = useExportTable();
@@ -62,7 +62,7 @@ const Payments = () => {
     const [selectedMonth, setSelectedMonth] = useState(null);
     const [selectedYear, setSelectedYear] = useState(null);
     const timeRef = useRef(null);
-    const [dateRangeAminity, setDateRangeAminity] = useState()
+    const [dateRangeAminity, setDateRangeAminity] = useState();
     const settingDetails = useSelector((store) => store.settingSlice);
     const { payment } = usePayment();
 
@@ -78,7 +78,7 @@ const Payments = () => {
                 token: Cookies.get("hotel-token"),
                 url: process.env.REACT_APP_BOOKING_API + "/check-in/get-hotel-id-total-amount"
             });
-
+            console.log(data);
             setDateRangeAminity(data)
         })()
     }, [settingDetails])
@@ -121,7 +121,7 @@ const Payments = () => {
     }
     useEffect(() => {
         get(selectedMonth, selectedYear);
-    }, [dataLimit, activePage])
+    }, [dataLimit, activePage, payStatus]);
 
     
     const AmenitiesHotelSearch = (e) => {
@@ -264,7 +264,7 @@ const Payments = () => {
                                                     <td>{n.year}</td>
                                                     <td>{months[n.month - 1].label}</td>
                                                     <td>{n.totalAmount}</td>
-                                                    <td><span className='chip chip__grey'>Bill Not Generated</span> </td>
+                                                    <td><span className='chip chip__grey'>Bill Not Generated</span></td>
                                                 </tr>
                                             })
 
@@ -281,7 +281,9 @@ const Payments = () => {
                     <div className='content__body__main mt-4'>
                         <div className='w-full flex gap-1 items-center border-b pb-1'>
                             <Icons.RUPES />
-                            <p className='font-semibold uppercase'>Pay These Bills</p>
+                            <p className='font-semibold uppercase'>
+                                { payStatus == "without__success" ? "Pay These Bills" : payStatus == "1" ? "Paid Bills" : "All Bills"}
+                            </p>
                         </div>
                         <div className='add_new_compnent'>
                             <div className='flex justify-between items-center'>

@@ -31,7 +31,7 @@ const EditPayment = () => {
                     headers: {
                         "Content-Type": 'application/json'
                     },
-                    body: JSON.stringify({ id })
+                    body: JSON.stringify({ id, token: Cookies.get("token") })
                 });
                 const res = await req.json();
                 setForm({
@@ -40,7 +40,7 @@ const EditPayment = () => {
                     month: res?.amenities_month,
                     amount: res?.amenities_amount,
                     date: res?.amenities_payment_date,
-                    mode: res?.amenities_payment_mode,
+                    mode: res?.amenities_payment_mode ? res?.amenities_payment_mode : '0',
                     transactionId: res?.amenities_payment_transaction_id,
                     details: res?.amenities_details,
                     status: res?.amenities_payment_status,
@@ -118,7 +118,7 @@ const EditPayment = () => {
                             <div className='w-full flex flex-col gap-3'>
                                 <div>
                                     <p>Payment Date</p>
-                                    <input type="text" value={form.date} disabled />
+                                    <input type="date" value={form.date} />
                                 </div>
                                 <div>
                                     <p>Payment Mode</p>

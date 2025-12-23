@@ -62,7 +62,7 @@ const SideNav = () => {
             </li>
 
             <li className={activePath.includes("/hotel/payments") ? "active__link" : ""}>
-              <Link to="/hotel/payments" data-tooltip-id="sideBarItemToolTip">
+              <Link to="/hotel/payments/all" data-tooltip-id="sideBarItemToolTip">
                 <div className="flex items-center">
                   <span className="mr-3"><Icons.RUPES /></span>
                   <span>Payments</span>

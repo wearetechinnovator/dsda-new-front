@@ -325,15 +325,11 @@ const Amenities = () => {
                             </div>
 
                             <div className='form__btn__grp filter'>
-                                <button className='reset__btn' onClick={() => navigate('/hotel/payments', {
-                                    state: '1'
-                                })}>
+                                <button className='reset__btn' onClick={() => navigate('/hotel/payments/paid')}>
                                     <Icons.RUPES />
                                     Previous Payments
                                 </button>
-                                <button className='reset__btn' onClick={() => navigate('/hotel/payments', {
-                                    state: 'without__success'
-                                })}>
+                                <button className='reset__btn' onClick={() => navigate('/hotel/payments/due')}>
                                     <Icons.RUPES /> Pay Now
                                 </button>
                             </div>
