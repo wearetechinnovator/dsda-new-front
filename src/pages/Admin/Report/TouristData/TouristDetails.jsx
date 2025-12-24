@@ -265,8 +265,8 @@ const TouristData = () => {
                 <div className='content__body'>
                     <div className='content__body__main'>
                         <div className='w-full flex gap-1 items-center'>
-                            <Icons.SEARCH />
-                            <p className='font-semibold text-sm'>Filter Guest Entry</p>
+                            <Icons.FILTER />
+                            <p className='font-semibold text-sm uppercase'>Filter Guest Entry</p>
                         </div>
                         <div className='w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
                             <div className='w-full mt-3'>
@@ -349,7 +349,7 @@ const TouristData = () => {
                                 <div>
                                     <div className='w-full flex gap-1 items-center'>
                                         <Icons.TABLE />
-                                        <p className='font-semibold text-sm'>Report Table</p>
+                                        <p className='font-semibold text-sm uppercase'>Report Table</p>
                                     </div>
                                     {/* Option Bar */}
                                     <div className="add_new_compnent">

@@ -7,10 +7,9 @@ import useMyToaster from '../../hooks/useMyToaster';
 
 const PublicBillView = () => {
     const toast = useMyToaster()
-    const { state } = useLocation();
     const { id } = useParams();
-    const navigate = useNavigate();
     const [billData, setBillData] = useState({});
+    const [hotelData, setHotelData] = useState({});
 
 
 
@@ -26,13 +25,37 @@ const PublicBillView = () => {
                     body: JSON.stringify({ id })
                 });
                 const res = await req.json();
-                 
+                setBillData(res);
 
             } catch (err) {
                 return toast("Something went wrong");
             }
         })()
     }, [id])
+
+
+    // Get HotelData after Bill Data get;
+    useEffect(() => {
+        (async () => {
+            if(!billData?.booking_hotel_id) return;
+
+            try {
+                const url = process.env.REACT_APP_MASTER_API + "/hotel/get-hotel-details"
+                const req = await fetch(url, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify({ hotelId: billData?.booking_hotel_id })
+                })
+                const hotelData = await req.json();
+                setHotelData(hotelData);
+
+            } catch (err) {
+                return toast("Something went wrong");
+            }
+        })()
+    }, [billData])
 
 
     return (
@@ -42,32 +65,28 @@ const PublicBillView = () => {
                 <table>
                     <tbody>
                         <tr>
-                            <td>ID:</td>
-                            <td>{state?.id}</td>
-                        </tr>
-                        <tr>
                             <td>Hotel Name:</td>
-                            <td>{state?.hotelName}</td>
+                            <td>{hotelData?.hotel_name}</td>
                         </tr>
                         <tr>
                             <td>Payee:</td>
-                            <td>{state?.headGuest}</td>
+                            <td>{billData?.booking_head_guest_name}</td>
                         </tr>
                         <tr>
                             <td>Check-in:</td>
-                            <td>{state?.checkIn}</td>
+                            <td>{billData?.booking_checkin_date_time}</td>
                         </tr>
                         <tr>
                             <td>Check-out:</td>
-                            <td>{state?.checkOut || "Not yet checked out"}</td>
+                            <td>{billData?.booking_checkout_date_time}</td>
                         </tr>
                         <tr>
                             <td>Guests:</td>
-                            <td>{state?.guests}</td>
+                            <td>{billData?.booking_number_of_guest}</td>
                         </tr>
                         <tr>
                             <td>Amount:</td>
-                            <td>{state?.totalAmount}</td>
+                            <td>{billData?.booking_bill_amount}</td>
                         </tr>
                     </tbody>
                 </table>

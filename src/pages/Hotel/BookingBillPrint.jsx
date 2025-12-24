@@ -12,7 +12,6 @@ const BookingBillPrint = () => {
 
     useEffect(() => {
         let timer;
-
         if (copy) {
             timer = setTimeout(() => {
                 setCopy(false);
@@ -21,6 +20,10 @@ const BookingBillPrint = () => {
 
         return () => clearTimeout(timer);
     }, [copy]);
+
+    useEffect(()=>{
+        console.log(state);
+    },[state])
 
 
     return (
@@ -90,11 +93,23 @@ const BookingBillPrint = () => {
                 <button
                     onClick={() => {
                         setCopy(!copy);
-                        navigator.clipboard.writeText("Hello world")
+                        navigator.clipboard.writeText(
+                            window.location.origin + "/public/bill/" + state?.id
+                        )
                     }}
                     className='bg-[#2F353B] hover:bg-[#464d53] px-3 py-2 rounded flex items-center gap-1'>
                     {copy ? <Icons.CHECK2 /> : <Icons.COPY className='font-bold' />}
                     {copy ? "Copied..." : "Copy link"}
+                </button>
+                <button
+                    onClick={() => {
+                        const url = window.location.origin + "/public/bill/" + state?.id;
+                        const message = `You are successfully checked in ${state?.hotelName} from ${state?.checkIn} to ${state?.checkOut || "Not yet checked out"} and amount of Rs. ${state?.totalAmount} received for ${state?.guests} Person -Digha Sankarpur Dev Authority. Here is your bill: ${url}`;
+                        window.open(`https://wa.me/?text=${encodeURIComponent(message)}&phone=${state?.mobileNumber}`, '_blank');
+                    }}
+                    className='bg-green-500  px-3 py-2 rounded flex items-center gap-1'>
+                    <Icons.WHATSAPP className="text-lg"/>
+                    Send WhatsApp
                 </button>
             </footer>
         </main>

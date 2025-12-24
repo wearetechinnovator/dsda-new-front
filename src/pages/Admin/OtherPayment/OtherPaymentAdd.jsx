@@ -14,7 +14,7 @@ const OtherPaymentAdd = ({ mode }) => {
     const { id } = useParams();
     const [data, setData] = useState({
         hotel: '', purpose: '', amount: '', transactionId: '',
-        paymentDate: '', status: 'ni', receiptNo:''
+        paymentDate: '', status: 'ni', receiptNo: ''
     })
     const [allHotels, setAllHotels] = useState([]);
     const timeRef = useRef(null);
@@ -34,15 +34,17 @@ const OtherPaymentAdd = ({ mode }) => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            setAllHotels([...res.data])
+            setAllHotels([...allHotels, ...res.data])
 
         } catch (error) {
-             
+            return toast("Hotels not get", 'error');
         }
     }
 
     useEffect(() => {
-        get();
+        if (!mode) {
+            get();
+        }
     }, [])
 
     const searchTableDatabase = (txt) => {
@@ -66,7 +68,7 @@ const OtherPaymentAdd = ({ mode }) => {
                 const res = await req.json();
                 setAllHotels([...res])
             } catch (error) {
-                 
+
             }
 
         }, 350)
@@ -88,8 +90,18 @@ const OtherPaymentAdd = ({ mode }) => {
                     body: JSON.stringify({ token: cookie, id: id })
                 })
                 const res = await req.json();
+
+                setAllHotels(prev => {
+                    if (prev.findIndex(item => item._id === res.other_payment_hotel_id._id) === -1) {
+                        return [...prev, res.other_payment_hotel_id]
+                    }
+                    return prev;
+                })
+
+                console.log(res.other_payment_payment_status)
+
                 setData({
-                    hotel: res.other_payment_hotel_id,
+                    hotel: res.other_payment_hotel_id._id,
                     amount: res.other_payment_amount,
                     purpose: res.other_payment_purpose,
                     paymentDate: res.other_payment_payment_date,
@@ -108,7 +120,7 @@ const OtherPaymentAdd = ({ mode }) => {
         ];
 
         for (const key of requiredKeys) {
-            if (!data[key] || data[key].trim() === "") {
+            if (!data[key] || String(data[key]).trim() === "") {
                 return toast(`${key.camelToWords()} can't be blank`, 'error');
             }
         }

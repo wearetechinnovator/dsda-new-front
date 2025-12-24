@@ -112,7 +112,7 @@ const DateWise = () => {
             }
 
         } catch (error) {
-             
+
             return toast("Hotel data not load", 'error')
         }
     }
@@ -151,7 +151,7 @@ const DateWise = () => {
                 }
 
             } catch (error) {
-                 
+
             }
 
         }, 300)
@@ -210,59 +210,11 @@ const DateWise = () => {
 
                     {/* Option Bar */}
                     <div className='add_new_compnent border rounded'>
-                        <div className='flex justify-between items-center'>
-                            <div className='flex flex-col'>
-                                <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
-                                    <option value={5}>5</option>
-                                    <option value={10}>10</option>
-                                    <option value={50}>50</option>
-                                    <option value={100}>100</option>
-                                    <option value={500}>500</option>
-                                    <option value={1000}>1000</option>
-                                    <option value={5000}>5000</option>
-                                    <option value={10000}>10000</option>
-                                    <option value={50000}>50000</option>
-                                    <option value={totalData}>All</option>
-                                </select>
-                            </div>
-                            <div className='flex items-center gap-2'>
-                                <div className='flex w-full flex-col lg:w-[300px]'>
-                                    <input type='search'
-                                        placeholder='Search...'
-                                        onChange={(e) => searchTableDatabase(e.target.value, "hotel")}
-                                        className='p-[6px]'
-                                    />
-                                </div>
-                                <div className='flex justify-end'>
-                                    <Whisper placement='leftStart' enterable
-                                        speaker={<Popover full>
-                                            <div className='download__menu' onClick={() => exportTable('print')} >
-                                                <Icons.PRINTER className='text-[16px]' />
-                                                Print Table
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('copy')}>
-                                                <Icons.COPY className='text-[16px]' />
-                                                Copy Table
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('pdf')}>
-                                                <Icons.PDF className="text-[16px]" />
-                                                Download Pdf
-                                            </div>
-                                            <div className='download__menu' onClick={() => exportTable('excel')} >
-                                                <Icons.EXCEL className='text-[16px]' />
-                                                Download Excel
-                                            </div>
-                                        </Popover>}
-                                    >
-                                        <div className='record__download' >
-                                            <Icons.MORE />
-                                        </div>
-                                    </Whisper>
-                                </div>
-                            </div>
+                        <div className='w-full flex items-center gap-1 border-b pb-1'>
+                            <Icons.FILTER />
+                            <p className='font-semibold uppercase'>Filter</p>
                         </div>
-
-                        <div className='mt-3 w-full border-t pt-2'>
+                        <div className='mt-3 w-full'>
                             <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-6 w-full mt-3 text-[13px]'>
                                 <div className='w-full'>
                                     <p className='mb-1'>Hotel List</p>
@@ -315,6 +267,57 @@ const DateWise = () => {
 
                     {/* Table */}
                     <div className='content__body__main mt-4'>
+                        <div className='flex justify-between items-center mb-3'>
+                            <div className='flex flex-col'>
+                                <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={50}>50</option>
+                                    <option value={100}>100</option>
+                                    <option value={500}>500</option>
+                                    <option value={1000}>1000</option>
+                                    <option value={5000}>5000</option>
+                                    <option value={10000}>10000</option>
+                                    <option value={50000}>50000</option>
+                                    <option value={totalData}>All</option>
+                                </select>
+                            </div>
+                            <div className='flex items-center gap-2'>
+                                <div className='flex w-full flex-col lg:w-[300px]'>
+                                    <input type='search'
+                                        placeholder='Search...'
+                                        onChange={(e) => searchTableDatabase(e.target.value, "hotel")}
+                                        className='p-[6px]'
+                                    />
+                                </div>
+                                <div className='flex justify-end'>
+                                    <Whisper placement='leftStart' enterable
+                                        speaker={<Popover full>
+                                            <div className='download__menu' onClick={() => exportTable('print')} >
+                                                <Icons.PRINTER className='text-[16px]' />
+                                                Print Table
+                                            </div>
+                                            <div className='download__menu' onClick={() => exportTable('copy')}>
+                                                <Icons.COPY className='text-[16px]' />
+                                                Copy Table
+                                            </div>
+                                            <div className='download__menu' onClick={() => exportTable('pdf')}>
+                                                <Icons.PDF className="text-[16px]" />
+                                                Download Pdf
+                                            </div>
+                                            <div className='download__menu' onClick={() => exportTable('excel')} >
+                                                <Icons.EXCEL className='text-[16px]' />
+                                                Download Excel
+                                            </div>
+                                        </Popover>}
+                                    >
+                                        <div className='record__download' >
+                                            <Icons.MORE />
+                                        </div>
+                                    </Whisper>
+                                </div>
+                            </div>
+                        </div>
                         {/* Table start */}
                         {loading === false ? <div className='overflow-x-auto list__table list__table__checkin'>
                             <table className='min-w-full bg-white' id='amenitiesTable' ref={tableRef}>

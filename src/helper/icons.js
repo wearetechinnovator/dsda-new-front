@@ -46,6 +46,8 @@ import { FaTransgender } from "react-icons/fa6";
 import { FaUser } from "react-icons/fa6";
 import { MdOutlineBedroomParent } from "react-icons/md";
 import { RiHotelLine } from "react-icons/ri";
+import { FaWhatsapp } from "react-icons/fa";
+
 
 
 
@@ -110,7 +112,7 @@ export const Icons = {
   CHILD: FaChildReaching,
   USER_FILL: FaUser,
   ROOM_TYPE_ICON: MdOutlineBedroomParent,
-  HOTEL_CATEGORY: RiHotelLine
-  
+  HOTEL_CATEGORY: RiHotelLine,
+  WHATSAPP: FaWhatsapp,
 };
 

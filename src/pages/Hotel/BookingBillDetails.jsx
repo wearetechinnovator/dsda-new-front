@@ -57,6 +57,7 @@ const BookingBillDetails = () => {
                         checkOut: `${finalData.checkoutDate}, ${finalData.checkoutTime}`,
                         guests: finalData.guestList.length,
                         totalAmount: totalFees,
+                        mobileNumber: finalData.guestList[0].mobileNumber
                     }
                 })
             } else {

@@ -151,6 +151,7 @@ const CheckOut = () => {
                 checkOut: res.booking_checkout_date_time,
                 guests: res.booking_number_of_guest,
                 totalAmount: res.booking_bill_amount,
+                mobileNumber: res.booking_head_guest_phone
             }
         })
     }

@@ -162,6 +162,7 @@ const Dashboard = () => {
                 checkIn: res.booking_checkin_date_time,
                 guests: res.booking_number_of_guest,
                 totalAmount: res.booking_bill_amount,
+                mobileNumber: res.booking_head_guest_phone
             }
         })
     }
