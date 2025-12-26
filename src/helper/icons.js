@@ -47,6 +47,8 @@ import { FaUser } from "react-icons/fa6";
 import { MdOutlineBedroomParent } from "react-icons/md";
 import { RiHotelLine } from "react-icons/ri";
 import { FaWhatsapp } from "react-icons/fa";
+import { FiLoader } from "react-icons/fi";
+
 
 
 
@@ -114,5 +116,6 @@ export const Icons = {
   ROOM_TYPE_ICON: MdOutlineBedroomParent,
   HOTEL_CATEGORY: RiHotelLine,
   WHATSAPP: FaWhatsapp,
+  PROCESS: FiLoader
 };
 

@@ -72,6 +72,9 @@ const BookingBillPrint = React.lazy(() => import("./pages/Hotel/BookingBillPrint
 const PublicBillView = React.lazy(() => import("./pages/Hotel/PublicBillView"));
 const CheckOutDetails = React.lazy(() => import('./pages/Hotel/CheckOutDetails'));
 const PayGateWay = React.lazy(() => import("./pages/Hotel/PayGateWay"));
+const AllPayment = React.lazy(() => import("./pages/Hotel/AllPayment"));
+
+
 
 
 const App = () => {
@@ -202,6 +205,7 @@ const App = () => {
           <Route path="amenities" element={<Amenities />} />
           <Route path="payments/:type" element={<Payments />} />
           <Route path="other-payments" element={<OtherPayments />} />
+          <Route path="all-payment/status-check" element={<AllPayment />} />
         </Route>
 
 

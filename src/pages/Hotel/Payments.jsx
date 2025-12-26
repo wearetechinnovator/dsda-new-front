@@ -19,7 +19,7 @@ import usePayment from '../../hooks/usePayment';
 
 
 const Payments = () => {
-    const {type} = useParams();
+    const { type } = useParams();
     const payStatus = type === "paid" ? "1" : type === "due" ? "without__success" : null;
     const navigate = useNavigate();
     const toast = useMyToaster();
@@ -64,7 +64,7 @@ const Payments = () => {
     const timeRef = useRef(null);
     const [dateRangeAminity, setDateRangeAminity] = useState();
     const settingDetails = useSelector((store) => store.settingSlice);
-    const { payment } = usePayment();
+    const { payment, payLoading } = usePayment();
 
 
 
@@ -116,14 +116,14 @@ const Payments = () => {
             setLoading(false);
 
         } catch (error) {
-             
+
         }
     }
     useEffect(() => {
         get(selectedMonth, selectedYear);
     }, [dataLimit, activePage, payStatus]);
 
-    
+
     const AmenitiesHotelSearch = (e) => {
         const txt = e.target.value;
         if (timeRef.current) clearTimeout(timeRef.current);
@@ -158,7 +158,7 @@ const Payments = () => {
                 setData([...res])
                 return;
             } catch (error) {
-                 
+
             }
 
         }, 300)
@@ -282,7 +282,7 @@ const Payments = () => {
                         <div className='w-full flex gap-1 items-center border-b pb-1'>
                             <Icons.RUPES />
                             <p className='font-semibold uppercase'>
-                                { payStatus == "without__success" ? "Pay These Bills" : payStatus == "1" ? "Paid Bills" : "All Bills"}
+                                {payStatus == "without__success" ? "Pay These Bills" : payStatus == "1" ? "Paid Bills" : "All Bills"}
                             </p>
                         </div>
                         <div className='add_new_compnent'>
@@ -369,7 +369,7 @@ const Payments = () => {
                                                             n.amenities_payment_init === "1" ? (n.amenities_payment_mode == "0" ?
                                                                 <span className='chip chip__green'>Offline</span> :
                                                                 <span className='chip chip__blue'>Online</span>) :
-                                                                <span className='chip chip__grey'>Payment Not initiated</span>
+                                                                <span className='chip chip__grey'>Payment Not Initiated</span>
                                                         }
                                                     </td>
                                                     <td>
@@ -379,7 +379,7 @@ const Payments = () => {
                                                                 (n.amenities_payment_status == "1" ?
                                                                     <span className='chip chip__green'>Success</span> :
                                                                     <span className='chip chip__yellow'>Processing</span>)) :
-                                                                <span className='chip chip__grey'>Payment Not initiated</span>
+                                                                <span className='chip chip__grey'>Payment Not Initiated</span>
                                                         }
                                                     </td>
                                                     <td>{n.amenities_payment_transaction_id}</td>
@@ -388,10 +388,23 @@ const Payments = () => {
                                                             n.amenities_payment_status === "0" && (
                                                                 <button
                                                                     className="flex rounded px-2 py-1 bg-green-400 text-white items-center hover:bg-green-500"
-                                                                    onClick={async () => await payment(n._id, "monthly")}
+                                                                    onClick={payLoading === true ? null : async () => await payment(n._id, "monthly")}
                                                                 >
                                                                     <Icons.RUPES />
-                                                                    <span>Pay Now</span>
+                                                                    <span>{payLoading ? "Processing..." : "Pay Now"}</span>
+                                                                </button>
+                                                            )
+                                                        }
+                                                        {
+                                                            n.amenities_payment_status === "2" && (
+                                                                <button
+                                                                    className="flex rounded px-2 py-1 bg-green-400 text-white items-center hover:bg-green-500"
+                                                                    onClick={async () => {
+                                                                        window.location.href = `${window.location.origin}/hotel/all-payment/status-check?ref=${n.amenities_payment_ref_no}&type=monthly`
+                                                                    }}
+                                                                >
+                                                                    <Icons.PROCESS className='text-white' />
+                                                                    <span> Check Status</span>
                                                                 </button>
                                                             )
                                                         }

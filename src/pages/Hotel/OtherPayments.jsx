@@ -41,7 +41,7 @@ const OtherPayments = () => {
     const [loading, setLoading] = useState(true);
     const [filterData, setFilterData] = useState({ amount: '', purpose: '' });
     const timeRef = useRef(null);
-    const { payment } = usePayment();
+    const { payment, payLoading } = usePayment();
 
 
 
@@ -289,7 +289,7 @@ const OtherPayments = () => {
                                                                     (d.other_payment_payment_status === "1" ?
                                                                         <span className='chip chip__green'>Success</span> :
                                                                         <span className='chip chip__yellow'>Processing</span>)) :
-                                                                <span className='chip chip__grey'>Payment Not initiated</span>
+                                                                <span className='chip chip__grey'>Payment Not Initiated</span>
 
                                                         }
                                                     </td>
@@ -299,16 +299,23 @@ const OtherPayments = () => {
                                                             d.other_payment_payment_status === "0" && (
                                                                 <button
                                                                     className='flex rounded px-2 py-1 bg-green-400 text-white items-center hover:bg-green-500'
-                                                                    onClick={async () => await payment(d._id, "others")}
-                                                                // onClick={() => navigate("/hotel/payment/process", {
-                                                                //     state: {
-                                                                //         id: d._id,
-                                                                //         type: "others"
-                                                                //     }
-                                                                // })}
+                                                                    onClick={payLoading === true ? null : async () => await payment(d._id, "others")}
                                                                 >
                                                                     <Icons.RUPES />
-                                                                    <span>Pay Now</span>
+                                                                    <span>{payLoading ? "Processing..." : "Pay Now"}</span>
+                                                                </button>
+                                                            )
+                                                        }
+                                                        {
+                                                            d.other_payment_payment_status === "2" && (
+                                                                <button
+                                                                    className="flex rounded px-2 py-1 bg-green-400 text-white items-center hover:bg-green-500"
+                                                                    onClick={async () => {
+                                                                        window.location.href=`${window.location.origin}/hotel/all-payment/status-check?ref=${d.other_payment_payment_ref_no}&type=others`
+                                                                    }}
+                                                                >
+                                                                    <Icons.PROCESS className='text-white' />
+                                                                    <span> Check Status</span>
                                                                 </button>
                                                             )
                                                         }
