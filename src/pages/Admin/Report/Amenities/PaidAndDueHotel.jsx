@@ -51,18 +51,18 @@ const PaidAndDueHotel = () => {
         hotel: '', month: '', year: ''
     })
     const months = [
-        { label: 'January', value: 'january' },
-        { label: 'February', value: 'february' },
-        { label: 'March', value: 'march' },
-        { label: 'April', value: 'april' },
-        { label: 'May', value: 'may' },
-        { label: 'June', value: 'june' },
-        { label: 'July', value: 'july' },
-        { label: 'August', value: 'august' },
-        { label: 'September', value: 'september' },
-        { label: 'October', value: 'october' },
-        { label: 'November', value: 'november' },
-        { label: 'December', value: 'december' }
+        { label: 'January', value: '01' },
+        { label: 'February', value: '02' },
+        { label: 'March', value: '03' },
+        { label: 'April', value: '04' },
+        { label: 'May', value: '05' },
+        { label: 'June', value: '06' },
+        { label: 'July', value: '07' },
+        { label: 'August', value: '08' },
+        { label: 'September', value: '09' },
+        { label: 'October', value: '10' },
+        { label: 'November', value: '11' },
+        { label: 'December', value: '12' }
     ];
     const currentYear = new Date().getFullYear();
     const years = Array.from({ length: currentYear - 2000 + 1 }, (_, i) => {
@@ -121,7 +121,9 @@ const PaidAndDueHotel = () => {
                 token: Cookies.get("token"),
                 page: activePage,
                 limit: dataLimit,
-                hotelId: selectedFilters.hotel
+                hotelId: selectedFilters.hotel,
+                month: selectedFilters.month,
+                year: selectedFilters.year
             }
             const url = process.env.REACT_APP_BOOKING_API + `/check-in/get-hotel-enrolled-data`;
             const req = await fetch(url, {
@@ -223,13 +225,13 @@ const PaidAndDueHotel = () => {
             copyTable("itemTable"); // Pass tableid
         }
         else if (whichType === "excel") {
-            downloadExcel(exportData, 'item-list.xlsx') // Pass data and filename
+            downloadExcel(exportData, 'amenities.xlsx') // Pass data and filename
         }
         else if (whichType === "print") {
-            printTable(tableRef, "Item List"); // Pass table ref and title
+            printTable(tableRef, "Amenities"); // Pass table ref and title
         }
         else if (whichType === "pdf") {
-            let document = exportPdf('Item List', exportData);
+            let document = exportPdf('Amenities', exportData);
             downloadPdf(document)
         }
     }
@@ -268,7 +270,10 @@ const PaidAndDueHotel = () => {
                                             }))
                                         ]}
                                         style={{ width: '100%' }}
-                                        onChange={(v) => setSelectedHotel(v)}
+                                        onChange={(v) => {
+                                            setSelectedHotel(v);
+                                            setSelectedFilters({...selectedFilters, hotel: v});
+                                        }}
                                         value={selectedHotel}
                                         placeholder="Select"
                                         searchable={true}
@@ -284,6 +289,10 @@ const PaidAndDueHotel = () => {
                                         block
                                         className='w-full'
                                         data={months}
+                                        onChange={(v)=>{
+                                            setSelectedFilters({...selectedFilters, month: v});
+                                        }}
+                                        value={selectedFilters.month}
                                     />
                                 </div>
                                 <div className='w-full'>
@@ -292,6 +301,10 @@ const PaidAndDueHotel = () => {
                                         block
                                         className='w-full'
                                         data={years}
+                                        onChange={(v)=>{
+                                            setSelectedFilters({...selectedFilters, year: v});
+                                        }}
+                                        value={selectedFilters.year}
                                     />
                                 </div>
                             </div>
@@ -326,13 +339,13 @@ const PaidAndDueHotel = () => {
                                 </select>
                             </div>
                             <div className='flex items-center gap-2'>
-                                <div className='flex w-full flex-col lg:w-[300px]'>
+                                {/* <div className='flex w-full flex-col lg:w-[300px]'>
                                     <input type='search'
                                         placeholder='Search...'
                                         onChange={(e) => searchTableDatabase(e.target.value, "hotel")}
                                         className='p-[6px]'
                                     />
-                                </div>
+                                </div> */}
                                 <div className='flex justify-end'>
                                     <Whisper placement='leftStart' enterable
                                         speaker={<Popover full>
@@ -406,7 +419,7 @@ const PaidAndDueHotel = () => {
                                             <td className="font-semibold text-lg">{totalEnrolled}</td>
                                             <td className="font-semibold text-lg">{totalCharge}</td>
                                             <td className="font-semibold text-lg">{totalPaid}</td>
-                                            <td className="font-semibold text-lg">{0}</td>
+                                            <td className="font-semibold text-lg">{totalCharge - totalPaid}</td>
                                         </tr>
                                     )
                                 }

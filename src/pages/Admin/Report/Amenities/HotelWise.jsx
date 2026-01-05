@@ -34,11 +34,11 @@ const HotelWise = () => {
             const currentHotel = allHotel?.find((hh, i) => h.hotelId === hh._id);
             return {
                 "Hotel Name": currentHotel?.hotel_name,
-                Zone: currentHotel?.hotel_zone_id?.name,
-                Sector: currentHotel?.hotel_sector_id?.name,
-                Block: currentHotel?.hotel_block_id?.name,
+                "Zone": currentHotel?.hotel_zone_id?.name,
+                "Sector": currentHotel?.hotel_sector_id?.name,
+                "Block": currentHotel?.hotel_block_id?.name,
                 "Police Station": currentHotel?.hotel_police_station_id?.name,
-                District: currentHotel?.hotel_district_id?.name,
+                "District": currentHotel?.hotel_district_id?.name,
                 "Total Guest(s) Enrolled": h.totalEnrolled,
                 "Total Charges": h.totalCharges
             }
@@ -165,6 +165,7 @@ const HotelWise = () => {
         }
     }
     useEffect(() => {
+        if(overallDate && !selectedFilters.startDate && !selectedFilters.endDate) return;
         get();
     }, [dataLimit, activePage, isFilterDateSet])
 
@@ -338,13 +339,13 @@ const HotelWise = () => {
                                     </select>
                                 </div>
                                 <div className='flex items-center gap-2'>
-                                    <div className='flex w-full flex-col lg:w-[300px]'>
+                                    {/* <div className='flex w-full flex-col lg:w-[300px]'>
                                         <input type='search'
                                             placeholder='Search...'
                                             onChange={(e) => searchTableDatabase(e.target.value, "hotel")}
                                             className='p-[6px]'
                                         />
-                                    </div>
+                                    </div> */}
                                     <div className='flex justify-end'>
                                         <Whisper placement='leftStart' enterable
                                             speaker={<Popover full>
