@@ -53,7 +53,7 @@ const CheckIn = () => {
         }
 
         // Validate Guest Number..............
-        if (isNaN(data.numberOfGuests) || parseInt(data.numberOfGuests) <= 0) {
+        if (!/^[1-9]\d*$/.test(String(data.numberOfGuests))) {
             return toast("Invalid Number of Guest", "error");
         }
 
@@ -67,7 +67,7 @@ const CheckIn = () => {
             },
             body: JSON.stringify({
                 mobileNumber: data.guestMobile, existsCheck: true,
-                token: token
+                token: token, NumberOfGuest: data.numberOfGuests
             })
         });
         const checkRes = await check.json();
@@ -77,7 +77,7 @@ const CheckIn = () => {
                 return toast("Guest alredy checkin", 'error');
             }
         } else {
-            return toast("Something went wrong", 'error');
+            return toast(checkRes?.err || "Something went wrong", 'error');
         }
 
         // ::::::::::::::::: SENDING PART :::::::::::::::::
