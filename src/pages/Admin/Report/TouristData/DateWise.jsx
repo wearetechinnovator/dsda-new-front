@@ -172,7 +172,7 @@ const DateWise = () => {
 
     // handle filter
     const handleFilter = async () => {
-        if (!selectedHotel) return toast("Please select hotel", 'error');
+        // if (!selectedHotel) return toast("Please select hotel", 'error');
         if (!startDate) return toast("Start date can't be blank", 'error');
         if (!endDate) return toast("End date can't be blank", 'error');
 
