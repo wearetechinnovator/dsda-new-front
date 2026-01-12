@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { add } from '../../store/userDetailSlice';
 import { useDispatch } from 'react-redux';
 import useMyToaster from '../../hooks/useMyToaster';
-import { Avatar, TagInput } from 'rsuite';
+import { Avatar, TagInput, Toggle } from 'rsuite';
 import { FaUser } from 'react-icons/fa';
 import checkfile from '../../helper/checkfile';
 import { addSetting } from '../../store/settingSlice';
@@ -23,7 +23,8 @@ const Setting = () => {
   const [data, setData] = useState({
     title: '', email: '', contact_number: '',
     address: "", charges_per_tourist: '', id_card_list: '', logo: '',
-    age_for_charges: 5, day_for_checkin_checkout: 2, payment_start_date: 5
+    age_for_charges: 5, day_for_checkin_checkout: 2, payment_start_date: 5,
+    payment_oparetion: '1', booking_oparetion: '1'
   });
   const url = userData.err ?
     process.env.REACT_APP_MASTER_API + "/site-setting/create" :
@@ -38,8 +39,11 @@ const Setting = () => {
       address: userData.address, charges_per_tourist: userData.charges_per_tourist,
       contact_number: userData.contact_number, logo: userData.logo,
       age_for_charges: userData.age_for_charges, day_for_checkin_checkout: userData.day_for_checkin_checkout,
-      payment_start_date: userData.payment_start_date
+      payment_start_date: userData.payment_start_date,
+      payment_oparetion: userData.payment_oparetion, booking_oparetion: userData.booking_oparetion
     });
+
+    console.log(userData)
 
   }, [userData])
 
@@ -77,7 +81,7 @@ const Setting = () => {
         headers: {
           "Content-Type": 'application/json'
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           ...updateData, isLogo: true, logo: reader.result,
           token: token
         })
@@ -199,6 +203,27 @@ const Setting = () => {
                   type="tel"
                   value={data.payment_start_date}
                   onChange={editMode ? (e) => setData({ ...data, payment_start_date: e.target.value }) : null}
+                />
+              </div>
+
+              <div>
+                <p className="font-medium">Booking Operation</p>
+                <Toggle
+                  size='sm'
+                  value={data.booking_oparetion}
+                  checked={data.booking_oparetion}
+                  disabled={editMode ? false : true}
+                  onChange={editMode ? (v) => setData({ ...data, booking_oparetion: v }) : null}
+                />
+              </div>
+              <div>
+                <p className="font-medium">Payment Operation</p>
+                <Toggle
+                  size='sm'
+                  value={data.payment_oparetion}
+                  checked={data.payment_oparetion}
+                  disabled={editMode ? false : true}
+                  onChange={editMode ? (v) => setData({ ...data, payment_oparetion: v }) : null}
                 />
               </div>
             </div>

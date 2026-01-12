@@ -31,7 +31,7 @@ const OtherPaymentList = ({ mode }) => {
 	const tableRef = useRef(null);
 	const exportData = useMemo(() => {
 		return data && data.map((d, _) => ({
-			"Hotel Name": d.other_payment_hotel_id.hotel_name,
+			"Hotel Name": d.other_payment_hotel_id?.hotel_name,
 			"Payment Date": d.other_payment_date,
 			"Amount": d.other_payment_amount,
 			"Purpose": d.other_payment_purpose,
@@ -73,6 +73,7 @@ const OtherPaymentList = ({ mode }) => {
 				body: JSON.stringify(data)
 			});
 			const res = await req.json();
+			console.log(res.data)
 			setTotalData(res.total)
 			setData([...res.data])
 			setLoading(false);
