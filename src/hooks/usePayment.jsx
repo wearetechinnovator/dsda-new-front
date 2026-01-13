@@ -21,6 +21,7 @@ const usePayment = () => {
         const res = await req.json();
 
         if (req.status !== 200) {
+            setPayLoading(false);
             return toast(res.err, 'error')
         }
 
