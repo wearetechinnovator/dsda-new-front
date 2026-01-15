@@ -46,15 +46,13 @@ const Login = () => {
         return toast(res.err, "error")
       }
 
-      // Cookies.set("hotel-token", res.token );
-      // Cookies.set("hotelId", res.hotel._id );
       Cookies.set("hotel-token", res.token);
       Cookies.set("hotelId", res.hotel._id);
       navigate("/hotel/dashboard")
 
     } catch (error) {
       setLoading(false)
-      return toast("Something went wrong", "error")
+      return toast("Site is under maintainance, Please try again after some time", "error");
     }
 
 
