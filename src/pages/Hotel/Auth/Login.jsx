@@ -52,7 +52,7 @@ const Login = () => {
 
     } catch (error) {
       setLoading(false)
-      return toast("Site is under maintainance, Please try again after some time", "error");
+      return toast("Something went wrong", "error");
     }
 
 
@@ -85,10 +85,10 @@ const Login = () => {
             Sign in
           </button>
         </form>
-        <div className='flex justify-center text-[12px]'>
+        {/* <div className='flex justify-center text-[12px]'>
           Lost your password? &nbsp;
           <Link to={'/hotel/forgot'}>Reset here</Link>
-        </div>
+        </div> */}
       </div>
     </main>
   )
