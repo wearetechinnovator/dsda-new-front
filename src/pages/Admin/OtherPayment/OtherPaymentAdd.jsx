@@ -98,7 +98,6 @@ const OtherPaymentAdd = ({ mode }) => {
                     return prev;
                 })
 
-                console.log(res.other_payment_payment_status)
 
                 setData({
                     hotel: res.other_payment_hotel_id._id,

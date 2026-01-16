@@ -73,7 +73,7 @@ const OtherPaymentList = ({ mode }) => {
 				body: JSON.stringify(data)
 			});
 			const res = await req.json();
-			console.log(res.data)
+			
 			setTotalData(res.total)
 			setData([...res.data])
 			setLoading(false);

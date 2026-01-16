@@ -43,7 +43,6 @@ const Setting = () => {
       payment_oparetion: userData.payment_oparetion, booking_oparetion: userData.booking_oparetion
     });
 
-    console.log(userData)
 
   }, [userData])
 

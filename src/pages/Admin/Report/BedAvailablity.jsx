@@ -70,7 +70,7 @@ const BedAvailablity = () => {
                 body: JSON.stringify(data)
             });
             const res = await req.json();
-            console.log(res);
+            
 
             setTotalData(res.total)
             setData([...res.data])
@@ -93,8 +93,7 @@ const BedAvailablity = () => {
 
         timeRef.current = setTimeout(async () => {
 
-            console.log("runnnnn....")
-            console.log(txt);
+       
             if (!txt) {
                 // get();
                 return;

@@ -78,7 +78,6 @@ const Payments = () => {
                 token: Cookies.get("hotel-token"),
                 url: process.env.REACT_APP_BOOKING_API + "/check-in/get-hotel-id-total-amount"
             });
-            console.log(data);
             setDateRangeAminity(data)
         })()
     }, [settingDetails])

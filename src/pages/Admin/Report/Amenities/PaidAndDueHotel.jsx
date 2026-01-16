@@ -77,37 +77,40 @@ const PaidAndDueHotel = () => {
 
 
     // Get All Hotels;
-    useEffect(() => {
-        (async () => {
-            try {
-                const data = {
-                    token: Cookies.get("token"),
-                    all: true
-                }
-                const req = await fetch(process.env.REACT_APP_MASTER_API + `/hotel/get`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": 'application/json'
-                    },
-                    body: JSON.stringify(data)
-                });
-                const res = await req.json();
-
-                if (req.status === 200) {
-                    setAllHotel(res);
-
-                    const totalPaid = res.reduce((acc, i) => {
-                        acc += parseInt(i.totalAmenitiesAmount);
-                        return acc;
-                    }, 0);
-
-                    setTotalPaid(totalPaid);
-                }
-
-            } catch (error) {
-                return toast("Hotel list not get", "error");
+    const getHotel = async () => {
+        try {
+            const data = {
+                token: Cookies.get("token"),
+                all: true,
+                month: selectedFilters.month,
+                year: selectedFilters.year
             }
-        })()
+            const req = await fetch(process.env.REACT_APP_MASTER_API + `/hotel/get`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+            const res = await req.json();
+
+            if (req.status === 200) {
+                setAllHotel(res);
+
+                const totalPaid = res.reduce((acc, i) => {
+                    acc += parseInt(i.totalAmenitiesAmount);
+                    return acc;
+                }, 0);
+
+                setTotalPaid(totalPaid);
+            }
+
+        } catch (error) {
+            return toast("Hotel list not get", "error");
+        }
+    }
+    useEffect(() => {
+        getHotel()
     }, [])
 
 
@@ -238,7 +241,10 @@ const PaidAndDueHotel = () => {
 
 
     // handle filter
-    const handleFilter = async () => get();
+    const handleFilter = async () => {
+        get();
+        getHotel();
+    };
 
     // Reset filter form
     const handleResetFilter = async () => window.location.reload();
@@ -272,7 +278,7 @@ const PaidAndDueHotel = () => {
                                         style={{ width: '100%' }}
                                         onChange={(v) => {
                                             setSelectedHotel(v);
-                                            setSelectedFilters({...selectedFilters, hotel: v});
+                                            setSelectedFilters({ ...selectedFilters, hotel: v });
                                         }}
                                         value={selectedHotel}
                                         placeholder="Select"
@@ -289,8 +295,8 @@ const PaidAndDueHotel = () => {
                                         block
                                         className='w-full'
                                         data={months}
-                                        onChange={(v)=>{
-                                            setSelectedFilters({...selectedFilters, month: v});
+                                        onChange={(v) => {
+                                            setSelectedFilters({ ...selectedFilters, month: v });
                                         }}
                                         value={selectedFilters.month}
                                     />
@@ -301,8 +307,8 @@ const PaidAndDueHotel = () => {
                                         block
                                         className='w-full'
                                         data={years}
-                                        onChange={(v)=>{
-                                            setSelectedFilters({...selectedFilters, year: v});
+                                        onChange={(v) => {
+                                            setSelectedFilters({ ...selectedFilters, year: v });
                                         }}
                                         value={selectedFilters.year}
                                     />
