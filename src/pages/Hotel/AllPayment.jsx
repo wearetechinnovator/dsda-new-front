@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "../../assets/css/login.css"
-import Nav from '../../components/Admin/Nav';
-import SideNav from '../../components/Hotel/HotelSideNav'
-import { Tooltip } from 'react-tooltip';
-import { SelectPicker } from "rsuite";
+import Nav from '../../components/Hotel/Nav';
+import SideNav from '../../components/Hotel/HotelSideNav';
 import Cookies from 'js-cookie';
 import useMyToaster from '../../hooks/useMyToaster';
 import paProcessImg from '../../assets/images/pay-process.gif'
