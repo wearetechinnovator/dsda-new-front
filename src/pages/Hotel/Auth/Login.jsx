@@ -85,13 +85,28 @@ const Login = () => {
             Sign in
           </button>
         </form>
-        {/* <div className='flex justify-center text-[12px]'>
-          Lost your password? &nbsp;
-          <Link to={'/hotel/forgot'}>Reset here</Link>
-        </div> */}
       </div>
+
+      {/* <footer className="hotel__login__footer">
+        <div className="logo">
+          <img src={Logo} alt="Logo.png" className='z-10 mx-auto' width={"40"} />
+        </div>
+        <div className="menus">
+          <ul>
+            <li>
+              <Link href="#">Privacy Policy</Link>
+            </li>
+            <li>
+              <Link href="#">Terms & Condition</Link>
+            </li>
+            <li>
+              <Link href="#">Contact</Link>
+            </li>
+          </ul>
+        </div>
+      </footer> */}
     </main>
   )
 }
 
-export default Login
+export default Login;

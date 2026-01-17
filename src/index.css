@@ -1396,6 +1396,34 @@ input[type="checkbox"]:checked::before {
   @apply hover:bg-gray-100
 }
 
+.hotel__login__footer{
+  width: 100%;
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.39);
+  padding: 5px 40px;
+  z-index: 9999;
+  position: absolute;
+  bottom: 0;
+  backdrop-filter: blur(5px);
+  border-top: 1px solid white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.hotel__login__footer .menus ul li{
+  display: inline;
+  margin-left: 7px;
+  font-size: 13px !important;
+}
+.hotel__login__footer .menus ul li a{
+  color: black;
+}
+.hotel__login__footer .menus ul li a:hover{
+  color: black !important;
+  text-decoration: none !important;
+
+}
 
 
 /* ========================================[RESPONSIVE CODE HERE]====================================== */
