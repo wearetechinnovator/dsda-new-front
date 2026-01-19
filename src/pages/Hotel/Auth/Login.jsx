@@ -65,7 +65,7 @@ const Login = () => {
         Your browser does not support the video tag.
       </video>
       <img src={Logo} alt="Logo.png" className='mb-5 z-10 b__logo' />
-      <div className="login__box flex flex-col z-10" id="loginBox">
+      <div className="login__box flex flex-col z-10 mb-16" id="loginBox">
         <img src={"/swagata2-logo.png"} alt="Logo.png" className='mb-5 z-10 mx-auto' width={"350px"} />
         <form onSubmit={formAction}>
           <input type="text" name="username"
@@ -87,24 +87,35 @@ const Login = () => {
         </form>
       </div>
 
-      {/* <footer className="hotel__login__footer">
-        <div className="logo">
-          <img src={Logo} alt="Logo.png" className='z-10 mx-auto' width={"40"} />
-        </div>
+      <footer className="hotel__login__footer">
         <div className="menus">
           <ul>
             <li>
-              <Link href="#">Privacy Policy</Link>
+              <Link to="/about-us">About Us</Link>
             </li>
+            <li> | </li>
             <li>
-              <Link href="#">Terms & Condition</Link>
+              <Link to="/product-description">Product Description</Link>
             </li>
+            <li> | </li>
             <li>
-              <Link href="#">Contact</Link>
+              <Link to="/contact">Contact Us</Link>
+            </li>
+            <li> | </li>
+            <li>
+              <Link to="/privacy-policy">Privacy Policy</Link>
+            </li>
+            <li> | </li>
+            <li>
+              <Link to="/terms-condition">Terms & Conditions</Link>
+            </li>
+            <li> | </li>
+            <li>
+              <Link to="/cancelation-refund-policy">Cancelation & Refund Policy</Link>
             </li>
           </ul>
         </div>
-      </footer> */}
+      </footer>
     </main>
   )
 }

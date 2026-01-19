@@ -1,4 +1,4 @@
-.login__main{
+.login__main {
   width: 100%;
   height: 100vh;
   display: flex;
@@ -8,11 +8,11 @@
   background-color: white;
 }
 
-.login__main .b__logo{
+.login__main .b__logo {
   height: 150px;
 }
 
-.login__box{
+.login__box {
   width: 600px;
   max-width: 450px;
   border-radius: 10px;
@@ -23,7 +23,7 @@
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-.input_style{
+.input_style {
   width: 100%;
   height: 40px;
   margin: 10px 0;
@@ -33,10 +33,11 @@
   outline: none;
 }
 
-.input_style:focus{
+.input_style:focus {
   border: 1px solid #007bff;
 }
-.button_style{
+
+.button_style {
   width: 100%;
   height: 40px;
   margin: 10px 0;
@@ -49,29 +50,44 @@
   color: white;
   text-align: center;
 }
-.button_style:hover{
+
+.button_style:hover {
   background-color: #075243;
 }
 
-.shake{
+.shake {
   animation: shake 0.5s;
 }
 
 @keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-5px);
+  }
+
+  50% {
+    transform: translateX(5px);
+  }
+
+  75% {
+    transform: translateX(-5px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
-.otp__field{
+.otp__field {
   width: 50px;
   height: 50px;
   text-align: center;
 }
 
-.login__main a:hover{
+.login__main a:hover {
   color: #007bff !important;
   text-decoration: underline !important;
 }

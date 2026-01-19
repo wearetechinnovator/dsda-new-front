@@ -74,7 +74,12 @@ const CheckOutDetails = React.lazy(() => import('./pages/Hotel/CheckOutDetails')
 const PayGateWay = React.lazy(() => import("./pages/Hotel/PayGateWay"));
 const AllPayment = React.lazy(() => import("./pages/Hotel/AllPayment"));
 
-
+const AboutUs = React.lazy(() => import("./pages/Hotel/SiteInfo/AboutUs"));
+const ProductDescription = React.lazy(() => import("./pages/Hotel/SiteInfo/ProductDescription"));
+const ContactUs = React.lazy(() => import("./pages/Hotel/SiteInfo/ContactUs"));
+const PrivacyPolicy = React.lazy(() => import("./pages/Hotel/SiteInfo/PrivacyPolicy"));
+const TermsCondition = React.lazy(() => import("./pages/Hotel/SiteInfo/TermsCondition"));
+const CancelationRefund = React.lazy(() => import("./pages/Hotel/SiteInfo/CancelationRefund"));
 
 
 const App = () => {
@@ -186,6 +191,17 @@ const App = () => {
         <Route path="/hotel/otp" element={<UnProtectHotelRoute login={true}><HotelOtp /></UnProtectHotelRoute>} />
         <Route path="/hotel/change-password" element={<ProtectCP><HotelChangePassword /></ProtectCP>} />
         <Route path="/public/bill/:id" element={<PublicBillView />} />
+
+
+        {/* Site Infos */}
+        <Route path="/about-us" element={<AboutUs />} />
+        <Route path="/product-description" element={<ProductDescription />} />
+        <Route path="/contact" element={<ContactUs />} />
+
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+        <Route path="/terms-condition" element={<TermsCondition />} />
+        <Route path="/cancelation-refund-policy" element={<CancelationRefund />} />
+
         <Route path="/hotel" element={<ProtectHotelRoute />}>
           <Route path="payment/process" element={<PayGateWay />} /> {/* Payment Gateway */}
           <Route path="payment/confirm" element={<PayGateWay />} /> {/* Payment Gateway */}
