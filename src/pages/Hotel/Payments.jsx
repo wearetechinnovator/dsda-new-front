@@ -413,7 +413,7 @@ const Payments = () => {
                                                                 <button
                                                                     className="flex rounded px-2 py-1 bg-blue-400 text-white items-center hover:bg-blue-500"
                                                                     onClick={() =>
-                                                                        navigate("check-in/guest-entry/bill-details/print", {
+                                                                        navigate(`/hotel/payment-receipt/monthly/${n._id}`, {
                                                                             state: { payment: true }
                                                                         })
                                                                     }

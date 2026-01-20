@@ -157,54 +157,12 @@ const OtherPayments = () => {
             <main id='main'>
                 <SideNav />
                 <div className='content__body'>
-                    <div className='content__body__main'>
-                        <div className='w-full flex gap-1 items-center border-b pb-1'>
-                            <Icons.SEARCH />
-                            <p className='font-semibold text-md'>Search Payment</p>
-                        </div>
-                        <div className='w-full flex flex-col md:flex-row justify-between gap-4 items-center mt-4'>
-                            <div className='w-full mt-3'>
-                                <p>Purpose </p>
-                                <input type="text"
-                                    value={filterData.purpose}
-                                    onChange={(e) => setFilterData({ ...filterData, purpose: e.target.value })}
-                                />
-                            </div>
-                            <div className='w-full mt-3'>
-                                <p>Amount </p>
-                                <input type="text"
-                                    value={filterData.amount}
-                                    onChange={(e) => setFilterData({ ...filterData, amount: e.target.value })}
-                                />
-                            </div>
-                        </div>
-                        <div className='flex justify-start gap-2 mt-2'>
-                            <div className='search__sug__badge' onClick={(e) => setFilterData({ ...filterData, purpose: "mismatch"})}>
-                                mismatch
-                            </div>
-                            <div className='search__sug__badge' onClick={(e) => setFilterData({ ...filterData, purpose: "fine"})}>
-                                fine
-                            </div>
-                        </div>
-
-
-                        <div className='form__btn__grp'>
-                            <button className='reset__btn' onClick={resetFilter}>
-                                <Icons.RESET />
-                                Reset
-                            </button>
-                            <button className='save__btn' onClick={handleFilter}>
-                                <Icons.SEARCH /> Search
-                            </button>
-                        </div>
-                    </div>
-
                     {/* ================================== Table start here ============================== */}
                     {/* ================================================================================== */}
 
                     {/* Table Content */}
                     {!loading ?
-                        <div className='content__body__main mt-4'>
+                        <div className='content__body__main'>
                             {/* Option Bar */}
                             <div className="add_new_compnent">
                                 <div className='flex justify-between items-center'>
@@ -226,7 +184,7 @@ const OtherPayments = () => {
                                         <div className='flex w-full flex-col lg:w-[300px]'>
                                             <input
                                                 type='search'
-                                                placeholder='Search Transaction ID...'
+                                                placeholder='Search...'
                                                 onChange={searchTableDatabase}
                                                 className='p-[6px]'
                                             />
@@ -321,7 +279,7 @@ const OtherPayments = () => {
                                                         }
                                                         {(d.other_payment_receipt_number && d.other_payment_payment_status === '1') && <button
                                                             className='flex rounded px-2 py-1 gap-1 bg-blue-400 text-white items-center hover:bg-blue-500'
-                                                            onClick={() => navigate("check-in/guest-entry/bill-details/print", {
+                                                            onClick={() => navigate(`/hotel/payment-receipt/other/${d._id}`, {
                                                                 state: {
                                                                     payment: true
                                                                 }

@@ -34,6 +34,7 @@ const EditPayment = () => {
                     body: JSON.stringify({ id, token: Cookies.get("token") })
                 });
                 const res = await req.json();
+                console.log(res);
                 setForm({
                     hotel: res?.amenities_hotel_id?.hotel_name,
                     year: res?.amenities_year,
@@ -74,7 +75,7 @@ const EditPayment = () => {
             return toast("Amenities update success", 'success');
 
         } catch (error) {
-           
+
             return toast("Something went wrong", "error")
         }
 
@@ -118,7 +119,10 @@ const EditPayment = () => {
                             <div className='w-full flex flex-col gap-3'>
                                 <div>
                                     <p>Payment Date</p>
-                                    <input type="date" value={form.date} />
+                                    <input type="date"
+                                        onChange={(e) => setForm({ ...form, date: e.target.value })}
+                                        value={form.date}
+                                    />
                                 </div>
                                 <div>
                                     <p>Payment Mode</p>

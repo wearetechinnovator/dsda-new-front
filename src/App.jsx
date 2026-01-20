@@ -80,6 +80,7 @@ const ContactUs = React.lazy(() => import("./pages/Hotel/SiteInfo/ContactUs"));
 const PrivacyPolicy = React.lazy(() => import("./pages/Hotel/SiteInfo/PrivacyPolicy"));
 const TermsCondition = React.lazy(() => import("./pages/Hotel/SiteInfo/TermsCondition"));
 const CancelationRefund = React.lazy(() => import("./pages/Hotel/SiteInfo/CancelationRefund"));
+const PaymentReceipt = React.lazy(() => import("./pages/Hotel/PaymentReceipt"));
 
 
 const App = () => {
@@ -222,6 +223,7 @@ const App = () => {
           <Route path="payments/:type" element={<Payments />} />
           <Route path="other-payments" element={<OtherPayments />} />
           <Route path="all-payment/status-check" element={<AllPayment />} />
+          <Route path="payment-receipt/:type/:id" element={<PaymentReceipt />} />
         </Route>
 
 

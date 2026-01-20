@@ -18,6 +18,7 @@ const OtherPaymentAdd = ({ mode }) => {
     })
     const [allHotels, setAllHotels] = useState([]);
     const timeRef = useRef(null);
+    const [isEditMode, setIsEditMode] = useState(true);
 
 
     const get = async () => {
@@ -108,6 +109,9 @@ const OtherPaymentAdd = ({ mode }) => {
                     receiptNo: res.other_payment_receipt_number,
                     status: res.other_payment_payment_status
                 })
+                if (res.other_payment_payment_status === "1") {
+                    setIsEditMode(false);
+                }
             })()
         }
     }, [mode])
@@ -165,7 +169,49 @@ const OtherPaymentAdd = ({ mode }) => {
             <main id='main'>
                 <SideNav />
                 <div className='content__body'>
-                    <div className='content__body__main bg-white'>
+                    {/* <div className='content__body__main'>
+                        <div className='w-full flex gap-1 items-center border-b pb-1'>
+                            <Icons.SEARCH />
+                            <p className='font-semibold text-md'>Search Payment</p>
+                        </div>
+                        <div className='w-full flex flex-col md:flex-row justify-between gap-4 items-center mt-4'>
+                            <div className='w-full mt-3'>
+                                <p>Purpose </p>
+                                <input type="text"
+                                    value={filterData.purpose}
+                                    onChange={(e) => setFilterData({ ...filterData, purpose: e.target.value })}
+                                />
+                            </div>
+                            <div className='w-full mt-3'>
+                                <p>Amount </p>
+                                <input type="text"
+                                    value={filterData.amount}
+                                    onChange={(e) => setFilterData({ ...filterData, amount: e.target.value })}
+                                />
+                            </div>
+                        </div>
+                        <div className='flex justify-start gap-2 mt-2'>
+                            <div className='search__sug__badge' onClick={(e) => setFilterData({ ...filterData, purpose: "mismatch"})}>
+                                mismatch
+                            </div>
+                            <div className='search__sug__badge' onClick={(e) => setFilterData({ ...filterData, purpose: "fine"})}>
+                                fine
+                            </div>
+                        </div>
+
+
+                        <div className='form__btn__grp'>
+                            <button className='reset__btn' onClick={resetFilter}>
+                                <Icons.RESET />
+                                Reset
+                            </button>
+                            <button className='save__btn' onClick={handleFilter}>
+                                <Icons.SEARCH /> Search
+                            </button>
+                        </div>
+                    </div> */}
+
+                    <div className='content__body__main bg-white mt-4'>
                         <div className='flex justify-between  gap-5 flex-col lg:flex-row'>
                             <div className='w-full flex flex-col gap-3'>
                                 <div>
@@ -187,25 +233,45 @@ const OtherPaymentAdd = ({ mode }) => {
                                         placement='bottomEnd'
                                         onSearch={(serachTxt) => searchTableDatabase(serachTxt)}
                                         onClean={get}
+                                        disabled={!isEditMode}
                                     />
                                 </div>
                                 <div >
                                     <p>Purpose <span className='required__text'>*</span></p>
-                                    <input type='text' onChange={(e) => setData({ ...data, purpose: e.target.value })} value={data.purpose} />
+                                    <input type='text'
+                                        disabled={!isEditMode}
+                                        onChange={(e) => setData({ ...data, purpose: e.target.value })}
+                                        value={data.purpose}
+                                    />
+                                    {isEditMode && <div className='flex justify-start gap-2 mt-2'>
+                                        <div className='search__sug__badge' onClick={(e) => setData({ ...data, purpose: "Mismatch" })}>
+                                            Mismatch
+                                        </div>
+                                        <div className='search__sug__badge' onClick={(e) => setData({ ...data, purpose: "Fine" })}>
+                                            Fine
+                                        </div>
+                                    </div>}
                                 </div>
                                 <div >
                                     <p>Amount<span className='required__text'>*</span></p>
-                                    <input type='text' onChange={(e) => setData({ ...data, amount: e.target.value })} value={data.amount} />
-                                </div>
-                                <div >
-                                    <p>Payment Date <span className='required__text'>*</span></p>
-                                    <input type='date' onChange={(e) => setData({ ...data, paymentDate: e.target.value })} value={data.paymentDate} />
+                                    <input type='text'
+                                        disabled={!isEditMode}
+                                        onChange={(e) => setData({ ...data, amount: e.target.value })}
+                                        value={data.amount} />
                                 </div>
                             </div>
 
                             <div className='w-full flex flex-col gap-3'>
                                 <div >
-                                    <p>Transaction. ID <span className='required__text'>*</span></p>
+                                    <p>Payment Date <span className='required__text'>*</span></p>
+                                    <input type='date'
+                                        disabled={!isEditMode}
+                                        onChange={(e) => setData({ ...data, paymentDate: e.target.value })}
+                                        value={data.paymentDate}
+                                    />
+                                </div>
+                                <div >
+                                    <p>Transaction. ID</p>
                                     <input type='text' onChange={(e) => setData({ ...data, transactionId: e.target.value })} value={data.transactionId} />
                                 </div>
                                 <div>
@@ -217,7 +283,10 @@ const OtherPaymentAdd = ({ mode }) => {
                                 </div>
                                 <div className='w-full'>
                                     <p className='ml-1'>Payment Status</p>
-                                    <select onChange={(e) => setData({ ...data, status: e.target.value })} value={data.status}>
+                                    <select disabled={!isEditMode}
+                                        onChange={(e) => setData({ ...data, status: e.target.value })}
+                                        value={data.status}
+                                    >
                                         <option value={""}>--select--</option>
                                         <option value="ni">No initiated</option>
                                         <option value="0">Failed</option>

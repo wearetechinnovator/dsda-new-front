@@ -419,7 +419,7 @@ const Payment = ({ mode }) => {
                                                                     <Icons.EDIT className='text-[16px]' />
                                                                     Edit
                                                                 </div>
-                                                                {n.amenities_receipt_number && <div
+                                                                {/* {n.amenities_receipt_number && <div
                                                                     className='table__list__action__icon'
                                                                     onClick={(e) => {
                                                                         e.stopPropagation()
@@ -428,7 +428,7 @@ const Payment = ({ mode }) => {
                                                                 >
                                                                     <Icons.PRINTER className='text-[16px]' />
                                                                     Print Receipt
-                                                                </div>}
+                                                                </div>} */}
                                                             </Popover>}
                                                         >
                                                             <div className='table__list__action' >
