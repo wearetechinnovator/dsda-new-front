@@ -263,7 +263,7 @@ const OtherPaymentAdd = ({ mode }) => {
 
                             <div className='w-full flex flex-col gap-3'>
                                 <div >
-                                    <p>Payment Date <span className='required__text'>*</span></p>
+                                    <p>Payment Date</p>
                                     <input type='date'
                                         disabled={!isEditMode}
                                         onChange={(e) => setData({ ...data, paymentDate: e.target.value })}

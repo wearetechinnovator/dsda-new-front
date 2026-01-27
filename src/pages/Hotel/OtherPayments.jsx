@@ -78,7 +78,7 @@ const OtherPayments = () => {
             setLoading(false);
 
         } catch (error) {
-             
+
         }
     }
     useEffect(() => {
@@ -115,7 +115,7 @@ const OtherPayments = () => {
                 setData([...res])
 
             } catch (error) {
-                 
+
             }
 
         }, 300)
@@ -227,7 +227,9 @@ const OtherPayments = () => {
                                             <td>Amount</td>
                                             <td>Purpose</td>
                                             <td className='w-[15%]'>Status</td>
+                                            <td>Ref. ID</td>
                                             <td>Transaction Id</td>
+                                            <td>Receipt No</td>
                                             <td className='w-[12%]'>Action</td>
                                         </tr>
                                     </thead>
@@ -251,7 +253,9 @@ const OtherPayments = () => {
 
                                                         }
                                                     </td>
+                                                    <td>{d.other_payment_payment_ref_no}</td>
                                                     <td>{d.other_payment_payment_transaction_id}</td>
+                                                    <td>{d.other_payment_receipt_number}</td>
                                                     <td align='center'>
                                                         {
                                                             d.other_payment_payment_status === "0" && (
@@ -269,7 +273,7 @@ const OtherPayments = () => {
                                                                 <button
                                                                     className="flex rounded px-2 py-1 bg-green-400 text-white items-center hover:bg-green-500"
                                                                     onClick={async () => {
-                                                                        window.location.href=`${window.location.origin}/hotel/all-payment/status-check?ref=${d.other_payment_payment_ref_no}&type=others`
+                                                                        window.location.href = `${window.location.origin}/hotel/all-payment/status-check?ref=${d.other_payment_payment_ref_no}&type=others`
                                                                     }}
                                                                 >
                                                                     <Icons.PROCESS className='text-white' />

@@ -73,6 +73,7 @@ const PublicBillView = React.lazy(() => import("./pages/Hotel/PublicBillView"));
 const CheckOutDetails = React.lazy(() => import('./pages/Hotel/CheckOutDetails'));
 const PayGateWay = React.lazy(() => import("./pages/Hotel/PayGateWay"));
 const AllPayment = React.lazy(() => import("./pages/Hotel/AllPayment"));
+const PaymentReceiptAdmin = React.lazy(() => import("./pages/Admin/payment/PaymentReceiptAdmin"));
 
 const AboutUs = React.lazy(() => import("./pages/Hotel/SiteInfo/AboutUs"));
 const ProductDescription = React.lazy(() => import("./pages/Hotel/SiteInfo/ProductDescription"));
@@ -156,6 +157,7 @@ const App = () => {
 
           {/* Amenities */}
           <Route path="amenities" element={<Payment />} />
+          <Route path="amenities/success" element={<Payment />} />
           <Route path="amenities/edit/:id" element={<EditPayment />} />
 
           {/* Notice */}
@@ -181,6 +183,8 @@ const App = () => {
           <Route path="amenities-charges/hotel-wise/today" element={<HotelWise />} />
           <Route path="amenities-charges/hotel-wise" element={<HotelWise />} />
           <Route path="amenities-charges/amenities-payment" element={<PaidAndDueHotel />} />
+          
+          <Route path="payment-receipt/:type/:id" element={<PaymentReceiptAdmin />} />
         </Route>
 
 

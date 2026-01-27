@@ -58,7 +58,7 @@ const Payments = () => {
     const years = Array.from({ length: currentYear - 2000 + 1 }, (_, i) => {
         const year = 2000 + i;
         return { label: year.toString(), value: year.toString() };
-    });
+    }).reverse();
     const [selectedMonth, setSelectedMonth] = useState(null);
     const [selectedYear, setSelectedYear] = useState(null);
     const timeRef = useRef(null);
@@ -350,7 +350,9 @@ const Payments = () => {
                                             <td>Payment Date</td>
                                             <td>Payment Mode</td>
                                             <td>Payment Status</td>
+                                            <td>Ref. ID</td>
                                             <td>Transaction ID</td>
+                                            <td>Receipt No</td>
                                             <td>Action</td>
                                         </tr>
                                     </thead>
@@ -381,7 +383,9 @@ const Payments = () => {
                                                                 <span className='chip chip__grey'>Payment Not Initiated</span>
                                                         }
                                                     </td>
+                                                    <td>{n.amenities_payment_ref_no}</td>
                                                     <td>{n.amenities_payment_transaction_id}</td>
+                                                    <td>{n.amenities_receipt_number}</td>
                                                     <td align='center'>
                                                         {
                                                             n.amenities_payment_status === "0" && (

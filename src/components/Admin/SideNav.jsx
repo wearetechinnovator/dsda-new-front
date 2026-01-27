@@ -11,6 +11,9 @@ const SideNav = () => {
   const isTouristActive = ["/footfall-hotel", "/footfall-hotel/today", "/footfall", "/tourist-details"]
     .some(end => activePath.endsWith(end));
 
+  const isPaymentActive = ["/amenities/success", "/amenities", "/amenities/"]
+    .some(end => activePath.endsWith(end));
+
   const isAmenityActive = ["/overall-date-wise", "/hotel-wise", "/hotel-wise/today", "/amenities-payment"]
     .some(end => activePath.endsWith(end));
 
@@ -84,7 +87,7 @@ const SideNav = () => {
                 </div>
               </Link>
             </li>
-             <li className={activePath.includes("/admin/hotel-category") ? "active__link" : ""}>
+            <li className={activePath.includes("/admin/hotel-category") ? "active__link" : ""}>
               <Link to="/admin/hotel-category" data-tooltip-id="sideBarItemToolTip">
                 <div className={`flex items-center`}>
                   <span className="mr-1"><Icons.HOTEL_CATEGORY /></span>
@@ -118,14 +121,34 @@ const SideNav = () => {
               </Link>
             </li>
 
-            <li className={activePath.endsWith("/admin/amenities") ? "active__link" : ""}>
+            {/* <li className={activePath.endsWith("/admin/amenities") ? "active__link" : ""}>
               <Link to="/admin/amenities" data-tooltip-id="sideBarItemToolTip">
                 <div className={`flex items-center`}>
                   <span className="mr-1"><Icons.RUPES /></span>
                   <span>Payment Management</span>
                 </div>
               </Link>
+            </li> */}
+            {/* Payment Managment  */}
+            <li className="drp__dwn__menu flex flex-col w-full items-center">
+              <button
+                className="flex cursor-pointer w-full relative"
+                onClick={() => toggleSubMenu("sidebar__sub__menu__tourist")}
+              >
+                <span className="mr-1"><Icons.USERS /></span>
+                <span>Payment Management</span>
+                <span className="absolute right-0"><Icons.DROPDOWN /></span>
+              </button>
+              <ul className={`sidebar__sub__menu sidebar__sub__menu__tourist ${isPaymentActive ? "open__sidebar__sub__menu" : "no"}`}>
+                <li className={activePath.endsWith("/admin/amenities/success") ? "active__link" : ""}>
+                  <a href="/admin/amenities/success">List</a>
+                </li>
+                <li className={activePath.endsWith("/admin/amenities") ? "active__link" : ""}>
+                  <a href="/admin/amenities">Report</a>
+                </li>
+              </ul>
             </li>
+
 
             <li className={activePath.includes("/admin/notice") ? "active__link" : ""}>
               <Link to="/admin/notice" data-tooltip-id="sideBarItemToolTip">
@@ -196,7 +219,7 @@ const SideNav = () => {
                 <span>Amenities Charges</span>
                 <span className="absolute right-0"><Icons.DROPDOWN /></span>
               </button>
-              <ul className={`sidebar__sub__menu sidebar__sub__menu__amenities ${ isAmenityActive ? "open__sidebar__sub__menu" : ""}`}>
+              <ul className={`sidebar__sub__menu sidebar__sub__menu__amenities ${isAmenityActive ? "open__sidebar__sub__menu" : ""}`}>
                 <li className={activePath.includes("/admin/amenities-charges/overall-date-wise") ? "active__link" : ""}>
                   <Link to="/admin/amenities-charges/overall-date-wise">Overall Date Wise</Link>
                 </li>

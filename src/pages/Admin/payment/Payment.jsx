@@ -52,6 +52,29 @@ const Payment = ({ mode }) => {
     const timeRef = useRef(null);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [status, setStatus] = useState("all");
+    const months = [
+        { label: 'January', value: '0' },
+        { label: 'February', value: '1' },
+        { label: 'March', value: '2' },
+        { label: 'April', value: '3' },
+        { label: 'May', value: '4' },
+        { label: 'June', value: '5' },
+        { label: 'July', value: '6' },
+        { label: 'August', value: '7' },
+        { label: 'September', value: '8' },
+        { label: 'October', value: '9' },
+        { label: 'November', value: '10' },
+        { label: 'December', value: '11' }
+    ];
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: currentYear - 2000 + 1 }, (_, i) => {
+        const year = 2000 + i;
+        return { label: year.toString(), value: year.toString() };
+    }).reverse();
+    const [selectedMonth, setSelectedMonth] = useState(null);
+    const [selectedYear, setSelectedYear] = useState(null);
+    const [totalAmount, setTotalAmount] = useState(0);
 
 
 
@@ -109,9 +132,6 @@ const Payment = ({ mode }) => {
     }
 
 
-
-
-
     // Get Amenities data;
     const get = async () => {
         setLoading(true);
@@ -136,18 +156,29 @@ const Payment = ({ mode }) => {
             setData([...res.data])
             setLoading(false);
 
+            const totalAmount = res.data.reduce((acc, i) => {
+                return acc += Number(i.amenities_amount);
+            }, 0)
+            setTotalAmount(totalAmount)
+
         } catch (error) {
             setLoading(false);
         }
     }
+
     useEffect(() => {
         get();
     }, [dataLimit, activePage])
-    const AmenitiesHotelSearch = (txt) => {
-        if (txt === "") return;
+
+    const AmenitiesHotelSearch = async (txt) => {
         if (timeRef.current) clearTimeout(timeRef.current);
 
         timeRef.current = setTimeout(async () => {
+            if (!txt) {
+                getHotelList()
+                get();
+                return;
+            }
             try {
                 const data = {
                     token: Cookies.get("token"),
@@ -169,6 +200,11 @@ const Payment = ({ mode }) => {
                 }
                 setTotalData(res.length);
                 setData([...res])
+
+                const totalAmount = res.reduce((acc, i) => {
+                    return acc += Number(i.amenities_amount);
+                }, 0)
+                setTotalAmount(totalAmount);
                 return;
             } catch (error) {
 
@@ -176,7 +212,6 @@ const Payment = ({ mode }) => {
 
         }, 350)
     }
-
 
 
     const exportTable = async (whichType) => {
@@ -196,8 +231,7 @@ const Payment = ({ mode }) => {
     }
 
 
-
-    const handleFilter = async () => {
+    const handleFilter = async (defaultStatus = "") => {
         setLoading(true);
         (async () => {
             try {
@@ -207,7 +241,10 @@ const Payment = ({ mode }) => {
                     limit: dataLimit,
                     startDate: startDate,
                     endDate: endDate,
-                    hotelId: selectedHotel
+                    hotelId: selectedHotel,
+                    status: defaultStatus ? defaultStatus : status,
+                    month: selectedMonth ? Number(selectedMonth) + 1 : "",
+                    year: selectedYear
                 }
 
                 setFilterState("payment-management", dataLimit, activePage);
@@ -229,17 +266,35 @@ const Payment = ({ mode }) => {
                 setTotalData(res.total)
                 setLoading(false);
 
+                const totalAmount = res.data.reduce((acc, i) => {
+                    return acc += Number(i.amenities_amount);
+                }, 0)
+                setTotalAmount(totalAmount)
+
             } catch (error) {
 
             }
         })()
     }
 
+
+    const setDefaultStatus = async () => {
+        const path = window.location.pathname;
+        if (path.endsWith("/success") || path.endsWith("/success/")) {
+            setStatus("1");
+            await handleFilter("1");
+        }
+    }
+    useEffect(() => {
+        setDefaultStatus()
+    }, [])
+
     const handleResetFilter = () => {
-        setStartDate('');
-        setEndDate('');
-        setSelectedHotel(null);
-        get();
+        // setStartDate('');
+        // setEndDate('');
+        // setSelectedHotel(null);
+        // get();
+        window.location.reload();
     }
 
     return (
@@ -249,7 +304,7 @@ const Payment = ({ mode }) => {
                 <SideNav />
                 <Tooltip id='itemTooltip' />
                 <div className='content__body'>
-                    <div className='add_new_compnent border rounded'>
+                    <div className='content__body__main'>
                         <div id='itemFilter' className='w-full'>
                             <p className='font-semibold uppercase'>Filter by Hotel Date</p>
                             <div className='flex flex-col md:flex-row md:gap-4 w-full mt-3 text-[13px]'>
@@ -275,7 +330,7 @@ const Payment = ({ mode }) => {
                                     />
                                 </div>
                                 <div className='w-full'>
-                                    <p className='mb-1'>Start Date<span className='required__text'>*</span></p>
+                                    <p className='mb-1'>Payment Start Date</p>
                                     <input type='date'
                                         onChange={(e) => setStartDate(e.target.value)}
                                         value={startDate}
@@ -283,11 +338,47 @@ const Payment = ({ mode }) => {
                                 </div>
 
                                 <div className='w-full'>
-                                    <p className='mb-1'>End Date<span className='required__text'>*</span></p>
+                                    <p className='mb-1'>Payment End Date</p>
                                     <input type='date'
                                         onChange={(e) => setEndDate(e.target.value)}
                                         value={endDate}
                                     />
+                                </div>
+                            </div>
+
+                            <div className='flex flex-col md:flex-row md:gap-4 w-full mt-5 text-[13px]'>
+                                <div className='w-full'>
+                                    <p>Select Year*</p>
+                                    <SelectPicker
+                                        block
+                                        className='w-full'
+                                        data={years}
+                                        value={selectedYear}
+                                        onChange={(v) => setSelectedYear(v)}
+                                    />
+                                </div>
+                                <div className='w-full'>
+                                    <p>Select Month *</p>
+                                    <SelectPicker
+                                        block
+                                        className='w-full'
+                                        data={months}
+                                        value={selectedMonth}
+                                        onChange={(v) => setSelectedMonth(v)}
+                                    />
+                                </div>
+                                <div className='w-full'>
+                                    <p>Status</p>
+                                    <select
+                                        onChange={(e) => setStatus(e.target.value)}
+                                        value={status}
+                                    >
+                                        <option value="all">All</option>
+                                        <option value="ni">No initiated</option>
+                                        <option value="0">Failed</option>
+                                        <option value="1">Success</option>
+                                        <option value="2">Pending</option>
+                                    </select>
                                 </div>
                             </div>
                             <div className='form__btn__grp filter'>
@@ -295,7 +386,7 @@ const Payment = ({ mode }) => {
                                     <Icons.RESET />
                                     Reset
                                 </button>
-                                <button className='save__btn' onClick={handleFilter}>
+                                <button className='save__btn' onClick={() => handleFilter()}>
                                     <Icons.SEARCH />
                                     Search
                                 </button>
@@ -304,7 +395,7 @@ const Payment = ({ mode }) => {
                     </div>
 
                     <div className='content__body__main mt-4'>
-                        <div className='flex justify-between items-center mb-2'>
+                        <div className='add_new_compnent flex justify-between items-center'>
                             <div className='flex flex-col'>
                                 <select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
                                     <option value={5}>5</option>
@@ -322,7 +413,7 @@ const Payment = ({ mode }) => {
                             <div className='flex items-center gap-2'>
                                 <div className='flex w-full flex-col lg:w-[300px]'>
                                     <input type='text'
-                                        placeholder='Search Hotel name or Transaction ID'
+                                        placeholder='Search Hotel Name,Transaction ID or Receipt No'
                                         onChange={(e) => AmenitiesHotelSearch(e.target.value)}
                                         className='p-[6px]'
                                     />
@@ -369,7 +460,9 @@ const Payment = ({ mode }) => {
                                             <td>Payment Date</td>
                                             <td>Payment Mode</td>
                                             <td>Payment Status</td>
+                                            <td>Ref. ID</td>
                                             <td>Transaction ID</td>
+                                            <td>Receipt No</td>
                                             <td>Action</td>
                                         </tr>
                                     </thead>
@@ -380,7 +473,7 @@ const Payment = ({ mode }) => {
                                                     <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                     <td>{n.amenities_hotel_id.hotel_name}</td>
                                                     <td>{n.amenities_year}</td>
-                                                    <td>{monthList[n.amenities_month]}</td>
+                                                    <td>{monthList[n.amenities_month - 1]}</td>
                                                     <td>{n.amenities_amount}</td>
                                                     <td>{n.amenities_payment_date}</td>
                                                     <td>
@@ -402,7 +495,9 @@ const Payment = ({ mode }) => {
 
                                                         }
                                                     </td>
+                                                    <td>{n.amenities_payment_ref_no}</td>
                                                     <td>{n.amenities_payment_transaction_id}</td>
+                                                    <td>{n.amenities_receipt_number}</td>
                                                     <td align='center'>
                                                         <Whisper
                                                             placement='leftStart'
@@ -419,16 +514,18 @@ const Payment = ({ mode }) => {
                                                                     <Icons.EDIT className='text-[16px]' />
                                                                     Edit
                                                                 </div>
-                                                                {/* {n.amenities_receipt_number && <div
+                                                                {n.amenities_receipt_number && <div
                                                                     className='table__list__action__icon'
                                                                     onClick={(e) => {
                                                                         e.stopPropagation()
-                                                                        navigate("/admin/notice/edit/" + n._id)
+                                                                        navigate(`/admin/payment-receipt/monthly/${n._id}`, {
+                                                                            state: { payment: true }
+                                                                        })
                                                                     }}
                                                                 >
                                                                     <Icons.PRINTER className='text-[16px]' />
                                                                     Print Receipt
-                                                                </div>} */}
+                                                                </div>}
                                                             </Popover>}
                                                         >
                                                             <div className='table__list__action' >
@@ -441,6 +538,12 @@ const Payment = ({ mode }) => {
 
                                         }
                                     </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colSpan={4} className='font-semibold' align='right'>Total Amount</td>
+                                            <td className='font-semibold'>{totalAmount}</td>
+                                        </tr>
+                                    </tfoot>
                                 </table>
                                 {data.length < 1 && <NoData />}
                                 {data.length > 0 && <div className='paginate__parent'>

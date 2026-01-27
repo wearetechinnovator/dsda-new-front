@@ -72,8 +72,9 @@ const EditPayment = () => {
                 return toast(res.err, 'error');
             }
 
-            return toast("Amenities update success", 'success');
-
+            toast("Amenities update success", 'success');
+            navigate(-1);
+            return;
         } catch (error) {
 
             return toast("Something went wrong", "error")
