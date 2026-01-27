@@ -16,7 +16,7 @@ const usePayment = () => {
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({id, type, token: Cookies.get("token")})
+            body: JSON.stringify({id, type, token: Cookies.get("hotel-token")})
         });
         const res = await req.json();
 

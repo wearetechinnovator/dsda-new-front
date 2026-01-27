@@ -15,7 +15,7 @@ const AllPayment = () => {
     const type = params.get("type");
     const [isLoading, setIsLoading] = useState(true);
     const [status, setStatus] = useState(null);
-    const token = Cookies.get("token");
+    const token = Cookies.get("hotel-token");
 
 
     useEffect(() => {
