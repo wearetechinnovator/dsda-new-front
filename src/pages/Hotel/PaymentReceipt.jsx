@@ -7,7 +7,7 @@ import Cookies from 'js-cookie';
 import numberToWords from "../../helper/NumberToWord";
 
 const PaymentReceipt = () => {
-    const token = Cookies.get("token");
+    const token = Cookies.get("hotel-token");
     const toast = useMyToaster();
     const { type, id } = useParams();
     const navigate = useNavigate();
