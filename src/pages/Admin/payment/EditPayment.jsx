@@ -122,11 +122,12 @@ const EditPayment = () => {
                                     <input type="date"
                                         onChange={(e) => setForm({ ...form, date: e.target.value })}
                                         value={form.date}
+                                        disabled
                                     />
                                 </div>
                                 <div>
                                     <p>Payment Mode</p>
-                                    <select onChange={(e) => setForm({ ...form, mode: e.target.value })}
+                                    <select disabled onChange={(e) => setForm({ ...form, mode: e.target.value })}
                                         value={form.mode}>
                                         <option value="0">Offline</option>
                                         <option value="1">Online</option>
@@ -134,7 +135,7 @@ const EditPayment = () => {
                                 </div>
                                 <div>
                                     <p>Payment Status</p>
-                                    <select onChange={(e) => setForm({ ...form, status: e.target.value })}
+                                    <select disabled onChange={(e) => setForm({ ...form, status: e.target.value })}
                                         value={form.status}>
                                         <option value="ni">Not initiated</option>
                                         <option value="0">Failed</option>
@@ -145,6 +146,7 @@ const EditPayment = () => {
                                 <div>
                                     <p>Transaction ID</p>
                                     <input type='text'
+                                        disabled
                                         onChange={(e) => setForm({ ...form, transactionId: e.target.value })}
                                         value={form.transactionId}
                                     />

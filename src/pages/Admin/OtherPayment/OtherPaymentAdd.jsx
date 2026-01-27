@@ -119,7 +119,7 @@ const OtherPaymentAdd = ({ mode }) => {
 
     const saveData = async (e) => {
         const requiredKeys = [
-            'hotel', 'purpose', 'amount', 'paymentDate', 'status'
+            'hotel', 'purpose', 'amount', 'status'
         ];
 
         for (const key of requiredKeys) {
