@@ -133,13 +133,13 @@ const SideNav = () => {
             <li className="drp__dwn__menu flex flex-col w-full items-center">
               <button
                 className="flex cursor-pointer w-full relative"
-                onClick={() => toggleSubMenu("sidebar__sub__menu__tourist")}
+                onClick={() => toggleSubMenu("sidebar__sub__menu__payment")}
               >
                 <span className="mr-1"><Icons.USERS /></span>
                 <span>Payment Management</span>
                 <span className="absolute right-0"><Icons.DROPDOWN /></span>
               </button>
-              <ul className={`sidebar__sub__menu sidebar__sub__menu__tourist ${isPaymentActive ? "open__sidebar__sub__menu" : "no"}`}>
+              <ul className={`sidebar__sub__menu sidebar__sub__menu__payment ${isPaymentActive ? "open__sidebar__sub__menu" : "no"}`}>
                 <li className={activePath.endsWith("/admin/amenities/success") ? "active__link" : ""}>
                   <a href="/admin/amenities/success">List</a>
                 </li>
