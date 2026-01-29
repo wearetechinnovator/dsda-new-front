@@ -36,12 +36,13 @@ const Zone = () => {
 	const { deleteData, restoreData } = useApi()
 	const [isTrash, setIsTrash] = useState(false);
 	const timeRef = useRef(null);
+	const [searchTxt, setSearchTxt] = useState('');
 
 
 
 
 	// Get data;
-	const get = async () => {
+	const get = async (searchValue = searchTxt) => {
 		setLoading(true);
 		try {
 			const data = {
@@ -50,6 +51,8 @@ const Zone = () => {
 				page: activePage,
 				limit: dataLimit
 			}
+			if (searchValue) data.search = searchValue;
+
 			setFilterState("zone", dataLimit, activePage);
 			const url = process.env.REACT_APP_MASTER_API + `/zone/get`;
 			const req = await fetch(url, {
@@ -74,36 +77,13 @@ const Zone = () => {
 
 	const searchTableDatabase = (e) => {
 		const txt = e.target.value;
+		setSearchTxt(txt);
+
 		if (timeRef.current) clearTimeout(timeRef.current);
 
 		timeRef.current = setTimeout(async () => {
-			if (!txt) {
-				get();
-				return;
-			}
-
-			try {
-				const data = {
-					token: Cookies.get("token"),
-					search: txt
-				}
-				const url = process.env.REACT_APP_MASTER_API + `/zone/get`;
-				const req = await fetch(url, {
-					method: "POST",
-					headers: {
-						"Content-Type": 'application/json'
-					},
-					body: JSON.stringify(data)
-				});
-				const res = await req.json();
-				setTotalData(res.length)
-				setData([...res])
-
-			} catch (error) {
-
-			}
-
-		}, 300)
+			await get(txt);
+		}, 500)
 
 	}
 
@@ -157,22 +137,19 @@ const Zone = () => {
 								<div className='flex flex-col md:flex-row justify-between items-center'>
 									<div>
 										<select value={dataLimit} onChange={(e) => setDataLimit(e.target.value)}>
-											<option value={5}>5</option>
-											<option value={10}>10</option>
-											<option value={50}>50</option>
-											<option value={100}>100</option>
-											<option value={500}>500</option>
-											<option value={1000}>1000</option>
-											<option value={5000}>5000</option>
-											<option value={10000}>10000</option>
-											<option value={50000}>50000</option>
+											{
+												[5, 10, 50, 100, 500, 1000, 5000, 10000, 50000].map((n, i) => {
+													return <option value={n} key={i}>{n}</option>
+												})
+											}
 											<option value={totalData}>All</option>
 										</select>
 									</div>
 									<div className='flex flex-col md:flex-row items-center gap-2'>
 										<div className='flex w-full flex-col lg:w-[300px]'>
-											<input type='text'
+											<input type='search'
 												placeholder='Search...'
+												value={searchTxt}
 												onChange={searchTableDatabase}
 												className='p-[6px]'
 											/>

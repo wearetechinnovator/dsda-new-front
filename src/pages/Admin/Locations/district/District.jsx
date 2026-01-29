@@ -39,11 +39,12 @@ const District = () => {
 	const { deleteData, restoreData } = useApi()
 	const [isTrash, setIsTrash] = useState(false);
 	const timeRef = useRef(null);
+	const [searchTxt, setSearchTxt] = useState('');
 
 
 
 	// Get data;
-	const get = async () => {
+	const get = async (searchValue = searchTxt) => {
 		setLoading(true);
 		try {
 			const data = {
@@ -52,6 +53,7 @@ const District = () => {
 				page: activePage,
 				limit: dataLimit
 			}
+			if (searchValue) data.search = searchValue;
 			setFilterState("district", dataLimit, activePage);
 			const url = process.env.REACT_APP_MASTER_API + `/district/get`;
 			const req = await fetch(url, {
@@ -76,36 +78,13 @@ const District = () => {
 
 	const searchTableDatabase = (e) => {
 		const txt = e.target.value;
+		setSearchTxt(txt);
+
 		if (timeRef.current) clearTimeout(timeRef.current);
 
 		timeRef.current = setTimeout(async () => {
-			if (!txt) {
-				get();
-				return;
-			}
-
-			try {
-				const data = {
-					token: Cookies.get("token"),
-					search: txt
-				}
-				const url = process.env.REACT_APP_MASTER_API + `/district/get`;
-				const req = await fetch(url, {
-					method: "POST",
-					headers: {
-						"Content-Type": 'application/json'
-					},
-					body: JSON.stringify(data)
-				});
-				const res = await req.json();
-				setTotalData(res.length)
-				setData([...res])
-
-			} catch (error) {
-
-			}
-
-		}, 300)
+			await get(txt);
+		}, 500)
 
 	}
 
@@ -174,8 +153,9 @@ const District = () => {
 									</div>
 									<div className='flex flex-col md:flex-row items-center gap-2'>
 										<div className='flex w-full flex-col lg:w-[300px]'>
-											<input type='text'
+											<input type='search'
 												placeholder='Search...'
+												value={searchTxt}
 												onChange={searchTableDatabase}
 												className='p-[6px]'
 											/>
