@@ -38,7 +38,9 @@ const Payment = ({ mode }) => {
             "Payment Date": n.amenities_payment_date,
             "Payment Mode": n.amenities_payment_mode == "1" ? "Online" : "Offline",
             "Payment Status": n.amenities_payment_status,
+            "Ref. ID": n.amenities_payment_ref_no,
             "Transaction ID": n.amenities_payment_transaction_id,
+            "Receipt No": n.amenities_receipt_number,
         }));
     }, [data]);
     const [loading, setLoading] = useState(true);
@@ -139,7 +141,13 @@ const Payment = ({ mode }) => {
             const data = {
                 token: Cookies.get("token"),
                 page: activePage,
-                limit: dataLimit
+                limit: dataLimit,
+                startDate: startDate,
+                endDate: endDate,
+                hotelId: selectedHotel,
+                status: status,
+                month: selectedMonth ? Number(selectedMonth) + 1 : "",
+                year: selectedYear
             }
 
             setFilterState("payment-management", dataLimit, activePage);
