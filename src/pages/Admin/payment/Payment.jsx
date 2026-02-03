@@ -462,6 +462,7 @@ const Payment = ({ mode }) => {
                                         <tr>
                                             <td className='w-[5%]' align='center'>SL No.</td>
                                             <td>Hotel</td>
+                                            <td>Sector</td>
                                             <td>Year</td>
                                             <td>Month</td>
                                             <td>Amount</td>
@@ -480,6 +481,7 @@ const Payment = ({ mode }) => {
                                                 return <tr key={i} className='hover:bg-gray-100'>
                                                     <td align='center'>{(activePage - 1) * dataLimit + i + 1}</td>
                                                     <td>{n.amenities_hotel_id.hotel_name}</td>
+                                                    <td>{n.amenities_hotel_id.hotel_sector_id.name}</td>
                                                     <td>{n.amenities_year}</td>
                                                     <td>{monthList[n.amenities_month - 1]}</td>
                                                     <td>{n.amenities_amount}</td>
