@@ -29,11 +29,16 @@ const Payment = ({ mode }) => {
     const navigate = useNavigate();
     const [data, setData] = useState([]);
     const tableRef = useRef(null);
+    const monthList = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
     const exportData = useMemo(() => {
         return data && data.map((n, _) => ({
             "Hotel Name": n.amenities_hotel_id.hotel_name,
+            "Sector": n.amenities_hotel_id.hotel_sector_id.name,
             "Year": n.amenities_year,
-            "Month": n.amenities_month,
+            "Month": monthList[n.amenities_month - 1],
             "Amount": n.amenities_amount,
             "Payment Date": n.amenities_payment_date,
             "Payment Mode": n.amenities_payment_mode == "1" ? "Online" : "Offline",
@@ -45,10 +50,6 @@ const Payment = ({ mode }) => {
     }, [data]);
     const [loading, setLoading] = useState(true);
     const searchTable = useSearchTable();
-    const monthList = [
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
     const [selectedHotel, setSelectedHotel] = useState(null);
     const [allHotels, setAllHotels] = useState([]);
     const timeRef = useRef(null);
