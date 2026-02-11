@@ -65,7 +65,6 @@ const MySelect2 = ({ model, onType, value }) => {
             body: JSON.stringify({ token: Cookies.get("token"), id: value })
           })
           const res = await req.json();
-
           setSelectedData(res.data || res)
 
         } catch (error) {
@@ -101,9 +100,8 @@ const MySelect2 = ({ model, onType, value }) => {
         })
         const res = await req.json();
         setLoading(false);
-
         if (req.status === 200) {
-          res.length > 0 ? setSearchList([...res]) : setSearchList(["No result found"]);
+          res.data.length > 0 ? setSearchList([...res.data]) : setSearchList(["No result found"]);
         }
         else {
           setSearchList([])
