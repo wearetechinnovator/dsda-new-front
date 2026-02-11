@@ -92,7 +92,7 @@ const Payments = () => {
                 page: activePage,
                 limit: dataLimit,
                 hotelId: Cookies.get('hotelId'),
-                month,
+                month: month ? Number(month) + 1 : '',
                 year,
                 payStatus: payStatus || null
             }
@@ -205,16 +205,6 @@ const Payments = () => {
                             </div>
                             <div className='w-full flex flex-col md:flex-row justify-between gap-4 items-center mt-4'>
                                 <div className='w-full mt-3'>
-                                    <p>Select Month *</p>
-                                    <SelectPicker
-                                        block
-                                        className='w-full'
-                                        data={months}
-                                        value={selectedMonth}
-                                        onChange={(v) => setSelectedMonth(v)}
-                                    />
-                                </div>
-                                <div className='w-full mt-3'>
                                     <p>Select Year*</p>
                                     <SelectPicker
                                         block
@@ -222,6 +212,16 @@ const Payments = () => {
                                         data={years}
                                         value={selectedYear}
                                         onChange={(v) => setSelectedYear(v)}
+                                    />
+                                </div>
+                                <div className='w-full mt-3'>
+                                    <p>Select Month *</p>
+                                    <SelectPicker
+                                        block
+                                        className='w-full'
+                                        data={months}
+                                        value={selectedMonth}
+                                        onChange={(v) => setSelectedMonth(v)}
                                     />
                                 </div>
                             </div>
