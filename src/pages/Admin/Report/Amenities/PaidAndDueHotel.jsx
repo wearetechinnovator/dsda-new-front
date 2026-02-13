@@ -68,7 +68,7 @@ const PaidAndDueHotel = () => {
     const years = Array.from({ length: currentYear - 2000 + 1 }, (_, i) => {
         const year = 2000 + i;
         return { label: year.toString(), value: year.toString() };
-    });
+    }).reverse();
     const [totalEnrolled, setTotalEnrolled] = useState(0);
     const [totalCharge, setTotalCharge] = useState(0);
     const [totalPaid, setTotalPaid] = useState(0);
