@@ -38,6 +38,7 @@ const HotelList = React.lazy(() => import("./pages/Admin/Report/HotelList"));
 const BedAvailablity = React.lazy(() => import("./pages/Admin/Report/BedAvailablity"));
 const DateWiseFootFall = React.lazy(() => import("./pages/Admin/Report/TouristData/DateWise"));
 const TodayHotelWise = React.lazy(() => import("./pages/Admin/Report/TouristData/TodayHotelWise"));
+const TotalFootFalls = React.lazy(() => import("./pages/Admin/Report/TouristData/TotalFootFalls")); //All Hotel Overall
 const TouristDetails = React.lazy(() => import("./pages/Admin/Report/TouristData/TouristDetails"));
 const OtherPaymentList = React.lazy(() => import("./pages/Admin/OtherPayment/OtherPaymentList"));
 const OtherPaymentAdd = React.lazy(() => import("./pages/Admin/OtherPayment/OtherPaymentAdd"));
@@ -169,6 +170,7 @@ const App = () => {
           <Route path="report/hotel-list" element={<HotelList />} />
           <Route path="report/bed-availablity" element={<BedAvailablity />} />
           <Route path="report/tourist-data/footfall" element={<TodayHotelWise />} />
+          <Route path="report/tourist-data/footfall-all" element={<TotalFootFalls />} />
           <Route path="report/tourist-data/footfall-hotel" element={<DateWiseFootFall />} />
           <Route path="report/tourist-data/footfall-hotel/today" element={<TodayHotelWise />} />
           <Route path="report/tourist-data/tourist-details" element={<TouristDetails />} />

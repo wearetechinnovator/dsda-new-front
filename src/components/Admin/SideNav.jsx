@@ -203,6 +203,9 @@ const SideNav = () => {
                 <li className={activePath.endsWith("/admin/report/tourist-data/footfall") ? "active__link" : ""}>
                   <a href="/admin/report/tourist-data/footfall">Overall</a>
                 </li>
+                <li className={activePath.endsWith("/admin/report/tourist-data/footfall-all") ? "active__link" : ""}>
+                  <a href="/admin/report/tourist-data/footfall-all">Overall <span className="text-[10px]">(With Zero Footfall)</span></a>
+                </li>
                 <li className={activePath.endsWith("/admin/report/tourist-data/tourist-details") ? "active__link" : ""}>
                   <Link to="/admin/report/tourist-data/tourist-details">Tourist Details</Link>
                 </li>
