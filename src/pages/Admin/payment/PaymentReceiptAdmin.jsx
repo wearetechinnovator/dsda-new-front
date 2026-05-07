@@ -144,7 +144,7 @@ const PaymentReceiptAdmin = () => {
                 {/* Total */}
                 <div className="flex justify-end mt-4">
                     <div className="border border-blue-900 px-6 py-2 font-semibold ">
-                        TOTAL - &#8377; {data.amount} /-
+                        TOTAL : &#8377; {data.amount} /-
                     </div>
                 </div>
 
