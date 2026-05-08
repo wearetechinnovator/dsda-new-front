@@ -13,13 +13,14 @@ const PaymentReceiptAdmin = () => {
     const navigate = useNavigate();
     const [data, setData] = useState({
         hotelName: '',
+        sectorName: '',
         receiptNo: '',
         periodOrPurposeTitle: '',
         periodOrPurpose: '',
         amount: '',
         amountInWords: '',
         transactionNo: '',
-        date: ''
+        date: '',
     })
 
     const months = [
@@ -62,7 +63,8 @@ const PaymentReceiptAdmin = () => {
                             transactionNo: res.data.amenities_payment_transaction_id,
                             date: res.data.amenities_payment_date,
                             periodOrPurpose: months[parseInt(res.data.amenities_month) - 1].label + ', ' + res.data.amenities_year,
-                            amountInWords: numberToWords(res.data.amenities_amount)
+                            amountInWords: numberToWords(res.data.amenities_amount),
+                            sectorName: res.data.amenities_hotel_id.hotel_sector_id.name
                         })
                     }
                     else if (type === 'other') {
@@ -74,7 +76,8 @@ const PaymentReceiptAdmin = () => {
                             transactionNo: res.data.other_payment_payment_transaction_id,
                             date: res.data.other_payment_payment_date,
                             periodOrPurpose: res.data.other_payment_purpose,
-                            amountInWords: numberToWords(res.data.other_payment_amount)
+                            amountInWords: numberToWords(res.data.other_payment_amount),
+                            sectorName: res.data.amenities_hotel_id.hotel_sector_id.name
                         })
                     }
                 } else {
@@ -92,34 +95,41 @@ const PaymentReceiptAdmin = () => {
 
     return (
         <main className="w-full min-h-full grid place-items-center">
-            <div className="max-w-5xl mx-auto border border-blue-900 p-6 text-blue-900 font-serif mt-8 mb-24">
+            <div className="max-w-3xl mx-auto border border-blue-900 p-4 text-blue-900 font-serif mt-6 mb-20">
                 <div>
-                    <p className="text-right">
+                    <p className="text-right text-sm">
                         <strong>No.: </strong>
                         {data.receiptNo}
                     </p>
                 </div>
                 {/* Header */}
-                <div className="text-center relative mt-[-30px]">
-                    <img src={Logo} alt="Logo.png" className='mb-6 mx-auto' width={"60px"} />
-                    <h1 className="text-2xl font-bold uppercase">
+                <div className="text-center relative mt-[-20px]">
+                    <img src={Logo} alt="Logo.png" className='mb-3 mx-auto' width={"45px"} />
+                    <h1 className="text-xl font-bold uppercase">
                         Digha Sankarpur Dev. Authority
                     </h1>
-                    <div className="inline-block bg-blue-900 text-white px-4 py-1 mt-8 text-sm font-semibold rounded">
+                    <div className="inline-block bg-blue-900 text-white px-3 py-1 mt-4 text-xs font-semibold rounded">
                         Realisation of Tourist Civic Amenity Charges
                     </div>
                 </div>
 
                 {/* Name */}
-                <div className="flex items-center justify-between mt-6 w-full">
-                    <p>
+                <div className="flex items-center justify-between mt-4 w-full">
+                    <p className="text-sm">
                         <span className="font-semibold">Name of the Tourist Estt:</span> {data.hotelName}
                     </p>
                 </div>
 
+                {/* Sector */}
+                <div className="flex items-center justify-between w-full">
+                    <p className="text-sm">
+                        <span className="font-semibold">Sector:</span> {data.sectorName}
+                    </p>
+                </div>
+
                 {/* Table */}
-                <div className="mt-6 overflow-x-auto">
-                    <table className="w-full border border-blue-900 text-sm">
+                <div className="mt-4 overflow-x-auto">
+                    <table className="w-full border border-blue-900 text-xs">
                         <thead>
                             <tr className="border-b border-blue-900 text-center font-semibold">
                                 <th className="border-r border-blue-900 p-2 font-bold w-[70%]">
@@ -129,7 +139,7 @@ const PaymentReceiptAdmin = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr className="border-b border-blue-900 h-10">
+                            <tr className="border-b border-blue-900 h-8">
                                 <td align="center" className="border-r border-blue-900">
                                     {data.periodOrPurpose}
                                 </td>
@@ -142,25 +152,25 @@ const PaymentReceiptAdmin = () => {
                 </div>
 
                 {/* Total */}
-                <div className="flex justify-end mt-4">
-                    <div className="border border-blue-900 px-6 py-2 font-semibold ">
+                <div className="flex justify-end mt-3">
+                    <div className="border border-blue-900 px-4 py-1 font-semibold text-sm">
                         TOTAL : &#8377; {data.amount} /-
                     </div>
                 </div>
 
                 {/* Rupees */}
-                <div className="mt-6">
+                <div className="mt-4 text-sm">
                     <span className="font-semibold">Rupees</span>
                     <span className="border-b border-dotted border-blue-900 inline-block w-3/4 mx-2 capitalize">{data.amountInWords}</span>
                     <span>only.</span>
                 </div>
 
-                <div className="flex items-center justify-between w-full mt-6">
+                <div className="flex items-center justify-between w-full mt-4 text-sm">
                     <p><strong>Transaction No:</strong> {data.transactionNo}</p>
                     <p><strong>Date:</strong> {data.date}</p>
                 </div>
                 {/* Signatures */}
-                <div className="flex justify-between mt-8 text-sm">
+                <div className="flex justify-between mt-6 text-xs">
                     <div>
                         <p className="border-t border-blue-900 pt-2">
                             This is a Computer Generated Document and does not require a Signature
@@ -170,8 +180,8 @@ const PaymentReceiptAdmin = () => {
             </div>
 
             <footer id="footer"
-                className=' text-xs mt-2 w-full fixed bottom-0 border-b border bg-[#F5F5F5] p-4 py-3 
-                rounded-t text-white gap-3 flex items-center justify-start'
+                className='text-xs mt-2 w-full fixed bottom-0 border-b border bg-[#F5F5F5] p-4 py-3 
+            rounded-t text-white gap-3 flex items-center justify-start'
             >
                 <button
                     onClick={() => { navigate(-1) }}
