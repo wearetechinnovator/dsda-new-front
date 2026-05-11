@@ -1426,6 +1426,10 @@ input[type="checkbox"]:checked::before {
 }
 
 
+.site__info{
+  
+  margin-top:30px;
+}
 .site__info__main .back__button {
   @apply text-gray-700 hover:text-gray-700 w-[20px] h-[20px] bg-white grid place-items-center rounded-full;
 }

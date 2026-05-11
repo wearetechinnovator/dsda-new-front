@@ -104,7 +104,7 @@ const PaymentReceipt = () => {
                 </div>
                 {/* Header */}
                 <div className="text-center relative mt-[-20px]">
-                    <img src={Logo} alt="Logo.png" className='mb-3 mx-auto' width={"45px"} />
+                    {/* <img src={Logo} alt="Logo.png" className='mb-3 mx-auto' width={"45px"} /> */}
                     <h1 className="text-xl font-bold uppercase">
                         Digha Sankarpur Dev. Authority
                     </h1>

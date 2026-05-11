@@ -19,10 +19,10 @@ const CancelationRefund = () => {
                 <source src="/welcome.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
-            <img src={Logo} alt="Logo.png" className='mb-5 z-10 b__logo' />
+            {/* <img src={Logo} alt="Logo.png" className='mb-5 z-10 b__logo' /> */}
             <div className="login__box flex flex-col z-10 site__info">
                 <div className="flex items-center gap-2">
-                    <Link to={"/"} className="text-gray-700 hover:text-gray-700  w-[20px] h-[20px] bg-white grid place-items-center rounded-full">
+                    <Link to={"/"} className="back__button">
                         <Icons.BACK />
                     </Link>
                     <h2 className="font-semibold text-xl">Cancellation & Refund Policy</h2>

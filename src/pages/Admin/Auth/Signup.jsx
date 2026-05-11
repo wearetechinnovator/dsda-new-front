@@ -61,7 +61,7 @@ const Signup = () => {
         <source src="/welcome.mp4" type="video/mp4"/>
           Your browser does not support the video tag.
       </video>
-      <img src={Logo} alt="Logo.png" className='mb-5 z-10 b__logo' />
+      {/* <img src={Logo} alt="Logo.png" className='mb-5 z-10 b__logo' /> */}
       <div className="login__box flex flex-col z-10" id="loginBox">
         <h1 className='text-center text-[25px] mb-8 mt-4'>Sign Up</h1>
         <form onSubmit={formAction}>
