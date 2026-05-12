@@ -64,7 +64,7 @@ const Login = () => {
         <source src="/welcome.mp4" type="video/mp4" />
         Your browser does not support the video tag.
       </video>
-      {/* <img src={Logo} alt="Logo.png" className='mb-5 z-10 b__logo' /> */}
+      <img src={Logo} alt="Logo.png" className='mb-5 z-10 b__logo' />
       <div className="login__box flex flex-col z-10 mb-16" id="loginBox">
         <img src={"/swagata2-logo.png"} alt="Logo.png" className='mb-5 z-10 mx-auto' width={"350px"} />
         <form onSubmit={formAction}>

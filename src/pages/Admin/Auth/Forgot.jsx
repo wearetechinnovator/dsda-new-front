@@ -11,7 +11,7 @@ import Loading from "../../../components/Admin/Loading";
 
 
 const Forgot = () => {
-  const [loginData, setLoginData] = useState({ email: ''});
+  const [loginData, setLoginData] = useState({ email: '' });
   const shakeIt = useLoginShake();
   const navigate = useNavigate();
   const toast = useMyToaster();
@@ -47,8 +47,8 @@ const Forgot = () => {
         return toast(res.err, "error")
       }
 
-      Cookies.set("user-token", res.token );
-      navigate("/admin/otp", {state:{email: loginData.email}});
+      Cookies.set("user-token", res.token);
+      navigate("/admin/otp", { state: { email: loginData.email } });
 
     } catch (error) {
       return toast("Something went wrong", "error")
@@ -58,11 +58,11 @@ const Forgot = () => {
 
   return (
     <main className='login__main'>
-       <video id="video-background" autoPlay loop muted className="absolute w-full h-full object-cover z-0">
-        <source src="/welcome.mp4" type="video/mp4"/>
-          Your browser does not support the video tag.
+      <video id="video-background" autoPlay loop muted className="absolute w-full h-full object-cover z-0">
+        <source src="/welcome.mp4" type="video/mp4" />
+        Your browser does not support the video tag.
       </video>
-      {/* <img src={Logo} alt="Logo.png" className='mb-5 z-10 b__logo' /> */}
+      <img src={Logo} alt="Logo.png" className='mb-5 z-10 b__logo' />
       <div className="login__box flex flex-col z-10" id="loginBox">
         <p className="text-2xl font-bold">Forgot Your Password</p>
         <p className="mb-10">

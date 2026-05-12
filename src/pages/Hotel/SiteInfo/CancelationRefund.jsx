@@ -19,7 +19,7 @@ const CancelationRefund = () => {
                 <source src="/welcome.mp4" type="video/mp4" />
                 Your browser does not support the video tag.
             </video>
-            {/* <img src={Logo} alt="Logo.png" className='mb-5 z-10 b__logo' /> */}
+            <img src={Logo} alt="Logo.png" className='mb-5 z-10 b__logo' />
             <div className="login__box flex flex-col z-10 site__info">
                 <div className="flex items-center gap-2">
                     <Link to={"/"} className="back__button">
