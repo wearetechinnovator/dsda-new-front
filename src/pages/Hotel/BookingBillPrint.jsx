@@ -27,7 +27,7 @@ const BookingBillPrint = () => {
     return (
         <main className="w-full min-h-full grid place-items-center">
             <div className="w-full bill__print my-3 flex items-center justify-center flex-col pb-16">
-                <img src="/print_logo.jpg" alt="" />
+                <img src="/print_logo.jpg" alt="" className="mb-2"/>
                 <table>
                     <tbody>
                         <tr>
